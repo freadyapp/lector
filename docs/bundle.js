@@ -28287,7 +28287,8 @@ class Settings extends _pragma.default {
     }); // console.log("ive been created")
   }
 
-  onset(key, val) {// console.log(`set ${key} to ${val}`)
+  onset(key, val) {
+    console.log(`set ${key} to ${val}`);
   }
 
   onget(key, val) {// console.log(`got ${val} from ${key}`)

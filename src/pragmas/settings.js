@@ -18,7 +18,7 @@ export default class Settings extends Pragma {
     // console.log("ive been created")
   }
   onset(key, val){
-    // console.log(`set ${key} to ${val}`)
+    console.log(`set ${key} to ${val}`)
   }
   onget(key, val){
     // console.log(`got ${val} from ${key}`)
