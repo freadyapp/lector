@@ -22,6 +22,10 @@ export default class Mark extends Pragma.Pragma{
     this.isBeingSummoned = false
     this.element.width("180px")
     this.colors = [ "tomato", "#FFDFD6", "teal" ]
+
+    $(window).on("resize", () => {
+      this.mark(this.last_marked, 0)
+    })
   }
 
   get settings(){
