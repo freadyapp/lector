@@ -1,6 +1,6 @@
 import Word from '../../src/pragmas/word.js'
 import Mark from "../../src/pragmas/mark.js"
-import Pragma from "../../src/pragmas/pragma"
+const Pragma = require("pragmajs")
 import $ from "jquery"
 
 describe("knows the hard words", () => {
@@ -9,7 +9,7 @@ describe("knows the hard words", () => {
   let mark
   function setup(w){
     element = $(`<w>${w}</w>`)
-    mark = new Mark(new Pragma(element))
+    mark = new Mark(new Pragma.Pragma(element))
     word = new Word(element, null, mark)
   }
 

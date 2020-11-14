@@ -1,5 +1,10 @@
 import Lector from '../src'
-let settings = {
+
+
+
+
+
+let lectorSettings = {
   // these are the default values
   "toolbar": false,
   "topbar": false,
@@ -9,5 +14,5 @@ let settings = {
   "shortcuts": true // if interactive is false, this option doesnt do anything
 }
 
-let lec = new Lector($("#article"), settings)
-// lec.read()
+let lec = new Lector($("#article"), lectorSettings)
+lec.read()

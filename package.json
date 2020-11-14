@@ -27,6 +27,7 @@
 		"animejs": "^3.2.1",
 		"compromise": "^13.7.0",
 		"jquery": "^3.5.1",
-		"mousetrap": "^1.6.5"
+		"mousetrap": "^1.6.5",
+		"pragmajs": "0.0.7"
 	}
 }

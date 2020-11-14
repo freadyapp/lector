@@ -1,42 +1,37 @@
 import $ from "jquery"
-import Pragma from "./pragma"
+const Pragma = require("pragmajs")
 import anime from "animejs"
 import { buildSettingsFrom } from "../composers/settings_builder"
+import { Variants, Comp, AttrSelect, ColorSelect, FontSelect, Compose, contain, host } from "pragmajs"
 
-export default class Settings extends Pragma {
-  constructor(parent, map={}, settings={}){
-    super(buildSettingsFrom(map))
-    this.s = settings
-    
-    this.element.appendTo(document.body)
-    this.parent = parent
+const LectorSettings = (parent) => {
+  let colors = ["tomato", "navy", "lime"]
+  let fonts = ["Helvetica", "Roboto", "Open Sans", "Space Mono"]
+  let modes = ["HotBox", "Underneath", "Faded"]
 
-    this.setup_listeners({
-      "mouseover": this.mouseover
-    })
-      
-    // console.log("ive been created")
-  }
-  onset(key, val){
-    console.log(`set ${key} to ${val}`)
-  }
-  onget(key, val){
-    // console.log(`got ${val} from ${key}`)
-  }
-  get (n){
-    this.onget(n, this.s[n])
-    return this.s[n]
-  }
-  set(n){
-    this.add(n)
-  }
-  add(n){
-    Object.entries(n).forEach(([key, value]) => {
-      this.s[key] = value
-      this.onset(key, value)
-    })
-  }
-  mouseover(){
-    // console.log("i've been hovered")
-  }
+  let colorsComp = ColorSelect("markercolors", colors, (v, comp, key) => {
+    parent.mark.element.css({ "background": colors[comp.find(key).value] })
+  })
+
+  let fontComp = FontSelect("readerfont", fonts, (v, comp, key) => {
+    $("w").css({ "font-family": fonts[comp.find(key).value] })
+  })
+
+  let modeComp = AttrSelect("markermode", modes, (v, comp, key) => {
+    // on set
+    console.log(v)
+  }, (key, index) => {
+    // icon
+    return { type: "pointerModeOption", html: "M" }
+  })
+
+  let popUpSettings = Compose("popupsettings", "⚙️").host(colorsComp).host(fontComp).host(modeComp)
+  // popUpSettings.pragmatize()
+
+  let settings = Compose("settingsWrapper").contain(popUpSettings)
+  settings.pragmatize() 
+  console.log("Lector Settings")
+  return settings
 }
+
+export { LectorSettings }

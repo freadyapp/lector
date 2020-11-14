@@ -13,3 +13,56 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: "Merriweather";
 }
+
+.pragma-composer{
+  display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+  align-content: space-around;
+
+  width: fit-content;
+  height: auto;
+  background-color: gray;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #0e0e0e; 
+  color: whitesmoke;
+
+}
+
+.pragma-choice{
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.pragma-option, .pragma-value{
+  display: flex;
+  width: 25px;
+  height: 25px;
+  margin: 5px;
+  padding: 5px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  opacity: .7;
+  cursor: pointer;
+}
+.pragma-option:hover{
+  opacity: .9;
+}
+
+.pragma-active{
+  opacity: 1;
+}
+
+.pragma-button{
+  padding: 5px;
+  width: fit-content;
+  height: fit-content;
+  background-color: #0e0e0e; 
+  color: whitesmoke;
+}

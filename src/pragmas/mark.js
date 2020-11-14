@@ -1,9 +1,9 @@
 // mark is responsible for marking words in the screen
 import $ from "jquery"
-import Pragma from "./pragma"
+const Pragma = require("pragmajs")
 import anime from "animejs"
 
-export default class Mark extends Pragma{
+export default class Mark extends Pragma.Pragma{
   constructor(parent) {
     super($("<marker></marker>"))
     this.element.css({
@@ -35,12 +35,12 @@ export default class Mark extends Pragma{
     return this.settings.get("fovea") || 4
   }
   set fovea(n){
-    console.table(['writing fovea', this.settings.get("fovea")])
+    console.table(['writing fovea', this.settings.find("fovea")])
     this.settings.set({"fovea": n})
-    this.element.css({"width": this.settings.get("fovea")*30})
+    this.element.css({"width": this.settings.find("fovea")*30})
   }
   get wpm(){ 
-    return this.settings.get('wpm')
+    return this.settings.find('wpm')
   }
   set wpm(n) { 
     this.settings.set({"wpm": n})

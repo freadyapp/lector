@@ -1,94 +1,25 @@
 import $ from "jquery"
 import { wfy } from "./helper.js"
-import Pragma from "./pragma.js"
 import Mark from "./mark.js"
 import Word from "./word.js"
 import Mousetrap from "mousetrap"
-import Settings from "./settings"
+import { LectorSettings } from "./settings"
+const Pragma = require("pragmajs")
 
-export default class Lector extends Pragma{
+export default class Lector extends Pragma.Pragma{
   constructor(element, options={}){
     super(element)
     this.setup_options(options)
    
     this.reading = false
+    this.settings = LectorSettings(this)
     this.reader = new Word(this.element, this, new Mark(this))
     // this.reader.children[7].read()
-    this.read()
+    // this.read()
     // new Pragma(this.target, { mouseover: () => this.target.fadeOut() })
 
-    let other = { 
-        key: "settings",
-        elements: [
-        {
-          key: "settings",
-          type: "button",
-          icon: "settings",
-          elements: [
-            {
-              key: "color",
-              value: 1,
-              type: "choice",
-              element_template: (key, index) => {
-                return {
-                  key: key,
-                  value: index,
-                  icon: `<div style='width:25px;height:25px;border-radius:25px;background:${key}'></div>`,
-                  click: () => { this.mark.color = index }
-                }
-              },
-              choices: this.mark.colors
-            },{
-              key: "font",
-              value: 1,
-              type: "choice",
-              element_template: (key, index) => {
-                return {
-                  key: key,
-                  value: index,
-                  icon: `<div style='width:25px;height:25px;border-radius:25px;font-family:${key}'>Aa</div>`,
-                  click: () => { this.font = key }
-                }
-              },
-              choices: this.fonts
-            }, {
-              key: "fovea",
-              value: 5,
-              elements: [
-                {
-                  key: "fovea -",
-                  type: "button",
-                  icon: "-",
-                  click: () => { this.mark.fovea -= 1 }
-                },
-                {
-                  key: "fovea-monitor"
-                },
-                {
-                  key: "fovea +",
-                  icon: "+",
-                  click: () => { this.mark.fovea += 1 }
-                }
-              ],
-              type: "value",
-              min: 3,
-              max: 15,
-              step: 1
-            }
-          ]
-        },
-        {
-          key: "wpm",
-          value: 250,
-          type: "value_verbose",
-          min: 10,
-          max: 4000,
-          step: 10
-        }]
-       }
-    this.settings = new Settings(this, other)
     
-    this.reader.mark.settings.add({wpm: 250})
+    // this.reader.mark.settings.add({wpm: 250})
     Mousetrap.bind(["a", 'space'], () => {
       if (!this.reading){
         this.read()

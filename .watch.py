@@ -15,15 +15,32 @@ def ls_files(dir):
     return files
 
 
+def modified_since(filename, since):
+    statbuf = os.stat(filename)
+    if (since + 10 < statbuf.st_mtime):
+        return statbuf.st_mtime
+    else:
+        return False
+
 script = [ "./docs/lector.js" ]
+tailwind = "docs/makeitlit"
 package_directories = [ "./src" ]
 lastmodif = 0
+lastmodif2 = 0
 while (True):
+
+    check1 = modified_since(tailwind+".css", lastmodif2)
+    if (check1):
+        lastmodif2 = check1
+        os.system("npx tailwindcss build " +tailwind+ ".css -o " +tailwind+ ".tail.css")
+
     for directory in package_directories:
         for filename in ls_files(directory) + script:
-            statbuf = os.stat(filename)
-            if lastmodif < statbuf.st_mtime:
-                lastmodif = statbuf.st_mtime
-                os.system("browserify docs/lector.js -t babelify --outfile docs/bundle.js")
+            check = modified_since(filename, lastmodif)
+            if check:
+                lastmodif = check
                 print("File " + filename + " was modifed!")
-    time.sleep(1)
+                os.system("browserify docs/lector.js -t babelify --outfile docs/bundle.js")
+                time.sleep(2)
+                print("BUILD COMPLETED")
+    time.sleep(2)

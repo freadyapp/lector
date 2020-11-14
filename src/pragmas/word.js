@@ -1,7 +1,8 @@
-import Pragma from "./pragma.js"
 import { charsMsAt, crush, generateDifficultyIndex, wordValue } from "./helper.js"
 
-export default class Word extends Pragma{
+const Pragma = require("pragmajs")
+
+export default class Word extends Pragma.Pragma{
   constructor(element, parent, mark=null, index=0){
     super(element)
     this.parent = parent
