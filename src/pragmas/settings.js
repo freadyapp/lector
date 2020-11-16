@@ -1,23 +1,22 @@
 import $ from "jquery"
-const Pragma = require("pragmajs")
 import anime from "animejs"
-import { buildSettingsFrom } from "../composers/settings_builder"
-import { Variants, Comp, AttrSelect, ColorSelect, FontSelect, Compose, contain, host } from "pragmajs"
+
+import { Bridge, Select, Compose } from "pragmajs"
 
 const LectorSettings = (parent) => {
   let colors = ["tomato", "navy", "lime"]
   let fonts = ["Helvetica", "Roboto", "Open Sans", "Space Mono"]
   let modes = ["HotBox", "Underneath", "Faded"]
 
-  let colorsComp = ColorSelect("markercolors", colors, (v, comp, key) => {
+  let colorsComp = Select.color("markercolors", colors, (v, comp, key) => {
     parent.mark.element.css({ "background": colors[comp.find(key).value] })
   })
 
-  let fontComp = FontSelect("readerfont", fonts, (v, comp, key) => {
+  let fontComp = Select.font("readerfont", fonts, (v, comp, key) => {
     $("w").css({ "font-family": fonts[comp.find(key).value] })
   })
 
-  let modeComp = AttrSelect("markermode", modes, (v, comp, key) => {
+  let modeComp = Select.attr("markermode", modes, (v, comp, key) => {
     // on set
     console.log(v)
   }, (key, index) => {
@@ -29,8 +28,16 @@ const LectorSettings = (parent) => {
   // popUpSettings.pragmatize()
 
   let settings = Compose("settingsWrapper").contain(popUpSettings)
-  settings.pragmatize() 
-  console.log("Lector Settings")
+  settings.pragmatize()
+
+  let syncedKeys = ["markercolors", "readerfont", "markermode"]
+  let freadyBridge = Bridge(settings, syncedKeys, (object) => {
+    console.log('imma beam this however')
+    console.table(object)
+  })
+
+  settings.chain(freadyBridge) // every time a value is changed, do the freadyBridge's actions as well
+
   return settings
 }
 
