@@ -29,56 +29,76 @@ export default class Word extends Pragma.Pragma{
   }
   mouseout(){
   }
+
   pause(){
-    if (this.virgin()) return new Promise((resolve, reject) => {
-      this.summon()
+      
+    if (!this.hasKids) return new Promise((resolve, reject) => {
+      //this.summon()
       this.onpause()
       resolve()
     })
         
-    // word is not virgin
     this.stop_flag = true
     return new Promise((resolve, reject) => {
-      this.stop_flag = false
-      this.mark.pause()
-      this.onpause()
-      // this.children[this.cursor].summon()
-      resolve()
+      this.mark.pause().then(msg => {
+          this.onpause()
+          resolve("paused")
+          this.stop_flag = false
+        }).catch( e => {
+          reject(e)
+          console.warn(e)
+        })
     })
   }
+
+
   summon(){
+    return false
     if (!this.virgin()) return false
     return this.parent.pause().then(() => {
-      this.mark.mark(this)
+      this.mark.mark(this, 50, true)
       this.parent.cursor = this.index
     })
   }
   onread(){
-    console.log('yyet')
+    // triggers each time a word is read
+    //console.log('yyet')
   }
   onpause(){
-    console.log('paused reading')
+    console.log("on pause event for: " + this.children[this.cursor].text())
+    //console.log('paused reading')
   }
-  ondone(){ console.log('done reading')}
+  ondone(){
+    console.log('done reading')
+  }
+
   read(){
+    if (!this.hasKids) return this.mark.guide(this)
+
+    if (this.stop_flag){
+      return new Promise((resolve, reject) =>{
+        reject("pause")
+      })
+    }
     // if (this.children.length - this.cursor > 0){
-    if (!this.virgin() && (this.children.length -  this.cursor > 0)){
-      if (this.stop_flag){
-        return new Promise( (resolve, reject) =>{
-          this.stop_flag = false
-          resolve()
-        })
-      }
-      this.children[this.cursor].read().then(() =>{
+    // this has kids
+    let nextw = this.children[this.cursor]
+    if (nextw instanceof Word){
+      return nextw.read().then((msg) =>{
+        console.log(nextw.text())
         this.cursor += 1
         this.onread()
         return this.read()
+      }).catch(e => {
+        if (e == "pause") return new Promise(resolve => resolve(e))
+        console.warn(e)
       })
-      return
     }else{
-      if (this.virgin()) return this.mark.guide(this)
-    }
-    this.ondone()
+      return new Promise((resolve, reject) => {
+        this.ondone()
+        resolve("done")
+      })
+    } 
 
   }
   

@@ -19,8 +19,8 @@ export default class Mark extends Pragma.Pragma{
     })
     this.parent = parent
     this.parent.element.append(this.element)
-    this.isBeingSummoned = false
-    this.element.width("180px")
+    this.currentlyMarking = null
+    //this.element.width("180px")
     this.colors = [ "tomato", "#FFDFD6", "teal" ]
 
     $(window).on("resize", () => {
@@ -28,14 +28,24 @@ export default class Mark extends Pragma.Pragma{
     })
   }
 
+  setWidth(n){
+    this.element.width(n)
+    return this
+  }
+
   get settings(){
     return this.parent.settings
   }
+
   set color(index) {
     this.settings.set({"color": this.colors[index]})
     this.element.css({"background": this.colors[index]})
   }
+  get cw() {
+    return this.fovea*30
+  }
   get fovea(){
+    return 4
     return this.settings.get("fovea") || 4
   }
   set fovea(n){
@@ -49,36 +59,61 @@ export default class Mark extends Pragma.Pragma{
   set wpm(n) { 
     this.settings.set({"wpm": n})
   }
+
   pause(){
-    if (this.current_anime){
-      this.current_anime.remove('marker')
-      this.isBeingSummoned = false
-    }
-  }
-  moveTo(blueprint, duration, complete=(()=>{})){
-    if (this.isBeingSummoned) return new Promise((resolve, reject)=>resolve());
     return new Promise((resolve, reject) => {
-      this.isBeingSummoned = true
+      if (this.pausing) reject("already pausing")
+      this.pausing = true
+
+      if (this.currentlyMarking && this.current_anime && this.last_marked){
+        //console.log(this.current_anime.seek(1))
+        let temp = this.last_marked
+        //console.table(temp)
+        this.current_anime.complete()
+        this.current_anime.remove('marker')
+        //this.current_anime = null
+        this.mark(temp, 80, true).then(() => { 
+          this.pausing = false 
+          resolve("paused")
+        }).catch( e => {
+          this.pausing = false 
+          reject("could not mark")
+        })
+      }
+    });
+  }
+
+  moveTo(blueprint, duration, complete=(()=>{})){
+    if (this.currentlyMarking) return new Promise((resolve, reject)=>resolve());
+    return new Promise((resolve, reject) => {
+      this.currentlyMarking = blueprint
       this.current_anime = anime({
           targets: 'marker',
           left: blueprint.left,
           top: blueprint.top,
           height: blueprint.height,
+          width: blueprint.width,
           easing: blueprint.ease || 'easeInOutExpo',
           duration: duration,
           complete: (anim) => {
-            this.isBeingSummoned = false
+            this.currentlyMarking = null
             complete()
             resolve()
           }
       })
     })
   }
-  mark(word, time=200, ease="easeInOutExpo"){
+
+
+  mark(word, time=200, fit=false, ease="easeInOutExpo"){
+    if (!(word instanceof Pragma.Pragma)) return new Promise((r) => { console.warn("cannot mark"); console.table(word); r("error")})
+    let w = fit ? word.width()+5 : this.cw
+    //this.setWidth(w)
     return this.moveTo({ 
         top: word.top(), 
-        left: word.x(this.width()),
+        left: word.x(w),
         height: word.height(),
+        width: w,
         ease: ease
       }, time, ()=>{
         // console.log(`FROM MARK -> marked ${word.text()}`)
@@ -86,6 +121,7 @@ export default class Mark extends Pragma.Pragma{
   }
   
   guide(word){
+    if (!(word instanceof Pragma.Pragma)) return new Promise((r) => { console.warn("cannot guide thru"); r("error")})
     const before_weight = .4
     const after_weight = (1 - before_weight)
     return new Promise((resolve, reject) => { 
@@ -97,8 +133,8 @@ export default class Mark extends Pragma.Pragma{
                 height: word.height(), ease: first_ease
               }, first_transition)
               .then(() => { 
-                this.mark(word, word.time(this.wpm)*after_weight, "linear").then(()=>{
-                  this.last_marked = word
+                this.last_marked = word
+                this.mark(word, word.time(this.wpm)*after_weight, false, "linear").then(()=>{
                   resolve()
                 }) 
              })

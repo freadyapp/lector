@@ -11,7 +11,7 @@ export default class Lector extends Pragma.Pragma{
     super(element)
     this.setup_options(options)
    
-    this.reading = false
+    this.isReading = false
     this.settings = LectorSettings(this)
     this.reader = new Word(this.element, this, new Mark(this))
     // this.reader.children[7].read()
@@ -29,24 +29,52 @@ export default class Lector extends Pragma.Pragma{
       // return false to prevent default browser behavior
       // and stop event from bubbling
       return false;
-    });
+    }, "keyup");
   }
   get mark(){
     return this.reader.mark
   }
+
   get fonts(){
     return ["Open Sans", "Arial", "Helvetica", "Space Mono"]
   }
   set font(font){
     this.reader.element.css({"font-family": font})
   }
-  read(){
-    this.reading = true
-    this.reader.read()
+
+  get reading(){
+    return this.isReading
   }
+  set reading(n){
+    this.isReading = n
+    if (n) return this.read()
+  }
+
+  read(){
+    if (this.isReading) return true
+    console.log("<h1> READING </h1>")
+    this.isReading = true
+    this.reader.read().then((e) => {
+      console.log("msg: " + e)
+      this.isReading = false // stop reading when read is done
+    }).catch(e => {
+      console.warn("something went wrong when reading")
+      this.isReading = false // stop reading when read is done
+      console.table(e)
+    })
+  }
+
   pause(){
-    this.reading = false
-    this.reader.pause()
+    if (!this.isReading) return true
+    console.log("<h1> PAUSING </h1>")
+    this.reader.pause().then(() => {
+      console.log("paused lector")
+      this.isReading = false
+    }).catch( e => {
+      //this.reading = false
+      console.log("paused lector but... ")
+      console.warn(e)
+    })
   }
 
   setup_options(options){

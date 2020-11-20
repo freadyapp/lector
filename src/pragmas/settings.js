@@ -32,8 +32,7 @@ const LectorSettings = (parent) => {
 
   let syncedKeys = ["markercolors", "readerfont", "markermode"]
   let freadyBridge = Bridge(settings, syncedKeys, (object) => {
-    console.log('imma beam this however')
-    console.table(object)
+    // TODO add beam
   })
 
   settings.chain(freadyBridge) // every time a value is changed, do the freadyBridge's actions as well
