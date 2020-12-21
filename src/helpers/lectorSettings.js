@@ -16,25 +16,25 @@ const LectorSettings = (parent) => {
     $(document.body).css(dict)
   }
 
+  const tippyOption = { 
+                        theme: 'lector-settings',
+                        arrow: false,
+                        hideOnClick: false
+                      }
+
   let foveaComp = Slider.value("markerfovea", 1, 10)
       .bind(">", (comp) => { comp.value+=1 }, 'keyup')
       .bind("<", (comp) => { comp.value-=1 }, 'keyup')
 
 
-  let colorsComp = Select.color("markercolor", colors).bind("c")
-    
+  let colorsComp = Select.color("markercolor", colors)
+                          .bind("c")
+                          .setTippy("Color:", tippyOption)
+
   let fontComp = Select.font("readerfont", fonts).bind("f")
                       .html.class("font-selector")
+                      .setTippy('Font:', tippyOption)
 
-  // TODO
-  // font Comp = Select.font.from(fonts).onChange(...).onMouseOver
-
-  // bind rules
-  // if type is choices default would be to 
-  // plus the value
-  //
-  // if object has a click action and is called 
-  // to bind, do that click action 
   let modeComp = Select.attr("markermode", modes,
     (v, comp, key) => {
       // on value change
@@ -50,6 +50,7 @@ const LectorSettings = (parent) => {
         html: `<div class='pointer-color' style='display: block; width:35px; height:15px; ${parse.css(mode_ify(null, modes[index], "transparent") + "; mix-blend-mode normal")}'></div>`
       }
     }).bind("m", null, "keyup")
+    .setTippy("Mode:", tippyOption)
 
 
   // key, initial val, step
@@ -61,19 +62,22 @@ const LectorSettings = (parent) => {
   let wpmComp = Button.controls("wpm", 250, 10, wpmSet, {
     "+": icons.grab("plus"),
     "-": icons.grab("minus")
-  }).setRange(10, 300)
+  }).setRange(10, 42069)
     .html.class("inline-grid grid-cols-3 gap-x-1 items-center")
+    .setTippy("Reading Speed", tippyOption)
 
   let popUpSettings = Compose("popupsettings")
     .host(colorsComp, fontComp, modeComp, foveaComp)
 
   popUpSettings.illustrate(icons.grab("settings")) // icons
 
-  let settings = Compose("settingsWrapper").contain(popUpSettings, wpmComp).html.class("items-center")
+  let settings = Compose("settingsWrapper").contain(popUpSettings, wpmComp)
+                  .html.class("items-center")
   // extend settings
   settings.get = (key) => { 
     return settings.bridge ? settings.bridge.value[key] : null
   }
+
   settings.pragmatize()
 
   let syncedKeys = ["markercolor", "readerfont", "markermode", "wpm", "markerfovea"]

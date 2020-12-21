@@ -1,0 +1,37 @@
+body {
+	background: #232323;
+}
+
+#article { 
+	padding: 80px 50px;
+	background: #fff;
+}
+
+
+/*pragma theme*/
+.pragma-composer, .pragma-button {
+	background: transparent;
+}
+
+.pragma-clickable {
+	cursor: pointer;
+}
+
+.pragma-choice {
+  margin: 20px;
+}
+/*Lector stuff*/
+
+#settingsWrapper {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	padding: 10px;
+	background: transparent;
+}
+
+/* tippy */
+.tippy-box[data-theme~='lector-settings']{
+  background: transparent;
+  font-size: 12px;
+}
