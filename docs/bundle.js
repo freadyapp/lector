@@ -17,7 +17,7 @@ let lectorSettings = {
 };
 let lec = (0, _src.Lector)($("#article"), lectorSettings);
 
-},{"../src":16}],2:[function(require,module,exports){
+},{"../src":17}],2:[function(require,module,exports){
 /*
  * anime.js v3.2.1
  * (c) 2020 Julian Garnier
@@ -26766,7 +26766,7 @@ function onScroll(cb = s => {}) {
   });
 }
 
-},{"./pragmafy.js":14,"animejs":2}],9:[function(require,module,exports){
+},{"./pragmafy.js":15,"animejs":2}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26777,6 +26777,88 @@ const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'e
 exports.greek_prefixes = greek_prefixes;
 
 },{}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+class Idle {
+  constructor(idleTime) {
+    this.afkChain = new Map();
+    this.activeChain = new Map();
+    this.idleTime = idleTime;
+    this.isIdle = false;
+
+    window.onload = window.onmousedown = // catches touchscreen presses as well      
+    //window.onclick = this.reset     // catches touchpad clicks as well
+    //window.onkeydown = () => { this.reset () };
+    () => {
+      this.reset();
+    };
+
+    let ticking = false;
+    let self = this;
+    document.addEventListener('mousemove', e => {
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          self.reset();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  }
+
+  generateActionKey(key) {
+    if (key == null) key = this.afkChain.size;
+    return key;
+  }
+
+  onAfk(cb, key) {
+    this.afkChain.set(this.generateActionKey(key), cb);
+    return this;
+  }
+
+  onActive(cb, key) {
+    this.activeChain.set(this.generateActionKey(key), cb);
+    return this;
+  }
+
+  reset() {
+    clearTimeout(this.t);
+    this.t = setTimeout(() => this.idle(), this.idleTime); // time is in milliseconds
+
+    this.active();
+    return this;
+  }
+
+  idle() {
+    if (this.isIdle) return false;
+    this.isIdle = true;
+    doMap(this.afkChain);
+    return this;
+  }
+
+  active() {
+    if (!this.isIdle) return false;
+    this.isIdle = false;
+    doMap(this.activeChain);
+    return this;
+  }
+
+}
+
+exports.default = Idle;
+
+function doMap(map) {
+  for (const [key, cb] of map.entries()) {
+    cb();
+  }
+}
+
+},{}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26836,6 +26918,12 @@ Object.defineProperty(exports, "PinkyPromise", {
     return _pinkyPromise.default;
   }
 });
+Object.defineProperty(exports, "Idle", {
+  enumerable: true,
+  get: function () {
+    return _idle.default;
+  }
+});
 Object.defineProperty(exports, "wfy", {
   enumerable: true,
   get: function () {
@@ -26857,13 +26945,15 @@ var _lectorSettings = require("./lectorSettings");
 
 var _pinkyPromise = _interopRequireDefault(require("./pinkyPromise"));
 
+var _idle = _interopRequireDefault(require("./idle"));
+
 var _wfy = require("./wfy.js");
 
 var _airway = require("./airway.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./airway.js":7,"./autoScroll.js":8,"./lectorSettings":11,"./pinkyPromise":12,"./pragmaWordHelper":13,"./wfy.js":15}],11:[function(require,module,exports){
+},{"./airway.js":7,"./autoScroll.js":8,"./idle":10,"./lectorSettings":12,"./pinkyPromise":13,"./pragmaWordHelper":14,"./wfy.js":16}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26974,7 +27064,7 @@ const LectorSettings = parent => {
 
 exports.LectorSettings = LectorSettings;
 
-},{"../config/modes":6,"jquery":4,"pragmajs":5}],12:[function(require,module,exports){
+},{"../config/modes":6,"jquery":4,"pragmajs":5}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27000,7 +27090,7 @@ class PinkyPromise {
 
 exports.default = PinkyPromise;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27077,7 +27167,7 @@ function howGreek(word) {
   return 0;
 }
 
-},{"./greek":9,"compromise":3,"jquery":4}],14:[function(require,module,exports){
+},{"./greek":9,"compromise":3,"jquery":4}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27104,7 +27194,7 @@ function jqueryfy(el) {
   return (0, _jquery.default)(el);
 }
 
-},{"jquery":4,"pragmajs":5}],15:[function(require,module,exports){
+},{"jquery":4,"pragmajs":5}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27143,7 +27233,7 @@ function wfy(element) {
   return true;
 }
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27158,7 +27248,7 @@ Object.defineProperty(exports, "Lector", {
 
 var _lector = require("./lector.js");
 
-},{"./lector.js":17}],17:[function(require,module,exports){
+},{"./lector.js":18}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27389,7 +27479,7 @@ const Lector = (l, options = default_options) => {
 
 exports.Lector = Lector;
 
-},{"./helpers":10,"./pragmas":18,"pragmajs":5}],18:[function(require,module,exports){
+},{"./helpers":11,"./pragmas":19,"pragmajs":5}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27422,7 +27512,7 @@ var _pragmaWord = _interopRequireDefault(require("./pragmaWord"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./pragmaLector":19,"./pragmaMark":20,"./pragmaWord":21}],19:[function(require,module,exports){
+},{"./pragmaLector":20,"./pragmaMark":21,"./pragmaWord":22}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27478,7 +27568,7 @@ class PragmaLector extends _pragmajs.Comp {
 
 exports.default = PragmaLector;
 
-},{"pragmajs":5}],20:[function(require,module,exports){
+},{"pragmajs":5}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27516,7 +27606,6 @@ class PragmaMark extends _pragmajs.Comp {
     super('marker');
     this.parent = parent;
     this.element = (0, _jquery.default)("<marker></marker>");
-    console.log(this.element);
     this.parent.element.append(this.element);
     this.css(defaultStyles); //this.parent.element.append(this.element)
 
@@ -27528,6 +27617,11 @@ class PragmaMark extends _pragmajs.Comp {
     });
     this.runningFor = 0;
     this.pausing = false;
+    this.idle = new _helpers.Idle(5000).onAfk(() => {
+      console.log('user is afk');
+    }).onActive(() => {
+      console.log('user is back');
+    });
   }
 
   set last_marked(n) {
@@ -27711,7 +27805,7 @@ class PragmaMark extends _pragmajs.Comp {
 
 exports.default = PragmaMark;
 
-},{"../helpers":10,"./pragmaWord":21,"animejs":2,"jquery":4,"pragmajs":5}],21:[function(require,module,exports){
+},{"../helpers":11,"./pragmaWord":22,"animejs":2,"jquery":4,"pragmajs":5}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27873,4 +27967,4 @@ class PragmaWord extends _pragmajs.Comp {
 
 exports.default = PragmaWord;
 
-},{"../helpers":10,"pragmajs":5}]},{},[1]);
+},{"../helpers":11,"pragmajs":5}]},{},[1]);

@@ -3,7 +3,7 @@ import $ from "jquery"
 import { Pragma, Comp } from "pragmajs"
 import { PragmaWord } from "./pragmaWord"
 import anime from "animejs"
-import { PinkyPromise, airway } from "../helpers"
+import { PinkyPromise, Idle, airway } from "../helpers"
 
 const defaultStyles = `
   position absolute
@@ -23,7 +23,6 @@ export default class PragmaMark extends Comp {
 
     this.parent = parent
     this.element = $("<marker></marker>")
-    console.log(this.element)
     this.parent.element.append(this.element)
     this.css(defaultStyles)
     //this.parent.element.append(this.element)
@@ -37,11 +36,20 @@ export default class PragmaMark extends Comp {
 
     this.runningFor = 0
     this.pausing = false
+
+    this.idle = new Idle(5000)
+      .onAfk(()=>{
+        console.log('user is afk')
+      })
+      .onActive(()=>{
+        console.log('user is back')
+      })
   }
 
   set last_marked(n){
     this.value = n  
   }
+
   get last_marked(){
     return this.value
   }

@@ -3,7 +3,9 @@ export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWo
 
 export { LectorSettings } from "./lectorSettings"
 import PinkyPromise from "./pinkyPromise"
-export { PinkyPromise }
+
+import  Idle from "./idle"
+export { PinkyPromise, Idle }
 
 // ultra useful functions
 export { wfy } from "./wfy.js"
