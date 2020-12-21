@@ -13,7 +13,7 @@ function applyStyles(_ref) {
       return;
     } // Flow doesn't support to extend this property, but it's the most
     // effective way to apply styles to an HTMLElement
-    // $FlowFixMe
+    // $FlowFixMe[cannot-write]
 
 
     Object.assign(element.style, style);
@@ -62,10 +62,7 @@ function effect(_ref2) {
 
       if (!isHTMLElement(element) || !getNodeName(element)) {
         return;
-      } // Flow doesn't support to extend this property, but it's the most
-      // effective way to apply styles to an HTMLElement
-      // $FlowFixMe
-
+      }
 
       Object.assign(element.style, style);
       Object.keys(attributes).forEach(function (attribute) {
