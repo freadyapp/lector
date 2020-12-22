@@ -17,7 +17,7 @@ let lectorSettings = {
 };
 let lec = (0, _src.Lector)($("#article"), lectorSettings);
 
-},{"../src":18}],2:[function(require,module,exports){
+},{"../src":19}],2:[function(require,module,exports){
 /*
  * anime.js v3.2.1
  * (c) 2020 Julian Garnier
@@ -26718,6 +26718,20 @@ return jQuery;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.modes = exports.fonts = exports.colors = void 0;
+const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
+exports.colors = colors;
+const fonts = ["Helvetica", "Poppins", "Open Sans", "Space Mono"];
+exports.fonts = fonts;
+const modes = ["HotBox", "Underneath", "Faded"];
+exports.modes = modes;
+
+},{}],8:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.mode_ify = void 0;
 const reset = `border 0
                border-radius 3px
@@ -26751,7 +26765,7 @@ const mode_ify = (mark, mode = "hotbox", bg = "#edd1b0") => {
 
 exports.mode_ify = mode_ify;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26775,7 +26789,7 @@ function airway(time = 0, session = 0) {
   return time * (conf.threshold - session) / conf.divider + time;
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26843,7 +26857,7 @@ function onScroll(cb = s => {}) {
   });
 }
 
-},{"./pragmafy.js":16,"animejs":2}],10:[function(require,module,exports){
+},{"./pragmafy.js":17,"animejs":2}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26853,7 +26867,7 @@ exports.greek_prefixes = void 0;
 const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'eo', 'ep', 'eu', 'id', 'is', 'my', 'ne', 'od', 'oo', 'ot', 'sy', 'ur', 'ur', 'zo', 'pto', 'pyl', 'acr', 'aer', 'agr', 'ana', 'ant', 'apo', 'aut', 'bar', 'bio', 'cac', 'cat', 'cen', 'cen', 'con', 'cub', 'cyn', 'dec', 'dek', 'dem', 'dia', 'dox', 'eco', 'ego', 'eme', 'eos', 'epi', 'erg', 'eso', 'eth', 'eur', 'exo', 'geo', 'gen', 'hem', 'hal', 'hen', 'hex', 'hod', 'hol', 'hor', 'hor', 'hyo', 'hyp', 'ide', 'idi', 'iso', 'kil', 'lei', 'lep', 'lip', 'log', 'meg', 'mei', 'men', 'mer', 'mes', 'mim', 'mis', 'mit', 'mne', 'mon', 'myx', 'nes', 'nom', 'oct', 'oed', 'oen', 'omm', 'ont', 'opt', 'pan', 'pam', 'par', 'ped', 'pin', 'pis', 'pol', 'por', 'pro', 'rhe', 'sei', 'sit', 'syn', 'syl', 'sym', 'tax', 'the', 'the', 'tom', 'ton', 'top', 'tox', 'tri', 'ulo', 'uro', 'uro', 'xen', 'xer', 'zon', 'zyg', 'psil', 'prot', 'pros', 'amph', 'anem', 'anti', 'anth', 'arct', 'astr', 'athl', 'auto', 'basi', 'bibl', 'briz', 'brom', 'brom', 'call', 'carp', 'carp', 'cata', 'chir', 'cine', 'cirr', 'clad', 'clav', 'coel', 'copr', 'cosm', 'crep', 'cris', 'crit', 'cten', 'cyan', 'cycl', 'cyst', 'deca', 'deka', 'delt', 'derm', 'dexi', 'dino', 'dipl', 'ecto', 'endo', 'engy', 'eoso', 'etho', 'ethi', 'ethm', 'ethn', 'etym', 'fant', 'glia', 'gram', 'gymn', 'haem', 'hapl', 'heli', 'hemi', 'hept', 'herp', 'heur', 'hipp', 'home', 'horm', 'hyal', 'hydr', 'hygr', 'hypn', 'icos', 'kine', 'lamp', 'leps', 'leuc', 'leuk', 'lith', 'metr', 'meta', 'micr', 'myri', 'myth', 'narc', 'naut', 'necr', 'nect', 'nema', 'neur', 'noth', 'noto', 'oeco', 'ogdo', 'olig', 'onom', 'ophi', 'orch', 'orth', 'pach', 'paed', 'pale', 'path', 'patr', 'pect', 'pent', 'pept', 'peri', 'petr', 'phae', 'phag', 'pher', 'phil', 'phob', 'phon', 'phor', 'phos', 'phot', 'phyl', 'phys', 'plac', 'plas', 'plec', 'plut', 'pneu', 'poie', 'pole', 'poli', 'poli', 'poly', 'raph', 'rhag', 'rhig', 'rhin', 'rhiz', 'rhod', 'sarc', 'scel', 'scop', 'sema', 'siph', 'soma', 'soph', 'stea', 'steg', 'sten', 'stig', 'stom', 'styl', 'tach', 'tars', 'taur', 'tele', 'tele', 'temn', 'tetr', 'than', 'thus', 'ther', 'thym', 'thyr', 'trag', 'trit', 'trop', 'xiph', 'proct', 'ptych', 'amphi', 'arche', 'archi', 'arche', 'arist', 'arthr', 'bathy', 'batho', 'blenn', 'blast', 'botan', 'brady', 'bront', 'calli', 'calyp', 'cardi', 'centr', 'ceram', 'cerat', 'chlor', 'chore', 'chrom', 'chron', 'chrys', 'clast', 'clist', 'cochl', 'corac', 'cotyl', 'crani', 'cross', 'crypt', 'dendr', 'dodec', 'dynam', 'ennea', 'gastr', 'graph', 'heter', 'homal', 'hyper', 'klept', 'lekan', 'macro', 'melan', 'meter', 'morph', 'nephr', 'nomad', 'odont', 'organ', 'osteo', 'palae', 'palin', 'peran', 'phleg', 'phloe', 'phren', 'phryn', 'phyll', 'plagi', 'platy', 'plesi', 'pleth', 'pleur', 'pogon', 'polem', 'potam', 'rhabd', 'rhomb', 'scaph', 'schem', 'schis', 'scler', 'scoli', 'scept', 'scyph', 'selen', 'solen', 'sperm', 'sphen', 'spher', 'stern', 'stich', 'stoch', 'taeni', 'techn', 'therm', 'thyre', 'traum', 'trema', 'trich', 'troch', 'troph', 'xanth', 'psych', 'archae', 'brachi', 'brachy', 'bronch', 'cathar', 'cephal', 'chelon', 'cleist', 'cosmet', 'cylind', 'dactyl', 'deuter', 'dogmat', 'erythr', 'galact', 'hendec', 'ichthy', 'mening', 'myrmec', 'omphal', 'opisth', 'opoter', 'ornith', 'ostrac', 'persic', 'phalar', 'phaner', 'phragm', 'plinth', 'prasin', 'presby', 'rhynch', 'scalen', 'strept', 'stroph', 'thalam', 'theori', 'trachy', 'trapez', 'tympan', 'aesthet', 'anthrop', 'branchi', 'cleithr', 'epistem', 'parthen', 'phalang', 'pharmac', 'porphyr', 'sacchar', 'sphinct', 'stalact', 'stalagm', 'thalass', 'oesophag', 'ophthalm', 'physalid', 'pentecost', 'treiskaidek'];
 exports.greek_prefixes = greek_prefixes;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26935,7 +26949,7 @@ function doMap(map) {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27030,11 +27044,17 @@ var _airway = require("./airway.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./airway.js":8,"./autoScroll.js":9,"./idle":11,"./lectorSettings":13,"./pinkyPromise":14,"./pragmaWordHelper":15,"./wfy.js":17}],13:[function(require,module,exports){
+},{"./airway.js":9,"./autoScroll.js":10,"./idle":12,"./lectorSettings":14,"./pinkyPromise":15,"./pragmaWordHelper":16,"./wfy.js":18}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
+});
+Object.defineProperty(exports, "settingsCSS", {
+  enumerable: true,
+  get: function () {
+    return _settings.settingsCSS;
+  }
 });
 exports.LectorSettings = void 0;
 
@@ -27044,18 +27064,15 @@ var _pragmajs = require("pragmajs");
 
 var _modes = require("../config/modes");
 
+var _marker = require("../config/marker.config");
+
+var _settings = require("../styles/settings.css");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const LectorSettings = parent => {
-  const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
-  const fonts = ["Helvetica", "Poppins", "Open Sans", "Space Mono"];
-  const modes = ["HotBox", "Underneath", "Faded"];
   let icons = new _pragmajs.IconBuilder();
-  icons.default.fill = "white";
-
-  function modifyBody(dict) {
-    (0, _jquery.default)(document.body).css(dict);
-  }
+  icons.default.fill = "white"; // tippy theme for options in settings
 
   const tippyOption = {
     theme: 'lector-settings',
@@ -27067,22 +27084,22 @@ const LectorSettings = parent => {
     comp.value += 1;
   }, 'keyup').bind("<", comp => {
     comp.value -= 1;
-  }, 'keyup');
+  }, 'keyup').html.class("slider");
 
-  let colorsComp = _pragmajs.Select.color("markercolor", colors).bind("c").setTippy("Color:", tippyOption);
+  let colorsComp = _pragmajs.Select.color("markercolor", _marker.colors).bind("c").setTippy("Color:", tippyOption);
 
-  let fontComp = _pragmajs.Select.font("readerfont", fonts).bind("f").html.class("font-selector").setTippy('Font:', tippyOption);
+  let fontComp = _pragmajs.Select.font("readerfont", _marker.fonts).bind("f").html.class("font-selector").setTippy('Font:', tippyOption);
 
-  let modeComp = _pragmajs.Select.attr("markermode", modes, (v, comp, key) => {// on value change
+  let modeComp = _pragmajs.Select.attr("markermode", _marker.modes, (v, comp, key) => {// on value change
     //mode_ify(parent.mark, v, colors[0])
     // console.log(v)
   }, (key, index) => {
     //console.log(mode_ify(null, modes[index], "transparent"))
-    console.log(_pragmajs.parse.css((0, _modes.mode_ify)(null, modes[index], "transparent"))); // icon contruction
+    console.log(_pragmajs.parse.css((0, _modes.mode_ify)(null, _marker.modes[index], "transparent"))); // icon contruction
 
     return {
       type: "pointerModeOption",
-      html: `<div class='pointer-color' style='display: block; width:35px; height:15px; ${_pragmajs.parse.css((0, _modes.mode_ify)(null, modes[index], "transparent") + "; mix-blend-mode normal")}'></div>`
+      html: `<div class='pointer-color' style='display: block; width:35px; height:15px; ${_pragmajs.parse.css((0, _modes.mode_ify)(null, _marker.modes[index], "transparent") + "; mix-blend-mode normal")}'></div>`
     };
   }).bind("m", null, "keyup").setTippy("Mode:", tippyOption); // key, initial val, step
 
@@ -27100,6 +27117,7 @@ const LectorSettings = parent => {
   let popUpSettings = (0, _pragmajs.Compose)("popupsettings").host(colorsComp, fontComp, modeComp, foveaComp);
   popUpSettings.illustrate(icons.grab("settings")); // icons
 
+  popUpSettings.icon.attr("id", "settings-icon");
   let settings = (0, _pragmajs.Compose)("settingsWrapper").contain(popUpSettings, wpmComp).html.class("items-center"); // extend settings
 
   settings.get = key => {
@@ -27110,9 +27128,9 @@ const LectorSettings = parent => {
   let syncedKeys = ["markercolor", "readerfont", "markermode", "wpm", "markerfovea"];
   let freadyBridge = (0, _pragmajs.Bridge)(settings, syncedKeys, (object, trigger) => {
     // on set of any watched attribute
-    let color = colors[object.markercolor];
-    let mode = modes[object.markermode];
-    let font = fonts[object.readerfont]; // modify pointer
+    let color = _marker.colors[object.markercolor];
+    let mode = _marker.modes[object.markermode];
+    let font = _marker.fonts[object.readerfont]; // modify pointer
 
     let modeCss = (0, _modes.mode_ify)(parent.mark, mode, color); //console.log(modeComp)
 
@@ -27139,7 +27157,7 @@ const LectorSettings = parent => {
 
 exports.LectorSettings = LectorSettings;
 
-},{"../config/modes":7,"jquery":5,"pragmajs":6}],14:[function(require,module,exports){
+},{"../config/marker.config":7,"../config/modes":8,"../styles/settings.css":26,"jquery":5,"pragmajs":6}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27165,7 +27183,7 @@ class PinkyPromise {
 
 exports.default = PinkyPromise;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27242,7 +27260,7 @@ function howGreek(word) {
   return 0;
 }
 
-},{"./greek":10,"compromise":4,"jquery":5}],16:[function(require,module,exports){
+},{"./greek":11,"compromise":4,"jquery":5}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27269,7 +27287,7 @@ function jqueryfy(el) {
   return (0, _jquery.default)(el);
 }
 
-},{"jquery":5,"pragmajs":6}],17:[function(require,module,exports){
+},{"jquery":5,"pragmajs":6}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27308,7 +27326,7 @@ function wfy(element) {
   return true;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27331,7 +27349,7 @@ var _lector = require("./lector.js");
 
 var _main = require("./styles/main.css");
 
-},{"./lector.js":19,"./styles/main.css":24}],19:[function(require,module,exports){
+},{"./lector.js":20,"./styles/main.css":25}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27562,7 +27580,7 @@ const Lector = (l, options = default_options) => {
 
 exports.Lector = Lector;
 
-},{"./helpers":12,"./pragmas":20,"pragmajs":6}],20:[function(require,module,exports){
+},{"./helpers":13,"./pragmas":21,"pragmajs":6}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27595,7 +27613,7 @@ var _pragmaWord = _interopRequireDefault(require("./pragmaWord"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./pragmaLector":21,"./pragmaMark":22,"./pragmaWord":23}],21:[function(require,module,exports){
+},{"./pragmaLector":22,"./pragmaMark":23,"./pragmaWord":24}],22:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27651,7 +27669,7 @@ class PragmaLector extends _pragmajs.Comp {
 
 exports.default = PragmaLector;
 
-},{"pragmajs":6}],22:[function(require,module,exports){
+},{"pragmajs":6}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27888,7 +27906,7 @@ class PragmaMark extends _pragmajs.Comp {
 
 exports.default = PragmaMark;
 
-},{"../helpers":12,"./pragmaWord":23,"animejs":2,"jquery":5,"pragmajs":6}],23:[function(require,module,exports){
+},{"../helpers":13,"./pragmaWord":24,"animejs":2,"jquery":5,"pragmajs":6}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28050,6 +28068,8 @@ class PragmaWord extends _pragmajs.Comp {
 
 exports.default = PragmaWord;
 
-},{"../helpers":12,"pragmajs":6}],24:[function(require,module,exports){
-var css = "body {\n  background: #232323;\n}\n#article {\n  padding: 80px 50px;\n  background: #fff;\n}\n/*pragma theme*/\n.pragma-composer,\n.pragma-button {\n  background: transparent;\n}\n.pragma-clickable {\n  cursor: pointer;\n}\n.pragma-choice {\n  margin: 20px;\n}\n/*Lector stuff*/\n#settingsWrapper {\n  position: fixed;\n  right: 10px;\n  bottom: 10px;\n  padding: 10px;\n  background: transparent;\n}\n/* tippy */\n.tippy-box[data-theme~='lector-settings'] {\n  background: transparent;\n  font-size: 12px;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/main.css" }, { "insertAt": "bottom" })); module.exports = css;
+},{"../helpers":13,"pragmajs":6}],25:[function(require,module,exports){
+var css = "body {\n  background: #232323;\n}\n#article {\n  padding: 80px 50px;\n  background: #fff;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/main.css" }, { "insertAt": "bottom" })); module.exports = css;
+},{"browserify-css":3}],26:[function(require,module,exports){
+var css = "#settingsWrapper {\n  position: fixed;\n  right: 10px;\n  bottom: 10px;\n  padding: 10px;\n  background: transparent;\n  display: flex;\n  flex-direction: row-reverse;\n}\n/*pragma theme*/\n.pragma-composer,\n.pragma-button {\n  background: transparent;\n}\n.pragma-clickable {\n  cursor: pointer;\n}\n#settingsWrapper .pragma-choice {\n  margin: 20px;\n}\n#settingsWrapper .tippy-box {\n  background-color: transparent;\n}\n/* tippy */\n.tippy-box[data-theme~='lector-settings'] {\n  background: transparent;\n  font-size: 12px;\n}\n#settings-icon {\n  width: 80px;\n  height: 80px;\n}\n/* width control */\n.slider {\n  user-select: none;\n  display: flex;\n  flex-direction: row-reverse;\n}\n.slider input {\n  margin: 10px;\n  cursor: grab;\n}\n.slider :active {\n  cursor: grabbing;\n}\n/* wpm control */\n#wpm {\n  user-select: none;\n}\n#wpm .pragma-button {\n  opacity: 0.1;\n}\n#wpm .pragma-button:hover {\n  opacity: 1;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/settings.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":3}]},{},[1]);

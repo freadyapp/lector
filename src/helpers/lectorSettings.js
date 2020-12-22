@@ -2,20 +2,17 @@ import $ from "jquery"
 
 import { Bridge, Select, Slider, Compose, Button, IconBuilder, parse } from "pragmajs"
 import { mode_ify } from "../config/modes"
+import { colors, fonts, modes } from "../config/marker.config"
+export { settingsCSS } from "../styles/settings.css"
 
 const LectorSettings = (parent) => {
 
-  const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"]
-  const fonts = ["Helvetica", "Poppins", "Open Sans", "Space Mono"]
-  const modes = ["HotBox", "Underneath", "Faded"]
 
   let icons = new IconBuilder()
   icons.default.fill = "white"
 
-  function modifyBody(dict) {
-    $(document.body).css(dict)
-  }
 
+  // tippy theme for options in settings
   const tippyOption = { 
                         theme: 'lector-settings',
                         arrow: false,
@@ -25,6 +22,7 @@ const LectorSettings = (parent) => {
   let foveaComp = Slider.value("markerfovea", 1, 10)
       .bind(">", (comp) => { comp.value+=1 }, 'keyup')
       .bind("<", (comp) => { comp.value-=1 }, 'keyup')
+      .html.class("slider")
 
 
   let colorsComp = Select.color("markercolor", colors)
@@ -70,7 +68,7 @@ const LectorSettings = (parent) => {
     .host(colorsComp, fontComp, modeComp, foveaComp)
 
   popUpSettings.illustrate(icons.grab("settings")) // icons
-
+  popUpSettings.icon.attr("id", "settings-icon")
   let settings = Compose("settingsWrapper").contain(popUpSettings, wpmComp)
                   .html.class("items-center")
   // extend settings
