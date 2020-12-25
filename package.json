@@ -20,6 +20,7 @@
 		"babelify": "^10.0.0",
 		"browserify-css": "^0.15.0",
 		"css-loader": "^5.0.1",
+		"identity-obj-proxy": "^3.0.0",
 		"jest": "^26.6.3",
 		"style-loader": "^2.0.0",
 		"tailwindcss": "^1.9.6",
@@ -43,9 +44,13 @@
 		"mousetrap": "^1.6.5",
 		"pragmajs": "^0.2.1"
 	},
+
 	"browserify": {
 		"transform": [
 			"browserify-css"
 		]
+	},
+	"jest": {
+		"setupFiles": [ "<rootDir>/tests/test_env.js" ]
 	}
 }

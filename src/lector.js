@@ -1,6 +1,8 @@
 import { Compose, Pragma, Comp } from "pragmajs"
 import { wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas"
+import $ from "jquery"
+global.$ = global.jQuery = $;
 
 // find all descendands of object # TODO put it somewhere else
 var __indexOf = [].indexOf || function (e) { for (var t = 0, n = this.length; t < n; t++) { if (t in this && this[t] === e) return t } return -1 }; /* indexOf polyfill ends here*/ jQuery.fn.descendants = function (e) { var t, n, r, i, s, o; t = e === "all" ? [1, 3] : e ? [3] : [1]; i = []; n = function (e) { var r, s, o, u, a, f; u = e.childNodes; f = []; for (s = 0, o = u.length; s < o; s++) { r = u[s]; if (a = r.nodeType, __indexOf.call(t, a) >= 0) { i.push(r) } if (r.childNodes.length) { f.push(n(r)) } else { f.push(void 0) } } return f }; for (s = 0, o = this.length; s < o; s++) { r = this[s]; n(r) } return jQuery(i) }

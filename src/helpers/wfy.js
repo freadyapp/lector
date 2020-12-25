@@ -1,3 +1,5 @@
+import $ from "jquery"
+
 function wfyInner(desc){
   let txt = desc.textContent
   let inner = ""

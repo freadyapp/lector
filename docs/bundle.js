@@ -26721,7 +26721,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.modes = exports.fonts = exports.colors = void 0;
 const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
 exports.colors = colors;
-const fonts = ["Helvetica", "Poppins", "Open Sans", "Space Mono"];
+const fonts = ["Helvetica", "Open Sans", "Space Mono"];
 exports.fonts = fonts;
 const modes = ["HotBox", "Underneath", "Faded"];
 exports.modes = modes;
@@ -26795,6 +26795,7 @@ function airway(time = 0, session = 0) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.getRelativeScreen = getRelativeScreen;
 exports.isOnScreen = isOnScreen;
 exports.scrollTo = scrollTo;
 exports.onScroll = onScroll;
@@ -26805,13 +26806,26 @@ var _animejs = _interopRequireDefault(require("animejs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function getViewportHeight() {
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+}
+
+function getRelativeScreen(el) {
+  el = (0, _pragmafy.vanillafy)(el);
+  let viewportHeight = getViewportHeight();
+  let rect = el.getBoundingClientRect();
+  return {
+    top: rect.top,
+    bottom: viewportHeight - rect.bottom
+  };
+}
+
 function isOnScreen(el, threshold = 100) {
   el = (0, _pragmafy.vanillafy)(el);
-  let viewportHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-      rect = el.getBoundingClientRect(); //console.log(rect.top, rect.bottom)
-  //console.log(viewportHeight)
-
-  return !(rect.bottom > viewportHeight - threshold || rect.top < threshold);
+  let viewportHeight = getViewportHeight();
+  let rect = el.getBoundingClientRect();
+  let sm = getRelativeScreen(el, threshold);
+  return !(sm.top < threshold || sm.bottom < threshold);
 }
 
 function scrollTo(el, duration = 200, threshold = 200) {
@@ -26827,9 +26841,8 @@ function scrollTo(el, duration = 200, threshold = 200) {
     //behavior: 'smooth'
     //})
     const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    console.log('scrolling with anime');
+    console.log('autoscrolling');
     const top = el.offset().top - threshold;
-    console.log(top);
     (0, _animejs.default)({
       targets: body,
       scrollTop: top,
@@ -26883,23 +26896,10 @@ class Idle {
     this.isIdle = false;
 
     window.onload = window.onmousedown = // catches touchscreen presses as well      
-    //window.onclick = this.reset     // catches touchpad clicks as well
-    //window.onkeydown = () => { this.reset () };
-    () => {
+    window.onmousemove = // catches touchscreen presses as well      
+    window.onscroll = () => {
       this.reset();
     };
-
-    let ticking = false;
-    let self = this;
-    document.addEventListener('mousemove', e => {
-      if (!ticking) {
-        window.requestAnimationFrame(function () {
-          self.reset();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
   }
 
   generateActionKey(key) {
@@ -27050,12 +27050,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "settingsCSS", {
-  enumerable: true,
-  get: function () {
-    return _settings.settingsCSS;
-  }
-});
 exports.LectorSettings = void 0;
 
 var _jquery = _interopRequireDefault(require("jquery"));
@@ -27115,6 +27109,7 @@ const LectorSettings = parent => {
   }).setRange(10, 42069).html.class("inline-grid grid-cols-3 gap-x-1 items-center").setTippy("Reading Speed", tippyOption);
 
   let popUpSettings = (0, _pragmajs.Compose)("popupsettings").host(colorsComp, fontComp, modeComp, foveaComp);
+  (0, _jquery.default)(popUpSettings.tippy.popper).addClass("settings-tippy");
   popUpSettings.illustrate(icons.grab("settings")); // icons
 
   popUpSettings.icon.attr("id", "settings-icon");
@@ -27350,6 +27345,7 @@ var _lector = require("./lector.js");
 var _main = require("./styles/main.css");
 
 },{"./lector.js":20,"./styles/main.css":25}],20:[function(require,module,exports){
+(function (global){(function (){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27363,7 +27359,12 @@ var _helpers = require("./helpers");
 
 var _pragmas = require("./pragmas");
 
-// find all descendands of object # TODO put it somewhere else
+var _jquery = _interopRequireDefault(require("jquery"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+global.$ = global.jQuery = _jquery.default; // find all descendands of object # TODO put it somewhere else
+
 var __indexOf = [].indexOf || function (e) {
   for (var t = 0, n = this.length; t < n; t++) {
     if (t in this && this[t] === e) return t;
@@ -27521,7 +27522,7 @@ const Word = (element, i) => {
 };
 
 const Lector = (l, options = default_options) => {
-  l = $(l);
+  l = (0, _jquery.default)(l);
   if (options.wfy) (0, _helpers.wfy)(l);
   let w = Word(l);
   let lec = new _pragmas.PragmaLector({
@@ -27580,7 +27581,8 @@ const Lector = (l, options = default_options) => {
 
 exports.Lector = Lector;
 
-},{"./helpers":13,"./pragmas":21,"pragmajs":6}],21:[function(require,module,exports){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./helpers":13,"./pragmas":21,"jquery":5,"pragmajs":6}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27712,17 +27714,31 @@ class PragmaMark extends _pragmajs.Comp {
 
     this.currentlyMarking = null; //this.element.width("180px")
 
-    this.colors = ["tomato", "#FFDFD6", "teal"];
+    this.colors = ["tomato", "#FFDFD6", "teal"]; // TODO change this
+
     (0, _jquery.default)(window).on("resize", () => {
       this.mark(this.last_marked, 0);
     });
     this.runningFor = 0;
     this.pausing = false;
-    this.idle = new _helpers.Idle(5000).onAfk(() => {
+    this.idle = new _helpers.Idle(8000).onAfk(() => {
       console.log('user is afk');
+      this.shout();
     }).onActive(() => {
       console.log('user is back');
+      this.shutUp();
     });
+  }
+
+  shout() {
+    this.setTippy("space to read", {
+      showOnCreate: true,
+      theme: "marker"
+    });
+  }
+
+  shutUp() {
+    if (this.tippy) this.tippy.destroy();
   }
 
   set last_marked(n) {
@@ -27806,6 +27822,8 @@ class PragmaMark extends _pragmajs.Comp {
   }
 
   moveTo(blueprint, duration, complete = () => {}) {
+    this.shutUp(); // clear any ui elements that direct attention to mark
+
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
       this.currentlyMarking = blueprint;
@@ -28069,7 +28087,7 @@ class PragmaWord extends _pragmajs.Comp {
 exports.default = PragmaWord;
 
 },{"../helpers":13,"pragmajs":6}],25:[function(require,module,exports){
-var css = "body {\n  background: #232323;\n}\n#article {\n  padding: 80px 50px;\n  background: #fff;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/main.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = ""; (require("browserify-css").createStyle(css, { "href": "src/styles/main.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":3}],26:[function(require,module,exports){
-var css = "#settingsWrapper {\n  position: fixed;\n  right: 10px;\n  bottom: 10px;\n  padding: 10px;\n  background: transparent;\n  display: flex;\n  flex-direction: row-reverse;\n}\n/*pragma theme*/\n.pragma-composer,\n.pragma-button {\n  background: transparent;\n}\n.pragma-clickable {\n  cursor: pointer;\n}\n#settingsWrapper .pragma-choice {\n  margin: 20px;\n}\n#settingsWrapper .tippy-box {\n  background-color: transparent;\n}\n/* tippy */\n.tippy-box[data-theme~='lector-settings'] {\n  background: transparent;\n  font-size: 12px;\n}\n#settings-icon {\n  width: 80px;\n  height: 80px;\n}\n/* width control */\n.slider {\n  user-select: none;\n  display: flex;\n  flex-direction: row-reverse;\n}\n.slider input {\n  margin: 10px;\n  cursor: grab;\n}\n.slider :active {\n  cursor: grabbing;\n}\n/* wpm control */\n#wpm {\n  user-select: none;\n}\n#wpm .pragma-button {\n  opacity: 0.1;\n}\n#wpm .pragma-button:hover {\n  opacity: 1;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/settings.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "#settingsWrapper {\n  position: fixed;\n  right: 10px;\n  bottom: 10px;\n  padding: 10px;\n  background: #232323;\n  display: flex;\n  flex-direction: row-reverse;\n}\n/*pragma theme*/\n.pragma-composer,\n.pragma-button {\n  background: transparent;\n}\n.pragma-clickable {\n  cursor: pointer;\n}\n#settingsWrapper .pragma-choice {\n  margin: 20px;\n}\n#settingsWrapper .tippy-box {\n  background-color: transparent;\n}\n.settings-tippy {\n  background-color: #232323;\n  outline: none;\n  border-radius: 2px;\n}\n/* tippy for lector options*/\n.tippy-box[data-theme~='lector-settings'] {\n  font-size: 12px;\n  color: whitesmoke;\n  user-select: none;\n  background: transparent;\n}\n/* width control */\n.slider {\n  user-select: none;\n  display: flex;\n  flex-direction: row-reverse;\n}\n.slider input {\n  margin: 10px;\n  cursor: grab;\n}\n.slider :active {\n  cursor: grabbing;\n}\n/* wpm control */\n#wpm {\n  user-select: none;\n  width: 100px;\n  display: flex;\n  flex-direction: row;\n}\n#wpm .pragma-button {\n  opacity: 0.1;\n}\n#wpm .pragma-button:hover {\n  opacity: 1;\n}\n"; (require("browserify-css").createStyle(css, { "href": "src/styles/settings.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":3}]},{},[1]);

@@ -28,7 +28,7 @@ export default class PragmaMark extends Comp {
     //this.parent.element.append(this.element)
     this.currentlyMarking = null
     //this.element.width("180px")
-    this.colors = ["tomato", "#FFDFD6", "teal"]
+    this.colors = ["tomato", "#FFDFD6", "teal"] // TODO change this
 
     $(window).on("resize", () => {
       this.mark(this.last_marked, 0)
@@ -37,13 +37,26 @@ export default class PragmaMark extends Comp {
     this.runningFor = 0
     this.pausing = false
 
-    this.idle = new Idle(5000)
-      .onAfk(()=>{
+    this.idle = new Idle(8000)
+      .onAfk(()=> {
         console.log('user is afk')
+        this.shout()
       })
-      .onActive(()=>{
+      .onActive(() => {
         console.log('user is back')
+        this.shutUp()
       })
+  }
+
+  shout(){
+    this.setTippy("space to read", { 
+          showOnCreate: true,
+          theme: "marker"
+        })
+  }
+
+  shutUp(){
+    if (this.tippy) this.tippy.destroy()
   }
 
   set last_marked(n){
@@ -59,7 +72,9 @@ export default class PragmaMark extends Comp {
     return this
   }
 
-  get settings() { return this.parent.settings }
+  get settings() {
+    return this.parent.settings
+  }
 
   set color(hex) {
     return 
@@ -108,6 +123,7 @@ export default class PragmaMark extends Comp {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
+    this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
       this.currentlyMarking = blueprint

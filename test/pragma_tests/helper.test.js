@@ -1,4 +1,7 @@
 import { Lector, wfy } from "../../src/"
+import $ from "jquery"
+
+global.$ = global.jQuery = $
 // wfy test
 test('wfy does not alter text', () => {
   let new_div = "<div>Hello ladies and gentlemen</div>"

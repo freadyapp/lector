@@ -1,3 +1,3 @@
 export { Lector } from "./lector.js"
 
-export { css } from "./styles/main.css"
+import { css } from "./styles/main.css"

@@ -1,8 +1,8 @@
-import Word from '../../src/pragmas/word.js'
-import Mark from "../../src/pragmas/mark.js"
+import PragmaWord from '../../src/pragmas/pragmaWord.js'
+import PragmaMark from "../../src/pragmas/pragmaMark.js"
+
 const Pragma = require("pragmajs")
-import { wfy } from "../../src/pragmas/helper.js"
-import Lector from "../../src/pragmas/lector.js"
+import { wfy } from "../../src/helpers/wfy.js"
 import { createMock, mockWordNest } from "./test.helper.js"
 import $ from "jquery"
 
@@ -12,19 +12,19 @@ describe("word class is working", () => {
    let master
    beforeEach(() => {
      element = wfy($("<div>Now there's a look in your eyes, like 2 black holes in the sky</div>"))
-     master = new Word(element, null, new Mark(new Pragma.Pragma(element)))
+     master = new PragmaWord(element, null, new PragmaMark(new Pragma.Pragma(element)))
      mockWordNest(master)
    })
 
   test('word breaks down', () => {
     let element = $("<div> Im destined to live </div>")
-    let masterWord = new Word(wfy(element), null, new Mark(new Pragma.Pragma(element)))
+    let masterWord = new PragmaWord(wfy(element), null, new PragmaMark(new Pragma.Pragma(element)))
     expect(masterWord.virgin()).toBe(false)
   })
 
   test('word can exist as a singular entity', () => {
     let element = $("<w>Im</w>")
-    let virg = new Word(element, null, new Mark(new Pragma.Pragma(element)))
+    let virg = new PragmaWord(element, null, new PragmaMark(new Pragma.Pragma(element)))
     expect(virg.virgin()).toBe(true)
   })
 
@@ -83,9 +83,9 @@ describe("word class is working", () => {
     let mark
     beforeEach(() => {
       element = wfy($("<div>Now there's a look in your eyes, like 2 black holes in the sky</div>"))
-      mark = new Mark(new Pragma.Pragma(element))
+      mark = new PragmaMark(new Pragma.Pragma(element))
       mark.settings.add({wpm:100000})
-      master = new Word(element, null, mark)
+      master = new PragmaWord(element, null, mark)
       mockWordNest(master)
     })
 

@@ -1,13 +1,26 @@
 import { vanillafy, jqueryfy } from './pragmafy.js'
 import anime from "animejs"
 
+function getViewportHeight(){
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+}
+
+export function getRelativeScreen(el){
+  el = vanillafy(el) 
+  let viewportHeight = getViewportHeight()
+  let rect = el.getBoundingClientRect()
+  return  {  
+            top: rect.top, 
+            bottom: viewportHeight-rect.bottom
+          }
+}
+
 export function isOnScreen(el, threshold=100){
   el = vanillafy(el)
-  let viewportHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-    rect = el.getBoundingClientRect()
-  //console.log(rect.top, rect.bottom)
-  //console.log(viewportHeight)
-  return !(rect.bottom > viewportHeight-threshold || rect.top < threshold)
+  let viewportHeight = getViewportHeight()
+  let rect = el.getBoundingClientRect()
+  let sm = getRelativeScreen(el, threshold)
+  return !(sm.top < threshold || sm.bottom < threshold)
 }
 
 export function scrollTo(el, duration=200, threshold=200){
@@ -24,9 +37,8 @@ export function scrollTo(el, duration=200, threshold=200){
       //behavior: 'smooth'
     //})
     const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    console.log('scrolling with anime')
+    console.log('autoscrolling')
     const top = el.offset().top - threshold
-    console.log(top)
     anime({
       targets: body,
       scrollTop: top,

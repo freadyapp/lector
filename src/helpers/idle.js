@@ -6,21 +6,10 @@ export default class Idle {
     this.isIdle = false
     window.onload = 
     window.onmousedown =             // catches touchscreen presses as well      
-    //window.onclick = this.reset     // catches touchpad clicks as well
-    //window.onkeydown = () => { this.reset () };
-    () => { this.reset() }
+    window.onmousemove =             // catches touchscreen presses as well      
+    window.onscroll = 
+      () => { this.reset() }
 
-    let ticking = false;
-    let self = this
-    document.addEventListener('mousemove', (e) => {
-      if (!ticking) {
-        window.requestAnimationFrame(function() {
-          self.reset()
-          ticking = false;
-        })
-        ticking = true
-      }
-    })
   }
 
   generateActionKey(key){
@@ -39,7 +28,7 @@ export default class Idle {
   }
 
   reset(){
-    clearTimeout(this.t);
+    clearTimeout(this.t)
     this.t = setTimeout(() => this.idle(), this.idleTime)  // time is in milliseconds
     this.active()
     return this

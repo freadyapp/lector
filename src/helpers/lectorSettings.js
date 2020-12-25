@@ -67,6 +67,8 @@ const LectorSettings = (parent) => {
   let popUpSettings = Compose("popupsettings")
     .host(colorsComp, fontComp, modeComp, foveaComp)
 
+  $(popUpSettings.tippy.popper).addClass("settings-tippy")
+
   popUpSettings.illustrate(icons.grab("settings")) // icons
   popUpSettings.icon.attr("id", "settings-icon")
   let settings = Compose("settingsWrapper").contain(popUpSettings, wpmComp)
