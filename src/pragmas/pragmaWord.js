@@ -1,17 +1,18 @@
-import { Comp } from "pragmajs";
-import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } from "../helpers"
+import { Pragma } from "pragmajs";
+import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } from "../helpers/index"
 
-export default class PragmaWord extends Comp {
+export default class PragmaWord extends Pragma {
 
   get txt(){
-    return this.text()
+    return this.text
   }
+
   get index(){
-    return this.key
+    return parseInt(this.key)
   }
   get mark(){
     if (this.parent) return this.parent.mark
-    return null 
+    return null
   }
   set mark(m){
     if (this.parent) this.parent.mark = m
@@ -24,7 +25,7 @@ export default class PragmaWord extends Comp {
     if (!this.hasKids) return this
     return this.find(this.value).currentWord
   }
-  
+
   sibling(n){
     return this.parent ? this.parent.find(this.index + n) : null
   }
@@ -40,7 +41,7 @@ export default class PragmaWord extends Comp {
     return this.sibling(-1)
   }
   isInTheSameLine(n) {
-    return this.sibling(n) != null && ((this.sibling(n).top() - this.top()) ** 2 < 10)
+    return this.sibling(n) != null && ((this.sibling(n).top - this.top) ** 2 < 10)
   }
   get isFirstInLine() {
     return !this.isInTheSameLine(-1)
@@ -94,11 +95,11 @@ export default class PragmaWord extends Comp {
           // this.mark = "MARK V5 " + this.text() + this.key
           // console.log(this.mark)
           // console.log(this.text())
-          console.time(this.text())
+          console.time(this.text)
           this.mark.guide(this).then(() => {
-            console.timeEnd(this.text())
+            console.timeEnd(this.text)
             this.parent.value = this.index + 1
-            resolve(` read [ ${this.text()} ] `)
+            resolve(` read [ ${this.text} ] `)
           }).catch((e) => {
             console.warn('rejected promise read', e)
             reject(e)
@@ -111,10 +112,10 @@ export default class PragmaWord extends Comp {
   read(){
     // console.log('reading ' + this.text())
     // if (this.hasKids) console.log(this.currentWord)
-    
+
     //console.log('fuck if this works it will be sad')
-    if (this.currentPromise) return new Promise((resolve, reject) => { 
-      resolve('already reading') 
+    if (this.currentPromise) return new Promise((resolve, reject) => {
+      resolve('already reading')
     })
 
     if (this.hasKids) return this.currentWord.read()
@@ -129,11 +130,11 @@ export default class PragmaWord extends Comp {
     })
   }
 
-  summon() {
+  summon(silent=false) {
     if (this.hasKids) return false
     return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
       this.mark.mark(this, 50, true)
-      this.parent.value = this.index
+      if (!silent) this.parent.value = this.index
     })
   }
 }

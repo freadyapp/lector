@@ -1,9 +1,9 @@
 // mark is responsible for marking words in the screen
-import $ from "jquery"
-import { Pragma, Comp } from "pragmajs"
-import { PragmaWord } from "./pragmaWord"
+// import $ from "jquery"
+import { Pragma, _e } from "pragmajs"
+import PragmaWord from "./pragmaWord"
 import anime from "animejs"
-import { PinkyPromise, Idle, airway } from "../helpers"
+import { PinkyPromise, Idle, airway } from "../helpers/index"
 
 const defaultStyles = `
   position absolute
@@ -17,20 +17,20 @@ const defaultStyles = `
   border-radius 3px
 `
 
-export default class PragmaMark extends Comp {
+export default class PragmaMark extends Pragma {
   constructor(parent) {
     super('marker')
 
     this.parent = parent
-    this.element = $("<marker></marker>")
-    this.parent.element.append(this.element)
+    this.element = _e("marker")
+    document.body.appendChild(this.element)
     this.css(defaultStyles)
     //this.parent.element.append(this.element)
     this.currentlyMarking = null
     //this.element.width("180px")
     this.colors = ["tomato", "#FFDFD6", "teal"] // TODO change this
 
-    $(window).on("resize", () => {
+    window.addEventListener('resize', () => {
       this.mark(this.last_marked, 0)
     })
 
@@ -49,18 +49,20 @@ export default class PragmaMark extends Comp {
   }
 
   shout(){
-    this.setTippy("space to read", { 
+    return console.log("AAAAAAAAAA")
+    this.setTippy("space to read", {
           showOnCreate: true,
           theme: "marker"
         })
   }
 
   shutUp(){
+    return console.log("SHUTTING UP")
     if (this.tippy) this.tippy.destroy()
   }
 
   set last_marked(n){
-    this.value = n  
+    this.value = n
   }
 
   get last_marked(){
@@ -73,11 +75,16 @@ export default class PragmaMark extends Comp {
   }
 
   get settings() {
+    return {
+      get: function(){
+        return null
+      }
+    }
     return this.parent.settings
   }
 
   set color(hex) {
-    return 
+    return
     this.settings.set({ "color": this.colors[index] })
     this.element.css({ "background": this.colors[index] })
   }
@@ -95,11 +102,11 @@ export default class PragmaMark extends Comp {
 
   get wpm() { return this.settings.get("wpm") || 260 }
   set wpm(n) { this.settings.set({ "wpm": n }) }
-    
+
   pause() {
     return new Promise((resolve, reject) => {
       if (this.pausing) return reject("already pausing")
-      
+
       this.pausing = true
 
       if (this.currentlyMarking && this.current_anime && this.last_marked) {
@@ -128,7 +135,7 @@ export default class PragmaMark extends Comp {
     return new Promise((resolve, reject) => {
       this.currentlyMarking = blueprint
       this.current_anime = anime({
-        targets: this.element[0],
+        targets: this.element,
         left: blueprint.left,
         top: blueprint.top,
         height: blueprint.height,
@@ -141,23 +148,26 @@ export default class PragmaMark extends Comp {
           resolve()
         }
       })
+      // console.log(blueprint)
+      // console.log(this.current_anime)
     })
   }
 
 
   mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
+    console.log("marking", word)
     if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error") })
-    let w = fit ? word.width() + 5 : this.cw
+    let w = fit ? word.width + 5 : this.cw
     //this.setWidth(w)
     return this.moveTo({
-        top: word.top(),
+        top: word.top,
         left: word.x(w),
-        height: word.height(),
+        height: word.height,
         width: w,
         ease: ease
       }, time, () => {
-        //console.log(`FROM MARK -> marked ${word.text()}`)
-        this.last_marked = word 
+        //console.log(`FROM MARK -> marked ${word.text}`)
+        this.last_marked = word
         word.parent.value = word.index
       })
   }
@@ -167,9 +177,9 @@ export default class PragmaMark extends Comp {
     return new PinkyPromise((resolve, reject) => {
       let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear"
       return this.moveTo({
-        top: word.top(),
-        left: word.x(this.width()) - word.width() / 2,
-        height: word.height(),
+        top: word.top,
+        left: word.x(this.width) - word.width / 2,
+        height: word.height,
         width: this.cw,
         ease: first_ease
       }, this.calcDuration(word, 1))
@@ -183,21 +193,21 @@ export default class PragmaMark extends Comp {
     })
   }
 
-  calcDuration(word, dw=1){ 
+  calcDuration(word, dw=1){
 
     /*  @dw - either 1 or 2
       * 1. yee|t th|e green fox
       * 2. yeet |the| green fox
       * 1. yeet th|e gr|een fox
-      * 
+      *
       * The marking of "the"(and every word) happens in 2 instances. First mark
       * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
       * it will transition from "the" to "green" (1) etc...
-      * 
+      *
       * */
 
     if (!word instanceof Pragma) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
-    if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text()} since dw was not 1 or 2`)
+    if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
     if (word.isFirstInLine) return 500 // mark has to change line
     if (!this.last_marked) return 0 // failsafe
 

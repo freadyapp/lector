@@ -1,3 +1,6 @@
-export { Lector } from "./lector.js"
+import { Lector } from "./lector.js"
 
-import { css } from "./styles/main.css"
+globalThis.Lector = Lector
+
+export default Lector
+// import { css } from "./styles/main.css"

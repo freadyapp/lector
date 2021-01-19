@@ -13,14 +13,14 @@ function crush(n) {
 function generateDifficultyIndex(word) {
   // returns 0-1 with 0 being not difficult at all
   let d = 0
-  let w = nlp(word.text())
+  let w = nlp(word.text)
   if (w.has('#Verb')) {
     d += .5
   }
   if (w.has('#Acronym')) {
     d += .8
   }
-  let greekF = howGreek(word.text())
+  let greekF = howGreek(word.text)
   if (greekF > 1) {
     d += greekF / 10
   }
@@ -28,7 +28,7 @@ function generateDifficultyIndex(word) {
 }
 
 function wordValue(word, d) {
-  return crush(word.text().length) * (d + 1)
+  return crush(word.text.length) * (d + 1)
 }
 
 function charsMsAt(wpm) {

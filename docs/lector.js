@@ -1,4 +1,4 @@
-import { Lector } from '../src'
+// import { Lector } from '../src'
 
 let lectorSettings = {
   // these are the default values
@@ -12,4 +12,4 @@ let lectorSettings = {
   "shortcuts": true // if interactive is false, this option doesnt do anything
 }
 
-let lec = Lector($("#article"), lectorSettings)
+let lec = Lector("#article", lectorSettings)

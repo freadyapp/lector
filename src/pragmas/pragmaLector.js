@@ -1,6 +1,6 @@
-import { Comp } from "pragmajs";
+import { Pragma } from "pragmajs";
 
-export default class PragmaLector extends Comp {
+export default class PragmaLector extends Pragma {
 
   get mark(){
     return this.markPragma
@@ -12,7 +12,7 @@ export default class PragmaLector extends Comp {
     return this.w.isReading
   }
   get currentWord(){
-    return this.find(this.value)
+    return this.w.currentWord
   }
 
   connectTo(w){
@@ -32,10 +32,4 @@ export default class PragmaLector extends Comp {
   pause(){
     this.w.pause()
   }
-  // read(){
-  //   // super.read()
-  //   // if (this.hasKids) console.log(this.currentWord)
-  //   // this.mark = "MARK V5 " + this.element.text()
-  //   // console.log(this.mark)
-  // }
 }

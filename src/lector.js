@@ -1,11 +1,9 @@
-import { Compose, Pragma, Comp } from "pragmajs"
-import { wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers"
-import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas"
-import $ from "jquery"
-global.$ = global.jQuery = $;
+// import { Compose, Pragma, Comp } from "pragmajs"
+import { _e } from "pragmajs"
+import { wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers/index"
+import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
+globalThis.$ = globalThis.jQuery = $;
 
-// find all descendands of object # TODO put it somewhere else
-var __indexOf = [].indexOf || function (e) { for (var t = 0, n = this.length; t < n; t++) { if (t in this && this[t] === e) return t } return -1 }; /* indexOf polyfill ends here*/ jQuery.fn.descendants = function (e) { var t, n, r, i, s, o; t = e === "all" ? [1, 3] : e ? [3] : [1]; i = []; n = function (e) { var r, s, o, u, a, f; u = e.childNodes; f = []; for (s = 0, o = u.length; s < o; s++) { r = u[s]; if (a = r.nodeType, __indexOf.call(t, a) >= 0) { i.push(r) } if (r.childNodes.length) { f.push(n(r)) } else { f.push(void 0) } } return f }; for (s = 0, o = this.length; s < o; s++) { r = this[s]; n(r) } return jQuery(i) }
 
 // TODO add more default options
 const default_options = {
@@ -15,10 +13,8 @@ const default_options = {
 
 const Mark = (lec) => {
   let mark = new PragmaMark(lec)
-  
+
   function logger(w){
-    //mark.log(w.text())
-    //console.log(mark.logs)
   }
 
   // auto scroll feature
@@ -27,20 +23,20 @@ const Mark = (lec) => {
   let usersLastScroll = 0
 
   function userIsScrolling(){
-    return usersLastScroll - Date.now() > -10 
+    return usersLastScroll - Date.now() > -10
   }
 
   function autoScroll(w){
-
+    return
     if (userIsScrolling() || isOnScreen(mark) || scrollingIntoView) return false
     // else we're out of view
-      
-    scrollingIntoView = true 
+
+    scrollingIntoView = true
     let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
     // TODO  make a class Chain that does this.
     // Chain.add(cb), Chain.do() to execute and shit
     if (lec.isReading){
-      lec.pause()  
+      lec.pause()
       cbs.push(() => {
         lec.read()
       })
@@ -55,7 +51,7 @@ const Mark = (lec) => {
 
     scrollTo(mark).then(() => {
       cbs.forEach(cb => cb())
-      scrollingIntoView = false 
+      scrollingIntoView = false
     })
   }
 
@@ -73,109 +69,112 @@ const Mark = (lec) => {
         // TODO prevent from calling pause to many times
         // on too fast scroll, pause mark
         lec.pause()
-      }  
+      }
     }
   })
 
-  mark.listen({
-    "mouseover": (e, comp) => {
-      console.log('mouseover mark')
-    }
+  mark.on('mouseover', function(){
+    console.log(this, 'hover')
   })
 
-  mark.addToChain(logger, autoScroll)
+  mark.do(logger, autoScroll)
   return mark
 }
 
 const Word = (element, i) => {
-  let w = new PragmaWord({key: i, value: 0}).from(element, true)
-  let thisw = w.element.find('w')
+  let w = new PragmaWord(i)
+          .as(element)
+          .setValue(0)
+
+  let thisw = w.element.findAll('w')
+
   if (thisw.length==0) {
-    w.listen({
-      "click": (e, comp) => {
-        // console.log(comp)
-        comp.summon().then(() => {
-          comp.parent.value = comp.key
+    w.addListeners({
+      "click": function(e, comp){
+        this.summon().then(() => {
+          this.parent.value = this.key
         })
       },
-      "mouseover": (w, comp) => {
-        comp.css("background #5e38c74a") // TODO add customizable options this, maybe a theme thing
+      "mouseover": function(w, comp){
+        this.css("background #5e38c74a")
       },
-      "mouseout": (w, comp) => comp.css("background transparent")
+      "mouseout": function(){
+        this.css('background transparent')
+      }
     })
   }
 
-  // w.element.css({"border": ".5px dashed lightgray"}) 
+  // w.element.css({"border": ".5px dashed lightgray"})
   // w.css("border .5px dashed lightgray")
-  thisw.each( (i, el) => {
+  thisw.forEach( (el, i) => {
     let ww = Word(el, i)
+    // console.log(ww)
     w.add(ww)
   })
-  w.value = 0
-  w.setRange(0, w.kidsum)
 
-  // w.addToChain((v, master, trigger) => {
-  //   console.log(v, master, trigger)
-  // })
   return w
 }
 
 
 export const Lector = (l, options=default_options) => {
-  l = $(l)
+  l = _e(l)
   if (options.wfy) wfy(l)
   let w = Word(l)
-  let lec = new PragmaLector({key:"lector"}).connectTo(w)
-  //console.table(w)
-  lec.settings = LectorSettings(lec).pragmatize("#lector")
-  lec.mark = Mark(lec)
+            // .do(function(){
+            //   console.log(this.isReading, this.value, this.currentWord)
+            //   if (this.isReading){
+            //     if (typeof this.onRead !== 'undefined') this.onRead()
+            //   }else{
+            //     this.currentWord.summon(true)
+            //   }
+            // })
 
-  lec.value = 0
-  // w.value = 0
-  lec.addToChain((v, comp, other) => {
-    // console.log(v,comp, other)
-    // comp.element.fadeOut()
-    // console.log(v, comp, oter)
-    // console.log( w.currentWord.pre.text(), w.currentWord.text(), w.currentWord.next.text())
-    // console.log( w.currentWord.text(), w.currentWord.first_in_line)
-    // w.currentWord.read()
-    // console.log(w.currentWord.mark)
-    // console.log(w.currentWord.mark)
-  })
+  let lec = new PragmaLector("lector")
+              .setValue(0)
+              .connectTo(w)
+              .do(function(){
+
+              })
+
+  lec.settings = LectorSettings(lec)
+                  .css(`position fixed
+                        bottom 10px
+                        left 10px
+                        background #303030
+                        padding 10px`)
+
+  lec.mark = Mark(lec)
+  lec.contain(lec.settings)
 
   function bindKeys(){
-    lec.bind("right", (() => { w.value += 1}))
-    lec.bind("left", (() => { w.value -= 1}))
+    lec.bind("right", function(){ this.w.value += 1; this.currentWord.summon()})
+    lec.bind("left", function(){ this.w.value -= 1; this.currentWord.summon()})
 
-    lec.bind("space", (() => {
-      lec.toggle()
+    lec.bind("space", function(){
       return false
-    }), "keyup")
-    lec.bind("space", (() => {
-      // lec.toggle()
+    }, 'keydown')
+
+    lec.bind("space", function(){
+      this.toggle()
       return false
-    }), "keydown")
+    }, 'keyup')
+
   }
 
-  bindKeys()
-  // let words = []
-  // $("w").each( (i, el) => {
-  //   let w = Word(el, i)
-  //   // lec.add(w)
-  //   // words.push(w)
-  //   w.element.css({"border": ".5px dashed lightgray"}) 
-  // })
+  function experiment(){
+    if (globalThis.pragmaSpace.mousetrapIntegration){
+        bindKeys()
+    }
+  }
+
+  // bindKeys() // TODO: add mousetrap integration
 
   if (options.pragmatizeOnCreate) lec.pragmatize()
+  if (options.experimental) experiment()
+
+  // setTimeout(() => {
+  //   lec.toggle()
+  // }, 1000)
+
   return lec
 }
-
-// export default function lector(paper){
-  
-//   console.log(paper.text())
-//   // this
-//   let lec = Lector(paper.element)
-//   lec.pragmatize()
-
-//   return ["lector"]
-// }

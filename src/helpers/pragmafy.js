@@ -8,7 +8,7 @@ export function vanillafy(el){
 }
 
 export function jqueryfy(el){
-  // pipeline to vanillafy pragma objects to html elements
+  // pipeline to jqueryfy pragma objects to html elements
   if (el instanceof Pragma) return el.element
   return $(el)
 }
