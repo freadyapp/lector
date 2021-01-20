@@ -1,27 +1,31 @@
 import { Pragma, tpl, _e } from "pragmajs"
 
-export function paginator(pageTemplate){
+export function paginator(pageTemplate, onPageRender){
   return new Pragma() 
         .from(tpl.create.template.config({
           name: 'paginator',
-          defaultSet: pageTemplate
+          defaultSet: pageTemplate,
+          onPageRender: typeof onPageRender === 'function' ? onPageRender : function(value, page){ console.log('rendered', page) }
         }))
 
         .run(function(){
+
           this.pageTemplate = _e(this._paginatorTemplate)
           this._clonePage = function() { return _e(this.pageTemplate.cloneNode(false)) }
 
           this.create = function(val=this.value, action='append'){
-            return new Promise(resolve => {
-              let cloned = this._clonePage()
-              //cloned.html(this.fetch(val))
-              cloned.html(`${val} @ ${Date.now()}`)
-            
-              //cloned.appendTo(this.parent)
-              cloned[`${action}To`](this.parent.element)
-              this.addPage(cloned, val)
-              resolve()
-            })
+            let cloned = this._clonePage()
+            //cloned.html(this.fetch(val))
+            new Promise( resolve => {
+              setTimeout( _ => {
+                cloned.html(`${val} @ ${Date.now()}`)
+                resolve()
+              }, Math.random()*1500)
+            }).then( _ => this.onPageRender(val, cloned))
+          
+            //cloned.appendTo(this.parent)
+            cloned[`${action}To`](this.parent.element)
+            this.addPage(cloned, val)
           }
 
           this.destroy = function(val){
@@ -30,19 +34,6 @@ export function paginator(pageTemplate){
               this.delPage(val) 
             //}
           }
-
-          this.createABefore = function(bef=1){
-            console.log('creating a before')
-            this.create(this.value-bef, 'prepend')
-          }
-
-          this.createCurrent = function(type='append') { this.create(this.value, type) }
-
-          this.createAnAfter = function(aft=1){
-            console.log('creating an after')
-            this.create(this.value+aft, 'append')
-          }
-
 
           this.pages = new Map()
 
@@ -55,7 +46,7 @@ export function paginator(pageTemplate){
             return this.pages.delete(key) 
           }
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "createABefore", 'createCurrent', "createAnAfter", "pages", "addPage", "delPage")
+          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage")
 
         })
 }

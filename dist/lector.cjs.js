@@ -787,28 +787,32 @@ class PragmaMark extends pragmajs.Pragma {
   }
 }
 
-function paginator(pageTemplate){
+function paginator(pageTemplate, onPageRender){
   return new pragmajs.Pragma() 
         .from(pragmajs.tpl.create.template.config({
           name: 'paginator',
-          defaultSet: pageTemplate
+          defaultSet: pageTemplate,
+          onPageRender: typeof onPageRender === 'function' ? onPageRender : function(value, page){ console.log('rendered', page); }
         }))
 
         .run(function(){
+
           this.pageTemplate = pragmajs._e(this._paginatorTemplate);
           this._clonePage = function() { return pragmajs._e(this.pageTemplate.cloneNode(false)) };
 
           this.create = function(val=this.value, action='append'){
-            return new Promise(resolve => {
-              let cloned = this._clonePage();
-              //cloned.html(this.fetch(val))
-              cloned.html(`${val} @ ${Date.now()}`);
-            
-              //cloned.appendTo(this.parent)
-              cloned[`${action}To`](this.parent.element);
-              this.addPage(cloned, val);
-              resolve();
-            })
+            let cloned = this._clonePage();
+            //cloned.html(this.fetch(val))
+            new Promise( resolve => {
+              setTimeout( _ => {
+                cloned.html(`${val} @ ${Date.now()}`);
+                resolve();
+              }, Math.random()*1500);
+            }).then( _ => this.onPageRender(val, cloned));
+          
+            //cloned.appendTo(this.parent)
+            cloned[`${action}To`](this.parent.element);
+            this.addPage(cloned, val);
           };
 
           this.destroy = function(val){
@@ -817,19 +821,6 @@ function paginator(pageTemplate){
               this.delPage(val); 
             //}
           };
-
-          this.createABefore = function(bef=1){
-            console.log('creating a before');
-            this.create(this.value-bef, 'prepend');
-          };
-
-          this.createCurrent = function(type='append') { this.create(this.value, type); };
-
-          this.createAnAfter = function(aft=1){
-            console.log('creating an after');
-            this.create(this.value+aft, 'append');
-          };
-
 
           this.pages = new Map();
 
@@ -842,7 +833,7 @@ function paginator(pageTemplate){
             return this.pages.delete(key) 
           };
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "createABefore", 'createCurrent', "createAnAfter", "pages", "addPage", "delPage");
+          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage");
 
         })
 }
@@ -879,6 +870,7 @@ const Mark = (lec) => {
     // else we're out of view
 
     scrollingIntoView = true;
+    
     let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
     // TODO  make a class Chain that does this.
     // Chain.add(cb), Chain.do() to execute and shit
@@ -904,7 +896,7 @@ const Mark = (lec) => {
 
   const threshold = 40; // how fast should you scroll to pause the pointer
   let lastScroll = 0;
-  onScroll((s) => {
+  onScroll(s => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
     console.log('user is scrolling', userIsScrolling());
 
@@ -1033,86 +1025,21 @@ function _infinityPaginator(streamer, pageTemplate){
           this.streamer = streamer;
           this.fetch = this.streamer.fetch;
 
-          this.fillBefore = function(){
-            //prepend until its out of view  
-          };
-
-          this.fillAfter = function(){
-            //append until its out of view  
-            
-            return new Promise((resolve, reject) => {
-              console.log(this.value);
-              console.log(this.pages);
-
-
-              if (!this.pages.has(this.value)){
-                this.createCurrent();
-                console.log('created current page');
-              }
-
-              const conf = {
-                max: 15, // to avoid funky bugs
-                threshold: 1000 // 1000 px
-              };
-
-              // assumes current page is appended
-              let i = this.value + 1;
-
-              while (this.pages.size < conf.max && !this.pages.has(i)){
-                console.log(this.pages);
-                console.log(i-conf.max);
-                this.create(i);
-                if (this.pages.has(i-conf.max+1)) this.pages.delete(i-conf.max);
-                i++;
-              }
-
-              //this.create(i)
-              //this.create(i+1)
-
-              //setTimeout(() => {
-              //this.destroy(i)
-              //this.destroy(i+1)
-                //console.log("YYEYEYET")
-              //}, 5000)
-
-
-              //while (!this.pages.has(i+1) && this.pages.has(i) && isOnScreen(this.pages.get(i), -800)){
-              //while (i<2){
-                ////this.createAnAfter()
-                //console.log(".>>>>")
-                //this.create(i+1)
-                //this.destroy(i-1)
-                //console.log(this.pages)
-                //i++ 
-              //}
-            })
-
-          };
-
           const conf = {
             headspace: 4,
             timeout: 10
           };
 
-          function arrayDiff(a, b){
-            return a.filter(i => b.indexOf(i)<0)
-          }
-
           this.fill = function(){
             this.fetching = true;
-            //console.log(">> filling")
-            //console.log(this.value)
-            //this.createCurrent()
 
-            //this.value-conf.headspace
             let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
             let pageRange = range(start, this.value+conf.headspace);
             let pagesRendered = Array.from(this.pages.keys());
-            //console.log(pagesToRender, pagesRendered)
 
-            let pagesToRender = arrayDiff(pageRange, pagesRendered);
-            let pagesToDelete = arrayDiff(pagesRendered, pageRange);
-            //console.log(pageRange)
+            let pagesToRender = pragmajs.util.aryDiff(pageRange, pagesRendered);
+            let pagesToDelete = pragmajs.util.aryDiff(pagesRendered, pageRange);
+
             console.log(">> DEL", pagesToDelete);
             console.log(">> ADD", pagesToRender);
 
@@ -1124,18 +1051,6 @@ function _infinityPaginator(streamer, pageTemplate){
               //this.pages.get(pageIndex).css("background:red")
               //this.destroy(pageIndex)
             }
-            //console.log(this.pages)
-
-            //for (let pageIndex of pagesToRender){
-              //if (this.pages.has(pageIndex)) continue
-
-              //this.create(pageIndex)
-              ////console.log(this.pages.get(pageIndex))
-            //};
-
-            //this.fillAfter()
-            //this.fillBefore()
-            //
             setTimeout(a => {
               this.fetching = false;
             }, conf.timeout);
@@ -1145,33 +1060,21 @@ function _infinityPaginator(streamer, pageTemplate){
       .run(function(){
         onScroll((s, l) => {
           if (this.fetching) return 
-          //console.log(s, l)
-          let v = this.value;
-          let p = this.pages.get(v);
-          //console.log(p)
-          //console.log(isOnScreen(p))
-          if (!isOnScreen(p)){
-            console.log(p, "page is not on the screen");
-            //if (isOnScreen(this.pages.get(v+1))) this.value = v+1
 
-            let notFound = true;
+          let v = this.value;
+          let currentPage = this.pages.get(v);
+
+          if (!isOnScreen(currentPage)){
             let i = 1;
             let di = l > 0 ? 1 : -1;
-            while (notFound){
+            while (true){
               if (isOnScreen(this.pages.get(v+i))){
                 this.value = v+i;
-                notFound = false;
+                break
               }
               i += di; 
-            }            // shit we lost the active page
-            //for (let [i, page] of this.pages){
-              //if (isOnScreen(page, page.height)) console.log(page)
-              //this.value = i
-            //}
-            //this.value += l<0 ? -1 : 1
-            //console.log(v, ">>>", this.value)
+            }
           }
-          //paginator.fill()
         });
       })
       .do(function(){
@@ -1184,15 +1087,6 @@ function _infinityPaginator(streamer, pageTemplate){
       });
 
   return inf
-
-   //if (this.dv > 0){
-                    //cloned.appendTo(l.parentElement)
-
-                  //} else {
-
-                    //cloned.prependTo(l.parentElement)
-
-                  //}
 
 }
 
@@ -1223,39 +1117,17 @@ const Lector = (l, options=default_options) => {
     let streamer = _streamer(options.stream);
     let paginator = _infinityPaginator(streamer, l);
 
-
     let reader = pragmajs._p()
                   .as(pragmajs._e(l).parentElement)
                   .adopt(paginator, streamer);
 
-    console.log(reader);
-
-    streamer.wireTo(paginator); // when paginator changes value, change value of streamer as well
-
-    streamer.do(function(){
-      console.log(`fetching page [${this.value}]`);
-    });
-
     paginator.fill();
 
-    //paginator.do(function(){
-      //if (this.dv > 0){
-        //this.fill() 
-      //}
+    //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
+
+    //streamer.do(function(){
+      //console.log(`fetching page [${this.value}]`)
     //})
-
-    ////paginator.fill()
-    //
-    
-
-    //paginator.value += 1
-
-    //
-    //
-    //
-    //paginator.value += 1
-    //paginator.value += 1
-    //paginator.value += 1
 
   }
 };
