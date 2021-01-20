@@ -787,12 +787,15 @@ class PragmaMark extends pragmajs.Pragma {
   }
 }
 
-function paginator(pageTemplate, onPageRender){
+function paginator(pageTemplate, conf={}){
   return new pragmajs.Pragma() 
         .from(pragmajs.tpl.create.template.config({
           name: 'paginator',
           defaultSet: pageTemplate,
-          onPageRender: typeof onPageRender === 'function' ? onPageRender : function(value, page){ console.log('rendered', page); }
+          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { pragmajs.util.log('added', page); },
+          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ pragmajs.util.log('rendered', page); },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){ pragmajs.util.log('active', page); },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { pragmajs.util.log('inactive', page); }
         }))
 
         .run(function(){
@@ -802,29 +805,28 @@ function paginator(pageTemplate, onPageRender){
 
           this.create = function(val=this.value, action='append'){
             let cloned = this._clonePage();
-            //cloned.html(this.fetch(val))
+
             new Promise( resolve => {
               setTimeout( _ => {
                 cloned.html(`${val} @ ${Date.now()}`);
                 resolve();
               }, Math.random()*1500);
-            }).then( _ => this.onPageRender(val, cloned));
+            }).then( _ => this.onPageRender(cloned, val));
           
-            //cloned.appendTo(this.parent)
             cloned[`${action}To`](this.parent.element);
             this.addPage(cloned, val);
           };
 
           this.destroy = function(val){
-            //if (this.pages.has(val)){
-              this.pages.get(val).destroy(); 
-              this.delPage(val); 
-            //}
+            this.pages.get(val).destroy(); 
+            this.delPage(val);
           };
 
           this.pages = new Map();
 
           this.addPage = function(page, key){
+            this.onPageAdd(page);
+
             key = key || this.pages.size;
             return this.pages.set(key, page)
           };
@@ -833,9 +835,101 @@ function paginator(pageTemplate, onPageRender){
             return this.pages.delete(key) 
           };
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage");
+          this.activate = function(pageIndex){
+            this.onPageActive(this.pages.get(pageIndex));
+          };
+
+          this.inactivate = function(pageIndex){
+            this.onPageInactive(this.pages.get(pageIndex)); 
+          };
+
+          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate');
+        })
+}
+
+function infinityPaginator(streamer, pageTemplate, config={}){
+  let inf = pragmajs._p("infinity paginator")
+        .from(
+          paginator(pageTemplate).config(pragmajs.util.objDiff(
+            {
+              streamer: streamer,
+              fetch: streamer.fetch,
+              // on page render
+              // on page active
+              // on page inactive
+            }, config))
+        )
+        .setValue(0)
+        .run(function(){
+
+          const conf = {
+            headspace: 4,
+            timeout: 10
+          };
+
+          this.fill = function(){
+
+            this.fetching = true;
+            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
+            let pageRange = range(start, this.value+conf.headspace);
+            let pagesRendered = Array.from(this.pages.keys());
+
+            let pagesToRender = pragmajs.util.aryDiff(pageRange, pagesRendered);
+            let pagesToDelete = pragmajs.util.aryDiff(pagesRendered, pageRange);
+
+            console.log(">> DEL", pagesToDelete);
+            console.log(">> ADD", pagesToRender);
+
+            for (let pageIndex of pagesToRender){
+              this.create(pageIndex);
+            }
+
+            for (let pageIndex of pagesToDelete){
+              //this.inactivate(pageIndex)
+              //this.pages.get(pageIndex).css("background:red")
+              //this.destroy(pageIndex)
+            }
+            setTimeout(a => {
+              this.fetching = false;
+            }, conf.timeout);
+          };
 
         })
+      .run(function(){
+        onScroll((s, l) => {
+          if (this.fetching) return 
+
+          let v = this.value;
+          let currentPage = this.pages.get(v);
+
+          if (!isOnScreen(currentPage)){
+            let i = 1;
+            let di = l > 0 ? 1 : -1;
+            while (true){
+              if (isOnScreen(this.pages.get(v+i))){
+                this.value = v+i;
+                break
+              }
+              i += di; 
+            }
+          }
+        });
+      })
+      .do(function(){
+        //if (!this.pages.has(this.value)) return
+        //console.log(this.value, this.value - this.dv)
+        //console.log(this.pages)
+        //
+        //this.pages.get(this.value).css('background: lime')
+        //this.pages.get(this.value - this.dv).css('background: whitesmoke')
+
+        this.activate(this.value);
+        this.inactivate(this.value-this.dv);
+
+        this.fill();
+      });
+
+  return inf
 }
 
 // globalThis.$ = globalThis.jQuery = $;
@@ -1017,78 +1111,6 @@ function _needWrapper(op){
     return op.stream || op.paginate
 }
 
-function _infinityPaginator(streamer, pageTemplate){
-  let inf = pragmajs._p("infinity paginator")
-        .from(paginator(pageTemplate))
-        .setValue(0)
-        .run(function(){
-          this.streamer = streamer;
-          this.fetch = this.streamer.fetch;
-
-          const conf = {
-            headspace: 4,
-            timeout: 10
-          };
-
-          this.fill = function(){
-            this.fetching = true;
-
-            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
-            let pageRange = range(start, this.value+conf.headspace);
-            let pagesRendered = Array.from(this.pages.keys());
-
-            let pagesToRender = pragmajs.util.aryDiff(pageRange, pagesRendered);
-            let pagesToDelete = pragmajs.util.aryDiff(pagesRendered, pageRange);
-
-            console.log(">> DEL", pagesToDelete);
-            console.log(">> ADD", pagesToRender);
-
-            for (let pageIndex of pagesToRender){
-              this.create(pageIndex);
-            }
-
-            for (let pageIndex of pagesToDelete){
-              //this.pages.get(pageIndex).css("background:red")
-              //this.destroy(pageIndex)
-            }
-            setTimeout(a => {
-              this.fetching = false;
-            }, conf.timeout);
-          };
-
-        })
-      .run(function(){
-        onScroll((s, l) => {
-          if (this.fetching) return 
-
-          let v = this.value;
-          let currentPage = this.pages.get(v);
-
-          if (!isOnScreen(currentPage)){
-            let i = 1;
-            let di = l > 0 ? 1 : -1;
-            while (true){
-              if (isOnScreen(this.pages.get(v+i))){
-                this.value = v+i;
-                break
-              }
-              i += di; 
-            }
-          }
-        });
-      })
-      .do(function(){
-        //if (!this.pages.has(this.value)) return
-        //console.log(this.value, this.value - this.dv)
-        //console.log(this.pages)
-        this.pages.get(this.value).css('background: lime');
-        this.pages.get(this.value - this.dv).css('background: whitesmoke');
-        this.fill();
-      });
-
-  return inf
-
-}
 
 function _streamer(sf){
   return pragmajs._p('streamer')
@@ -1115,7 +1137,12 @@ const Lector = (l, options=default_options) => {
     console.log('setting up streamer service');
 
     let streamer = _streamer(options.stream);
-    let paginator = _infinityPaginator(streamer, l);
+    let paginator = infinityPaginator(streamer, l).config({
+      onPageActive: p => p.css('background lime'),
+      onPageInactive: p => p.css('background gray'),
+
+      onPageAdd: p => p.css("background gray")
+    });
 
     let reader = pragmajs._p()
                   .as(pragmajs._e(l).parentElement)

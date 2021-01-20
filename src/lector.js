@@ -1,4 +1,4 @@
-import { _e, _p, tpl, Pragma, util } from "pragmajs"
+import { _e, _p, Pragma, util } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import * as _ext from "./extensions/index"
@@ -182,79 +182,6 @@ function _needWrapper(op){
     return op.stream || op.paginate
 }
 
-function _infinityPaginator(streamer, pageTemplate){
-  let inf = _p("infinity paginator")
-        .from(_ext.paginator(pageTemplate))
-        .setValue(0)
-        .run(function(){
-          this.streamer = streamer
-          this.fetch = this.streamer.fetch
-
-          const conf = {
-            headspace: 4,
-            timeout: 10
-          }
-
-          this.fill = function(){
-            this.fetching = true
-
-            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
-            let pageRange = range(start, this.value+conf.headspace)
-            let pagesRendered = Array.from(this.pages.keys())
-
-            let pagesToRender = util.aryDiff(pageRange, pagesRendered)
-            let pagesToDelete = util.aryDiff(pagesRendered, pageRange)
-
-            console.log(">> DEL", pagesToDelete)
-            console.log(">> ADD", pagesToRender)
-
-            for (let pageIndex of pagesToRender){
-              this.create(pageIndex)
-            }
-
-            for (let pageIndex of pagesToDelete){
-              //this.pages.get(pageIndex).css("background:red")
-              //this.destroy(pageIndex)
-            };
-
-            setTimeout(a => {
-              this.fetching = false
-            }, conf.timeout)
-          }
-
-        })
-      .run(function(){
-        onScroll((s, l) => {
-          if (this.fetching) return 
-
-          let v = this.value
-          let currentPage = this.pages.get(v)
-
-          if (!isOnScreen(currentPage)){
-            let i = 1
-            let di = l > 0 ? 1 : -1
-            while (true){
-              if (isOnScreen(this.pages.get(v+i))){
-                this.value = v+i
-                break
-              }
-              i += di 
-            }
-          }
-        })
-      })
-      .do(function(){
-        //if (!this.pages.has(this.value)) return
-        //console.log(this.value, this.value - this.dv)
-        //console.log(this.pages)
-        this.pages.get(this.value).css('background: lime')
-        this.pages.get(this.value - this.dv).css('background: whitesmoke')
-        this.fill()
-      })
-
-  return inf
-
-}
 
 function _streamer(sf){
   return _p('streamer')
@@ -281,7 +208,12 @@ export const Lector = (l, options=default_options) => {
     console.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
-    let paginator = _infinityPaginator(streamer, l)
+    let paginator = _ext.infinityPaginator(streamer, l).config({
+      onPageActive: p => p.css('background lime'),
+      onPageInactive: p => p.css('background gray'),
+
+      onPageAdd: p => p.css("background gray")
+    })
 
     let reader = _p()
                   .as(_e(l).parentElement)

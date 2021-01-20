@@ -1,11 +1,14 @@
-import { Pragma, tpl, _e } from "pragmajs"
+import { Pragma, tpl, _e, util } from "pragmajs"
 
-export function paginator(pageTemplate, onPageRender){
+export function paginator(pageTemplate, conf={}){
   return new Pragma() 
         .from(tpl.create.template.config({
           name: 'paginator',
           defaultSet: pageTemplate,
-          onPageRender: typeof onPageRender === 'function' ? onPageRender : function(value, page){ console.log('rendered', page) }
+          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { util.log('added', page) },
+          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page) },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){ util.log('active', page) },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page) }
         }))
 
         .run(function(){
@@ -15,29 +18,28 @@ export function paginator(pageTemplate, onPageRender){
 
           this.create = function(val=this.value, action='append'){
             let cloned = this._clonePage()
-            //cloned.html(this.fetch(val))
+
             new Promise( resolve => {
               setTimeout( _ => {
                 cloned.html(`${val} @ ${Date.now()}`)
                 resolve()
               }, Math.random()*1500)
-            }).then( _ => this.onPageRender(val, cloned))
+            }).then( _ => this.onPageRender(cloned, val))
           
-            //cloned.appendTo(this.parent)
             cloned[`${action}To`](this.parent.element)
             this.addPage(cloned, val)
           }
 
           this.destroy = function(val){
-            //if (this.pages.has(val)){
-              this.pages.get(val).destroy() 
-              this.delPage(val) 
-            //}
+            this.pages.get(val).destroy() 
+            this.delPage(val)
           }
 
           this.pages = new Map()
 
           this.addPage = function(page, key){
+            this.onPageAdd(page)
+
             key = key || this.pages.size
             return this.pages.set(key, page)
           }
@@ -46,7 +48,14 @@ export function paginator(pageTemplate, onPageRender){
             return this.pages.delete(key) 
           }
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage")
+          this.activate = function(pageIndex){
+            this.onPageActive(this.pages.get(pageIndex))
+          }
 
+          this.inactivate = function(pageIndex){
+            this.onPageInactive(this.pages.get(pageIndex)) 
+          }
+
+          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate')
         })
 }
