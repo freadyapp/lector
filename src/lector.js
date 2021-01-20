@@ -1,14 +1,17 @@
-// import { Compose, Pragma, Comp } from "pragmajs"
-import { _e } from "pragmajs"
-import { wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers/index"
+import { _e, _p, tpl, Pragma } from "pragmajs"
+import { range, wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
-globalThis.$ = globalThis.jQuery = $;
+import * as _ext from "./extensions/index"
 
+// globalThis.$ = globalThis.jQuery = $;
+
+// pragmaSpace.dev = true
 
 // TODO add more default options
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
+  experimental: false
 }
 
 const Mark = (lec) => {
@@ -27,8 +30,8 @@ const Mark = (lec) => {
   }
 
   function autoScroll(w){
-    return
-    if (userIsScrolling() || isOnScreen(mark) || scrollingIntoView) return false
+    //return
+    if (userIsScrolling() || isOnScreen(mark.element) || scrollingIntoView) return false
     // else we're out of view
 
     scrollingIntoView = true
@@ -115,8 +118,7 @@ const Word = (element, i) => {
   return w
 }
 
-
-export const Lector = (l, options=default_options) => {
+export const Reader = (l, options=default_options) => {
   l = _e(l)
   if (options.wfy) wfy(l)
   let w = Word(l)
@@ -172,9 +174,247 @@ export const Lector = (l, options=default_options) => {
   if (options.pragmatizeOnCreate) lec.pragmatize()
   if (options.experimental) experiment()
 
-  // setTimeout(() => {
-  //   lec.toggle()
-  // }, 1000)
-
   return lec
 }
+
+function _needWrapper(op){
+    return op.stream || op.paginate
+}
+
+function _infinityPaginator(streamer, pageTemplate){
+  let inf = _p("infinity paginator")
+        .from(_ext.paginator(pageTemplate))
+        .setValue(0)
+        .run(function(){
+          this.streamer = streamer
+          this.fetch = this.streamer.fetch
+
+          this.fillBefore = function(){
+            //prepend until its out of view  
+          }
+
+          this.fillAfter = function(){
+            //append until its out of view  
+            
+            return new Promise((resolve, reject) => {
+              console.log(this.value)
+              console.log(this.pages)
+
+
+              if (!this.pages.has(this.value)){
+                this.createCurrent()
+                console.log('created current page')
+              }
+
+              const conf = {
+                max: 15, // to avoid funky bugs
+                threshold: 1000 // 1000 px
+              }
+
+              // assumes current page is appended
+              let i = this.value + 1
+
+              while (this.pages.size < conf.max && !this.pages.has(i)){
+                console.log(this.pages)
+                console.log(i-conf.max)
+                this.create(i)
+                if (this.pages.has(i-conf.max+1)) this.pages.delete(i-conf.max)
+                i++
+              }
+
+              //this.create(i)
+              //this.create(i+1)
+
+              //setTimeout(() => {
+              //this.destroy(i)
+              //this.destroy(i+1)
+                //console.log("YYEYEYET")
+              //}, 5000)
+
+
+              //while (!this.pages.has(i+1) && this.pages.has(i) && isOnScreen(this.pages.get(i), -800)){
+              //while (i<2){
+                ////this.createAnAfter()
+                //console.log(".>>>>")
+                //this.create(i+1)
+                //this.destroy(i-1)
+                //console.log(this.pages)
+                //i++ 
+              //}
+            })
+
+          }
+
+          const conf = {
+            headspace: 4,
+            timeout: 10
+          }
+
+          function arrayDiff(a, b){
+            return a.filter(i => b.indexOf(i)<0)
+          }
+
+          this.fill = function(){
+            this.fetching = true
+            //console.log(">> filling")
+            //console.log(this.value)
+            //this.createCurrent()
+
+            //this.value-conf.headspace
+            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
+            let pageRange = range(start, this.value+conf.headspace)
+            let pagesRendered = Array.from(this.pages.keys())
+            //console.log(pagesToRender, pagesRendered)
+
+            let pagesToRender = arrayDiff(pageRange, pagesRendered)
+            let pagesToDelete = arrayDiff(pagesRendered, pageRange)
+            //console.log(pageRange)
+            console.log(">> DEL", pagesToDelete)
+            console.log(">> ADD", pagesToRender)
+
+            for (let pageIndex of pagesToRender){
+              this.create(pageIndex)
+            }
+
+            for (let pageIndex of pagesToDelete){
+              //this.pages.get(pageIndex).css("background:red")
+              //this.destroy(pageIndex)
+            };
+
+            //console.log(this.pages)
+
+            //for (let pageIndex of pagesToRender){
+              //if (this.pages.has(pageIndex)) continue
+
+              //this.create(pageIndex)
+              ////console.log(this.pages.get(pageIndex))
+            //};
+
+            //this.fillAfter()
+            //this.fillBefore()
+            //
+            setTimeout(a => {
+              this.fetching = false
+            }, conf.timeout)
+          }
+
+        })
+      .run(function(){
+        onScroll((s, l) => {
+          if (this.fetching) return 
+          //console.log(s, l)
+          let v = this.value
+          let p = this.pages.get(v)
+          //console.log(p)
+          //console.log(isOnScreen(p))
+          if (!isOnScreen(p)){
+            console.log(p, "page is not on the screen")
+            //if (isOnScreen(this.pages.get(v+1))) this.value = v+1
+
+            let notFound = true
+            let i = 1
+            let di = l > 0 ? 1 : -1
+            while (notFound){
+              if (isOnScreen(this.pages.get(v+i))){
+                this.value = v+i
+                notFound = false
+              }
+              i += di 
+            };
+            // shit we lost the active page
+            //for (let [i, page] of this.pages){
+              //if (isOnScreen(page, page.height)) console.log(page)
+              //this.value = i
+            //}
+            //this.value += l<0 ? -1 : 1
+            //console.log(v, ">>>", this.value)
+          }
+          //paginator.fill()
+        })
+      })
+      .do(function(){
+        //if (!this.pages.has(this.value)) return
+        //console.log(this.value, this.value - this.dv)
+        //console.log(this.pages)
+        this.pages.get(this.value).css('background: lime')
+        this.pages.get(this.value - this.dv).css('background: whitesmoke')
+        this.fill()
+      })
+
+  return inf
+
+   //if (this.dv > 0){
+                    //cloned.appendTo(l.parentElement)
+
+                  //} else {
+
+                    //cloned.prependTo(l.parentElement)
+
+                  //}
+
+}
+
+function _streamer(sf){
+  return _p('streamer')
+          .setValue(0)
+          .run(function(){
+            this.fetch = sf
+            this.getContent = function(){
+              return this.fetch(this.value)  
+            }
+          })
+
+}
+
+export const Lector = (l, options=default_options) => {
+  if (!_needWrapper(options)) return Reader(l, options)
+
+  console.log("configuration appears to be a bit more complicated")
+
+  if (options.stream &&
+      options.paginate &&
+      options.paginate.from === 'stream' &&
+      options.paginate.as === 'infiniteScroll'){
+
+    console.log('setting up streamer service')
+
+    let streamer = _streamer(options.stream)
+    let paginator = _infinityPaginator(streamer, l)
+
+
+    let reader = _p()
+                  .as(_e(l).parentElement)
+                  .adopt(paginator, streamer)
+
+    console.log(reader)
+
+    streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
+
+    streamer.do(function(){
+      console.log(`fetching page [${this.value}]`)
+    })
+
+    paginator.fill()
+
+    //paginator.do(function(){
+      //if (this.dv > 0){
+        //this.fill() 
+      //}
+    //})
+
+    ////paginator.fill()
+    //
+    
+
+    //paginator.value += 1
+
+    //
+    //
+    //
+    //paginator.value += 1
+    //paginator.value += 1
+    //paginator.value += 1
+
+  }
+}
+

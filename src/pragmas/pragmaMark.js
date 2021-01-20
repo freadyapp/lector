@@ -130,7 +130,7 @@ export default class PragmaMark extends Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
-    this.shutUp() // clear any ui elements that direct attention to mark
+    //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
       this.currentlyMarking = blueprint
@@ -155,7 +155,7 @@ export default class PragmaMark extends Pragma {
 
 
   mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
-    console.log("marking", word)
+    //console.log("marking", word)
     if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error") })
     let w = fit ? word.width + 5 : this.cw
     //this.setWidth(w)

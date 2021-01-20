@@ -1,8 +1,8 @@
 'use strict';
 
 var pragmajs = require('pragmajs');
-require('jquery');
 var anime = require('animejs');
+require('jquery');
 var nlp = require('compromise');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -10,15 +10,69 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var anime__default = /*#__PURE__*/_interopDefaultLegacy(anime);
 var nlp__default = /*#__PURE__*/_interopDefaultLegacy(nlp);
 
+function elementify(el){
+  // pipeline to vanillafy pragma objects to html elements
+  if (el instanceof pragmajs.Pragma) el = el.element;
+  if (!el.isPragmaElement) el = pragmajs._e(el);
+  return el
+}
+
+function getViewportHeight(){
+  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+}
+
+function getRelativeScreen(el){
+  el = elementify(el); 
+  let viewportHeight = getViewportHeight();
+  let rect = el.getBoundingClientRect();
+  return  {
+            top: rect.top, 
+            bottom: viewportHeight-rect.bottom
+          }
+}
+
+function isOnScreen(el, threshold=100){
+  el = elementify(el); 
+  let viewportHeight = getViewportHeight();
+  let rect = el.offset();
+  let sm = getRelativeScreen(el);
+  return !(sm.top < threshold || sm.bottom < threshold)
+}
+
+function scrollTo(el, duration=200, threshold=200){
+  // behavior
+  // closer, will scroll little bit downwards or upwards 
+  // until the element is in view for more than the threshold
+  
+  //return new Promise(r => r())
+  //el = jqueryfy(el)
+  //
+
+  el = elementify(el); 
+  return new Promise((resolve, reject) => {
+    const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+    const top = el.offset().top - threshold;
+    anime__default['default']({
+      targets: body,
+      scrollTop: top,
+      duration: duration,
+      easing: 'easeInOutSine',
+    }).finished.then(() => {
+      setTimeout(resolve, 20);
+    });
+  })
+}
+
 function onScroll(cb=(s)=>{}){
   
-  let last_known_scroll_position = 0;
+  let last = 0;
   let ticking = false;
   document.addEventListener('scroll', function(e) {
-    last_known_scroll_position = window.scrollY;
+    let temp = last;
+    last = window.scrollY;
     if (!ticking) {
       window.requestAnimationFrame(function() {
-        cb(last_known_scroll_position);
+        cb(last, last-temp);
         ticking = false;
       });
 
@@ -332,6 +386,14 @@ function airway(time=0, session=0){
   return (time*(conf.threshold - session))/conf.divider + time
 }
 
+function range(start, stop, step) {
+    var a = [start], b = start;
+    while (b < stop) {
+        a.push(b += step || 1);
+    }
+    return a;
+}
+
 class PragmaLector extends pragmajs.Pragma {
 
   get mark(){
@@ -623,7 +685,7 @@ class PragmaMark extends pragmajs.Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
-    this.shutUp(); // clear any ui elements that direct attention to mark
+    //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
       this.currentlyMarking = blueprint;
@@ -648,7 +710,7 @@ class PragmaMark extends pragmajs.Pragma {
 
 
   mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
-    console.log("marking", word);
+    //console.log("marking", word)
     if (!(word instanceof pragmajs.Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
     let w = fit ? word.width + 5 : this.cw;
     //this.setWidth(w)
@@ -725,14 +787,75 @@ class PragmaMark extends pragmajs.Pragma {
   }
 }
 
-// import { Compose, Pragma, Comp } from "pragmajs"
-globalThis.$ = globalThis.jQuery = $;
+function paginator(pageTemplate){
+  return new pragmajs.Pragma() 
+        .from(pragmajs.tpl.create.template.config({
+          name: 'paginator',
+          defaultSet: pageTemplate
+        }))
 
+        .run(function(){
+          this.pageTemplate = pragmajs._e(this._paginatorTemplate);
+          this._clonePage = function() { return pragmajs._e(this.pageTemplate.cloneNode(false)) };
+
+          this.create = function(val=this.value, action='append'){
+            return new Promise(resolve => {
+              let cloned = this._clonePage();
+              //cloned.html(this.fetch(val))
+              cloned.html(`${val} @ ${Date.now()}`);
+            
+              //cloned.appendTo(this.parent)
+              cloned[`${action}To`](this.parent.element);
+              this.addPage(cloned, val);
+              resolve();
+            })
+          };
+
+          this.destroy = function(val){
+            //if (this.pages.has(val)){
+              this.pages.get(val).destroy(); 
+              this.delPage(val); 
+            //}
+          };
+
+          this.createABefore = function(bef=1){
+            console.log('creating a before');
+            this.create(this.value-bef, 'prepend');
+          };
+
+          this.createCurrent = function(type='append') { this.create(this.value, type); };
+
+          this.createAnAfter = function(aft=1){
+            console.log('creating an after');
+            this.create(this.value+aft, 'append');
+          };
+
+
+          this.pages = new Map();
+
+          this.addPage = function(page, key){
+            key = key || this.pages.size;
+            return this.pages.set(key, page)
+          };
+
+          this.delPage = function(key){
+            return this.pages.delete(key) 
+          };
+
+          this.export("pageTemplate", "_clonePage", "create", 'destroy', "createABefore", 'createCurrent', "createAnAfter", "pages", "addPage", "delPage");
+
+        })
+}
+
+// globalThis.$ = globalThis.jQuery = $;
+
+// pragmaSpace.dev = true
 
 // TODO add more default options
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
+  experimental: false
 };
 
 const Mark = (lec) => {
@@ -740,6 +863,10 @@ const Mark = (lec) => {
 
   function logger(w){
   }
+
+  // auto scroll feature
+  // TODO put somewhere else
+  let scrollingIntoView = false;
   let usersLastScroll = 0;
 
   function userIsScrolling(){
@@ -747,13 +874,38 @@ const Mark = (lec) => {
   }
 
   function autoScroll(w){
-    return
+    //return
+    if (userIsScrolling() || isOnScreen(mark.element) || scrollingIntoView) return false
+    // else we're out of view
+
+    scrollingIntoView = true;
+    let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
+    // TODO  make a class Chain that does this.
+    // Chain.add(cb), Chain.do() to execute and shit
+    if (lec.isReading){
+      lec.pause();
+      cbs.push(() => {
+        lec.read();
+      });
+    }
+
+    cbs.push(()=>{
+      //console.warn("suck my diiiiiiiiiick")
+    });
+
+    //console.warn("mark is out of screen")
+    //console.log('lec reading:', lec.isReading)
+
+    scrollTo(mark).then(() => {
+      cbs.forEach(cb => cb());
+      scrollingIntoView = false;
+    });
   }
 
   const threshold = 40; // how fast should you scroll to pause the pointer
   let lastScroll = 0;
   onScroll((s) => {
-    usersLastScroll =  Date.now() ;
+    usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
     console.log('user is scrolling', userIsScrolling());
 
     if (userIsScrolling() && lec.isReading){
@@ -810,8 +962,7 @@ const Word = (element, i) => {
   return w
 };
 
-
-const Lector = (l, options=default_options) => {
+const Reader = (l, options=default_options) => {
   l = pragmajs._e(l);
   if (options.wfy) wfy(l);
   let w = Word(l);
@@ -867,11 +1018,246 @@ const Lector = (l, options=default_options) => {
   if (options.pragmatizeOnCreate) lec.pragmatize();
   if (options.experimental) experiment();
 
-  // setTimeout(() => {
-  //   lec.toggle()
-  // }, 1000)
-
   return lec
+};
+
+function _needWrapper(op){
+    return op.stream || op.paginate
+}
+
+function _infinityPaginator(streamer, pageTemplate){
+  let inf = pragmajs._p("infinity paginator")
+        .from(paginator(pageTemplate))
+        .setValue(0)
+        .run(function(){
+          this.streamer = streamer;
+          this.fetch = this.streamer.fetch;
+
+          this.fillBefore = function(){
+            //prepend until its out of view  
+          };
+
+          this.fillAfter = function(){
+            //append until its out of view  
+            
+            return new Promise((resolve, reject) => {
+              console.log(this.value);
+              console.log(this.pages);
+
+
+              if (!this.pages.has(this.value)){
+                this.createCurrent();
+                console.log('created current page');
+              }
+
+              const conf = {
+                max: 15, // to avoid funky bugs
+                threshold: 1000 // 1000 px
+              };
+
+              // assumes current page is appended
+              let i = this.value + 1;
+
+              while (this.pages.size < conf.max && !this.pages.has(i)){
+                console.log(this.pages);
+                console.log(i-conf.max);
+                this.create(i);
+                if (this.pages.has(i-conf.max+1)) this.pages.delete(i-conf.max);
+                i++;
+              }
+
+              //this.create(i)
+              //this.create(i+1)
+
+              //setTimeout(() => {
+              //this.destroy(i)
+              //this.destroy(i+1)
+                //console.log("YYEYEYET")
+              //}, 5000)
+
+
+              //while (!this.pages.has(i+1) && this.pages.has(i) && isOnScreen(this.pages.get(i), -800)){
+              //while (i<2){
+                ////this.createAnAfter()
+                //console.log(".>>>>")
+                //this.create(i+1)
+                //this.destroy(i-1)
+                //console.log(this.pages)
+                //i++ 
+              //}
+            })
+
+          };
+
+          const conf = {
+            headspace: 4,
+            timeout: 10
+          };
+
+          function arrayDiff(a, b){
+            return a.filter(i => b.indexOf(i)<0)
+          }
+
+          this.fill = function(){
+            this.fetching = true;
+            //console.log(">> filling")
+            //console.log(this.value)
+            //this.createCurrent()
+
+            //this.value-conf.headspace
+            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
+            let pageRange = range(start, this.value+conf.headspace);
+            let pagesRendered = Array.from(this.pages.keys());
+            //console.log(pagesToRender, pagesRendered)
+
+            let pagesToRender = arrayDiff(pageRange, pagesRendered);
+            let pagesToDelete = arrayDiff(pagesRendered, pageRange);
+            //console.log(pageRange)
+            console.log(">> DEL", pagesToDelete);
+            console.log(">> ADD", pagesToRender);
+
+            for (let pageIndex of pagesToRender){
+              this.create(pageIndex);
+            }
+
+            for (let pageIndex of pagesToDelete){
+              //this.pages.get(pageIndex).css("background:red")
+              //this.destroy(pageIndex)
+            }
+            //console.log(this.pages)
+
+            //for (let pageIndex of pagesToRender){
+              //if (this.pages.has(pageIndex)) continue
+
+              //this.create(pageIndex)
+              ////console.log(this.pages.get(pageIndex))
+            //};
+
+            //this.fillAfter()
+            //this.fillBefore()
+            //
+            setTimeout(a => {
+              this.fetching = false;
+            }, conf.timeout);
+          };
+
+        })
+      .run(function(){
+        onScroll((s, l) => {
+          if (this.fetching) return 
+          //console.log(s, l)
+          let v = this.value;
+          let p = this.pages.get(v);
+          //console.log(p)
+          //console.log(isOnScreen(p))
+          if (!isOnScreen(p)){
+            console.log(p, "page is not on the screen");
+            //if (isOnScreen(this.pages.get(v+1))) this.value = v+1
+
+            let notFound = true;
+            let i = 1;
+            let di = l > 0 ? 1 : -1;
+            while (notFound){
+              if (isOnScreen(this.pages.get(v+i))){
+                this.value = v+i;
+                notFound = false;
+              }
+              i += di; 
+            }            // shit we lost the active page
+            //for (let [i, page] of this.pages){
+              //if (isOnScreen(page, page.height)) console.log(page)
+              //this.value = i
+            //}
+            //this.value += l<0 ? -1 : 1
+            //console.log(v, ">>>", this.value)
+          }
+          //paginator.fill()
+        });
+      })
+      .do(function(){
+        //if (!this.pages.has(this.value)) return
+        //console.log(this.value, this.value - this.dv)
+        //console.log(this.pages)
+        this.pages.get(this.value).css('background: lime');
+        this.pages.get(this.value - this.dv).css('background: whitesmoke');
+        this.fill();
+      });
+
+  return inf
+
+   //if (this.dv > 0){
+                    //cloned.appendTo(l.parentElement)
+
+                  //} else {
+
+                    //cloned.prependTo(l.parentElement)
+
+                  //}
+
+}
+
+function _streamer(sf){
+  return pragmajs._p('streamer')
+          .setValue(0)
+          .run(function(){
+            this.fetch = sf;
+            this.getContent = function(){
+              return this.fetch(this.value)  
+            };
+          })
+
+}
+
+const Lector = (l, options=default_options) => {
+  if (!_needWrapper(options)) return Reader(l, options)
+
+  console.log("configuration appears to be a bit more complicated");
+
+  if (options.stream &&
+      options.paginate &&
+      options.paginate.from === 'stream' &&
+      options.paginate.as === 'infiniteScroll'){
+
+    console.log('setting up streamer service');
+
+    let streamer = _streamer(options.stream);
+    let paginator = _infinityPaginator(streamer, l);
+
+
+    let reader = pragmajs._p()
+                  .as(pragmajs._e(l).parentElement)
+                  .adopt(paginator, streamer);
+
+    console.log(reader);
+
+    streamer.wireTo(paginator); // when paginator changes value, change value of streamer as well
+
+    streamer.do(function(){
+      console.log(`fetching page [${this.value}]`);
+    });
+
+    paginator.fill();
+
+    //paginator.do(function(){
+      //if (this.dv > 0){
+        //this.fill() 
+      //}
+    //})
+
+    ////paginator.fill()
+    //
+    
+
+    //paginator.value += 1
+
+    //
+    //
+    //
+    //paginator.value += 1
+    //paginator.value += 1
+    //paginator.value += 1
+
+  }
 };
 
 globalThis.Lector = Lector;

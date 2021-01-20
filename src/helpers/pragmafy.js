@@ -1,14 +1,9 @@
-import { Pragma } from "pragmajs"
-import $ from 'jquery'
+import { Pragma, _e } from "pragmajs"
 
-export function vanillafy(el){
+export function elementify(el){
   // pipeline to vanillafy pragma objects to html elements
-  if (el instanceof Pragma) el = el.element[0]
+  if (el instanceof Pragma) el = el.element
+  if (!el.isPragmaElement) el = _e(el)
   return el
 }
 
-export function jqueryfy(el){
-  // pipeline to jqueryfy pragma objects to html elements
-  if (el instanceof Pragma) return el.element
-  return $(el)
-}

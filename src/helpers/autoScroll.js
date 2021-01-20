@@ -1,4 +1,4 @@
-import { vanillafy, jqueryfy } from './pragmafy.js'
+import { elementify } from './pragmafy.js'
 import anime from "animejs"
 
 function getViewportHeight(){
@@ -6,19 +6,19 @@ function getViewportHeight(){
 }
 
 export function getRelativeScreen(el){
-  el = vanillafy(el) 
+  el = elementify(el) 
   let viewportHeight = getViewportHeight()
   let rect = el.getBoundingClientRect()
-  return  {  
+  return  {
             top: rect.top, 
             bottom: viewportHeight-rect.bottom
           }
 }
 
 export function isOnScreen(el, threshold=100){
-  el = vanillafy(el)
+  el = elementify(el) 
   let viewportHeight = getViewportHeight()
-  let rect = el.getBoundingClientRect()
+  let rect = el.offset()
   let sm = getRelativeScreen(el, threshold)
   return !(sm.top < threshold || sm.bottom < threshold)
 }
@@ -29,15 +29,12 @@ export function scrollTo(el, duration=200, threshold=200){
   // until the element is in view for more than the threshold
   
   //return new Promise(r => r())
-  el = jqueryfy(el)
-  //console.log('scrolling to', el)
+  //el = jqueryfy(el)
+  //
+
+  el = elementify(el) 
   return new Promise((resolve, reject) => {
-    //window.scroll({
-      //top: el.getBoundingClientRect().top,
-      //behavior: 'smooth'
-    //})
     const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    console.log('autoscrolling')
     const top = el.offset().top - threshold
     anime({
       targets: body,
@@ -52,13 +49,14 @@ export function scrollTo(el, duration=200, threshold=200){
 
 export function onScroll(cb=(s)=>{}){
   
-  let last_known_scroll_position = 0;
+  let last = 0;
   let ticking = false;
   document.addEventListener('scroll', function(e) {
-    last_known_scroll_position = window.scrollY;
+    let temp = last
+    last = window.scrollY;
     if (!ticking) {
       window.requestAnimationFrame(function() {
-        cb(last_known_scroll_position);
+        cb(last, last-temp);
         ticking = false;
       });
 

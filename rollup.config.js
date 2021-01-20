@@ -7,7 +7,7 @@ export default [
   // browser-friendly UMD build
   {
     input: 'src/index.js',
-    external: [ 'tippy', 'mousetrap', 'animejs', 'pragmajs' ],
+    external: [ 'tippy', 'mousetrap', 'animejs' ],
     output: {
       name: 'lector',
       file: pkg.browser,
