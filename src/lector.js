@@ -35,7 +35,7 @@ const Mark = (lec) => {
     // else we're out of view
 
     scrollingIntoView = true
-    
+
     let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
     // TODO  make a class Chain that does this.
     // Chain.add(cb), Chain.do() to execute and shit
@@ -189,7 +189,7 @@ function _streamer(sf){
           .run(function(){
             this.fetch = sf
             this.getContent = function(){
-              return this.fetch(this.value)  
+              return this.fetch(this.value)
             }
           })
 
@@ -208,12 +208,8 @@ export const Lector = (l, options=default_options) => {
     console.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
-    let paginator = _ext.infinityPaginator(streamer, l).config({
-      onPageActive: p => p.css('background lime'),
-      onPageInactive: p => p.css('background gray'),
-
-      onPageAdd: p => p.css("background gray")
-    })
+    let paginator = _ext.infinityPaginator(streamer, l)
+                    .config(options.paginate.config || {})
 
     let reader = _p()
                   .as(_e(l).parentElement)
@@ -229,4 +225,3 @@ export const Lector = (l, options=default_options) => {
 
   }
 }
-

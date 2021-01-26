@@ -8,7 +8,12 @@ const content = [
 ]
 
 function fetchContent(index){
-  return content[index]
+  // return content[index]
+  return new Promise(resolve => {
+    setTimeout(_ => {
+      resolve(Math.random())
+    }, Math.random()*1900)
+  })
 }
 
 let lectorSettings = {
@@ -21,11 +26,24 @@ let lectorSettings = {
   // "interactive": true,
   pragmatizeOnCreate: true,
   experimental: true,
-   
-   stream: fetchContent,
+
+   stream: fetchContent,// function with index as param that
+                        // returns the content for the page
+                        // can return a promise
    paginate: {
      from: 'stream',
-     as: 'infiniteScroll'
+     as: 'infiniteScroll',
+     config: {
+      onPageActive: p => {
+        p.css('background green')
+        p.onFetch(function(){
+          if (p.active) p.css('background lime')
+        })
+      },
+      onPageInactive: p => p.css('background gray'),
+      onPageAdd: p => p.css("background gray"),
+      onCreate: p => p.html("...")
+    }
    }
 }
 

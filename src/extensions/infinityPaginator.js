@@ -11,7 +11,11 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               fetch: streamer.fetch,
               // on page render
               // on page active
-              // on page inactive
+
+              // on page inactive,
+              // on page add,
+              // on create,
+              // on fetch
             }, config))
         )
         .setValue(0)
@@ -53,7 +57,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
         })
       .run(function(){
         onScroll((s, l) => {
-          if (this.fetching) return 
+          if (this.fetching) return
 
           let v = this.value
           let currentPage = this.pages.get(v)
@@ -66,7 +70,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
                 this.value = v+i
                 break
               }
-              i += di 
+              i += di
             }
           }
         })
@@ -87,4 +91,3 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
 
   return inf
 }
-

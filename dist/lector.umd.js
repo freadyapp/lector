@@ -26140,37 +26140,67 @@
   }
 
   function paginator(pageTemplate, conf={}){
-    return new E() 
+    return new E()
           .from(D.create.template.config({
+            // make this nicer
+
             name: 'paginator',
             defaultSet: pageTemplate,
+            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ v.throwSoft('no fetch source specified'); },
+
+            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => v.log('created', p),
+            onFetch: conf.onFetch,
+
             onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { v.log('added', page); },
-            onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ v.log('rendered', page); },
-            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){ v.log('active', page); },
-            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { v.log('inactive', page); }
+            onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ v.log('rendered', page, 'active?', page.active); },
+            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){v.log('active', page); },
+            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { v.log('inactive', page); },
           }))
 
           .run(function(){
 
             this.pageTemplate = _(this._paginatorTemplate);
-            this._clonePage = function() { return _(this.pageTemplate.cloneNode(false)) };
+            this._clonePage = function() {
+              let p = _(this.pageTemplate.cloneNode(false));
+              v.createEventChains(p, 'fetch');
+              return p
+            };
 
             this.create = function(val=this.value, action='append'){
               let cloned = this._clonePage();
 
               new Promise( resolve => {
-                setTimeout( _ => {
-                  cloned.html(`${val} @ ${Date.now()}`);
-                  resolve();
-                }, Math.random()*1500);
-              }).then( _ => this.onPageRender(cloned, val));
-            
+
+                this.onCreate(cloned);
+
+                let f = this.fetch(val);
+
+                let onFetch = conf.onFetch ||
+                          function(page, fetched){
+                            page.html(fetched);
+                            resolve(page);
+                          };
+
+                          // on fetch in config or the default one
+
+                if (f instanceof Promise){
+                  f.then(rf => onFetch(cloned, rf));
+                } else {
+                  onFetch(cloned, f);
+                  resolve(page);
+                }
+
+              }).then( page => {
+                page.fetchChain.exec();
+                this.onPageRender(page, val);
+              });
+
               cloned[`${action}To`](this.parent.element);
               this.addPage(cloned, val);
             };
 
             this.destroy = function(val){
-              this.pages.get(val).destroy(); 
+              this.pages.get(val).destroy();
               this.delPage(val);
             };
 
@@ -26184,15 +26214,19 @@
             };
 
             this.delPage = function(key){
-              return this.pages.delete(key) 
+              return this.pages.delete(key)
             };
 
             this.activate = function(pageIndex){
-              this.onPageActive(this.pages.get(pageIndex));
+              let p = this.pages.get(pageIndex);
+              p.active = true;
+              this.onPageActive(p);
             };
 
             this.inactivate = function(pageIndex){
-              this.onPageInactive(this.pages.get(pageIndex)); 
+              let p = this.pages.get(pageIndex);
+              p.active = false;
+              this.onPageInactive(p);
             };
 
             this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate');
@@ -26208,7 +26242,11 @@
                 fetch: streamer.fetch,
                 // on page render
                 // on page active
-                // on page inactive
+
+                // on page inactive,
+                // on page add,
+                // on create,
+                // on fetch
               }, config))
           )
           .setValue(0)
@@ -26249,7 +26287,7 @@
           })
         .run(function(){
           onScroll((s, l) => {
-            if (this.fetching) return 
+            if (this.fetching) return
 
             let v = this.value;
             let currentPage = this.pages.get(v);
@@ -26262,7 +26300,7 @@
                   this.value = v+i;
                   break
                 }
-                i += di; 
+                i += di;
               }
             }
           });
@@ -26316,7 +26354,7 @@
       // else we're out of view
 
       scrollingIntoView = true;
-      
+
       let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
       // TODO  make a class Chain that does this.
       // Chain.add(cb), Chain.do() to execute and shit
@@ -26470,7 +26508,7 @@
             .run(function(){
               this.fetch = sf;
               this.getContent = function(){
-                return this.fetch(this.value)  
+                return this.fetch(this.value)
               };
             })
 
@@ -26489,12 +26527,8 @@
       console.log('setting up streamer service');
 
       let streamer = _streamer(options.stream);
-      let paginator = infinityPaginator(streamer, l).config({
-        onPageActive: p => p.css('background lime'),
-        onPageInactive: p => p.css('background gray'),
-
-        onPageAdd: p => p.css("background gray")
-      });
+      let paginator = infinityPaginator(streamer, l)
+                      .config(options.paginate.config || {});
 
       let reader = P()
                     .as(_(l).parentElement)
