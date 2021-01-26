@@ -1,4 +1,4 @@
-import { Pragma, _e, _p, tpl, util } from 'pragmajs';
+import { Pragma, _e, _p, tpl, util as util$1 } from 'pragmajs';
 import anime from 'animejs';
 import 'jquery';
 import nlp from 'compromise';
@@ -10,38 +10,52 @@ function elementify(el){
   return el
 }
 
-function getViewportHeight(){
-  return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+// function getViewportHeight(){
+//   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+// }
+//
+// export function getRelativeScreen(el){
+//   el = elementify(el)
+//   let eee = _e(el)
+//   let rect = el.getBoundingClientRect()
+//   return  {
+//             top: rect.top, // has to be bigger than 0
+//             bottom: rect.bottom-getViewportHeight()// has to be smaller than
+//           }
+// }
+
+function isElementWithin(el, r={}){
+  let off = el.offset();
+  let elTop = off.top;
+  let elBot = off.top + el.rect().height;
+  return (elTop <= r.bot && elBot >= r.top) || (elTop <= r.top && elBot >= r.bot)
 }
 
-function getRelativeScreen(el){
-  el = elementify(el); 
-  let viewportHeight = getViewportHeight();
-  let rect = el.getBoundingClientRect();
-  return  {
-            top: rect.top, 
-            bottom: viewportHeight-rect.bottom
-          }
+function isMostlyInScreen(el, percent=.7){
+  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  el = elementify(el);
+  return isOnScreen(el, percent*el.rect().height) // is 70% on screen
 }
 
 function isOnScreen(el, threshold=100){
-  el = elementify(el); 
-  let viewportHeight = getViewportHeight();
-  let rect = el.offset();
-  let sm = getRelativeScreen(el);
-  return !(sm.top < threshold || sm.bottom < threshold)
+  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  el = elementify(el);
+  let winTop = window.scrollY;
+  let winBot = winTop + window.innerHeight;
+  let eee = isElementWithin(el, {top: winTop+threshold , bot: winBot-threshold});
+  return eee
 }
 
 function scrollTo(el, duration=200, threshold=200){
   // behavior
-  // closer, will scroll little bit downwards or upwards 
+  // closer, will scroll little bit downwards or upwards
   // until the element is in view for more than the threshold
-  
+
   //return new Promise(r => r())
   //el = jqueryfy(el)
   //
 
-  el = elementify(el); 
+  el = elementify(el);
   return new Promise((resolve, reject) => {
     const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
     const top = el.offset().top - threshold;
@@ -57,7 +71,7 @@ function scrollTo(el, duration=200, threshold=200){
 }
 
 function onScroll(cb=(s)=>{}){
-  
+
   let last = 0;
   let ticking = false;
   document.addEventListener('scroll', function(e) {
@@ -350,7 +364,7 @@ function wfyElement(element){
 }
 
 function wfy(element){
-  console.log(`wfying ${JSON.stringify(element)}`);
+  // console.log(`wfying ${JSON.stringify(element)}`)
   element = _e(element);
   // if (element.textContent.replaceAll(" ", "").length<1) return false
   let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
@@ -386,6 +400,24 @@ function range(start, stop, step) {
     }
     return a;
 }
+
+var index = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  PinkyPromise: PinkyPromise,
+  Idle: Idle,
+  range: range,
+  isOnScreen: isOnScreen,
+  isMostlyInScreen: isMostlyInScreen,
+  scrollTo: scrollTo,
+  onScroll: onScroll,
+  crush: crush,
+  generateDifficultyIndex: generateDifficultyIndex,
+  wordValue: wordValue,
+  charsMsAt: charsMsAt,
+  LectorSettings: LectorSettings,
+  wfy: wfy,
+  airway: airway
+});
 
 class PragmaLector extends Pragma {
 
@@ -787,15 +819,15 @@ function paginator(pageTemplate, conf={}){
 
           name: 'paginator',
           defaultSet: pageTemplate,
-          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified'); },
+          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util$1.throwSoft('no fetch source specified'); },
 
-          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
+          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util$1.log('created', p),
           onFetch: conf.onFetch,
 
-          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { util.log('added', page); },
-          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active); },
-          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page); },
-          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page); },
+          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { util$1.log('added', page); },
+          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util$1.log('rendered', page, 'active?', page.active); },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util$1.log('active', page); },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util$1.log('inactive', page); },
         }))
 
         .run(function(){
@@ -803,7 +835,9 @@ function paginator(pageTemplate, conf={}){
           this.pageTemplate = _e(this._paginatorTemplate);
           this._clonePage = function() {
             let p = _e(this.pageTemplate.cloneNode(false));
-            util.createEventChains(p, 'fetch');
+            this.adopt(p);
+            p.lec = this.parent;
+            util$1.createEventChains(p, 'fetch');
             return p
           };
 
@@ -877,7 +911,7 @@ function paginator(pageTemplate, conf={}){
 function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = _p("infinity paginator")
         .from(
-          paginator(pageTemplate).config(util.objDiff(
+          paginator(pageTemplate).config(util$1.objDiff(
             {
               streamer: streamer,
               fetch: streamer.fetch,
@@ -905,8 +939,8 @@ function infinityPaginator(streamer, pageTemplate, config={}){
             let pageRange = range(start, this.value+conf.headspace);
             let pagesRendered = Array.from(this.pages.keys());
 
-            let pagesToRender = util.aryDiff(pageRange, pagesRendered);
-            let pagesToDelete = util.aryDiff(pagesRendered, pageRange);
+            let pagesToRender = util$1.aryDiff(pageRange, pagesRendered);
+            let pagesToDelete = util$1.aryDiff(pagesRendered, pageRange);
 
             console.log(">> DEL", pagesToDelete);
             console.log(">> ADD", pagesToRender);
@@ -933,11 +967,18 @@ function infinityPaginator(streamer, pageTemplate, config={}){
           let v = this.value;
           let currentPage = this.pages.get(v);
 
-          if (!isOnScreen(currentPage)){
+          if (!isMostlyInScreen(currentPage)){
             let i = 1;
             let di = l > 0 ? 1 : -1;
             while (true){
-              if (isOnScreen(this.pages.get(v+i))){
+              if (!(this.pages.has(v+1))){
+                console.log('no active page!');
+                this.value = 0;
+                break
+              }
+
+              let p = this.pages.get(v+i);
+              if (isMostlyInScreen(p)){
                 this.value = v+i;
                 break
               }
@@ -1130,8 +1171,6 @@ const Reader = (l, options=default_options) => {
     }
   }
 
-  // bindKeys() // TODO: add mousetrap integration
-
   if (options.pragmatizeOnCreate) lec.pragmatize();
   if (options.experimental) experiment();
 
@@ -1160,7 +1199,8 @@ const Lector = (l, options=default_options) => {
 
   console.log("configuration appears to be a bit more complicated");
 
-  if (options.stream &&
+  if (options.experimental &&
+      options.stream &&
       options.paginate &&
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
@@ -1171,8 +1211,10 @@ const Lector = (l, options=default_options) => {
     let paginator = infinityPaginator(streamer, l)
                     .config(options.paginate.config || {});
 
-    let reader = _p()
-                  .as(_e(l).parentElement)
+    // let reader = _p()
+    //               .as(_e(l).parentElement)
+
+    let reader = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer);
 
     paginator.fill();
@@ -1186,7 +1228,20 @@ const Lector = (l, options=default_options) => {
   }
 };
 
-globalThis.Lector = Lector;
 // import { css } from "./styles/main.css"
 
-export default Lector;
+
+
+function globalify(){
+  const attrs = {
+    Lector: Lector,
+    Word: Word
+  };
+
+  for (let [key, val] of Object.entries(attrs)){
+    globalThis[key] = val;
+  }
+  // globalThis.Lector = Lector
+}
+
+export { Lector, Word, globalify, index as helpers };

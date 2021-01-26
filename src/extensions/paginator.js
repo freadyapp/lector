@@ -23,6 +23,8 @@ export function paginator(pageTemplate, conf={}){
           this.pageTemplate = _e(this._paginatorTemplate)
           this._clonePage = function() {
             let p = _e(this.pageTemplate.cloneNode(false))
+            this.adopt(p)
+            p.lec = this.parent
             util.createEventChains(p, 'fetch')
             return p
           }

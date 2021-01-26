@@ -1,4 +1,4 @@
-export { isOnScreen, scrollTo, onScroll } from "./autoScroll.js"
+export { isOnScreen, isMostlyInScreen, scrollTo, onScroll } from "./autoScroll.js"
 export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWordHelper"
 
 export { LectorSettings } from "./lectorSettings"

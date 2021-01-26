@@ -1,6 +1,6 @@
 import { _e, _p, Pragma, util } from "pragmajs"
 import { paginator } from "./paginator"
-import { range, isOnScreen, onScroll } from "../helpers/index"
+import { range, isOnScreen, isMostlyInScreen, onScroll } from "../helpers/index"
 
 export function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = _p("infinity paginator")
@@ -62,11 +62,18 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           let v = this.value
           let currentPage = this.pages.get(v)
 
-          if (!isOnScreen(currentPage)){
+          if (!isMostlyInScreen(currentPage)){
             let i = 1
             let di = l > 0 ? 1 : -1
             while (true){
-              if (isOnScreen(this.pages.get(v+i))){
+              if (!(this.pages.has(v+1))){
+                console.log('no active page!')
+                this.value = 0
+                break
+              }
+
+              let p = this.pages.get(v+i)
+              if (isMostlyInScreen(p)){
                 this.value = v+i
                 break
               }

@@ -85,7 +85,7 @@ const Mark = (lec) => {
   return mark
 }
 
-const Word = (element, i) => {
+export const Word = (element, i) => {
   let w = new PragmaWord(i)
           .as(element)
           .setValue(0)
@@ -170,8 +170,6 @@ export const Reader = (l, options=default_options) => {
     }
   }
 
-  // bindKeys() // TODO: add mousetrap integration
-
   if (options.pragmatizeOnCreate) lec.pragmatize()
   if (options.experimental) experiment()
 
@@ -200,7 +198,8 @@ export const Lector = (l, options=default_options) => {
 
   console.log("configuration appears to be a bit more complicated")
 
-  if (options.stream &&
+  if (options.experimental &&
+      options.stream &&
       options.paginate &&
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
@@ -211,8 +210,10 @@ export const Lector = (l, options=default_options) => {
     let paginator = _ext.infinityPaginator(streamer, l)
                     .config(options.paginate.config || {})
 
-    let reader = _p()
-                  .as(_e(l).parentElement)
+    // let reader = _p()
+    //               .as(_e(l).parentElement)
+
+    let reader = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
 
     paginator.fill()

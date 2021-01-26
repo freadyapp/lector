@@ -1,4 +1,7 @@
 // import { Lector } from '../src'
+// import { Word } from "../src/lector"
+
+lector.globalify()
 
 const content = [
   'lalallalalalalalala fear me',
@@ -9,9 +12,23 @@ const content = [
 
 function fetchContent(index){
   // return content[index]
+
   return new Promise(resolve => {
     setTimeout(_ => {
-      resolve(Math.random())
+      let txt = ""
+
+      let abc = "abcdefghijklmnopqrstuvwrxyz "
+      let len = abc.length
+      let words = 400
+
+      while (words > 0){
+        txt += abc.charAt(Math.floor(Math.random()*len))
+        if (Math.floor(Math.random()*6) == 3){
+          txt += " "
+          words --
+        }
+      }
+      resolve(txt)
     }, Math.random()*1900)
   })
 }
@@ -27,24 +44,33 @@ let lectorSettings = {
   pragmatizeOnCreate: true,
   experimental: true,
 
-   stream: fetchContent,// function with index as param that
-                        // returns the content for the page
-                        // can return a promise
-   paginate: {
-     from: 'stream',
-     as: 'infiniteScroll',
-     config: {
-      onPageActive: p => {
-        p.css('background green')
-        p.onFetch(function(){
-          if (p.active) p.css('background lime')
-        })
-      },
-      onPageInactive: p => p.css('background gray'),
-      onPageAdd: p => p.css("background gray"),
-      onCreate: p => p.html("...")
-    }
-   }
+ stream: fetchContent,// function with index as param that
+                      // returns the content for the page
+                      // can return a promise
+
+ paginate: {
+   from: 'stream',
+   as: 'infiniteScroll',
+   config: {
+    onPageActive: p => {
+      p.css('background green')
+      p.onFetch(function(){
+        if (p.active){
+          if (!p.word){
+            console.log('this.lec', p.lec)
+            lector.helpers.wfy(p)
+            p.word = Word(p)
+          }
+          p.css('background whitesmoke')
+          p.lec.connectTo(p.word)
+        }
+      })
+    },
+    onPageInactive: p => p.css('background lightgray'),
+    onPageAdd: p => p.css("background lightgray"),
+    onCreate: p => p.html("...")
+  }
+ }
 }
 
 pragmaSpace.dev = true

@@ -21,7 +21,7 @@ function wfyElement(element){
 }
 
 export function wfy(element){
-  console.log(`wfying ${JSON.stringify(element)}`)
+  // console.log(`wfying ${JSON.stringify(element)}`)
   element = _e(element)
   let wfied_text = ""
   // if (element.textContent.replaceAll(" ", "").length<1) return false
