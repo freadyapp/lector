@@ -73,7 +73,8 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               }
 
               let p = this.pages.get(v+i)
-              if (isMostlyInScreen(p)){
+              if (isMostlyInScreen(p, .5)){
+              // if (isOnScreen(p, 100)){
                 this.value = v+i
                 break
               }
@@ -83,12 +84,6 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
         })
       })
       .do(function(){
-        //if (!this.pages.has(this.value)) return
-        //console.log(this.value, this.value - this.dv)
-        //console.log(this.pages)
-        //
-        //this.pages.get(this.value).css('background: lime')
-        //this.pages.get(this.value - this.dv).css('background: whitesmoke')
 
         this.activate(this.value)
         this.inactivate(this.value-this.dv)

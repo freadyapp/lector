@@ -41,13 +41,13 @@ function isElementWithin(el, r={}){
 }
 
 function isMostlyInScreen(el, percent=.7){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) throw pragmajs.util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el);
   return isOnScreen(el, percent*el.rect().height) // is 70% on screen
 }
 
 function isOnScreen(el, threshold=100){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) throw pragmajs.util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el);
   let winTop = window.scrollY;
   let winBot = winTop + window.innerHeight;
@@ -430,6 +430,14 @@ var index = /*#__PURE__*/Object.freeze({
 
 class PragmaLector extends pragmajs.Pragma {
 
+  constructor(){
+    super(arguments);
+  }
+
+  get lector(){
+    return this
+  }
+
   get mark(){
     return this.markPragma
   }
@@ -442,10 +450,27 @@ class PragmaLector extends pragmajs.Pragma {
   get currentWord(){
     return this.w.currentWord
   }
+  get currentParent(){
+    return this.currentWord.parent
+  }
 
   connectTo(w){
     this.w = w;
     this.add(w);
+
+    return this
+  }
+
+  addWord(w){
+    // console.log('adding ', w, "to", this.w)
+    this.w.add(w);
+
+    // w.do(_ => {
+    //   if (!w.dv) return 
+    //   console.log("W VALUE", w.value,w.dv)
+    //   // this.connectTo(this.w.next())
+    // })
+    // this.connect()
     return this
   }
 
@@ -453,9 +478,19 @@ class PragmaLector extends pragmajs.Pragma {
     if (this.isReading) return this.pause()
     return this.read()
   }
+
   read(){
+    pragmajs.util.log("::LECTOR reading", this);
     this.w.read();
   }
+
+  summonTo(n){
+    this.currentParent.value += n;
+    this.currentWord.summon();
+  }
+
+  goToNext(){ this.summonTo(+1); }
+  goToPre(){ this.summonTo(-1); }
 
   pause(){
     this.w.pause();
@@ -464,6 +499,34 @@ class PragmaLector extends pragmajs.Pragma {
 
 class PragmaWord extends pragmajs.Pragma {
 
+  constructor(k){
+      super(k);
+      this.do(function(){
+        if (this.hasKids && this.parent){
+          // if (this.childMap.has(this.value)){
+          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
+          
+          this.parent.value = this.key; 
+          // + excess
+          // if (excess){
+          //   console.log("EXCESSSS", excess)
+          //   console.log(this.next)
+          //   if (this.isReading){
+          //     this.pause().then(_ => {
+          //       this.parent.read()
+          //     })
+          //   }
+          // }
+         
+        }
+      });
+  }
+
+  get lector(){
+    if (this.parent) return this.parent.lector
+    pragmajs.util.throwSoft('could not find lector for');
+  }
+
   get txt(){
     return this.text
   }
@@ -471,36 +534,62 @@ class PragmaWord extends pragmajs.Pragma {
   get index(){
     return parseInt(this.key)
   }
+
   get mark(){
     if (this.parent) return this.parent.mark
     return null
   }
+
   set mark(m){
     if (this.parent) this.parent.mark = m;
     return null
   }
+
   get isReading(){
     return this.currentPromise != null
   }
+
   get currentWord(){
     if (!this.hasKids) return this
-    return this.find(this.value).currentWord
+    // console.log(this.value)
+    // console.log(this.childMap)
+    // console.log(this.element, this.value, this.childMap, this.get(this.value))
+    let subW = this.get(this.value);
+    if (!subW) return pragmajs.util.throwSoft(`Could not find current Word of ${this.key}`)
+    return subW.currentWord
   }
 
-  sibling(n){
-    return this.parent ? this.parent.find(this.index + n) : null
+  getFromBottom(n){
+    // get items from last
+    return this.get(this.kidsum-n)
   }
-  // get next() {
-  //   if (!this.hasKids)  return this.parent.next
-  //   if (this.kidsum-this.value-1>0) return this.sibling(1).currentWord
-  //   return null
-  // }
+  sibling(n){
+    if (!this.parent) return null
+    let sib = this.parent.get(this.index+n);
+
+    // [1, 2, 3, 4, 5]
+    // [1, 2, 3, 4, 5]
+
+    if (!sib){
+
+      console.log(this.parent);
+      if (n < 0) return this.parent.sibling(-1).getFromBottom(n)
+      return this.parent.sibling(1).get(n)
+      // this.parent.sibling(-1).get(this.parent.sibling(-1).)
+      // this.parent.sibling(n > 0 ? 1 : -1).get(n)
+    }
+
+    return sib
+  }
+
   get next() {
     return this.sibling(1)
   }
+  
   get pre() {
     return this.sibling(-1)
   }
+
   isInTheSameLine(n) {
     return this.sibling(n) != null && ((this.sibling(n).top - this.top) ** 2 < 10)
   }
@@ -571,15 +660,17 @@ class PragmaWord extends pragmajs.Pragma {
   }
 
   read(){
-    // console.log('reading ' + this.text())
-    // if (this.hasKids) console.log(this.currentWord)
-
-    //console.log('fuck if this works it will be sad')
     if (this.currentPromise) return new Promise((resolve, reject) => {
       resolve('already reading');
     })
 
-    if (this.hasKids) return this.currentWord.read()
+    if (this.hasKids){
+      // recursive reading 
+      if (this.currentWord) return this.currentWord.read()
+      this.next.value = 0;
+      return this.next.read()
+    } 
+
     this.promiseRead();
     // console.log(this)
     return new PinkyPromise(resolve => {
@@ -593,6 +684,7 @@ class PragmaWord extends pragmajs.Pragma {
 
   summon(silent=false) {
     if (this.hasKids) return false
+    console.log("SUMMONING", this);
     return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
       this.mark.mark(this, 50, true);
       if (!silent) this.parent.value = this.index;
@@ -757,7 +849,7 @@ class PragmaMark extends pragmajs.Pragma {
       }, time, () => {
         //console.log(`FROM MARK -> marked ${word.text}`)
         this.last_marked = word;
-        word.parent.value = word.index;
+        // word.parent.value = word.index
       })
   }
 
@@ -843,11 +935,11 @@ function paginator(pageTemplate, conf={}){
 
           this.pageTemplate = pragmajs._e(this._paginatorTemplate);
           this._clonePage = function() {
-            let p = pragmajs._e(this.pageTemplate.cloneNode(false));
-            this.adopt(p);
-            p.lec = this.parent;
-            pragmajs.util.createEventChains(p, 'fetch');
-            return p
+            let page = pragmajs._e(this.pageTemplate.cloneNode(false));
+            this.adopt(page);
+            page.lec = this.parent;
+            pragmajs.util.createEventChains(page, 'fetch');
+            return page
           };
 
           this.create = function(val=this.value, action='append'){
@@ -883,34 +975,34 @@ function paginator(pageTemplate, conf={}){
             this.addPage(cloned, val);
           };
 
+          this.pages = new Map();
+
+
           this.destroy = function(val){
             this.pages.get(val).destroy();
             this.delPage(val);
           };
 
-          this.pages = new Map();
-
           this.addPage = function(page, key){
             this.onPageAdd(page);
-
             key = key || this.pages.size;
             return this.pages.set(key, page)
           };
-
           this.delPage = function(key){
             return this.pages.delete(key)
           };
 
+
           this.activate = function(pageIndex){
-            let p = this.pages.get(pageIndex);
-            p.active = true;
-            this.onPageActive(p);
+            let page = this.pages.get(pageIndex);
+            page.active = true;
+            this.onPageActive(page, pageIndex);
           };
 
           this.inactivate = function(pageIndex){
-            let p = this.pages.get(pageIndex);
-            p.active = false;
-            this.onPageInactive(p);
+            let page = this.pages.get(pageIndex);
+            page.active = false;
+            this.onPageInactive(page, pageIndex);
           };
 
           this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate');
@@ -987,7 +1079,8 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               }
 
               let p = this.pages.get(v+i);
-              if (isMostlyInScreen(p)){
+              if (isMostlyInScreen(p, .5)){
+              // if (isOnScreen(p, 100)){
                 this.value = v+i;
                 break
               }
@@ -997,12 +1090,6 @@ function infinityPaginator(streamer, pageTemplate, config={}){
         });
       })
       .do(function(){
-        //if (!this.pages.has(this.value)) return
-        //console.log(this.value, this.value - this.dv)
-        //console.log(this.pages)
-        //
-        //this.pages.get(this.value).css('background: lime')
-        //this.pages.get(this.value - this.dv).css('background: whitesmoke')
 
         this.activate(this.value);
         this.inactivate(this.value-this.dv);
@@ -1100,27 +1187,31 @@ const Word = (element, i) => {
           .as(element)
           .setValue(0);
 
-  let thisw = w.element.findAll('w');
+  let thisw = w.element.deepFindAll('w');
 
-  if (thisw.length==0) {
+  console.log(thisw.length);
+  if (i && thisw.length === 0) {
     w.addListeners({
       "click": function(e, comp){
-        this.summon().then(() => {
-          this.parent.value = this.key;
-        });
-      },
-      "mouseover": function(w, comp){
-        this.css("background #5e38c74a");
-      },
-      "mouseout": function(){
-        this.css('background transparent');
+        this.summon();
+        // this.summon().then(() => {
+          // this.parent.value = this.key
+        // })
       }
+      // ,
+      // "mouseover": function(w, comp){
+      //   this.css("background #5e38c74a")
+      // },
+      // "mouseout": function(){
+      //   this.css('background transparent')
+      // }
+
     });
   }
 
   // w.element.css({"border": ".5px dashed lightgray"})
   // w.css("border .5px dashed lightgray")
-  thisw.forEach( (el, i) => {
+  thisw.forEach((el, i) => {
     let ww = Word(el, i);
     // console.log(ww)
     w.add(ww);
@@ -1143,11 +1234,12 @@ const Reader = (l, options=default_options) => {
             // })
 
   let lec = new PragmaLector("lector")
+              .as(l)
               .setValue(0)
-              .connectTo(w)
-              .do(function(){
+              .connectTo(w);
+              // .do(function(){
 
-              });
+              // })
 
   lec.settings = LectorSettings()
                   .css(`position fixed
@@ -1160,13 +1252,15 @@ const Reader = (l, options=default_options) => {
   lec.contain(lec.settings);
 
   function bindKeys(){
-    lec.bind("right", function(){ this.w.value += 1; this.currentWord.summon();});
-    lec.bind("left", function(){ this.w.value -= 1; this.currentWord.summon();});
+    lec.bind("right", _ => lec.goToNext());
+    lec.bind("left", _ => lec.goToPre());
 
-    lec.bind("space", function(){
-      return false
-    }, 'keydown');
+    // lec.bind("left", function(){
+    //   // this.w.value -= 1
+    //   // this.currentWord.summon()
+    // })
 
+    lec.bind("space", _ => false, 'keydown'); // dont trigger the dumb fucken scroll thing
     lec.bind("space", function(){
       this.toggle();
       return false
@@ -1206,7 +1300,7 @@ function _streamer(sf){
 const Lector = (l, options=default_options) => {
   if (!_needWrapper(options)) return Reader(l, options)
 
-  console.log("configuration appears to be a bit more complicated");
+  pragmajs.util.log("configuration appears to be a bit more complicated");
 
   if (options.experimental &&
       options.stream &&
@@ -1214,7 +1308,7 @@ const Lector = (l, options=default_options) => {
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
 
-    console.log('setting up streamer service');
+    pragmajs.util.log('setting up streamer service');
 
     let streamer = _streamer(options.stream);
     let paginator = infinityPaginator(streamer, l)
@@ -1223,6 +1317,10 @@ const Lector = (l, options=default_options) => {
     // let reader = _p()
     //               .as(_e(l).parentElement)
 
+    // console.log('creating new lector')
+    // console.log(l)
+    // console.log(_e(l).parentElement)
+    // let options = util.objDiff({ skip: true })
     let reader = Reader(pragmajs._e(l).parentElement, options)
                   .adopt(paginator, streamer);
 

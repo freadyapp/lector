@@ -168,7 +168,7 @@ export default class PragmaMark extends Pragma {
       }, time, () => {
         //console.log(`FROM MARK -> marked ${word.text}`)
         this.last_marked = word
-        word.parent.value = word.index
+        // word.parent.value = word.index
       })
   }
 

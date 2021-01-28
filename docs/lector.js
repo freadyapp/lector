@@ -19,7 +19,7 @@ function fetchContent(index){
 
       let abc = "abcdefghijklmnopqrstuvwrxyz "
       let len = abc.length
-      let words = 400
+      let words = 300
 
       while (words > 0){
         txt += abc.charAt(Math.floor(Math.random()*len))
@@ -52,20 +52,24 @@ let lectorSettings = {
    from: 'stream',
    as: 'infiniteScroll',
    config: {
-    onPageActive: p => {
+    onPageActive: (p, index) => {
       p.css('background green')
       p.onFetch(function(){
-        if (p.active){
+        if (p.active) {
           if (!p.word){
             console.log('this.lec', p.lec)
             lector.helpers.wfy(p)
-            p.word = Word(p)
+            p.word = Word(p).setKey(index)
+            
+            p.lec.addWord(p.word)
+            console.log("appended new page with key", p.word.key)
           }
           p.css('background whitesmoke')
-          p.lec.connectTo(p.word)
+          // p.lec.connectTo(p.word)
         }
       })
     },
+
     onPageInactive: p => p.css('background lightgray'),
     onPageAdd: p => p.css("background lightgray"),
     onCreate: p => p.html("...")

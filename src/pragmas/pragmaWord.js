@@ -1,7 +1,35 @@
-import { Pragma } from "pragmajs";
+import { Pragma, util } from "pragmajs";
 import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } from "../helpers/index"
 
 export default class PragmaWord extends Pragma {
+
+  constructor(k){
+      super(k)
+      this.do(function(){
+        if (this.hasKids && this.parent){
+          // if (this.childMap.has(this.value)){
+          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
+          
+          this.parent.value = this.key 
+          // + excess
+          // if (excess){
+          //   console.log("EXCESSSS", excess)
+          //   console.log(this.next)
+          //   if (this.isReading){
+          //     this.pause().then(_ => {
+          //       this.parent.read()
+          //     })
+          //   }
+          // }
+         
+        }
+      })
+  }
+
+  get lector(){
+    if (this.parent) return this.parent.lector
+    util.throwSoft('could not find lector for')
+  }
 
   get txt(){
     return this.text
@@ -10,36 +38,64 @@ export default class PragmaWord extends Pragma {
   get index(){
     return parseInt(this.key)
   }
+
   get mark(){
     if (this.parent) return this.parent.mark
     return null
   }
+
   set mark(m){
     if (this.parent) this.parent.mark = m
     return null
   }
+
   get isReading(){
     return this.currentPromise != null
   }
+
   get currentWord(){
     if (!this.hasKids) return this
-    return this.find(this.value).currentWord
+    // console.log(this.value)
+    // console.log(this.childMap)
+    // console.log(this.element, this.value, this.childMap, this.get(this.value))
+    let subW = this.get(this.value)
+    if (!subW) return util.throwSoft(`Could not find current Word of ${this.key}`)
+    return subW.currentWord
   }
 
-  sibling(n){
-    return this.parent ? this.parent.find(this.index + n) : null
+  getFromBottom(n){
+    // get items from last
+    return this.get(this.kidsum-n)
   }
-  // get next() {
-  //   if (!this.hasKids)  return this.parent.next
-  //   if (this.kidsum-this.value-1>0) return this.sibling(1).currentWord
-  //   return null
-  // }
+  sibling(n){
+    if (!this.parent) return null
+    let sib = this.parent.get(this.index+n)
+
+    // [1, 2, 3, 4, 5]
+    // [1, 2, 3, 4, 5]
+
+    if (!sib){
+
+      console.log(this.parent)
+      if (n < 0) return this.parent.sibling(-1).getFromBottom(n)
+      return this.parent.sibling(1).get(n)
+      // this.parent.sibling(-1).get(this.parent.sibling(-1).)
+      // this.parent.sibling(n > 0 ? 1 : -1).get(n)
+    }
+
+    return sib
+
+    return this.parent ? this.parent.get(this.index + n) : null
+  }
+
   get next() {
     return this.sibling(1)
   }
+  
   get pre() {
     return this.sibling(-1)
   }
+
   isInTheSameLine(n) {
     return this.sibling(n) != null && ((this.sibling(n).top - this.top) ** 2 < 10)
   }
@@ -110,15 +166,17 @@ export default class PragmaWord extends Pragma {
   }
 
   read(){
-    // console.log('reading ' + this.text())
-    // if (this.hasKids) console.log(this.currentWord)
-
-    //console.log('fuck if this works it will be sad')
     if (this.currentPromise) return new Promise((resolve, reject) => {
       resolve('already reading')
     })
 
-    if (this.hasKids) return this.currentWord.read()
+    if (this.hasKids){
+      // recursive reading 
+      if (this.currentWord) return this.currentWord.read()
+      this.next.value = 0
+      return this.next.read()
+    } 
+
     this.promiseRead()
     // console.log(this)
     return new PinkyPromise(resolve => {
@@ -132,6 +190,7 @@ export default class PragmaWord extends Pragma {
 
   summon(silent=false) {
     if (this.hasKids) return false
+    console.log("SUMMONING", this)
     return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
       this.mark.mark(this, 50, true)
       if (!silent) this.parent.value = this.index

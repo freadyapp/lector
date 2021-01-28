@@ -90,27 +90,31 @@ export const Word = (element, i) => {
           .as(element)
           .setValue(0)
 
-  let thisw = w.element.findAll('w')
+  let thisw = w.element.deepFindAll('w')
 
-  if (thisw.length==0) {
+  console.log(thisw.length)
+  if (i && thisw.length === 0) {
     w.addListeners({
       "click": function(e, comp){
-        this.summon().then(() => {
-          this.parent.value = this.key
-        })
-      },
-      "mouseover": function(w, comp){
-        this.css("background #5e38c74a")
-      },
-      "mouseout": function(){
-        this.css('background transparent')
+        this.summon()
+        // this.summon().then(() => {
+          // this.parent.value = this.key
+        // })
       }
+      // ,
+      // "mouseover": function(w, comp){
+      //   this.css("background #5e38c74a")
+      // },
+      // "mouseout": function(){
+      //   this.css('background transparent')
+      // }
+
     })
   }
 
   // w.element.css({"border": ".5px dashed lightgray"})
   // w.css("border .5px dashed lightgray")
-  thisw.forEach( (el, i) => {
+  thisw.forEach((el, i) => {
     let ww = Word(el, i)
     // console.log(ww)
     w.add(ww)
@@ -133,11 +137,12 @@ export const Reader = (l, options=default_options) => {
             // })
 
   let lec = new PragmaLector("lector")
+              .as(l)
               .setValue(0)
               .connectTo(w)
-              .do(function(){
+              // .do(function(){
 
-              })
+              // })
 
   lec.settings = LectorSettings(lec)
                   .css(`position fixed
@@ -150,13 +155,15 @@ export const Reader = (l, options=default_options) => {
   lec.contain(lec.settings)
 
   function bindKeys(){
-    lec.bind("right", function(){ this.w.value += 1; this.currentWord.summon()})
-    lec.bind("left", function(){ this.w.value -= 1; this.currentWord.summon()})
+    lec.bind("right", _ => lec.goToNext())
+    lec.bind("left", _ => lec.goToPre())
 
-    lec.bind("space", function(){
-      return false
-    }, 'keydown')
+    // lec.bind("left", function(){
+    //   // this.w.value -= 1
+    //   // this.currentWord.summon()
+    // })
 
+    lec.bind("space", _ => false, 'keydown') // dont trigger the dumb fucken scroll thing
     lec.bind("space", function(){
       this.toggle()
       return false
@@ -196,7 +203,7 @@ function _streamer(sf){
 export const Lector = (l, options=default_options) => {
   if (!_needWrapper(options)) return Reader(l, options)
 
-  console.log("configuration appears to be a bit more complicated")
+  util.log("configuration appears to be a bit more complicated")
 
   if (options.experimental &&
       options.stream &&
@@ -204,7 +211,7 @@ export const Lector = (l, options=default_options) => {
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
 
-    console.log('setting up streamer service')
+    util.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
     let paginator = _ext.infinityPaginator(streamer, l)
@@ -213,6 +220,10 @@ export const Lector = (l, options=default_options) => {
     // let reader = _p()
     //               .as(_e(l).parentElement)
 
+    // console.log('creating new lector')
+    // console.log(l)
+    // console.log(_e(l).parentElement)
+    // let options = util.objDiff({ skip: true })
     let reader = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
 

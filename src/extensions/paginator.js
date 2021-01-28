@@ -22,11 +22,11 @@ export function paginator(pageTemplate, conf={}){
 
           this.pageTemplate = _e(this._paginatorTemplate)
           this._clonePage = function() {
-            let p = _e(this.pageTemplate.cloneNode(false))
-            this.adopt(p)
-            p.lec = this.parent
-            util.createEventChains(p, 'fetch')
-            return p
+            let page = _e(this.pageTemplate.cloneNode(false))
+            this.adopt(page)
+            page.lec = this.parent
+            util.createEventChains(page, 'fetch')
+            return page
           }
 
           this.create = function(val=this.value, action='append'){
@@ -62,34 +62,34 @@ export function paginator(pageTemplate, conf={}){
             this.addPage(cloned, val)
           }
 
+          this.pages = new Map()
+
+
           this.destroy = function(val){
             this.pages.get(val).destroy()
             this.delPage(val)
           }
 
-          this.pages = new Map()
-
           this.addPage = function(page, key){
             this.onPageAdd(page)
-
             key = key || this.pages.size
             return this.pages.set(key, page)
           }
-
           this.delPage = function(key){
             return this.pages.delete(key)
           }
 
+
           this.activate = function(pageIndex){
-            let p = this.pages.get(pageIndex)
-            p.active = true
-            this.onPageActive(p)
+            let page = this.pages.get(pageIndex)
+            page.active = true
+            this.onPageActive(page, pageIndex)
           }
 
           this.inactivate = function(pageIndex){
-            let p = this.pages.get(pageIndex)
-            p.active = false
-            this.onPageInactive(p)
+            let page = this.pages.get(pageIndex)
+            page.active = false
+            this.onPageInactive(page, pageIndex)
           }
 
           this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate')
