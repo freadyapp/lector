@@ -34,7 +34,6 @@ export default class PragmaLector extends Pragma {
   }
 
   addWord(w){
-    // console.log('adding ', w, "to", this.w)
     this.w.add(w)
 
     // w.do(_ => {

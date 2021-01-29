@@ -158,11 +158,6 @@ export const Reader = (l, options=default_options) => {
     lec.bind("right", _ => lec.goToNext())
     lec.bind("left", _ => lec.goToPre())
 
-    // lec.bind("left", function(){
-    //   // this.w.value -= 1
-    //   // this.currentWord.summon()
-    // })
-
     lec.bind("space", _ => false, 'keydown') // dont trigger the dumb fucken scroll thing
     lec.bind("space", function(){
       this.toggle()
