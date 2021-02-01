@@ -8,12 +8,12 @@
 
   var anime__default = /*#__PURE__*/_interopDefaultLegacy(anime);
 
-  class t{constructor(t){this.self=t,this.actions=new Map,this.delete=this.destroy;}addWithKey(t,e=null){e=e||this.actions.size,this.actions.set(e,t);}add(...t){for(let e of t)this.addWithKey(e);}forAction(t){for(let[e,n]of this.actions)t(e,n);}exec(...t){self=this.self,this.execAs(self,...t);}destroy(...t){t.forEach((t=>this.actions.delete(t)));}execAs(t,...e){this.forAction((function(n,i){i.bind(t)(...e);}));}}function e(t,e=null,n=["rerun the code 10 times"],i=null,r=!1){if(!O()&&!r)return null;console.error(`%c 🧯 pragma.js  %c \n\n      encountered a soft error 🔫 %c \n\n      \n${i?`Triggered by: [${i.key} ${i}]`:""}\n      \n${t} %c\n\n      \n${null!=e?`Potential ${e}: \n\t${n.join("\n\t")}`:""}\n      `,"font-size:15px","font-size: 12px;","color:whitesmoke","color:white");}function n(){if(!O())return null;console.log(...arguments);}function i(){if(!O())return null;console.log("%c 🌴 [pragma] \n\n      ","font-size:12px; color:#86D787;",...arguments,"\n");}function r(){return Math.random().toString(36).substring(3,6)+Math.random().toString(36).substring(5,8)}function o(){return s(8)}function s(t=7){return t<5?r():(r()+s(t-5)).substring(0,t)}function a(t){return s(t)}function l(t,e,n=!1){for(let[n,i]of Object.entries(e))t[n]=i;return t}function h(e,n){let i=`${e}Chain`,r=`on${e.capitalize()}`;return n[i]=new t(n),n[r]=function(t,e){n[i].addWithKey(t,e);},{chainName:i,eventName:r}}function u(t,e){let n=h(t,e),i=`is${t.capitalize()}ed`;e[n.chainName].add((()=>{e[i]=!0;})),e[n.eventName]=function(t){if(e[i])return t(e);e[n.chainName].add(t);};}function c(t,...e){for(let n of e)u(n,t);}String.prototype.capitalize=function(){return this.charAt(0).toUpperCase()+this.slice(1)};const f=t=>t.toString().replace(/[^a-z0-9]/gi,"-").toLowerCase();globalThis.pragmaSpace||(globalThis.pragmaSpace={}),c(globalThis.pragmaSpace,"docLoad");const d=globalThis.pragmaSpace.onDocLoad;function p(){globalThis.pragmaSpace.isDocLoaded||(i("📰 document is loaded."),globalThis.pragmaSpace.docLoadChain.exec());}document.addEventListener("readystatechange",(()=>{"complete"===document.readyState&&p();})),document.addEventListener("turbolinks:load",(()=>{i("🚀 TURBOLINKS loaded"),p();}));var m=/[#.]/g;function g(t,e="div"){var n=t||"",i={tag:e},r=0;let o,s,a;for(;r<n.length;)m.lastIndex=r,a=m.exec(n),o=n.slice(r,a?a.index:n.length),o&&(s?"#"===s?i.id=o:i.class?i.class.push(o):i.class=[o]:i.tag=o,r+=o.length),a&&(s=a[0],r++);return i}function y(t,n){if(!Array.isArray(t))return e(`Could not add class [${t}] to [${n}]`);for(let e of t){let t=e.split(" ");t.length>1?y(t,n):n.classList.add(e);}}function x(t){try{let e=document.querySelector(t);if(e)return e}catch(t){}let e=g(t),n=document.createElement(e.tag||"div");return e.id&&(n.id=e.id),e.class&&y(e.class,n),n}function b(t){return document.createRange().createContextualFragment(t)}function v(t){return t instanceof Element?t:"string"==typeof t?"<"===t[0]?b(t):x(t):e(`Could not find/create element from [${t}]`)}function C(t,e){E(t).findAll("path").forEach((t=>{const n=t.attr("fill");"none"!=n&&"transparent"!=n&&t.attr("fill",e);}));}const T={html:(t,e)=>{e.innerHTML=t;},pcss:(t,e)=>{for(let[i,r]of _.cssToDict(t))e.style[(n=i,n.replace(/([-_]\w)/g,(t=>t[1].toUpperCase())))]=r;var n;}},_={cssToDict:t=>{t=t.replaceAll("\n",";").replaceAll(":"," ");let n=new Map;for(let e of t.split(";")){if(e.replace(/\s/g,"").length<2)continue;e=e.trim().split(" ");let t=e[0];e.shift(),n.set(t.trim(),e.join(" ").trim());}let i=[];for(const[t,e]of n.entries())CSS.supports(t,e)||i.push(`${t.trim()}: ${e.trim()}`);return i.length>0&&e("CSS syntax error","typos",i),n},css:t=>{let e="";for(let[n,i]of _.cssToDict(t))e+=`${n}:${i};`;return e},html:t=>t};function O(){return globalThis.pragmaSpace.dev}globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.dev=globalThis.pragmaSpace.dev||"undefined"!=typeof process&&process.env&&"development"===process.env.NODE_ENV;var S=Object.freeze({__proto__:null,_deving:O,throwSoft:e,log:n,suc:i,whenDOM:d,parseQuery:g,addClassAryTo:y,selectOrCreateDOM:x,elementFrom:v,toHTMLAttr:f,fragmentFromString:b,fillSVG:C,generateRandomKey:a,objDiff:l,aryDiff:function(t,e){return t.filter((t=>e.indexOf(t)<0))},_extend:function(t,e){Object.setPrototypeOf(t,l(Object.getPrototypeOf(t),e));},createEventChains:c,createChains:function(t,...e){for(let n of e)h(n,t);},rk:s,rk5:r,rk8:o,parse:_,apply:T});function $(t){if(null==t||null==t)return e(`Could not find a DOM element for ${t}`);if(t.element)return $(t.element);return v(t)}function E(t,e){let n=$(t);var i,r;return n.constructor===DocumentFragment&&(i=n,(r=document.createElement("template")).appendChild(i.cloneNode(!0)),n=r.firstChild),n instanceof Element&&(n.init(),n._render()),"string"==typeof e&&n.html(e),n}const M={init:function(){this.isPragmaElement=!0,c(this,"docLoad","render"),d((()=>this.docLoadChain.exec(this)));},_render:function(){this.renderChain.exec(this);},appendTo:function(t){return this.onDocLoad((()=>{this._parentElement=$(t),this._parentElement.appendChild(this),this._render();})),this},prependTo:function(t){return this.onDocLoad((()=>{this._parentElement=$(t),this._parentElement.prepend(this),this._render();})),this},append:function(t){return this.onRender((()=>{let e=$(t);this.appendChild(e);})),this},destroy:function(){this.onRender((()=>{this.parentElement&&this.parentElement.removeChild(this);}));},css:function(t){return this.onRender((()=>{T.pcss(t,this);})),this},html:function(t){return this.onRender((()=>{T.html(t,this);})),this},setId:function(t){return this.id=t,this},addClass:function(...t){return y(t,this),this},listenTo:function(...t){return this.onRender((()=>{this.addEventListener(...t);})),this},attr:function(t,e){if("string"==typeof t){if(void 0===e)return this.getAttribute(t);const n=t;(t={})[n]=e;}for(let[e,n]of Object.entries(t))this.setAttribute(e,n);return this},find:function(){return this.querySelector(...arguments)},findAll:function(t){return this.querySelectorAll(t)},deepFindAll:function(t){let e=Array.from(this.findAll(t));for(let n of this.children)e=e.concat(n.deepFindAll(t));return e},rect:function(){return "function"==typeof this.getBoundingClientRect?this.getBoundingClientRect():{}},offset:function(){var t=this.rect();return {top:t.top+window.scrollY,left:t.left+window.scrollX}},x:function(t){return this.left+this.width/2-t/2}},w={top:function(){return this.offset().top},left:function(){return this.offset().left},width:function(){return this.rect().width},height:function(){return this.rect().height},text:function(){return this.textContent}};for(let[t,e]of Object.entries(M))Element.prototype[t]=e;for(let[t,e]of Object.entries(w))Object.defineProperty(Element.prototype,t,{get:e,configurable:!0});const A={parent:(t,e)=>{t.parent=e;},value:(t,e)=>{t.value=e;},id:(t,e)=>{t.id=e;},class:(t,e)=>{t._class=e;},element:(t,n)=>{if(!(n instanceof Element))return e(`Could not add ${n} as the element of [${t}]`);t.element=n;},children:(t,e)=>{if(e.constructor==Array)return t.buildAry(e);t.build(e);},childTemplate:(t,e)=>{}};function j(t,e){return {val:t,set:e}}function k(t,n,i){if(!n)return j(t,!0);if(i)return j(function(t,n){return function(t){return null!=t.min&&null!=t.max}(n)?t=(t=t>n.max?n.min:t)<n.min?n.max:t:e(`Could not loop value, since range (${JSON.stringify(n)}) is unbounded`)}(t,n),!0);let r=function(t,e){return t=e.min?Math.max(e.min,t):t,e.max?Math.min(e.max,t):t}(t,n);return j(r,r==t)}class L extends class{constructor(t){this.childMap=new Map,this.key="string"==typeof t?t:o(),this.containsKey=this.childMap.has;}get kidsum(){return this.childMap.size}get hasKids(){return this.kidsum>0}get shape(){return this.shapePrefix()}get master(){return null==this.parent||null==this.parent.parent?this.parent:this.parent.master}get children(){return Array.from(this.childMap.values())}get depthKey(){return this.parent?this.parent.depthKey+"<~<"+this.key:this.key}get allChildren(){if(!this.hasKids)return null;let t=this.children;for(let e of t){let n=e.allChildren;n&&(t=t.concat(n));}return t}get(t){return this.childMap.get(t)}find(t){if(this.childMap.has(t))return this.childMap.get(t);for(let[e,n]of this.childMap){let e=n.find(t);if(e)return e}}adopt(...t){for(let e of t)this.add(e);return this}add(t){return t?this.childMap.has(t.key)?(t.key=`${t.key}<${r()}`,this.add(t)):(t.parent=this,void this.childMap.set(t.key,t)):e(`Could not add [${t}] to [${this.id}]`)}shapePrefix(t=""){let e=`${t}| ${this.type} - ${this.key} \n`;if(this.hasKids){t+="| ";for(let n of this.children)e+=n.shapePrefix(t);}return e}}{constructor(e,n){super(),c(this,"export"),this.actionChain=new t,"object"==typeof e?function(t,e){let n=new Map;for(let[i,r]of Object.entries(t))A.hasOwnProperty(i)?A[i](e,r):n.set(i,r);e.element&&e.element.whenInDOM((t=>{for(let[i,r]of n)if(i=i.toLowerCase(),i.includes("on")){let n=i.split("on")[1].trim();t.listenTo(n,(()=>{e.action(r);}));}}));}(e,this):this.key=e,this.element||this.as();}get _e(){return this.element}setElement(t,e=!0){return this.elementDOM=t,e&&this.element.id&&(this.id=this.element.id),this}get element(){return this.elementDOM}set element(t){this.setElement(t);}setRange(t=null,e=null){return this.range=this.range||{},this.range.min=null===t?this.range.min:t,this.range.max=null===e?this.range.max:e,this}breakLoop(){return this._loopVal=!1,this}setLoop(t,e){return this.setRange(t,e),this._loopVal=!0,this}get dv(){return this.v-this._lv}get value(){return this.v}setValue(t){return this.value=t,this}set value(t){let e=k(t,this.range,this._loopVal);e.set&&(this._lv=this.v,this.v=e.val,this.exec());}exec(){return this.actionChain.execAs(this,...arguments),this}setKey(t){return this.key=t,this}set key(t){this._KEY=null==t?a():t;}get key(){return this._KEY}set id(t){this.key=t,this.element&&(this.element.id=this.id);}get id(){return f(this.key)}buildAry(t){for(let e of t)this.add(new L(e,this));return this}build(...t){return this.buildAry(t)}on(t,e=null){var n=this;return {do:function(e){return n.element.listenTo(t,(()=>{n.run(e);})),n}}}as(t=null,e){return t=t||`div#${this.id}.pragma`,this.setElement(E(t,e),!1),this}addExport(t){this.exports=this.exports||[],this.exports.push(t);}export(...t){for(let e of t)this.addExport(e);}from(t){if(t.exports)for(let e of t.exports)this[e]=t[e];return t.exportChain&&t.exportChain.exec(this),this}wireTo(t){let e=this;return t.do((function(){e.value=this.value;})),this}do(){return this.actionChain.add(...arguments),this}run(...t){for(let e of t)this.runAs(e);return this}runAs(t){return t.bind(this)()}contain(...t){for(let n of t)super.add(n),n.isRendered?e(`[${n}] is already appended`):this.element.append(n);return this}pragmatize(){return this.element.appendTo(this.parent&&this.parent.element||"body"),this}pragmatizeAt(t){return this.element.appendTo(t),this}addListeners(t){for(let[e,n]of Object.entries(t))this.on(e).do(n);return this}}const D=["html","css","addClass","setId"];for(let t of D)L.prototype[t]=function(){return this.element[t](...arguments),this};const z=["offset","text","top","left","width","height","x"];for(let t of z)Object.defineProperty(L.prototype,t,{get:function(){return this.element[t]}});globalThis.pragmaSpace.integrateMousetrap=function(t){"function"==typeof t&&(L.prototype.bind=function(e,n,i){let r=this;return t.bind(e,(function(){return r.runAs(n)}),i),this},globalThis.pragmaSpace.mousetrapIntegration=!0,i("Mousetrap configuration detected! Extended Pragmas to support .bind() method!"));};try{globalThis.pragmaSpace.integrateMousetrap(Mousetrap);}catch(t){}const K={get template(){return (new L).run((function(){this.config=function(t){if(t.name){let e=`set${t.name.capitalize()}Template`,n=`_${t.name}Template`;this[e]=function(t){return this[n]=t,this},t.defaultSet&&this[e](t.defaultSet),this._tempOptions={set:e},this.export(n,e),this.onExport((t=>{t.export(n,e);}));}this.export("config"),this.onExport((t=>t.export("config"))),t.name&&delete t.name,t.defaultSet&&delete t.defaultSet;for(let[e,n]of Object.entries(t))this[e]=n,this.export(e),this.onExport((t=>t.export(e)));return this};}))},fromObject:function(t){n(`Creating template object from obj: [${JSON.stringify(t)}]`);const e=t._create||function(t){return t};t._create&&delete t._create;let i={defaults:{},isPragmaTemplate:!0,setDefaults:function(t){return this.defaults=l(this.defaults,t),this}};for(let[n,r]of Object.entries(t))Object.defineProperty(i,n,{get:function(){return e(r,i,...arguments)}});return i},from:function(t,n){if("object"==typeof t)return "function"==typeof n&&(t._create=n),this.fromObject(t);e(`Could not create a template object from argument [${t}])`);}};const P={onOptionCreate:function(t,e){t.contain(e);},optionTemplate:function(t){return new L(t).html(t).addClass("pragma-click").on("click").do((function(){this.parent.value=this.key;}))}};var R=Object.freeze({__proto__:null,monitor:function(t){return (new L).from(K.template.config({name:"monitor",defaultSet:t||(t=>t)})).do((function(){this.html(this._monitorTemplate(this.value));})).run((function(){this.export("element","actionChain");}))},slider:function(t){return (new L).from(K.template.config({name:"slider",defaultSet:t||{min:0,max:1e3}})).run((function(){this.as("<input type='range' min=0 max=10 value=5></input>"),this.setRange(0,10),this.on("input").do((function(){this.value=parseInt(this.element.value);})),this.export("element","actionChain");}))},select:function(t){return (new L).from(K.template.config({name:"select",defaultSet:t.options})).run((function(){if(t.onOptionCreate=t.onOptionCreate||P.onOptionCreate,t.optionTemplate=t.optionTemplate||P.optionTemplate,this._selectTemplate.constructor===Array)for(let e of this._selectTemplate)t.onOptionCreate(this,t.optionTemplate(e));else for(let[e,n]of Object.entries(this._selectTemplate)){const i={};i[e]=n,t.onOptionCreate(this,t.optionTemplate(e,n),i);}this.export("element","actionChain","childMap");}))},create:K,icons:function(t){return K.from(t,((t,e)=>I().run((function(){var n,i;this.element=(n=_e(t),(i=e.defaults).fill&&(C(n,i.fill),delete i.fill),n.attr(i)),this.export("element");}))))},icon:function(){}});const N=(t,e)=>new L(t,e),I=N;
+  function t(t,e=null,n=["rerun the code 10 times"],i=null,r=!1){if(!w()&&!r)return null;console.error(`%c 🧯 pragma.js  %c \n\n      encountered a soft error 🔫 %c \n\n      \n${i?`Triggered by: [${i.key} ${i}]`:""}\n      \n${t} %c\n\n      \n${null!=e?`Potential ${e}: \n\t${n.join("\n\t")}`:""}\n      `,"font-size:15px","font-size: 12px;","color:whitesmoke","color:white");}function e(){if(!w())return null;console.log(...arguments);}function n(){if(!w())return null;console.log("%c 🌴 [pragma] \n\n      ","font-size:12px; color:#86D787;",...arguments,"\n");}class i{constructor(t){this.self=t,this.actions=new Map,this.delete=this.destroy;}addWithKey(t,e=null){e=e||this.actions.size,this.actions.set(e,t);}add(...t){for(let e of t)this.addWithKey(e);}forAction(t){for(let[e,n]of this.actions)t(e,n);}exec(...t){this.execAs(this.self,...t);}destroy(...t){t.forEach((t=>this.actions.delete(t)));}execAs(t,...e){this.forAction((function(n,i){i.bind(t)(...e);}));}}function r(){return Math.random().toString(36).substring(3,6)+Math.random().toString(36).substring(5,8)}function o(){return s(8)}function s(t=7){return t<5?r():(r()+s(t-5)).substring(0,t)}function a(t){return s(t)}function l(t,e){for(let[n,i]of Object.entries(e))t[n]=i;return t}function h(t,e){let n=`${t}Chain`,r=`on${t.capitalize()}`;return e[n]=new i(e),e[r]=function(t,i){e[n].addWithKey(t,i);},{chainName:n,eventName:r}}function c(t,e){let n=h(t,e),i=`is${t.capitalize()}ed`;e[n.chainName].add((()=>{e[i]=!0;})),e[n.eventName]=function(t){if(e[i])return t(e);e[n.chainName].add(t);};}function u(t,...e){for(let n of e)c(n,t);}String.prototype.capitalize=function(){return this.charAt(0).toUpperCase()+this.slice(1)};const f=t=>t.toString().replace(/[^a-z0-9]/gi,"-").toLowerCase();globalThis.pragmaSpace||(globalThis.pragmaSpace={}),u(globalThis.pragmaSpace,"docLoad");const d=globalThis.pragmaSpace.onDocLoad;function p(){globalThis.pragmaSpace.isDocLoaded||(n("📰 document is loaded."),globalThis.pragmaSpace.docLoadChain.exec());}document.addEventListener("readystatechange",(()=>{"complete"===document.readyState&&p();})),document.addEventListener("turbolinks:load",(()=>{n("🚀 TURBOLINKS loaded"),p();}));var m=/[#.]/g;function g(t,e="div"){var n=t||"",i={tag:e},r=0;let o,s,a;for(;r<n.length;)m.lastIndex=r,a=m.exec(n),o=n.slice(r,a?a.index:n.length),o&&(s?"#"===s?i.id=o:i.class?i.class.push(o):i.class=[o]:i.tag=o,r+=o.length),a&&(s=a[0],r++);return i}function y(e,n,i){if(!Array.isArray(e))return t(`Could not ${i} class [${e}] -> [${n}]`);for(let t of e){let e=t.split(" ");e.length>1?y(e,n,i):n.classList[i](t);}}function x(t,e){y(t,e,"add");}function b(t,e){y(t,e,"remove");}function C(t,e){y(t,e,"toggle");}function v(t){try{let e=document.querySelector(t);if(e)return e}catch{}let e=g(t),n=document.createElement(e.tag||"div");return e.id&&(n.id=e.id),e.class&&x(e.class,n),n}function T(t){return document.createRange().createContextualFragment(t)}function _(e){return e instanceof Element?e:"string"==typeof e?"<"===e[0]?T(e):v(e):t(`Could not find/create element from [${e}]`)}function O(t,e){M(t).findAll("path").forEach((t=>{const n=t.attr("fill");"none"!=n&&"transparent"!=n&&t.attr("fill",e);}));}const S={html:(t,e)=>{e.innerHTML=t;},pcss:(t,e)=>{for(let[i,r]of A.cssToDict(t))e.style[(n=i,n.replace(/([-_]\w)/g,(t=>t[1].toUpperCase())))]=r;var n;}},A={cssToDict:e=>{e=e.replaceAll("\n",";").replaceAll(":"," ");let n=new Map;for(let t of e.split(";")){if(t.replace(/\s/g,"").length<2)continue;t=t.trim().split(" ");let e=t[0];t.shift(),n.set(e.trim(),t.join(" ").trim());}let i=[];for(const[t,e]of n.entries())CSS.supports(t,e)||i.push(`${t.trim()}: ${e.trim()}`);return i.length>0&&t("CSS syntax error","typos",i),n},css:t=>{let e="";for(let[n,i]of A.cssToDict(t))e+=`${n}:${i};`;return e},html:t=>t};function w(){return globalThis.pragmaSpace.dev}globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.dev=globalThis.pragmaSpace.dev||"undefined"!=typeof process&&process.env&&"development"===process.env.NODE_ENV;var $=Object.freeze({__proto__:null,_deving:w,throwSoft:t,log:e,suc:n,whenDOM:d,parseQuery:g,addClassAryTo:x,removeClassAryFrom:b,toggleClassAryOf:C,selectOrCreateDOM:v,elementFrom:_,toHTMLAttr:f,fragmentFromString:T,fillSVG:O,generateRandomKey:a,objDiff:l,aryDiff:function(t,e){return t.filter((t=>e.indexOf(t)<0))},_extend:function(t,e){Object.setPrototypeOf(t,l(Object.getPrototypeOf(t),e));},createEventChains:u,createChains:function(t,...e){for(let n of e)h(n,t);},rk:s,rk5:r,rk8:o,parse:A,apply:S});function E(e){if(null==e||null==e)return t(`Could not find a DOM element for ${e}`);if(e.element)return E(e.element);return _(e)}function M(t,e){let n=E(t);var i,r;return n.constructor===DocumentFragment&&(i=n,(r=document.createElement("template")).appendChild(i.cloneNode(!0)),n=r.firstChild),n instanceof Element&&(n.init(),n._render()),"string"==typeof e&&n.html(e),n}const j={init:function(){this.isPragmaElement=!0,u(this,"docLoad","render"),d((()=>this.docLoadChain.exec(this)));},_render:function(){this.renderChain.exec(this);},appendTo:function(t){return this.onDocLoad((()=>{this._parentElement=E(t),this._parentElement.appendChild(this),this._render();})),this},prependTo:function(t){return this.onDocLoad((()=>{this._parentElement=E(t),this._parentElement.prepend(this),this._render();})),this},append:function(...t){return this.onRender((()=>{for(let e of t){let t=E(e);this.appendChild(t);}})),this},destroy:function(){this.onRender((()=>{this.parentElement&&this.parentElement.removeChild(this);}));},css:function(t){return this.onRender((()=>{S.pcss(t,this);})),this},html:function(t){return this.onRender((()=>{S.html(t,this);})),this},setId:function(t){return this.id=t,this},addClass:function(...t){return x(t,this),this},removeClass:function(...t){return b(t,this),this},toggleClass:function(...t){return C(t,this),this},listenTo:function(...t){return this.onRender((()=>{this.addEventListener(...t);})),this},attr:function(t,e){if("string"==typeof t){if(void 0===e)return this.getAttribute(t);const n=t;(t={})[n]=e;}for(let[e,n]of Object.entries(t))this.setAttribute(e,n);return this},find:function(){return this.querySelector(...arguments)},findAll:function(t){return this.querySelectorAll(t)},deepFindAll:function(t){let e=Array.from(this.findAll(t));for(let n of this.children)e=e.concat(n.deepFindAll(t));return e},rect:function(){return "function"==typeof this.getBoundingClientRect?this.getBoundingClientRect():{}},offset:function(){var t=this.rect();return {top:t.top+window.scrollY,left:t.left+window.scrollX}},x:function(t){return this.left+this.width/2-t/2}},k={top:function(){return this.offset().top},left:function(){return this.offset().left},width:function(){return this.rect().width},height:function(){return this.rect().height},text:function(){return this.textContent},classArray:function(){return Array.from(this.classList)},childrenArray:function(){return Array.from(this.children)}};for(let[t,e]of Object.entries(j))Element.prototype[t]=e;for(let[t,e]of Object.entries(k))Object.defineProperty(Element.prototype,t,{get:e,configurable:!0});const L={parent:(t,e)=>{t.parent=e;},value:(t,e)=>{t.value=e;},id:(t,e)=>{t.id=e;},class:(t,e)=>{t._class=e;},element:(e,n)=>{if(!(n instanceof Element))return t(`Could not add ${n} as the element of [${e}]`);e.element=n;},children:(t,e)=>{if(e.constructor==Array)return t.buildAry(e);t.build(e);},childTemplate:(t,e)=>{}};function D(t,e){return {val:t,set:e}}function P(e,n,i){if(!n)return D(e,!0);if(i)return D(function(e,n){return function(t){return null!=t.min&&null!=t.max}(n)?e=(e=e>n.max?n.min:e)<n.min?n.max:e:t(`Could not loop value, since range (${JSON.stringify(n)}) is unbounded`)}(e,n),!0);let r=function(t,e){return t=e.min?Math.max(e.min,t):t,e.max?Math.min(e.max,t):t}(e,n);return D(r,r==e)}class z extends class{constructor(t){this.childMap=new Map,this.key="string"==typeof t?t:o(),this.containsKey=this.childMap.has;}get kidsum(){return this.childMap.size}get hasKids(){return this.kidsum>0}get shape(){return this.shapePrefix()}get master(){return null==this.parent||null==this.parent.parent?this.parent:this.parent.master}get children(){return Array.from(this.childMap.values())}get depthKey(){return this.parent?this.parent.depthKey+"<~<"+this.key:this.key}get allChildren(){if(!this.hasKids)return null;let t=this.children;for(let e of t){let n=e.allChildren;n&&(t=t.concat(n));}return t}get(t){return this.childMap.get(t)}find(t){if(this.childMap.has(t))return this.childMap.get(t);for(let e of this.childMap.values()){let n=e.find(t);if(n)return n}}adopt(...t){for(let e of t)this.add(e);return this}add(e){return e?this.childMap.has(e.key)?(e.key=`${e.key}<${r()}`,this.add(e)):(e.parent=this,void this.childMap.set(e.key,e)):t(`Could not add [${e}] to [${this.id}]`)}shapePrefix(t=""){let e=`${t}| ${this.type} - ${this.key} \n`;if(this.hasKids){t+="| ";for(let n of this.children)e+=n.shapePrefix(t);}return e}}{constructor(t,e){super(),u(this,"export"),this.actionChain=new i,"object"==typeof t?function(t,e){let n=new Map;for(let[i,r]of Object.entries(t))L.hasOwnProperty(i)?L[i](e,r):n.set(i,r);e.element&&e.element.whenInDOM((t=>{for(let[i,r]of n)if(i=i.toLowerCase(),i.includes("on")){let n=i.split("on")[1].trim();t.listenTo(n,(()=>{e.action(r);}));}}));}(t,this):this.key=t,this.element||this.as();}get _e(){return this.element}setElement(t,e=!0){return this.elementDOM=t,e&&this.element.id&&(this.id=this.element.id),this}get element(){return this.elementDOM}set element(t){this.setElement(t);}setRange(t=null,e=null){return this.range=this.range||{},this.range.min=null===t?this.range.min:t,this.range.max=null===e?this.range.max:e,this}breakLoop(){return this._loopVal=!1,this}setLoop(t,e){return this.setRange(t,e),this._loopVal=!0,this}get dv(){return this.v-this._lv}get value(){return this.v}setValue(t){return this.value=t,this}set value(t){let e=P(t,this.range,this._loopVal);e.set&&(this._lv=this.v,this.v=e.val,this.exec());}exec(){return this.actionChain.execAs(this,...arguments),this}setKey(t){return this.key=t,this}set key(t){this._KEY=null==t?a():t;}get key(){return this._KEY}set id(t){this.key=t,this.element&&(this.element.id=this.id);}get id(){return f(this.key)}buildAry(t){for(let e of t)this.add(new z(e,this));return this}build(...t){return this.buildAry(t)}on(t,e=null){var n=this;return {do:function(e){return n.element.listenTo(t,(()=>{n.run(e);})),n}}}as(t=null,e){return t=t||`div#${this.id}.pragma`,this.setElement(M(t,e),!1),this}addExport(t){this.exports=this.exports||[],this.exports.push(t);}export(...t){for(let e of t)this.addExport(e);}from(t){if(t.exports)for(let e of t.exports)this[e]=t[e];return t.exportChain&&t.exportChain.exec(this),this}wireTo(t){let e=this;return t.do((function(){e.value=this.value;})),this}do(){return this.actionChain.add(...arguments),this}run(...t){for(let e of t)this.runAs(e);return this}runAs(t){return t.bind(this)()}contain(...e){for(let n of e)super.add(n),n.isRendered?t(`[${n}] is already appended`):this.element.append(n);return this}pragmatize(){return this.element.appendTo(this.parent&&this.parent.element||"body"),this}pragmatizeAt(t){return this.element.appendTo(t),this}addListeners(t){for(let[e,n]of Object.entries(t))this.on(e).do(n);return this}}const K=["html","css","addClass","removeClass","toggleClass","setId"];for(let t of K)z.prototype[t]=function(){return this.element[t](...arguments),this};const R=["offset","text","top","left","width","height","x","classArray"];for(let t of R)Object.defineProperty(z.prototype,t,{get:function(){return this.element[t]}});globalThis.pragmaSpace.integrateMousetrap=function(t){"function"==typeof t&&(z.prototype.bind=function(e,n,i){let r=this;return t.bind(e,(function(){return r.runAs(n)}),i),this},globalThis.pragmaSpace.mousetrapIntegration=!0,n("Mousetrap configuration detected! Extended Pragmas to support .bind() method!"));};try{globalThis.pragmaSpace.integrateMousetrap(Mousetrap);}catch(t){e("Tried to integrate extensions, but failed. To disable,\n  this attempt: globalThis.pragmaSpace.integrate3rdParties = false");}const N={get template(){return (new z).run((function(){this.config=function(t){if(t.name){let e=`set${t.name.capitalize()}Template`,n=`_${t.name}Template`;this[e]=function(t){return this[n]=t,this},t.defaultSet&&this[e](t.defaultSet),this._tempOptions={set:e},this.export(n,e),this.onExport((t=>{t.export(n,e);}));}this.export("config"),this.onExport((t=>t.export("config"))),t.name&&delete t.name,t.defaultSet&&delete t.defaultSet;for(let[e,n]of Object.entries(t))this[e]=n,this.export(e),this.onExport((t=>t.export(e)));return this};}))},fromObject:function(t){e(`Creating template object from obj: [${JSON.stringify(t)}]`);const n=t._create||function(t){return t};t._create&&delete t._create;let i={defaults:{},isPragmaTemplate:!0,setDefaults:function(t){return this.defaults=l(this.defaults,t),this}};for(let[e,r]of Object.entries(t))Object.defineProperty(i,e,{get:function(){return n(r,i,...arguments)}});return i},from:function(e,n){if("object"==typeof e)return "function"==typeof n&&(e._create=n),this.fromObject(e);t(`Could not create a template object from argument [${e}])`);}};const F={onOptionCreate:function(t,e){t.contain(e);},optionTemplate:function(t){return new z(t).html(t).addClass("pragma-click").on("click").do((function(){this.parent.value=this.key;}))}};var I=Object.freeze({__proto__:null,monitor:function(t){return (new z).from(N.template.config({name:"monitor",defaultSet:t||(t=>t)})).do((function(){this.html(this._monitorTemplate(this.value));})).run((function(){this.export("element","actionChain");}))},slider:function(t){return (new z).from(N.template.config({name:"slider",defaultSet:t||{min:0,max:1e3}})).run((function(){this.as("<input type='range' min=0 max=10 value=5></input>"),this.setRange(0,10),this.on("input").do((function(){this.value=parseInt(this.element.value);})),this.export("element","actionChain");}))},select:function(t){return (new z).from(N.template.config({name:"select",defaultSet:t.options})).run((function(){if(t.onOptionCreate=t.onOptionCreate||F.onOptionCreate,t.optionTemplate=t.optionTemplate||F.optionTemplate,this._selectTemplate.constructor===Array)for(let e of this._selectTemplate)t.onOptionCreate(this,t.optionTemplate(e));else for(let[e,n]of Object.entries(this._selectTemplate)){const i={};i[e]=n,t.onOptionCreate(this,t.optionTemplate(e,n),i);}this.export("element","actionChain","childMap");}))},create:N,icons:function(t){return N.from(t,((t,e)=>q().run((function(){var n,i;this.element=(n=M(t),(i=e.defaults).fill&&(O(n,i.fill),delete i.fill),n.attr(i)),this.export("element");}))))},icon:function(){}});const V=(t,e)=>new z(t,e),q=V;
 
   function elementify(el){
     // pipeline to vanillafy pragma objects to html elements
-    if (el instanceof L) el = el.element;
-    if (!el.isPragmaElement) el = E(el);
+    if (el instanceof z) el = el.element;
+    if (!el.isPragmaElement) el = M(el);
     return el
   }
 
@@ -39,13 +39,13 @@
   }
 
   function isMostlyInScreen(el, percent=.7){
-    if (!el) throw S.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+    if (!el) throw $.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
     el = elementify(el);
     return isOnScreen(el, percent*el.rect().height) // is 70% on screen
   }
 
   function isOnScreen(el, threshold=100){
-    if (!el) throw S.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+    if (!el) throw $.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
     el = elementify(el);
     let winTop = window.scrollY;
     let winBot = winTop + window.innerHeight;
@@ -25506,8 +25506,8 @@
     //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
     //     .html.class("slider")
 
-    let foveaComp = I("markerfovea")
-                    .from(R.slider())
+    let foveaComp = q("markerfovea")
+                    .from(I.slider())
                     .setRange(1, 10)
                     .addClass('slider');
 
@@ -25517,13 +25517,13 @@
     //                         .setTippy("Color:", tippyOption)
     //
 
-    let colorsComp = I('markercolor')
-                    .from(R.select({
+    let colorsComp = q('markercolor')
+                    .from(I.select({
                       options: colors
                     }));
 
-    let fontComp = I('readerfont')
-                    .from(R.select({
+    let fontComp = q('readerfont')
+                    .from(I.select({
                       options: fonts
                     }));
 
@@ -25556,7 +25556,7 @@
     //   //console.log(value,comp)
     // }
 
-    let wpmComp = I("wpm").html("<>");
+    let wpmComp = q("wpm").html("<>");
 
     // let wpmComp = Button.controls("wpm", 250, 10, wpmSet, {
     //   "+": "+",
@@ -25569,7 +25569,7 @@
     // let popUpSettings = Compose("popupsettings")
       // .host(colorsComp, fontComp, modeComp, foveaComp)
 
-    let popUpSettings = I("popupsettings")
+    let popUpSettings = q("popupsettings")
           .contain(colorsComp, fontComp, foveaComp);
 
     // $(popUpSettings.tippy.popper).addClass("settings-tippy")
@@ -25577,7 +25577,7 @@
     // popUpSettings.illustrate(icons.grab("settings")) // icons
     // popUpSettings.icon.attr("id", "settings-icon")
 
-    let settings = I("settingsWrapper").contain(popUpSettings, wpmComp)
+    let settings = q("settingsWrapper").contain(popUpSettings, wpmComp)
                     .addClass("items-center");
 
     // extend settings
@@ -25704,7 +25704,7 @@
 
   function wfyInner(desc){
     if (!desc) return false
-    desc = E(desc);
+    desc = M(desc);
     let txt = desc.textContent;
     let inner = "";
     for (let txt of desc.textContent.split(" ")){
@@ -25716,7 +25716,7 @@
   }
 
   function wfyElement(element){
-    element = E(element);
+    element = M(element);
     let nodes = element.findAll("*");
     if (nodes.length == 0) return wfyInner(wfyInner(element))
     nodes.forEach(desc => wfyElement(desc));
@@ -25724,7 +25724,7 @@
 
   function wfy(element){
     // console.log(`wfying ${JSON.stringify(element)}`)
-    element = E(element);
+    element = M(element);
     // if (element.textContent.replaceAll(" ", "").length<1) return false
     let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
     if (txtNodes.length==0) return wfyElement(element)
@@ -25778,7 +25778,7 @@
     airway: airway
   });
 
-  class PragmaLector extends L {
+  class PragmaLector extends z {
 
     constructor(){
       super(arguments);
@@ -25829,7 +25829,7 @@
     }
 
     read(){
-      S.log("::LECTOR reading", this);
+      $.log("::LECTOR reading", this);
       this.w.read();
     }
 
@@ -25846,7 +25846,7 @@
     }
   }
 
-  class PragmaWord extends L {
+  class PragmaWord extends z {
 
     constructor(k){
         super(k);
@@ -25873,7 +25873,7 @@
 
     get lector(){
       if (this.parent) return this.parent.lector
-      S.throwSoft('could not find lector for');
+      $.throwSoft('could not find lector for');
     }
 
     get txt(){
@@ -25904,7 +25904,7 @@
       // console.log(this.childMap)
       // console.log(this.element, this.value, this.childMap, this.get(this.value))
       let subW = this.get(this.value);
-      if (!subW) return S.throwSoft(`Could not find current Word of ${this.key}`)
+      if (!subW) return $.throwSoft(`Could not find current Word of ${this.key}`)
       return subW.currentWord
     }
 
@@ -26055,12 +26055,12 @@
   border-radius 3px
 `;
 
-  class PragmaMark extends L {
+  class PragmaMark extends z {
     constructor(parent) {
       super('marker');
 
       this.parent = parent;
-      this.element = E("marker");
+      this.element = M("marker");
       document.body.appendChild(this.element);
       this.css(defaultStyles);
       //this.parent.element.append(this.element)
@@ -26186,7 +26186,7 @@
 
     mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
       //console.log("marking", word)
-      if (!(word instanceof L)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
+      if (!(word instanceof z)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
       let w = fit ? word.width + 5 : this.cw;
       //this.setWidth(w)
       return this.moveTo({
@@ -26203,7 +26203,7 @@
     }
 
     guide(word) {
-      if (!(word instanceof L)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error"); })
+      if (!(word instanceof z)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error"); })
       return new PinkyPromise((resolve, reject) => {
         let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear";
         return this.moveTo({
@@ -26236,7 +26236,7 @@
         *
         * */
 
-      if (!word instanceof L) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+      if (!word instanceof z) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
       if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
       if (word.isFirstInLine) return 500 // mark has to change line
       if (!this.last_marked) return 0 // failsafe
@@ -26263,31 +26263,31 @@
   }
 
   function paginator(pageTemplate, conf={}){
-    return new L()
-          .from(R.create.template.config({
+    return new z()
+          .from(I.create.template.config({
             // make this nicer
 
             name: 'paginator',
             defaultSet: pageTemplate,
-            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ S.throwSoft('no fetch source specified'); },
+            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ $.throwSoft('no fetch source specified'); },
 
-            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => S.log('created', p),
+            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => $.log('created', p),
             onFetch: conf.onFetch,
 
-            onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { S.log('added', page); },
-            onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ S.log('rendered', page, 'active?', page.active); },
-            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){S.log('active', page); },
-            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { S.log('inactive', page); },
+            onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { $.log('added', page); },
+            onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ $.log('rendered', page, 'active?', page.active); },
+            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){$.log('active', page); },
+            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { $.log('inactive', page); },
           }))
 
           .run(function(){
 
-            this.pageTemplate = E(this._paginatorTemplate);
+            this.pageTemplate = M(this._paginatorTemplate);
             this._clonePage = function() {
-              let page = E(this.pageTemplate.cloneNode(false));
+              let page = M(this.pageTemplate.cloneNode(false));
               this.adopt(page);
               page.lec = this.parent;
-              S.createEventChains(page, 'fetch');
+              $.createEventChains(page, 'fetch');
               return page
             };
 
@@ -26359,9 +26359,9 @@
   }
 
   function infinityPaginator(streamer, pageTemplate, config={}){
-    let inf = I("infinity paginator")
+    let inf = q("infinity paginator")
           .from(
-            paginator(pageTemplate).config(S.objDiff(
+            paginator(pageTemplate).config($.objDiff(
               {
                 streamer: streamer,
                 fetch: streamer.fetch,
@@ -26389,8 +26389,8 @@
               let pageRange = range(start, this.value+conf.headspace);
               let pagesRendered = Array.from(this.pages.keys());
 
-              let pagesToRender = S.aryDiff(pageRange, pagesRendered);
-              let pagesToDelete = S.aryDiff(pagesRendered, pageRange);
+              let pagesToRender = $.aryDiff(pageRange, pagesRendered);
+              let pagesToDelete = $.aryDiff(pagesRendered, pageRange);
 
               console.log(">> DEL", pagesToDelete);
               console.log(">> ADD", pagesToRender);
@@ -26570,7 +26570,7 @@
   };
 
   const Reader = (l, options=default_options) => {
-    l = E(l);
+    l = M(l);
     if (options.wfy) wfy(l);
     let w = Word(l);
               // .do(function(){
@@ -26630,7 +26630,7 @@
 
 
   function _streamer(sf){
-    return I('streamer')
+    return q('streamer')
             .setValue(0)
             .run(function(){
               this.fetch = sf;
@@ -26644,7 +26644,7 @@
   const Lector = (l, options=default_options) => {
     if (!_needWrapper(options)) return Reader(l, options)
 
-    S.log("configuration appears to be a bit more complicated");
+    $.log("configuration appears to be a bit more complicated");
 
     if (options.experimental &&
         options.stream &&
@@ -26652,7 +26652,7 @@
         options.paginate.from === 'stream' &&
         options.paginate.as === 'infiniteScroll'){
 
-      S.log('setting up streamer service');
+      $.log('setting up streamer service');
 
       let streamer = _streamer(options.stream);
       let paginator = infinityPaginator(streamer, l)
@@ -26665,7 +26665,7 @@
       // console.log(l)
       // console.log(_e(l).parentElement)
       // let options = util.objDiff({ skip: true })
-      let reader = Reader(E(l).parentElement, options)
+      let reader = Reader(M(l).parentElement, options)
                     .adopt(paginator, streamer);
 
       paginator.fill();
