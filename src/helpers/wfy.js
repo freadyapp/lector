@@ -1,4 +1,4 @@
-import { _e } from 'pragmajs'
+import { _e, util } from 'pragmajs'
 
 function wfyInner(desc){
   if (!desc) return false
@@ -6,8 +6,10 @@ function wfyInner(desc){
   let txt = desc.textContent
   let inner = ""
   for (let txt of desc.textContent.split(" ")){
+    // console.log(txt)
+    console.log(typeof txt)
     let noWhiteSpace = txt.replace(/\s/g, "")
-    inner += noWhiteSpace.length!=0 ? "<w>"+txt.replaceAll(" ", "</w> <w>")+"</w> " : txt
+    inner += noWhiteSpace.length!=0 ? "<w>"+txt.split(" ").join("</w> <w>")+"</w> " : txt
   }
 
   desc.html(inner)
@@ -23,7 +25,6 @@ function wfyElement(element){
 export function wfy(element){
   // console.log(`wfying ${JSON.stringify(element)}`)
   element = _e(element)
-  let wfied_text = ""
   // if (element.textContent.replaceAll(" ", "").length<1) return false
   let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text")
   if (txtNodes.length==0) return wfyElement(element)

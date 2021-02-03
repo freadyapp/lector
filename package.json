@@ -27,10 +27,13 @@
 		"babelify": "^10.0.0",
 		"browserify-css": "^0.15.0",
 		"css-loader": "^5.0.1",
+		"eslint": "^7.19.0",
 		"identity-obj-proxy": "^3.0.0",
 		"jest": "^26.6.3",
 		"rollup": "^2.36.1",
+		"rollup-plugin-sizes": "^1.0.3",
 		"rollup-plugin-terser": "^7.0.2",
+		"rollup-plugin-visualizer": "^4.2.0",
 		"style-loader": "^2.0.0",
 		"tailwindcss": "^1.9.6",
 		"webpack": "^5.11.0",
@@ -42,6 +45,7 @@
 		"test": "jest",
 		"test:watch": "jest --watchAll",
 		"dev": "rollup -c -w",
+		"lint": "yarn run eslint src",
 		"watch": "watchify docs/demo.js -t babelify -o docs/bundle.js -v"
 	},
 	"directories": {
@@ -53,7 +57,7 @@
 		"compromise": "^13.7.0",
 		"jquery": "^3.5.1",
 		"mousetrap": "^1.6.5",
-		"pragmajs": "latest"
+		"pragmajs": "^0.4.6"
 	},
 	"browserify": {
 		"transform": [
@@ -64,5 +68,8 @@
 		"setupFiles": [
 			"<rootDir>/tests/test_env.js"
 		]
+	},
+	"resolutions": {
+		"lectorjs": "portal:/Users/robo/Documents/Fready/lector"
 	}
 }
