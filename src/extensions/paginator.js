@@ -19,10 +19,16 @@ export function paginator(pageTemplate, conf={}){
         }))
 
         .run(function(){
+          let _ptemp = _e(this._paginatorTemplate).hide()
+          this.pageTemplate = _ptemp.cloneNode(false)
 
-          this.pageTemplate = _e(this._paginatorTemplate)
           this._clonePage = function() {
-            let page = _e(this.pageTemplate.cloneNode(false))
+            let page = _e(this.pageTemplate.cloneNode(false)).show()
+            //if (this._lastAddedPage){
+              ////page.style.height = this._lastAddedPage.height
+              //page.css(`height ${this._lastAddedPage.height}px`)
+              //console.log('>>>>>>>>>>>>>>>>>>>>', this._lastAddedPage.height)
+            //}
             this.adopt(page)
             page.lec = this.parent
             util.createEventChains(page, 'fetch')
@@ -56,6 +62,7 @@ export function paginator(pageTemplate, conf={}){
             }).then( page => {
               page.fetchChain.exec()
               this.onPageRender(page, val)
+              this._lastAddedPage = page
             })
 
             cloned[`${action}To`](this.parent.element)
@@ -63,7 +70,6 @@ export function paginator(pageTemplate, conf={}){
           }
 
           this.pages = new Map()
-
 
           this.destroy = function(val){
             this.pages.get(val).destroy()
@@ -75,21 +81,27 @@ export function paginator(pageTemplate, conf={}){
             key = key || this.pages.size
             return this.pages.set(key, page)
           }
+
           this.delPage = function(key){
             return this.pages.delete(key)
           }
 
-
-          this.activate = function(pageIndex){
-            let page = this.pages.get(pageIndex)
-            page.active = true
-            this.onPageActive(page, pageIndex)
+          this.activate = function(...pages){
+            pages.forEach(pageIndex => {
+              let page = this.pages.get(pageIndex)
+              if (!page) return
+              page.active = true
+              this.onPageActive(page, pageIndex)  
+            })
           }
 
-          this.inactivate = function(pageIndex){
-            let page = this.pages.get(pageIndex)
-            page.active = false
-            this.onPageInactive(page, pageIndex)
+          this.inactivate = function(...pages){
+            pages.forEach(pageIndex => {
+              let page = this.pages.get(pageIndex)
+              if (!page) return
+              page.active = false
+              this.onPageInactive(page, pageIndex)
+            })
           }
 
           this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate')

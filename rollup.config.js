@@ -46,7 +46,7 @@ import visualizer from 'rollup-plugin-visualizer'
 import pkg from './package.json';
 
 const plugs = [
-  terser(), // mini
+  // terser(), // mini
   sizes(),
   visualizer({
     filename: "docs/stats.html",
@@ -59,6 +59,7 @@ export default [
   // browser-friendly UMD build
   {
     input: 'src/index.js',
+    external: ['tippy', 'mousetrap', 'animejs' ],
     output: {
       name: 'lector',
       file: pkg.browser,

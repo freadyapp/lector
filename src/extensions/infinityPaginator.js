@@ -1,6 +1,7 @@
 import { _e, _p, Pragma, util } from "pragmajs"
 import { paginator } from "./paginator"
-import { range, isOnScreen, isMostlyInScreen, onScroll } from "../helpers/index"
+import { range, isOnScreen, isMostlyInScreen, onScroll, PinkyPromise } from "../helpers/index"
+import { onScrollEnd } from "../helpers/autoScroll"
 
 export function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = _p("infinity paginator")
@@ -19,74 +20,105 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
             }, config))
         )
         .setValue(0)
-        .run(function(){
-
-          const conf = {
-            headspace: 4,
-            timeout: 10
-          }
-
-          this.fill = function(){
-
-            this.fetching = true
-            let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
-            let pageRange = range(start, this.value+conf.headspace)
-            let pagesRendered = Array.from(this.pages.keys())
-
-            let pagesToRender = util.aryDiff(pageRange, pagesRendered)
-            let pagesToDelete = util.aryDiff(pagesRendered, pageRange)
-
-            console.log(">> DEL", pagesToDelete)
-            console.log(">> ADD", pagesToRender)
-
-            for (let pageIndex of pagesToRender){
-              this.create(pageIndex)
+        .run({
+          initialConfig(){
+            const conf = {
+              headspace: 4,
+              timeout: 10
             }
 
-            for (let pageIndex of pagesToDelete){
-              //this.inactivate(pageIndex)
-              //this.pages.get(pageIndex).css("background:red")
-              //this.destroy(pageIndex)
-            };
+            this.fill = function(){
 
-            setTimeout(a => {
-              this.fetching = false
-            }, conf.timeout)
-          }
+              this.fetching = true
+              let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
+              let pageRange = range(start, this.value+conf.headspace)
+              let pagesRendered = Array.from(this.pages.keys())
 
-        })
-      .run(function(){
-        onScroll((s, l) => {
-          if (this.fetching) return
+              let pagesToRender = util.aryDiff(pageRange, pagesRendered)
+              let pagesToDelete = util.aryDiff(pagesRendered, pageRange)
 
-          let v = this.value
-          let currentPage = this.pages.get(v)
+              console.log(">> DEL", pagesToDelete)
+              console.log(">> ADD", pagesToRender)
 
-          if (!isMostlyInScreen(currentPage)){
-            let i = 1
-            let di = l > 0 ? 1 : -1
-            while (true){
-              if (!(this.pages.has(v+1))){
-                console.log('no active page!')
-                this.value = 0
-                break
+              for (let pageIndex of pagesToRender){
+                this.create(pageIndex)
               }
 
-              let p = this.pages.get(v+i)
-              if (isMostlyInScreen(p, .5)){
-              // if (isOnScreen(p, 100)){
-                this.value = v+i
-                break
-              }
-              i += di
+              for (let pageIndex of pagesToDelete){
+                //this.inactivate(pageIndex)
+                //this.pages.get(pageIndex).css("background:red")
+                //this.destroy(pageIndex)
+              };
+
+              setTimeout(a => {
+                this.fetching = false
+              }, conf.timeout)
             }
+        },
+        findActivePages(){
+          
+
+          function findCandidates(pages, scroll){
+
+            let bestIndex = null
+            let best = 999999999999
+            const middle = scroll + window.innerHeight/2
+            for (let [pageIndex, page] of pages){
+              // console.log(page, pageIndex)
+              let pageMiddle = page.top + page.height/2
+              let closeness = Math.abs(pageMiddle - middle)
+              if (closeness <= best){
+                best = closeness
+                bestIndex = pageIndex
+              }
+            }
+
+            return bestIndex
           }
-        })
+          
+          this.findActivePage = function(s, dp){
+            // dp is the rate of change of scroll
+            
+            // console.log(canditates)
+            //if (this.fetching) return
+            //
+            return new PinkyPromise(resolve => {
+              let canditates
+              util.bench(_ => canditates = findCandidates(this.pages, s))
+              //resolve(canditates)
+              setTimeout(_ => resolve(canditates), 5)
+            })
+          }
+
+          let searching = false
+          let owe = false
+          const doOnScroll= (pos, dp) => {
+            if (searching) return owe = { pos: pos, dp: dp }
+
+            searching = true
+            this.findActivePage(pos, dp).then(active => {
+              console.log("ACTIVE>>", active, this.pages.get(active))
+              this.value = active
+              searching = false
+              if (owe){
+                console.log('owe', owe)
+                doOnScroll(owe.pos, owe.dp)
+                owe = null
+              }
+            })
+          }
+
+          onScrollEnd((pos, dp) => {
+            doOnScroll(pos, dp)
+          })
+        }
       })
       .do(function(){
-
+        if (this.dv === 0) return
+        
         this.activate(this.value)
-        this.inactivate(this.value-this.dv)
+        let preVal = this.value-(this.dv||1)
+        this.inactivate(preVal)
 
         this.fill()
       })

@@ -3,9 +3,6 @@ import { range, wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./he
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import * as _ext from "./extensions/index"
 
-// globalThis.$ = globalThis.jQuery = $;
-
-// pragmaSpace.dev = true
 
 // TODO add more default options
 const default_options = {
@@ -90,33 +87,22 @@ export const Word = (element, i) => {
           .as(element)
           .setValue(0)
 
-  let thisw = w.element.deepFindAll('w')
+  console.time('deepQuery')
+  let thisw = w.element.deepQueryAll('w')
+  console.timeEnd('deepQuery')
+  // console.timeLog('deepQuery')
 
   console.log(thisw.length)
   if (i && thisw.length === 0) {
     w.addListeners({
       "click": function(e, comp){
         this.summon()
-        // this.summon().then(() => {
-          // this.parent.value = this.key
-        // })
       }
-      // ,
-      // "mouseover": function(w, comp){
-      //   this.css("background #5e38c74a")
-      // },
-      // "mouseout": function(){
-      //   this.css('background transparent')
-      // }
-
     })
   }
 
-  // w.element.css({"border": ".5px dashed lightgray"})
-  // w.css("border .5px dashed lightgray")
   thisw.forEach((el, i) => {
     let ww = Word(el, i)
-    // console.log(ww)
     w.add(ww)
   })
 
@@ -127,23 +113,12 @@ export const Reader = (l, options=default_options) => {
   l = _e(l)
   if (options.wfy) wfy(l)
   let w = Word(l)
-            // .do(function(){
-            //   console.log(this.isReading, this.value, this.currentWord)
-            //   if (this.isReading){
-            //     if (typeof this.onRead !== 'undefined') this.onRead()
-            //   }else{
-            //     this.currentWord.summon(true)
-            //   }
-            // })
 
   let lec = new PragmaLector("lector")
               .as(l)
               .setValue(0)
               .connectTo(w)
-              // .do(function(){
-
-              // })
-
+  
   lec.settings = LectorSettings(lec)
                   .css(`position fixed
                         bottom 10px

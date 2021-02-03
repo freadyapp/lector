@@ -25,6 +25,10 @@ export default class PragmaWord extends Pragma {
         }
       })
   }
+  destroy(){
+    this.childMap = null
+    return null
+  }
 
   get lector(){
     if (this.parent) return this.parent.lector

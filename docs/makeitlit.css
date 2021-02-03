@@ -18,8 +18,7 @@ body {
 	background: #232323;
 }
 
-#article { 
-
+.article { 
 	padding: 120px 100px;
 	background: #fff;
 	border-radius: 5px;
@@ -28,6 +27,7 @@ body {
 	margin-top: 5vh;
 	font-size: 1.1em;
 	line-height: 1.7em;
+  min-height: 500px;
 }
 
 

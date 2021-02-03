@@ -3,13 +3,6 @@
 
 lector.globalify()
 
-const content = [
-  'lalallalalalalalala fear me',
-  'hohohoho listen to me',
-  'meemememe fuck with me',
-  'piriri pirririri bear me'
-]
-
 function fetchContent(index){
   // return content[index]
 
@@ -19,7 +12,7 @@ function fetchContent(index){
 
       let abc = "abcdefghijklmnopqrstuvwrxyz "
       let len = abc.length
-      let words = 300
+      let words = 100
 
       while (words > 0){
         txt += abc.charAt(Math.floor(Math.random()*len))
@@ -29,7 +22,17 @@ function fetchContent(index){
         }
       }
       resolve(txt)
-    }, Math.random()*1900)
+    }, Math.random()*2900)
+  })
+}
+
+function onFetch(p, index){
+  console.log("P >>>>>>>>", p)
+  return new Promise(resolve => {
+    setTimeout(_ => {
+      p.css('background lime')
+      resolve()
+    }, Math.random()*1000)
   })
 }
 
@@ -55,6 +58,7 @@ let lectorSettings = {
     onPageActive: (p, index) => {
       p.css('background green')
       p.onFetch(function(){
+        // return onFetch(p)
         if (p.active) {
           if (!p.word){
             console.log('this.lec', p.lec)
@@ -70,7 +74,13 @@ let lectorSettings = {
       })
     },
 
-    onPageInactive: p => p.css('background lightgray'),
+    onPageInactive: p => {
+      p.css('background gray')
+      if (p.word){ 
+        p.lec.removeWord(p.word.key)
+        p.word = p.word.destroy()
+      }
+    },
     onPageAdd: p => p.css("background lightgray"),
     onCreate: p => p.html("...")
   }
@@ -80,4 +90,4 @@ let lectorSettings = {
 pragmaSpace.dev = true
 pragmaSpace.integrateMousetrap(Mousetrap)
 
-let lec = Lector("#article", lectorSettings)
+let lec = Lector(".article", lectorSettings)

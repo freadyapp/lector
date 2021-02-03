@@ -16,6 +16,8 @@ import anime from "animejs"
 //           }
 // }
 
+globalThis.lectorSpace = globalThis.lectorSpace || {}
+
 export function isElementWithin(el, r={}){
   let off = el.offset()
   let elTop = off.top
@@ -23,7 +25,7 @@ export function isElementWithin(el, r={}){
   return (elTop <= r.bot && elBot >= r.top) || (elTop <= r.top && elBot >= r.bot)
 }
 
-export function isMostlyInScreen(el, percent=.7){
+export function isMostlyInScreen(el, percent=.5){
   if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el)
   return isOnScreen(el, percent*el.rect().height) // is 70% on screen
@@ -62,8 +64,9 @@ export function scrollTo(el, duration=200, threshold=200){
   })
 }
 
-export function onScroll(cb=(s)=>{}){
 
+
+function _onScroll(cb){
   let last = 0;
   let ticking = false;
   document.addEventListener('scroll', function(e) {
@@ -74,8 +77,53 @@ export function onScroll(cb=(s)=>{}){
         cb(last, last-temp);
         ticking = false;
       });
-
       ticking = true;
     }
   });
+}
+
+export function onScroll(cb){
+  if (!globalThis.lectorSpace.scrollChain){
+    util.createChains(globalThis.lectorSpace, 'scroll')
+    _onScroll((scroll, ds) => {
+      globalThis.lectorSpace.scrollChain.exec(scroll, ds)
+    })
+  }
+  globalThis.lectorSpace.onScroll(cb)
+}
+
+function _onScrollEnd(cb){
+
+  let scrollData = { s: null, ds: null }
+  let t
+
+  onScroll((s, ds) => {
+    scrollData = {
+      s: s,
+      ds: ds
+    }
+
+    if (t) clearTimeout(t)
+
+    t = setTimeout(_ => {
+      cb(scrollData.s, scrollData.ds)
+    }, 69)
+  })
+}
+
+export function onScrollEnd(cb){
+  if (!globalThis.lectorSpace.scrollEndChain){
+    util.createChains(globalThis.lectorSpace, 'scrollEnd')
+
+      _onScrollEnd((scroll, ds) => {
+        globalThis.lectorSpace.scrollEndChain.exec(scroll, ds)
+      })  
+  }
+  globalThis.lectorSpace.onScrollEnd(cb)
+}
+
+export function onSlowScroll(cb, sensit=10){
+  onScroll((_, dp) => {
+    if (dp<=sensit) cb()
+  })
 }

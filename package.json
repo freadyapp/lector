@@ -70,6 +70,7 @@
 		]
 	},
 	"resolutions": {
-		"lectorjs": "portal:/Users/robo/Documents/Fready/lector"
+		"lectorjs": "portal:/Users/robo/Documents/Fready/lector",
+		"pragmajs": "portal:/Users/robo/Documents/Fready/pragmajs"
 	}
 }

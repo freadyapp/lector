@@ -33,8 +33,16 @@ export default class PragmaLector extends Pragma {
     return this
   }
 
-  addWord(w){
+  removeWord(w){
+    console.log('> remove', w)
+    this.w.remove(w)
+  }
+
+  addWord(w, setIndex=true){
     this.w.add(w)
+    if (setIndex){
+      this.w.value = w.key
+    }
 
     // w.do(_ => {
     //   if (!w.dv) return 
@@ -52,6 +60,8 @@ export default class PragmaLector extends Pragma {
 
   read(){
     util.log("::LECTOR reading", this)
+    if (!this.w.hasKids) return console.error('nothing to read')
+    console.log(this.w)
     this.w.read()
   }
 
