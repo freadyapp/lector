@@ -33,9 +33,9 @@ export default class PragmaLector extends Pragma {
     return this
   }
 
-  removeWord(w){
-    console.log('> remove', w)
-    this.w.remove(w)
+  removeWord(key){
+    console.log('> remove', key)
+    this.w.remove(key)
   }
 
   addWord(w, setIndex=true){

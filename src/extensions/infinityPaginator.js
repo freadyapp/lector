@@ -23,13 +23,14 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
         .run({
           initialConfig(){
             const conf = {
-              headspace: 4,
-              timeout: 10
+              headspace: 10,
+              timeout: 5 
             }
 
             this.fill = function(){
 
               this.fetching = true
+              console.log(">>> FILLING WITH", this.value)
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
               let pageRange = range(start, this.value+conf.headspace)
               let pagesRendered = Array.from(this.pages.keys())
@@ -37,17 +38,31 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRender = util.aryDiff(pageRange, pagesRendered)
               let pagesToDelete = util.aryDiff(pagesRendered, pageRange)
 
-              console.log(">> DEL", pagesToDelete)
-              console.log(">> ADD", pagesToRender)
 
-              for (let pageIndex of pagesToRender){
-                this.create(pageIndex)
+              let pagesToRenderAfter = pagesToRender.filter(i => i>this.value)
+              let pagesToRenderBefore = util.aryDiff(pagesToRender, pagesToRenderAfter)
+
+              console.log(">> ALREADY RENDERED", pagesRendered)
+              console.log(">> DEL", pagesToDelete)
+              console.log(">> ADD", pagesToRender) 
+              console.log(">> ADD AFTER", pagesToRenderAfter)
+              console.log(">> ADD BEFORE", pagesToRenderBefore)
+
+              // pararellize?
+              for (let pageIndex of pagesToRenderAfter){
+                this.create(pageIndex, 'append')
               }
 
+              // pararellize?
+              for (let pageIndex of pagesToRenderBefore.reverse()){
+                this.create(pageIndex, 'prepend')
+              }
+
+              // pararellize?
               for (let pageIndex of pagesToDelete){
                 //this.inactivate(pageIndex)
                 //this.pages.get(pageIndex).css("background:red")
-                //this.destroy(pageIndex)
+                this.destroy(pageIndex)
               };
 
               setTimeout(a => {
@@ -63,10 +78,11 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
             let bestIndex = null
             let best = 999999999999
             const middle = scroll + window.innerHeight/2
+            console.log(pages)
             for (let [pageIndex, page] of pages){
-              // console.log(page, pageIndex)
               let pageMiddle = page.top + page.height/2
               let closeness = Math.abs(pageMiddle - middle)
+              console.log(page, pageIndex, closeness)
               if (closeness <= best){
                 best = closeness
                 bestIndex = pageIndex
@@ -93,6 +109,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           let searching = false
           let owe = false
           const doOnScroll= (pos, dp) => {
+            if (this.fetching) return 
             if (searching) return owe = { pos: pos, dp: dp }
 
             searching = true
@@ -115,7 +132,6 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
       })
       .do(function(){
         if (this.dv === 0) return
-        
         this.activate(this.value)
         let preVal = this.value-(this.dv||1)
         this.inactivate(preVal)

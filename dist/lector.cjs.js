@@ -505,9 +505,9 @@ class PragmaLector extends pragmajs.Pragma {
     return this
   }
 
-  removeWord(w){
-    console.log('> remove', w);
-    this.w.remove(w);
+  removeWord(key){
+    console.log('> remove', key);
+    this.w.remove(key);
   }
 
   addWord(w, setIndex=true){
@@ -983,7 +983,8 @@ function paginator(pageTemplate, conf={}){
           onFetch: conf.onFetch,
 
           onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { pragmajs.util.log('added', page); },
-          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ pragmajs.util.log('rendered', page, 'active?', page.active); },
+          onPageRender: null,
+          //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
           onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){pragmajs.util.log('active', page); },
           onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { pragmajs.util.log('inactive', page); },
         }))
@@ -1006,11 +1007,12 @@ function paginator(pageTemplate, conf={}){
           };
 
           this.create = function(val=this.value, action='append'){
+            console.log('creating', val, action);
             let cloned = this._clonePage();
 
             new Promise( resolve => {
 
-              this.onCreate(cloned);
+              this.onCreate(cloned, val);
 
               let f = this.fetch(val);
 
@@ -1023,7 +1025,7 @@ function paginator(pageTemplate, conf={}){
                         // on fetch in config or the default one
 
               if (f instanceof Promise){
-                f.then(rf => onFetch(cloned, rf));
+                f.then(resolved => onFetch(cloned, resolved));
               } else {
                 onFetch(cloned, f);
                 resolve(page);
@@ -1031,8 +1033,8 @@ function paginator(pageTemplate, conf={}){
 
             }).then( page => {
               page.fetchChain.exec();
-              this.onPageRender(page, val);
-              this._lastAddedPage = page;
+              if (this.onPageRender) this.onPageRender(page, val);
+              //this._lastAddedPage = page
             });
 
             cloned[`${action}To`](this.parent.element);
@@ -1042,14 +1044,27 @@ function paginator(pageTemplate, conf={}){
           this.pages = new Map();
 
           this.destroy = function(val){
-            this.pages.get(val).destroy();
-            this.delPage(val);
+            let toDestroy = this.pages.get(val);
+
+            let destroy = _ => {
+              toDestroy.destroy();
+              this.delPage(val);  
+            };
+
+            if (this.onPageDestroy){
+              let r = this.onPageDestroy(toDestroy, val);
+              if (r instanceof Promise) return r.then(destroy)
+            }
+
+            destroy();
           };
 
           this.addPage = function(page, key){
-            this.onPageAdd(page);
-            key = key || this.pages.size;
-            return this.pages.set(key, page)
+            key = key === null ? this.pages.size : key;
+            this.onPageAdd(page, key);
+            console.log('adding page', key, page);
+            this.pages.set(key, page);
+            console.log(this.pages);
           };
 
           this.delPage = function(key){
@@ -1098,13 +1113,14 @@ function infinityPaginator(streamer, pageTemplate, config={}){
         .run({
           initialConfig(){
             const conf = {
-              headspace: 4,
-              timeout: 10
+              headspace: 10,
+              timeout: 5 
             };
 
             this.fill = function(){
 
               this.fetching = true;
+              console.log(">>> FILLING WITH", this.value);
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
               let pageRange = range(start, this.value+conf.headspace);
               let pagesRendered = Array.from(this.pages.keys());
@@ -1112,17 +1128,31 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRender = pragmajs.util.aryDiff(pageRange, pagesRendered);
               let pagesToDelete = pragmajs.util.aryDiff(pagesRendered, pageRange);
 
-              console.log(">> DEL", pagesToDelete);
-              console.log(">> ADD", pagesToRender);
 
-              for (let pageIndex of pagesToRender){
-                this.create(pageIndex);
+              let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
+              let pagesToRenderBefore = pragmajs.util.aryDiff(pagesToRender, pagesToRenderAfter);
+
+              console.log(">> ALREADY RENDERED", pagesRendered);
+              console.log(">> DEL", pagesToDelete);
+              console.log(">> ADD", pagesToRender); 
+              console.log(">> ADD AFTER", pagesToRenderAfter);
+              console.log(">> ADD BEFORE", pagesToRenderBefore);
+
+              // pararellize?
+              for (let pageIndex of pagesToRenderAfter){
+                this.create(pageIndex, 'append');
               }
 
+              // pararellize?
+              for (let pageIndex of pagesToRenderBefore.reverse()){
+                this.create(pageIndex, 'prepend');
+              }
+
+              // pararellize?
               for (let pageIndex of pagesToDelete){
                 //this.inactivate(pageIndex)
                 //this.pages.get(pageIndex).css("background:red")
-                //this.destroy(pageIndex)
+                this.destroy(pageIndex);
               }
               setTimeout(a => {
                 this.fetching = false;
@@ -1137,10 +1167,11 @@ function infinityPaginator(streamer, pageTemplate, config={}){
             let bestIndex = null;
             let best = 999999999999;
             const middle = scroll + window.innerHeight/2;
+            console.log(pages);
             for (let [pageIndex, page] of pages){
-              // console.log(page, pageIndex)
               let pageMiddle = page.top + page.height/2;
               let closeness = Math.abs(pageMiddle - middle);
+              console.log(page, pageIndex, closeness);
               if (closeness <= best){
                 best = closeness;
                 bestIndex = pageIndex;
@@ -1167,6 +1198,7 @@ function infinityPaginator(streamer, pageTemplate, config={}){
           let searching = false;
           let owe = false;
           const doOnScroll= (pos, dp) => {
+            if (this.fetching) return 
             if (searching) return owe = { pos: pos, dp: dp }
 
             searching = true;
@@ -1189,7 +1221,6 @@ function infinityPaginator(streamer, pageTemplate, config={}){
       })
       .do(function(){
         if (this.dv === 0) return
-        
         this.activate(this.value);
         let preVal = this.value-(this.dv||1);
         this.inactivate(preVal);
@@ -1256,13 +1287,13 @@ const Mark = (lec) => {
   let lastScroll = 0;
   onScroll(s => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
-    console.log('user is scrolling', userIsScrolling());
+    //console.log('user is scrolling', userIsScrolling())
 
     if (userIsScrolling() && lec.isReading){
       let dscroll = Math.abs(lastScroll-s);
       lastScroll = s;
       if (dscroll>threshold){
-        console.log('ds=', dscroll);
+        //console.log('ds=', dscroll)
         // TODO prevent from calling pause to many times
         // on too fast scroll, pause mark
         lec.pause();
@@ -1283,12 +1314,12 @@ const Word = (element, i) => {
           .as(element)
           .setValue(0);
 
-  console.time('deepQuery');
+  // console.time('deepQuery')
   let thisw = w.element.deepQueryAll('w');
-  console.timeEnd('deepQuery');
+  // console.timeEnd('deepQuery')
   // console.timeLog('deepQuery')
 
-  console.log(thisw.length);
+  //console.log(thisw.length)
   if (i && thisw.length === 0) {
     w.addListeners({
       "click": function(e, comp){
@@ -1404,14 +1435,13 @@ const Lector = (l, options=default_options) => {
   }
 };
 
-// import { css } from "./styles/main.css"
-
-
-
 function globalify(){
   const attrs = {
     Lector: Lector,
-    Word: Word
+    Word: Word,
+    _e: pragmajs._e,
+    _p: pragmajs._p,
+    util: pragmajs.util
   };
 
   for (let [key, val] of Object.entries(attrs)){

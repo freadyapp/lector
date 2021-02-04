@@ -60,13 +60,13 @@ const Mark = (lec) => {
   let lastScroll = 0
   onScroll(s => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
-    console.log('user is scrolling', userIsScrolling())
+    //console.log('user is scrolling', userIsScrolling())
 
     if (userIsScrolling() && lec.isReading){
       let dscroll = Math.abs(lastScroll-s)
       lastScroll = s
       if (dscroll>threshold){
-        console.log('ds=', dscroll)
+        //console.log('ds=', dscroll)
         // TODO prevent from calling pause to many times
         // on too fast scroll, pause mark
         lec.pause()
@@ -87,12 +87,12 @@ export const Word = (element, i) => {
           .as(element)
           .setValue(0)
 
-  console.time('deepQuery')
+  // console.time('deepQuery')
   let thisw = w.element.deepQueryAll('w')
-  console.timeEnd('deepQuery')
+  // console.timeEnd('deepQuery')
   // console.timeLog('deepQuery')
 
-  console.log(thisw.length)
+  //console.log(thisw.length)
   if (i && thisw.length === 0) {
     w.addListeners({
       "click": function(e, comp){

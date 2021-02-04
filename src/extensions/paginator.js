@@ -13,7 +13,8 @@ export function paginator(pageTemplate, conf={}){
           onFetch: conf.onFetch,
 
           onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { util.log('added', page) },
-          onPageRender: typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
+          onPageRender: null,
+          //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
           onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page) },
           onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page) },
         }))
@@ -36,11 +37,12 @@ export function paginator(pageTemplate, conf={}){
           }
 
           this.create = function(val=this.value, action='append'){
+            console.log('creating', val, action)
             let cloned = this._clonePage()
 
             new Promise( resolve => {
 
-              this.onCreate(cloned)
+              this.onCreate(cloned, val)
 
               let f = this.fetch(val)
 
@@ -53,7 +55,7 @@ export function paginator(pageTemplate, conf={}){
                         // on fetch in config or the default one
 
               if (f instanceof Promise){
-                f.then(rf => onFetch(cloned, rf))
+                f.then(resolved => onFetch(cloned, resolved))
               } else {
                 onFetch(cloned, f)
                 resolve(page)
@@ -61,8 +63,8 @@ export function paginator(pageTemplate, conf={}){
 
             }).then( page => {
               page.fetchChain.exec()
-              this.onPageRender(page, val)
-              this._lastAddedPage = page
+              if (this.onPageRender) this.onPageRender(page, val)
+              //this._lastAddedPage = page
             })
 
             cloned[`${action}To`](this.parent.element)
@@ -72,14 +74,27 @@ export function paginator(pageTemplate, conf={}){
           this.pages = new Map()
 
           this.destroy = function(val){
-            this.pages.get(val).destroy()
-            this.delPage(val)
+            let toDestroy = this.pages.get(val)
+
+            let destroy = _ => {
+              toDestroy.destroy()
+              this.delPage(val)  
+            }
+
+            if (this.onPageDestroy){
+              let r = this.onPageDestroy(toDestroy, val)
+              if (r instanceof Promise) return r.then(destroy)
+            }
+
+            destroy()
           }
 
           this.addPage = function(page, key){
-            this.onPageAdd(page)
-            key = key || this.pages.size
-            return this.pages.set(key, page)
+            key = key === null ? this.pages.size : key
+            this.onPageAdd(page, key)
+            console.log('adding page', key, page)
+            this.pages.set(key, page)
+            console.log(this.pages)
           }
 
           this.delPage = function(key){

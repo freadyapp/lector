@@ -21,8 +21,8 @@ function fetchContent(index){
           words --
         }
       }
-      resolve(txt)
-    }, Math.random()*2900)
+      resolve(`<h1> ${index} </h1> ${txt}`)
+    }, Math.random()*1900)
   })
 }
 
@@ -76,13 +76,24 @@ let lectorSettings = {
 
     onPageInactive: p => {
       p.css('background gray')
-      if (p.word){ 
+      //if (p.word){ 
+        //p.lec.removeWord(p.word.key)
+        //p.word = p.word.destroy()
+      //}
+    },
+    onPageAdd: (p, index) => {
+      p.css("background lightgray"),
+        p.setData({ index: index })
+    },
+    onCreate: p => p.html("..."),
+    onPageDestroy: p => {
+      if (p.word){
+        console.log('destroy', p.word.key)
         p.lec.removeWord(p.word.key)
         p.word = p.word.destroy()
+        console.log(p.lec)
       }
-    },
-    onPageAdd: p => p.css("background lightgray"),
-    onCreate: p => p.html("...")
+    }
   }
  }
 }
@@ -91,3 +102,18 @@ pragmaSpace.dev = true
 pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
+
+let test = _e("div.")
+fetchContent(1).then(content => test.html(content))
+
+//setInterval(_ => {
+  //console.log(window.scrollY)
+  ////_e("#main").prepend(test.cloneNode(true))
+  ////_e(".article").destroy()
+  //console.log(window.scrollY)
+  ////window.scroll(0, test.height)
+  ////console.log(test)
+  ////console.log(test.height)
+//}, 3000)
+
+
