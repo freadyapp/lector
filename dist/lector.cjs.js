@@ -1143,25 +1143,31 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               // console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
-              for (let pageIndex of pagesToRenderAfter){
-                this.create(pageIndex, 'append');
-              }
-
-              // pararellize?
-              for (let pageIndex of pagesToRenderBefore.reverse()){
-                this.create(pageIndex, 'prepend');
-              }
-
-              // pararellize?
-              for (let pageIndex of pagesToDelete){
-                //this.inactivate(pageIndex)
-                //this.pages.get(pageIndex).css("background:red")
-                this.destroy(pageIndex);
-              }
+              pragmajs.runAsync(
+                _ => {
+                  for (let pageIndex of pagesToRenderAfter){
+                    this.create(pageIndex, 'append');
+                  }  
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToRenderBefore.reverse()){
+                    this.create(pageIndex, 'prepend');
+                  }
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToDelete){
+                    //this.inactivate(pageIndex)
+                    //this.pages.get(pageIndex).css("background:red")
+                    this.destroy(pageIndex);
+                  }
+                }
+              );
               setTimeout(a => {
                 this.fetching = false;
               }, conf.timeout);
-            };
+          };
         },
         findActivePages(){
           
@@ -1224,7 +1230,7 @@ function infinityPaginator(streamer, pageTemplate, config={}){
           
           // optimization for fast scroll
           onScroll((pos, dp) => {
-            if (Math.abs(dp) > 100){
+            if (Math.abs(dp) > 40){
               if (pos < 350) doOnScroll(pos, dp);
             }
           });

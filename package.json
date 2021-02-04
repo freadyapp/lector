@@ -57,7 +57,7 @@
 		"compromise": "^13.7.0",
 		"jquery": "^3.5.1",
 		"mousetrap": "^1.6.5",
-		"pragmajs": "^0.4.7-b"
+		"pragmajs": "latest"
 	},
 	"browserify": {
 		"transform": [

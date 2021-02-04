@@ -105,24 +105,3 @@ let lectorSettings = {
 pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
-
-let test = _e("div.")
-fetchContent(1).then(content => test.html(content))
-
-//setInterval(_ => {
-  //console.log(window.scrollY)
-  ////_e("#main").prepend(test.cloneNode(true))
-  ////_e(".article").destroy()
-  //console.log(window.scrollY)
-  ////window.scroll(0, test.height)
-  ////console.log(test)
-  ////console.log(test.height)
-//}, 3000)
-
-
-//lecUtil.onScroll(s => {
-  //console.log(s)
-  //if (s < 50){
-    //window.scroll(0, 50)
-  //}
-//})

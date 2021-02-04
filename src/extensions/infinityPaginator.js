@@ -1,4 +1,4 @@
-import { _e, _p, Pragma, util } from "pragmajs"
+import { _e, _p, Pragma, util, runAsync } from "pragmajs"
 import { paginator } from "./paginator"
 import { range, isOnScreen, isMostlyInScreen, onScroll, PinkyPromise } from "../helpers/index"
 import { onScrollEnd } from "../helpers/autoScroll"
@@ -49,26 +49,31 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               // console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
-              for (let pageIndex of pagesToRenderAfter){
-                this.create(pageIndex, 'append')
-              }
-
-              // pararellize?
-              for (let pageIndex of pagesToRenderBefore.reverse()){
-                this.create(pageIndex, 'prepend')
-              }
-
-              // pararellize?
-              for (let pageIndex of pagesToDelete){
-                //this.inactivate(pageIndex)
-                //this.pages.get(pageIndex).css("background:red")
-                this.destroy(pageIndex)
-              };
-
+              runAsync(
+                _ => {
+                  for (let pageIndex of pagesToRenderAfter){
+                    this.create(pageIndex, 'append')
+                  }  
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToRenderBefore.reverse()){
+                    this.create(pageIndex, 'prepend')
+                  }
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToDelete){
+                    //this.inactivate(pageIndex)
+                    //this.pages.get(pageIndex).css("background:red")
+                    this.destroy(pageIndex)
+                  }
+                }
+              )
               setTimeout(a => {
                 this.fetching = false
               }, conf.timeout)
-            }
+          }
         },
         findActivePages(){
           
@@ -131,7 +136,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           
           // optimization for fast scroll
           onScroll((pos, dp) => {
-            if (Math.abs(dp) > 100){
+            if (Math.abs(dp) > 40){
               if (pos < 350) doOnScroll(pos, dp)
             }
           })
