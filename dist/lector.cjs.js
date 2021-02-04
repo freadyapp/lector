@@ -1007,7 +1007,7 @@ function paginator(pageTemplate, conf={}){
           };
 
           this.create = function(val=this.value, action='append'){
-            console.log('creating', val, action);
+            // console.log('creating', val, action)
             let cloned = this._clonePage();
 
             new Promise( resolve => {
@@ -1062,9 +1062,7 @@ function paginator(pageTemplate, conf={}){
           this.addPage = function(page, key){
             key = key === null ? this.pages.size : key;
             this.onPageAdd(page, key);
-            console.log('adding page', key, page);
             this.pages.set(key, page);
-            console.log(this.pages);
           };
 
           this.delPage = function(key){
@@ -1120,7 +1118,7 @@ function infinityPaginator(streamer, pageTemplate, config={}){
             this.fill = function(){
 
               this.fetching = true;
-              console.log(">>> FILLING WITH", this.value);
+              // console.log(">>> FILLING WITH", this.value)
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
               let pageRange = range(start, this.value+conf.headspace);
               let pagesRendered = Array.from(this.pages.keys());
@@ -1132,11 +1130,11 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
               let pagesToRenderBefore = pragmajs.util.aryDiff(pagesToRender, pagesToRenderAfter);
 
-              console.log(">> ALREADY RENDERED", pagesRendered);
-              console.log(">> DEL", pagesToDelete);
-              console.log(">> ADD", pagesToRender); 
-              console.log(">> ADD AFTER", pagesToRenderAfter);
-              console.log(">> ADD BEFORE", pagesToRenderBefore);
+              // console.log(">> ALREADY RENDERED", pagesRendered)
+              // console.log(">> DEL", pagesToDelete)
+              // console.log(">> ADD", pagesToRender) 
+              // console.log(">> ADD AFTER", pagesToRenderAfter)
+              // console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
               for (let pageIndex of pagesToRenderAfter){
@@ -1167,11 +1165,11 @@ function infinityPaginator(streamer, pageTemplate, config={}){
             let bestIndex = null;
             let best = 999999999999;
             const middle = scroll + window.innerHeight/2;
-            console.log(pages);
+            // console.log(pages)
             for (let [pageIndex, page] of pages){
               let pageMiddle = page.top + page.height/2;
               let closeness = Math.abs(pageMiddle - middle);
-              console.log(page, pageIndex, closeness);
+              // console.log(page, pageIndex, closeness)
               if (closeness <= best){
                 best = closeness;
                 bestIndex = pageIndex;
@@ -1203,11 +1201,11 @@ function infinityPaginator(streamer, pageTemplate, config={}){
 
             searching = true;
             this.findActivePage(pos, dp).then(active => {
-              console.log("ACTIVE>>", active, this.pages.get(active));
+              // console.log("ACTIVE>>", active, this.pages.get(active))
               this.value = active;
               searching = false;
               if (owe){
-                console.log('owe', owe);
+                // console.log('owe', owe)
                 doOnScroll(owe.pos, owe.dp);
                 owe = null;
               }

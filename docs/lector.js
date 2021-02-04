@@ -21,7 +21,7 @@ function fetchContent(index){
           words --
         }
       }
-      resolve(`<h1> ${index} </h1> ${txt}`)
+      resolve(`<h1> Page ${index} </h1> <p>${txt}</p>`)
     }, Math.random()*1900)
   })
 }
@@ -61,13 +61,15 @@ let lectorSettings = {
         // return onFetch(p)
         if (p.active) {
           if (!p.word){
-            console.log('this.lec', p.lec)
+            //console.log('this.lec', p.lec)
+            console.log('>>', 'fetched', p, 'wfying')
             lector.helpers.wfy(p)
             p.word = Word(p).setKey(index)
             
             p.lec.addWord(p.word)
             console.log("appended new page with key", p.word.key)
           }
+          console.log(p.word)
           p.css('background whitesmoke')
           // p.lec.connectTo(p.word)
         }
@@ -82,8 +84,8 @@ let lectorSettings = {
       //}
     },
     onPageAdd: (p, index) => {
-      p.css("background lightgray"),
-        p.setData({ index: index })
+      p.css("background lightgray")
+      p.setData({ index: index })
     },
     onCreate: p => p.html("..."),
     onPageDestroy: p => {

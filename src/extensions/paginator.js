@@ -37,7 +37,7 @@ export function paginator(pageTemplate, conf={}){
           }
 
           this.create = function(val=this.value, action='append'){
-            console.log('creating', val, action)
+            // console.log('creating', val, action)
             let cloned = this._clonePage()
 
             new Promise( resolve => {
@@ -92,9 +92,7 @@ export function paginator(pageTemplate, conf={}){
           this.addPage = function(page, key){
             key = key === null ? this.pages.size : key
             this.onPageAdd(page, key)
-            console.log('adding page', key, page)
             this.pages.set(key, page)
-            console.log(this.pages)
           }
 
           this.delPage = function(key){
