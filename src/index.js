@@ -1,7 +1,8 @@
 import { Lector, Word } from "./lector.js"
-export { Lector, Word }
 
-export * as helpers from "./helpers/index"
+import * as helpers from "./helpers/index"
+
+export { Lector, Word, helpers }
 // import { css } from "./styles/main.css"
 
 import { _e, _p, util } from "pragmajs"
@@ -13,7 +14,8 @@ export function globalify(){
     Word: Word,
     _e: _e,
     _p: _p,
-    util: util
+    util: util,
+    lecUtil: helpers
   }
 
   for (let [key, val] of Object.entries(attrs)){

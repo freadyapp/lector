@@ -122,7 +122,7 @@
 
       t = setTimeout(_ => {
         cb(scrollData.s, scrollData.ds);
-      }, 69);
+      }, 50);
     });
   }
 
@@ -136,6 +136,12 @@
     }
     globalThis.lectorSpace.onScrollEnd(cb);
   }
+
+  //export function onSlowScroll(cb, sensit=10){
+    //onScroll((_, dp) => {
+      //if (dp<=sensit) cb()
+    //})
+  //}
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -25804,7 +25810,7 @@
       return a;
   }
 
-  var index = /*#__PURE__*/Object.freeze({
+  var helpers = /*#__PURE__*/Object.freeze({
     __proto__: null,
     PinkyPromise: PinkyPromise,
     Idle: Idle,
@@ -26565,6 +26571,20 @@
             onScrollEnd((pos, dp) => {
               doOnScroll(pos, dp);
             });
+            
+            // optimization for fast scroll
+            onScroll((pos, dp) => {
+              if (Math.abs(dp) > 100){
+                if (pos < 350) doOnScroll(pos, dp);
+              }
+            });
+            
+            //onScroll((pos, dp) => {
+              //if (pos < 300){
+                //doOnScroll(pos, dp)
+              //}
+            //})
+
           }
         })
         .do(function(){
@@ -26789,7 +26809,8 @@
       Word: Word,
       _e: j,
       _p: B,
-      util: M
+      util: M,
+      lecUtil: helpers
     };
 
     for (let [key, val] of Object.entries(attrs)){
@@ -26801,7 +26822,7 @@
   exports.Lector = Lector;
   exports.Word = Word;
   exports.globalify = globalify;
-  exports.helpers = index;
+  exports.helpers = helpers;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

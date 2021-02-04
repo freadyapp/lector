@@ -128,6 +128,20 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           onScrollEnd((pos, dp) => {
             doOnScroll(pos, dp)
           })
+          
+          // optimization for fast scroll
+          onScroll((pos, dp) => {
+            if (Math.abs(dp) > 100){
+              if (pos < 350) doOnScroll(pos, dp)
+            }
+          })
+          
+          //onScroll((pos, dp) => {
+            //if (pos < 300){
+              //doOnScroll(pos, dp)
+            //}
+          //})
+
         }
       })
       .do(function(){

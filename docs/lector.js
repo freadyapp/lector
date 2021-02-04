@@ -26,15 +26,15 @@ function fetchContent(index){
   })
 }
 
-function onFetch(p, index){
-  console.log("P >>>>>>>>", p)
-  return new Promise(resolve => {
-    setTimeout(_ => {
-      p.css('background lime')
-      resolve()
-    }, Math.random()*1000)
-  })
-}
+//function onFetch(p, index){
+  //console.log("P >>>>>>>>", p)
+  //return new Promise(resolve => {
+    //setTimeout(_ => {
+      //p.css('background lime')
+      //resolve()
+    //}, Math.random()*1000)
+  //})
+//}
 
 let lectorSettings = {
   // these are the default values
@@ -55,52 +55,53 @@ let lectorSettings = {
    from: 'stream',
    as: 'infiniteScroll',
    config: {
+    onPageAdd: (p, index) => {
+      //p.css("background lightgray")
+      p.setData({ index: index })
+    },
+
+    onCreate: p => p.html("loading..."),
+
     onPageActive: (p, index) => {
-      p.css('background green')
       p.onFetch(function(){
         // return onFetch(p)
         if (p.active) {
           if (!p.word){
-            //console.log('this.lec', p.lec)
-            console.log('>>', 'fetched', p, 'wfying')
+            // generate lector for the page
+
             lector.helpers.wfy(p)
             p.word = Word(p).setKey(index)
             
             p.lec.addWord(p.word)
-            console.log("appended new page with key", p.word.key)
+            //console.log("appended new page with key", p.word.key)
           }
-          console.log(p.word)
+          //console.log(p.word)
           p.css('background whitesmoke')
-          // p.lec.connectTo(p.word)
         }
       })
     },
 
-    onPageInactive: p => {
-      p.css('background gray')
-      //if (p.word){ 
-        //p.lec.removeWord(p.word.key)
-        //p.word = p.word.destroy()
-      //}
-    },
-    onPageAdd: (p, index) => {
-      p.css("background lightgray")
-      p.setData({ index: index })
-    },
-    onCreate: p => p.html("..."),
+    //onPageInactive: p => {
+      //p.css('background gray')
+      ////if (p.word){ 
+        ////p.lec.removeWord(p.word.key)
+        ////p.word = p.word.destroy()
+      ////}
+    //},
+
     onPageDestroy: p => {
       if (p.word){
-        console.log('destroy', p.word.key)
+        //console.log('destroy', p.word.key)
         p.lec.removeWord(p.word.key)
         p.word = p.word.destroy()
-        console.log(p.lec)
+        //console.log(p.lec)
       }
     }
   }
  }
 }
 
-pragmaSpace.dev = true
+//pragmaSpace.dev = true
 pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
@@ -119,3 +120,9 @@ fetchContent(1).then(content => test.html(content))
 //}, 3000)
 
 
+//lecUtil.onScroll(s => {
+  //console.log(s)
+  //if (s < 50){
+    //window.scroll(0, 50)
+  //}
+//})

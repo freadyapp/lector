@@ -107,7 +107,7 @@ function _onScrollEnd(cb){
 
     t = setTimeout(_ => {
       cb(scrollData.s, scrollData.ds)
-    }, 69)
+    }, 50)
   })
 }
 
@@ -122,8 +122,8 @@ export function onScrollEnd(cb){
   globalThis.lectorSpace.onScrollEnd(cb)
 }
 
-export function onSlowScroll(cb, sensit=10){
-  onScroll((_, dp) => {
-    if (dp<=sensit) cb()
-  })
-}
+//export function onSlowScroll(cb, sensit=10){
+  //onScroll((_, dp) => {
+    //if (dp<=sensit) cb()
+  //})
+//}
