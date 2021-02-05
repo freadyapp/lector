@@ -1,4 +1,4 @@
-import { Pragma, _e, util, _p, tpl, runAsync } from 'pragmajs';
+import { Pragma, _e, util, _p, tpl, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import 'jquery';
 import nlp from 'compromise';
@@ -1189,10 +1189,11 @@ function infinityPaginator(streamer, pageTemplate, config={}){
             //if (this.fetching) return
             //
             return new PinkyPromise(resolve => {
-              let canditates;
-              util.bench(_ => canditates = findCandidates(this.pages, s));
-              //resolve(canditates)
-              setTimeout(_ => resolve(canditates), 5);
+              resolve(findCandidates(this.pages, s));
+              //let canditates
+              //util.bench(_ => canditates = findCandidates(this.pages, s))
+              ////resolve(canditates)
+              //setTimeout(_ => resolve(canditates), 5)
             })
           };
 
@@ -1302,13 +1303,13 @@ const Mark = (lec) => {
   let lastScroll = 0;
   onScroll(s => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
-    //console.log('user is scrolling', userIsScrolling())
+    // console.log('user is scrolling', userIsScrolling())
 
     if (userIsScrolling() && lec.isReading){
       let dscroll = Math.abs(lastScroll-s);
       lastScroll = s;
       if (dscroll>threshold){
-        //console.log('ds=', dscroll)
+        // console.log('ds=', dscroll)
         // TODO prevent from calling pause to many times
         // on too fast scroll, pause mark
         lec.pause();
@@ -1324,30 +1325,31 @@ const Mark = (lec) => {
   return mark
 };
 
+//console.log(_e("#div").deepQueryAll.toString())
 const Word = (element, i) => {
   let w = new PragmaWord(i)
           .as(element)
           .setValue(0);
 
-  // console.time('deepQuery')
-  let thisw = w.element.deepQueryAll('w');
-  // console.timeEnd('deepQuery')
-  // console.timeLog('deepQuery')
+  // new Promise(_ => {
+    let thisw = w.element.deepQueryAll('w');
+    // console.timeLog('deepQuery')
+    if (i && thisw.length === 0) {
+      w.addListeners({
+        "click": function(e, comp){
+          this.summon();
+        }
+      });
+    }
 
-  //console.log(thisw.length)
-  if (i && thisw.length === 0) {
-    w.addListeners({
-      "click": function(e, comp){
-        this.summon();
-      }
+    thisw.forEach((el, i) => {
+      let ww = Word(el, i);
+      w.add(ww);
     });
-  }
+    // console.log('async done')
+  // })
 
-  thisw.forEach((el, i) => {
-    let ww = Word(el, i);
-    w.add(ww);
-  });
-
+  // console.log('w done')
   return w
 };
 
@@ -1457,7 +1459,8 @@ function globalify(){
     _e: _e,
     _p: _p,
     util: util,
-    lecUtil: helpers
+    lecUtil: helpers,
+    _thread: _thread
   };
 
   for (let [key, val] of Object.entries(attrs)){

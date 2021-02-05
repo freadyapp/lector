@@ -104,10 +104,11 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
             //if (this.fetching) return
             //
             return new PinkyPromise(resolve => {
-              let canditates
-              util.bench(_ => canditates = findCandidates(this.pages, s))
-              //resolve(canditates)
-              setTimeout(_ => resolve(canditates), 5)
+              resolve(findCandidates(this.pages, s))
+              //let canditates
+              //util.bench(_ => canditates = findCandidates(this.pages, s))
+              ////resolve(canditates)
+              //setTimeout(_ => resolve(canditates), 5)
             })
           }
 
