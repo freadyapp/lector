@@ -22,5 +22,4 @@ export function globalify(){
   for (let [key, val] of Object.entries(attrs)){
     globalThis[key] = val
   }
-  // globalThis.Lector = Lector
 }

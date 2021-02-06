@@ -1,18 +1,17 @@
 import { Pragma, tpl, _e, util } from "pragmajs"
+import { scrollTo } from "../helpers/autoScroll"
 
 export function paginator(pageTemplate, conf={}){
   return new Pragma()
-        .from(tpl.create.template.config({
+        .from(util.createTemplate({
           // make this nicer
-
-          name: 'paginator',
-          defaultSet: pageTemplate,
+          // defaultSet: pageTemplate,
+          pageTemplate: pageTemplate,
           fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified') },
-
           onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
           onFetch: conf.onFetch,
 
-          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { util.log('added', page) },
+          onPageAdd: null,
           onPageRender: null,
           //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
           onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page) },
@@ -20,7 +19,8 @@ export function paginator(pageTemplate, conf={}){
         }))
 
         .run(function(){
-          let _ptemp = _e(this._paginatorTemplate).hide()
+
+          let _ptemp = _e(this.pageTemplate).hide()
           this.pageTemplate = _ptemp.cloneNode(false)
 
           this._clonePage = function() {
@@ -53,15 +53,37 @@ export function paginator(pageTemplate, conf={}){
                         }
 
                         // on fetch in config or the default one
-
-              if (f instanceof Promise){
-                f.then(resolved => onFetch(cloned, resolved))
-              } else {
-                onFetch(cloned, f)
-                resolve(page)
+              //
+              const onFetchAndResolve = (resolved) => {
+                let page = this.pages.get(val)
+                if (page){
+                  onFetch(page, resolved)
+                  resolve(page)
+                }
               }
 
+              if (f instanceof Promise){
+                f.then(resolved => {
+                  onFetchAndResolve(resolved)
+                })
+              } else {
+                  onFetchAndResolve(f)
+              }
+
+              //if (f instanceof Promise){
+                //f.then(resolved => {
+                  //this.pages.get(val)
+                  //onFetch(cloned, resolved)
+                  //resolve(val)
+                //})
+              //} else {
+                //onFetch(cloned, f)
+                //resolve(val)
+              //}
+
             }).then( page => {
+              //let page = this.pages.get(index)
+              //if (!page) return console.log('eeeeeeeeeee')
               page.fetchChain.exec()
               if (this.onPageRender) this.onPageRender(page, val)
               //this._lastAddedPage = page
@@ -74,11 +96,15 @@ export function paginator(pageTemplate, conf={}){
           this.pages = new Map()
 
           this.destroy = function(val){
+            //console.log('>> destroy', val)
+
             let toDestroy = this.pages.get(val)
 
             let destroy = _ => {
+              toDestroy = this.pages.get(val)
+              //toDestroy.destroy()
+              this.delPage(val)
               toDestroy.destroy()
-              this.delPage(val)  
             }
 
             if (this.onPageDestroy){
@@ -91,7 +117,7 @@ export function paginator(pageTemplate, conf={}){
 
           this.addPage = function(page, key){
             key = key === null ? this.pages.size : key
-            this.onPageAdd(page, key)
+            if (this.onPageAdd) this.onPageAdd(page, key)
             this.pages.set(key, page)
           }
 
@@ -116,7 +142,31 @@ export function paginator(pageTemplate, conf={}){
               this.onPageInactive(page, pageIndex)
             })
           }
+          
+          // this.goTo()
+          this.goTo = function(val, speed){
+            let _actionKey = `add-${this.value}`
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate')
+            this.value = val
+              /// added the page, scroll to it
+            setTimeout(_ => {
+              let page = this.pages.get(val)
+              page.onRender(function(){
+                scrollTo(page, speed||20)
+              })
+            }, 200)
+          }
+
+          this.export(
+            "pageTemplate",
+            "_clonePage",
+            "create",
+            'destroy',
+            "pages",
+            "addPage",
+            "delPage",
+            'activate',
+            'inactivate',
+            'goTo')
         })
 }

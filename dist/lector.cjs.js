@@ -191,139 +191,6 @@ function howGreek(word) {
   return 0
 }
 
-const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
-const fonts = ["Helvetica", "Open Sans", "Space Mono"];
-
-// import $ from "jquery"
-// export { settingsCSS } from "../styles/settings.css"
-
-const LectorSettings = (parent) => {
-  //
-  // let foveaComp = Slider.value("markerfovea", 1, 10)
-  //     .bind(">", (comp) => { comp.value+=1 }, 'keyup')
-  //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
-  //     .html.class("slider")
-
-  let foveaComp = pragmajs._p("markerfovea")
-                  .from(pragmajs.tpl.slider())
-                  .setRange(1, 10)
-                  .addClass('slider');
-
-
-  // let colorsComp = Select.color("markercolor", colors)
-  //                         .bind("c")
-  //                         .setTippy("Color:", tippyOption)
-  //
-
-  let colorsComp = pragmajs._p('markercolor')
-                  .from(pragmajs.tpl.select({
-                    options: colors
-                  }));
-
-  let fontComp = pragmajs._p('readerfont')
-                  .from(pragmajs.tpl.select({
-                    options: fonts
-                  }));
-
-  // let fontComp = Select.font("readerfont", fonts).bind("f")
-  //                     .html.class("font-selector")
-  //                     .setTippy('Font:', tippyOption)
-  //
-
-  // let modeComp = Select.attr("markermode", modes,
-  //   (v, comp, key) => {
-  //     // on value change
-  //     //mode_ify(parent.mark, v, colors[0])
-  //     // console.log(v)
-  //   },
-  //   (key, index) => {
-  //     //console.log(mode_ify(null, modes[index], "transparent"))
-  //     console.log(util.parse.css(mode_ify(null, modes[index], "transparent")))
-  //     // icon contruction
-  //     return {
-  //       type: "pointerModeOption",
-  //       html: `<div class='pointer-color' style='display: block; width:35px; height:15px; ${util.parse.css(mode_ify(null, modes[index], "transparent") + "; mix-blend-mode normal")}'></div>`
-  //     }
-  //   }).bind("m", null, "keyup")
-  //   .setTippy("Mode:", tippyOption)
-  //
-
-  // // key, initial val, step
-  // let wpmSet = (value, comp ) => {
-  //   /* on set */
-  //   //console.log(value,comp)
-  // }
-
-  let wpmComp = pragmajs._p("wpm").html("<>");
-
-  // let wpmComp = Button.controls("wpm", 250, 10, wpmSet, {
-  //   "+": "+",
-  //   "-": "-"
-  // }
-  // ).setRange(10, 42069)
-  //   .html.class("inline-grid grid-cols-3 gap-x-1 items-center")
-  //   .setTippy("Reading Speed", tippyOption)
-  //
-  // let popUpSettings = Compose("popupsettings")
-    // .host(colorsComp, fontComp, modeComp, foveaComp)
-
-  let popUpSettings = pragmajs._p("popupsettings")
-        .contain(colorsComp, fontComp, foveaComp);
-
-  // $(popUpSettings.tippy.popper).addClass("settings-tippy")
-
-  // popUpSettings.illustrate(icons.grab("settings")) // icons
-  // popUpSettings.icon.attr("id", "settings-icon")
-
-  let settings = pragmajs._p("settingsWrapper").contain(popUpSettings, wpmComp)
-                  .addClass("items-center");
-
-  // extend settings
-  settings.get = (key) => {
-    return settings.bridge ? settings.bridge.value[key] : null
-  };
-
-  return settings.pragmatize()
-
-};
-//
-//   let syncedKeys = ["markercolor", "readerfont", "markermode", "wpm", "markerfovea"]
-//   let freadyBridge = Bridge(settings, syncedKeys,
-//     (object, trigger) => {
-//       // on set of any watched attribute
-//       let color = colors[object.markercolor]
-//       let mode = modes[object.markermode]
-//       let font = fonts[object.readerfont]
-//       // modify pointer
-//       let modeCss = mode_ify(parent.mark, mode, color)
-//       //console.log(modeComp)
-//
-//       modeComp.children.forEach((child) => {
-//         if (color) child.css(`background ${color}`)
-//         //console.log(parse.css(modeCss))
-//       })
-//
-//       // set font
-//       $("w").css({ "font-family": font })
-//
-//       // sync data
-//       console.log(object)
-//
-//       settings.bridge = freadyBridge
-//       //console.log(settings.value)
-//     })
-//
-//   freadyBridge.set({
-//     wpm: 280,
-//     readerfont: 1,
-//     markercolor:1,
-//     markermode: 0,
-//     markerfovea: 5
-//   })
-//
-//   return settings
-// }
-
 class PinkyPromise {
   constructor(executor) {
     let _reject = null;
@@ -473,7 +340,6 @@ var helpers = /*#__PURE__*/Object.freeze({
   generateDifficultyIndex: generateDifficultyIndex,
   wordValue: wordValue,
   charsMsAt: charsMsAt,
-  LectorSettings: LectorSettings,
   wfy: wfy,
   airway: airway
 });
@@ -978,17 +844,15 @@ class PragmaMark extends pragmajs.Pragma {
 
 function paginator(pageTemplate, conf={}){
   return new pragmajs.Pragma()
-        .from(pragmajs.tpl.create.template.config({
+        .from(pragmajs.util.createTemplate({
           // make this nicer
-
-          name: 'paginator',
-          defaultSet: pageTemplate,
+          // defaultSet: pageTemplate,
+          pageTemplate: pageTemplate,
           fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ pragmajs.util.throwSoft('no fetch source specified'); },
-
           onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => pragmajs.util.log('created', p),
           onFetch: conf.onFetch,
 
-          onPageAdd: typeof conf.onPageAdd === 'function' ? conf.onPageAdd : function(page, i) { pragmajs.util.log('added', page); },
+          onPageAdd: null,
           onPageRender: null,
           //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
           onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){pragmajs.util.log('active', page); },
@@ -996,7 +860,8 @@ function paginator(pageTemplate, conf={}){
         }))
 
         .run(function(){
-          let _ptemp = pragmajs._e(this._paginatorTemplate).hide();
+
+          let _ptemp = pragmajs._e(this.pageTemplate).hide();
           this.pageTemplate = _ptemp.cloneNode(false);
 
           this._clonePage = function() {
@@ -1029,15 +894,37 @@ function paginator(pageTemplate, conf={}){
                         };
 
                         // on fetch in config or the default one
+              //
+              const onFetchAndResolve = (resolved) => {
+                let page = this.pages.get(val);
+                if (page){
+                  onFetch(page, resolved);
+                  resolve(page);
+                }
+              };
 
               if (f instanceof Promise){
-                f.then(resolved => onFetch(cloned, resolved));
+                f.then(resolved => {
+                  onFetchAndResolve(resolved);
+                });
               } else {
-                onFetch(cloned, f);
-                resolve(page);
+                  onFetchAndResolve(f);
               }
 
+              //if (f instanceof Promise){
+                //f.then(resolved => {
+                  //this.pages.get(val)
+                  //onFetch(cloned, resolved)
+                  //resolve(val)
+                //})
+              //} else {
+                //onFetch(cloned, f)
+                //resolve(val)
+              //}
+
             }).then( page => {
+              //let page = this.pages.get(index)
+              //if (!page) return console.log('eeeeeeeeeee')
               page.fetchChain.exec();
               if (this.onPageRender) this.onPageRender(page, val);
               //this._lastAddedPage = page
@@ -1050,11 +937,15 @@ function paginator(pageTemplate, conf={}){
           this.pages = new Map();
 
           this.destroy = function(val){
+            //console.log('>> destroy', val)
+
             let toDestroy = this.pages.get(val);
 
             let destroy = _ => {
+              toDestroy = this.pages.get(val);
+              //toDestroy.destroy()
+              this.delPage(val);
               toDestroy.destroy();
-              this.delPage(val);  
             };
 
             if (this.onPageDestroy){
@@ -1067,7 +958,7 @@ function paginator(pageTemplate, conf={}){
 
           this.addPage = function(page, key){
             key = key === null ? this.pages.size : key;
-            this.onPageAdd(page, key);
+            if (this.onPageAdd) this.onPageAdd(page, key);
             this.pages.set(key, page);
           };
 
@@ -1092,15 +983,39 @@ function paginator(pageTemplate, conf={}){
               this.onPageInactive(page, pageIndex);
             });
           };
+          
+          // this.goTo()
+          this.goTo = function(val, speed){
+            let _actionKey = `add-${this.value}`;
 
-          this.export("pageTemplate", "_clonePage", "create", 'destroy', "pages", "addPage", "delPage", 'activate', 'inactivate');
+            this.value = val;
+              /// added the page, scroll to it
+            setTimeout(_ => {
+              let page = this.pages.get(val);
+              page.onRender(function(){
+                scrollTo(page, speed||20);
+              });
+            }, 200);
+          };
+
+          this.export(
+            "pageTemplate",
+            "_clonePage",
+            "create",
+            'destroy',
+            "pages",
+            "addPage",
+            "delPage",
+            'activate',
+            'inactivate',
+            'goTo');
         })
 }
 
 function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = pragmajs._p("infinity paginator")
         .from(
-          paginator(pageTemplate).config(pragmajs.util.objDiff(
+          paginator(pageTemplate, pragmajs.util.objDiff(
             {
               streamer: streamer,
               fetch: streamer.fetch,
@@ -1111,7 +1026,8 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               // on page add,
               // on create,
               // on fetch
-            }, config))
+            }, config)
+          )
         )
         .setValue(0)
         .run({
@@ -1137,10 +1053,10 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRenderBefore = pragmajs.util.aryDiff(pagesToRender, pagesToRenderAfter);
 
               // console.log(">> ALREADY RENDERED", pagesRendered)
-              // console.log(">> DEL", pagesToDelete)
-              // console.log(">> ADD", pagesToRender) 
-              // console.log(">> ADD AFTER", pagesToRenderAfter)
-              // console.log(">> ADD BEFORE", pagesToRenderBefore)
+               console.log(">> DEL", pagesToDelete);
+               //console.log(">> ADD", pagesToRender) 
+               console.log(">> ADD AFTER", pagesToRenderAfter);
+               console.log(">> ADD BEFORE", pagesToRenderBefore);
 
               // pararellize?
               pragmajs.runAsync(
@@ -1166,6 +1082,7 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               );
               setTimeout(a => {
                 this.fetching = false;
+                console.log(this.pages);
               }, conf.timeout);
           };
         },
@@ -1256,11 +1173,247 @@ function infinityPaginator(streamer, pageTemplate, config={}){
   return inf
 }
 
+const defaults = {
+  onOptionCreate: function(self, option){
+    self.contain(option);
+  },
+  optionTemplate: function(option){
+      return _p(option)
+              .html(option)
+              .addClass('pragma-click')
+              .on('click').do(function(){
+                this.parent.value = this.key;
+              })
+  }
+};  
+
+
+const select = (conf) => _p()
+    //.from(util.createTemplate())
+    .run(function(){
+      let options = conf.options;
+      if (!options) return pragmajs.util.throwSoft('need to define options when creating a select template')
+
+      let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate;
+      let optionTemplate = conf.optionTemplate || defaults.optionTemplate; 
+
+      if (options.constructor === Array){
+        for (let el of options){
+          onOptionCreate(this, optionTemplate(el));
+        }
+      }else {
+        for (let [ key, val ] of Object.entries(options)){
+          const pair = {[key]: val};
+          onOptionCreate(this, optionTemplate(key, val), pair);
+        }
+      }
+
+      this.onExport(function(pragma) {
+        pragma.contain(...this.children);
+      });
+      this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
+    });
+
+function slider(conf={}){
+  return new pragmajs.Pragma()
+    .run(function() {
+      this.as(`<input type='range'></input>`);
+
+      const defs = ['min', 'max', 'value'];
+
+      defs.forEach(attr => {
+        if (conf[attr]) this.element.attr(attr, conf[attr]);
+      });
+
+      this.setRange(this.min || -100, this.max || 100);
+
+      this.element.listenTo('input', function(){
+        this.parent.value = parseInt(this.value);
+      });
+
+      this.export('actionChain', 'elementDOM');
+      this.onExport(pragma => {
+        pragma.adopt(this.element);
+      });
+    })
+  }
+
+function monitor(conf={}){
+  return new pragmajs.Pragma()
+          .from(pragmajs.util.createTemplate(pragmajs.util.objDiff({
+              template: v => v,
+            }, conf)))
+          .do(function() {
+            this.html(this.template(this.value));
+          })
+          .run(function(){
+            this.setTemplate = function(tpl){
+              this.template = tpl;
+              return this
+            };
+            this.export('actionChain', 'setTemplate');
+          })
+}
+
+
+/*
+ *use: 
+ *let monitor = _p('tv')
+ *  .setValue(0)
+ *  .from(tpl.monitor())
+ *  .setMonitorTemplate(
+ *    v => `${v} second${v == 1 ? ' has' : 's have'} passed`)
+ *  .pragmatizeAt("#paper")
+ *  .setLoop(0, 10)
+ *
+ */
+
+const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
+const fonts = ["Helvetica", "Open Sans", "Space Mono"];
+const modes = ["HotBox", "Underneath", "Faded"];
+
+var shc = {
+  wpmPlus: ['+', '='],
+  wpmMinus: ['-'],
+};
+
+function activate(self, key){
+  self.find(key).css('opacity 1'); 
+}
+
+function deactivate(self, key){
+  self.find(key).css('opacity .7'); 
+}
+
+const activeSelectTpl = (conf={}) => pragmajs._p()
+  .from(select(pragmajs.util.objDiff({
+    onOptionCreate: (self, el) => {
+      self.contain(el);
+      deactivate(self, el.key);
+    }
+  }, conf)))
+  .css(`
+    display flex
+    flex-direction row
+    flex-wrap no wrap
+    justify-content space-around
+    align-items center
+    width 100%
+  `)
+  .do(function(){
+    if (this.value === this._lv) return
+    activate(this, this.value);
+    if (this._lv) deactivate(this, this._lv);
+  });
+
+function lectorSettings(lector){
+  //
+  // let foveaComp = Slider.value("markerfovea", 1, 10)
+  //     .bind(">", (comp) => { comp.value+=1 }, 'keyup')
+  //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
+  //     .html.class("slider")
+
+  let settings = pragmajs._p("settingsWrapper")
+                  .addClass("items-center")
+                  .run(function(){
+                    this.value = {};
+                    this.set = function(set){
+                      this.value = pragmajs.util.objDiff(this.value, edit);
+                    };
+                    this.get = function(key){
+                      return this.value[key] 
+                    };
+                  })
+                  .do(function(){
+                    console.log('set value', this.value);
+                  });
+
+  let foveaComp = pragmajs._p("markerfovea")
+                  .from(slider({
+                    min: 2,
+                    max: 10,
+                    value: 5
+                  }))
+                  .addClass('slider');
+
+
+  let modeComp = pragmajs._p('markermodes')
+                  .from(activeSelectTpl({
+                    options: modes
+                  }));
+
+
+  let fontComp = pragmajs._p('markerfont')
+                  .run(function(){
+                    console.log(this.key);
+                  })
+                  .from(activeSelectTpl({
+                    options: fonts,
+                    optionTemplate: option => pragmajs._p(option)
+                              .html(option)
+                              .on('click').do(function(){
+                                this.parent.value = this.key;
+                              })
+                  }))
+                  .css(`flex-direction row`);
+
+  let colorsComp = pragmajs._p('markercolor')
+                  .from(activeSelectTpl({
+                    options: colors,
+                    optionTemplate: option => {
+                      return pragmajs._p(option)
+                              .css(`
+                                width 25px
+                                height 25px
+                                background-color ${option} 
+
+                              `)
+                              .on('click').do(function(){
+                                this.parent.value = this.key;
+                              })
+                    }
+                  }));
+
+
+  let wpmComp = pragmajs._p("wpm")
+                  .from(monitor())
+                  .setTemplate(
+                    v => `${v} wpm`
+                  )
+                  .setRange(40, 4200)
+                  .setValue(250)
+                  .bind(shc.wpmPlus, function(){ this.value+=10; })
+                  .bind(shc.wpmMinus, function(){ this.value-=10; });
+
+
+  const comps = [colorsComp, fontComp, foveaComp, modeComp];
+
+  comps.forEach(comp => {
+    comp.do(function(){
+      console.log(this.key, this.value);
+    });
+  });
+
+  let popUpSettings = pragmajs._p("popupsettings")
+        .contain(...comps);
+
+
+  settings.contain(popUpSettings, wpmComp);
+
+  // extend settings
+  settings.get = (key) => {
+    return settings.bridge ? settings.bridge.value[key] : null
+  };
+
+  return settings.pragmatize()
+}
+
 // TODO add more default options
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
-  experimental: false
+  experimental: false,
+  settings: false
 };
 
 const Mark = (lec) => {
@@ -1372,12 +1525,14 @@ const Reader = (l, options=default_options) => {
               .setValue(0)
               .connectTo(w);
   
-  lec.settings = LectorSettings()
-                  .css(`position fixed
-                        bottom 10px
-                        left 10px
-                        background #303030
-                        padding 10px`);
+  if (options.settings) lec.settings = lectorSettings()
+                                          .css(`position fixed
+                                                bottom 10px
+                                                left 10px
+                                                color whitesmoke
+                                                border-radius 5px
+                                                background #303030
+                                                padding 10px`);
 
   lec.mark = Mark(lec);
   lec.contain(lec.settings);
@@ -1437,8 +1592,7 @@ const Lector = (l, options=default_options) => {
     pragmajs.util.log('setting up streamer service');
 
     let streamer = _streamer(options.stream);
-    let paginator = infinityPaginator(streamer, l)
-                    .config(options.paginate.config || {});
+    let paginator = infinityPaginator(streamer, l, options.paginate.config || {});
 
     // let reader = _p()
     //               .as(_e(l).parentElement)
@@ -1449,8 +1603,11 @@ const Lector = (l, options=default_options) => {
     // let options = util.objDiff({ skip: true })
     let reader = Reader(pragmajs._e(l).parentElement, options)
                   .adopt(paginator, streamer);
+    reader.paginator = paginator;
+    console.log('paginator', paginator);
 
     paginator.fill();
+    return reader
 
     //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
 
@@ -1475,7 +1632,6 @@ function globalify(){
   for (let [key, val] of Object.entries(attrs)){
     globalThis[key] = val;
   }
-  // globalThis.Lector = Lector
 }
 
 exports.Lector = Lector;

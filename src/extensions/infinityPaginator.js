@@ -6,7 +6,7 @@ import { onScrollEnd } from "../helpers/autoScroll"
 export function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = _p("infinity paginator")
         .from(
-          paginator(pageTemplate).config(util.objDiff(
+          paginator(pageTemplate, util.objDiff(
             {
               streamer: streamer,
               fetch: streamer.fetch,
@@ -17,7 +17,8 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               // on page add,
               // on create,
               // on fetch
-            }, config))
+            }, config)
+          )
         )
         .setValue(0)
         .run({
@@ -43,10 +44,10 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRenderBefore = util.aryDiff(pagesToRender, pagesToRenderAfter)
 
               // console.log(">> ALREADY RENDERED", pagesRendered)
-              // console.log(">> DEL", pagesToDelete)
-              // console.log(">> ADD", pagesToRender) 
-              // console.log(">> ADD AFTER", pagesToRenderAfter)
-              // console.log(">> ADD BEFORE", pagesToRenderBefore)
+               console.log(">> DEL", pagesToDelete)
+               //console.log(">> ADD", pagesToRender) 
+               console.log(">> ADD AFTER", pagesToRenderAfter)
+               console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
               runAsync(
@@ -72,6 +73,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               )
               setTimeout(a => {
                 this.fetching = false
+                console.log(this.pages)
               }, conf.timeout)
           }
         },

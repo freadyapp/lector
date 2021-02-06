@@ -123,13 +123,13 @@ __metadata:
   linkType: hard
 
 "@babel/generator@npm:^7.12.13":
-  version: 7.12.13
-  resolution: "@babel/generator@npm:7.12.13"
+  version: 7.12.15
+  resolution: "@babel/generator@npm:7.12.15"
   dependencies:
     "@babel/types": ^7.12.13
     jsesc: ^2.5.1
     source-map: ^0.5.0
-  checksum: dd5316ff39459de4fe07254336672d9e0efa0791217ae70c0a0ea5b7222966721f2704c3b5b6c4633de10c751f3e5d02779ca75cd0c373ef67e6daaa405ca022
+  checksum: 243c7c8987b9720d7cc8ecec165f69fda4159bb3ab19d3f09a4d5c6d35644d3b62293903aab0ae1f34dda61e39094bfea604d88a035e9f9ec485ffde636a734f
   languageName: node
   linkType: hard
 
@@ -644,11 +644,11 @@ __metadata:
   linkType: hard
 
 "@babel/parser@npm:^7.12.13":
-  version: 7.12.13
-  resolution: "@babel/parser@npm:7.12.13"
+  version: 7.12.15
+  resolution: "@babel/parser@npm:7.12.15"
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 177230a5e8cce685f3964632733eab2a243db984cad1746d468696318c2997c2287d8999e82135c7bac94d54fde26b2592f8c697a18833846d389ae2057d811d
+  checksum: 0e8b7fc396f8137a820bbc132be17f7b0df25393f9cc13ddcea0e0a9d3a131f5d51db2c1fe5ac8387c70b8635f3ce633d9ba84c3ad6790892f97aa0761ca69ce
   languageName: node
   linkType: hard
 
@@ -5030,7 +5030,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@^2.1.2, fsevents@~2.3.1":
+fsevents@^2.1.2:
   version: 2.3.1
   resolution: "fsevents@npm:2.3.1"
   dependencies:
@@ -5039,7 +5039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.1#builtin<compat/fsevents>":
+"fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>":
   version: 2.3.1
   resolution: "fsevents@patch:fsevents@npm%3A2.3.1#builtin<compat/fsevents>::version=2.3.1&hash=11e9ea"
   dependencies:
@@ -5057,12 +5057,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fsevents@patch:fsevents@~2.3.1#builtin<compat/fsevents>":
+  version: 2.3.2
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#builtin<compat/fsevents>::version=2.3.2&hash=11e9ea"
+  dependencies:
+    node-gyp: latest
+  checksum: 7b25d9251aefe433d508a0eb614217f0495ae05a9e8af15f7dbf9998e08c4e675acd1cf32361e0fcf71d917d9e8c4b76301fdc72a1ec1105a3ea0994f5e15a8d
+  languageName: node
+  linkType: hard
+
 fsevents@~2.1.2:
   version: 2.1.3
   resolution: "fsevents@npm:2.1.3"
   dependencies:
     node-gyp: latest
   checksum: 8977781884d06c5bcb97b5f909efdce9683c925f2a0ce7e098d2cdffe2e0a0a50b1868547bb94dca75428c06535a4a70517a7bb3bb5a974d93bf9ffc067291eb
+  languageName: node
+  linkType: hard
+
+fsevents@~2.3.1:
+  version: 2.3.2
+  resolution: "fsevents@npm:2.3.2"
+  dependencies:
+    node-gyp: latest
+  checksum: a1883f4ca12b8b403ec528f1a4cb312b0877eacd24719da535cabea78d6fdd78530e3538bdba590a1c0f6c295128f964a89182621885296353a44dcfa4f9db53
   languageName: node
   linkType: hard
 
@@ -5249,7 +5267,14 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4":
+"graceful-fs@npm:^4.1.11":
+  version: 4.2.5
+  resolution: "graceful-fs@npm:4.2.5"
+  checksum: 164eeef7f8aca15aff8d3c61c780e286ec8867deb23d6f3cee2d6231e0b422233bf4d905edf585ce2c204e485b8511188e6752e1a28e7176f296fbdaa6269dc1
+  languageName: node
+  linkType: hard
+
+"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.3, graceful-fs@npm:^4.2.4":
   version: 4.2.4
   resolution: "graceful-fs@npm:4.2.4"
   checksum: d095ee4dc6eacc76814cd52d5d185b860119378a6fd4888e7d4e94983095c54d4f6369942a5e3d759cdbdd4e3ee7eaeb27a39ff938c6ee4610894fd9de46b6cb
@@ -9605,8 +9630,8 @@ fsevents@~2.1.2:
   linkType: hard
 
 "webpack@npm:^5.11.1":
-  version: 5.20.0
-  resolution: "webpack@npm:5.20.0"
+  version: 5.21.0
+  resolution: "webpack@npm:5.21.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -9636,7 +9661,7 @@ fsevents@~2.1.2:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: d09966de7e5e62a18cf44d92b83417f6ae6d0690ac70e3072fc3997b5f36dedcbf9981ed715814ada27ea1cf9b379aac52541fc417bc7935af9d5c74ab3a3fb4
+  checksum: 12113ce8c720707c3c3fd8e9f3faef23bc9bcc84c5cd82eacb7031b7048303e0549db0767025eeb826604a71a43631b3bd6551c10c70cf8a8a5d799add37a092
   languageName: node
   linkType: hard
 

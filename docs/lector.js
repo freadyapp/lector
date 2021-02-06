@@ -37,49 +37,50 @@ function fetchContent(index){
 //}
 
 let lectorSettings = {
-  // these are the default values
-  "toolbar": false,
-  "wfy": true,
-  "topbar": false,
-  "loop": false,
-  "autostart": false,
-  // "interactive": true,
-  pragmatizeOnCreate: true,
-  experimental: true,
+   wfy: true,
+   loop: false,
+   autostart: false,
 
- stream: fetchContent,// function with index as param that
-                      // returns the content for the page
-                      // can return a promise
+   pragmatizeOnCreate: true,
+   experimental: true,
 
- paginate: {
-   from: 'stream',
-   as: 'infiniteScroll',
-   config: {
-    onPageAdd: (p, index) => {
-      //p.css("background lightgray")
-      p.setData({ index: index })
-    },
+   settings: true,
+   stream: fetchContent,
+    // function with index as param that
+    // returns the content for the page
+    // can return a promise
 
-    onCreate: p => p.html("loading..."),
+   paginate: {
+     from: 'stream',
+     as: 'infiniteScroll',
+     config: {
+      onPageAdd: (p, index) => {
+        //p.css("background lightgray")
+        //console.log(p)
+        p.setData({ index: index })
+      },
 
-    onPageActive: (p, index) => {
-      p.onFetch(function(){
-        // return onFetch(p)
-        if (p.active) {
-          if (!p.word){
-            // generate lector for the page
+      onCreate: p => p.html("loading..."),
 
-            lector.helpers.wfy(p)
-            p.word = Word(p).setKey(index)
-            
-            p.lec.addWord(p.word)
-            //console.log("appended new page with key", p.word.key)
+      onPageActive: (p, index) => {
+        p.onFetch(function(){
+          console.log('fetched', p)
+          // return onFetch(p)
+          if (p.active) {
+            if (!p.word){
+              // generate lector for the page
+
+              lector.helpers.wfy(p)
+              p.word = Word(p).setKey(index)
+              
+              p.lec.addWord(p.word)
+              //console.log("appended new page with key", p.word.key)
+            }
+            //console.log(p.word)
+            p.css('background whitesmoke')
           }
-          //console.log(p.word)
-          p.css('background whitesmoke')
-        }
-      })
-    },
+        })
+      },
 
     //onPageInactive: p => {
       //p.css('background gray')
@@ -105,3 +106,14 @@ let lectorSettings = {
 pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
+
+//setTimeout(_ => {
+  //lec.paginator.goTo(parseInt(prompt()))
+//}, 5000)
+//
+//lec.paginator.value = 55
+//setTimeout(_ => {
+  //console.log(lec.paginator.pages.get(55))
+  //lecUtil.scrollTo(lec.paginator.pages.get(55))
+//}, 500)
+

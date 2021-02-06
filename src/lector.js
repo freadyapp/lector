@@ -1,6 +1,6 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
-import { range, wfy, isOnScreen, scrollTo, onScroll, LectorSettings } from "./helpers/index"
-import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
+import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
+import { PragmaWord, PragmaLector, PragmaMark, LectorSettings } from "./pragmas/index"
 import * as _ext from "./extensions/index"
 
 
@@ -8,7 +8,8 @@ import * as _ext from "./extensions/index"
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
-  experimental: false
+  experimental: false,
+  settings: false
 }
 
 const Mark = (lec) => {
@@ -120,12 +121,14 @@ export const Reader = (l, options=default_options) => {
               .setValue(0)
               .connectTo(w)
   
-  lec.settings = LectorSettings(lec)
-                  .css(`position fixed
-                        bottom 10px
-                        left 10px
-                        background #303030
-                        padding 10px`)
+  if (options.settings) lec.settings = LectorSettings(lec)
+                                          .css(`position fixed
+                                                bottom 10px
+                                                left 10px
+                                                color whitesmoke
+                                                border-radius 5px
+                                                background #303030
+                                                padding 10px`)
 
   lec.mark = Mark(lec)
   lec.contain(lec.settings)
@@ -185,8 +188,7 @@ export const Lector = (l, options=default_options) => {
     util.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
-    let paginator = _ext.infinityPaginator(streamer, l)
-                    .config(options.paginate.config || {})
+    let paginator = _ext.infinityPaginator(streamer, l, options.paginate.config || {})
 
     // let reader = _p()
     //               .as(_e(l).parentElement)
@@ -197,8 +199,11 @@ export const Lector = (l, options=default_options) => {
     // let options = util.objDiff({ skip: true })
     let reader = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
+    reader.paginator = paginator
+    console.log('paginator', paginator)
 
     paginator.fill()
+    return reader
 
     //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
 

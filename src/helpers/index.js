@@ -1,7 +1,6 @@
 export { isOnScreen, isMostlyInScreen, scrollTo, onScroll } from "./autoScroll.js"
 export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWordHelper"
 
-export { LectorSettings } from "./lectorSettings"
 import PinkyPromise from "./pinkyPromise"
 
 import  Idle from "./idle"
