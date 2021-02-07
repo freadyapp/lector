@@ -27888,6 +27888,9 @@
     pagePre: '['
   };
 
+  function cssOption(self, key){
+    self.find(key).css('cursor pointer');
+  }
   function activate(self, key){
     self.find(key).css('opacity 1'); 
   }
@@ -27900,6 +27903,7 @@
     .from(select(index.objDiff({
       onOptionCreate: (self, el) => {
         self.contain(el);
+        cssOption(self, el.key);
         deactivate(self, el.key);
       }
     }, conf)))
@@ -27910,6 +27914,7 @@
     justify-content space-around
     align-items center
     width 100%
+    padding 10px
   `)
     .do(function(){
       if (this.value === this._lv) return
@@ -28239,12 +28244,18 @@
     lec.mark = Mark(lec);
     if (options.settings) lec.settings = lectorSettings(lec)
                                             .css(`position fixed
-                                                bottom 10px
-                                                left 10px
+                                                bottom 20px
+                                                left 20px
                                                 color whitesmoke
                                                 border-radius 5px
-                                                background #303030
-                                                padding 10px`);
+                                                padding 20px 40px
+
+                                                background: rgba( 35, 35, 35, 0.55 );
+                                                backdrop-filter: blur( 30.5px );
+                                                -webkit-backdrop-filter: blur( 30.5px );
+                                                border-radius: 10px;
+                                                border: 1px solid rgba( 255, 255, 255, 0.18 );
+                                                `);
 
 
     function bindKeys(){

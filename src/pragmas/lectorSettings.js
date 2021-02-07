@@ -4,6 +4,9 @@ import { select, monitor, slider } from "../extensions/index"
 import { colors, fonts, modes } from "../config/marker.config"
 import shc from "../config/shortcuts.config"
 
+function cssOption(self, key){
+  self.find(key).css('cursor pointer')
+}
 function activate(self, key){
   self.find(key).css('opacity 1') 
 }
@@ -16,6 +19,7 @@ const activeSelectTpl = (conf={}) => _p()
   .from(select(util.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el)
+      cssOption(self, el.key)
       deactivate(self, el.key)
     }
   }, conf)))
@@ -26,6 +30,7 @@ const activeSelectTpl = (conf={}) => _p()
     justify-content space-around
     align-items center
     width 100%
+    padding 10px
   `)
   .do(function(){
     if (this.value === this._lv) return
