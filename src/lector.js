@@ -13,7 +13,7 @@ const default_options = {
 }
 
 const Mark = (lec) => {
-  let mark = new PragmaMark(lec)
+  let mark = new PragmaMark()
 
   function logger(w){
   }
@@ -121,6 +121,7 @@ export const Reader = (l, options=default_options) => {
               .setValue(0)
               .connectTo(w)
   
+  lec.mark = Mark(lec)
   if (options.settings) lec.settings = LectorSettings(lec)
                                           .css(`position fixed
                                                 bottom 10px
@@ -130,8 +131,6 @@ export const Reader = (l, options=default_options) => {
                                                 background #303030
                                                 padding 10px`)
 
-  lec.mark = Mark(lec)
-  lec.contain(lec.settings)
 
   function bindKeys(){
     lec.bind("right", _ => lec.goToNext())
@@ -213,3 +212,4 @@ export const Lector = (l, options=default_options) => {
 
   }
 }
+

@@ -11,14 +11,26 @@ export default class PragmaLector extends Pragma {
   }
 
   get mark(){
-    return this.markPragma
+    return this._mark
   }
+
   set mark(m){
-    this.markPragma = m
+    this.adopt(m)
+    this._mark = m
   }
+
+  get settings(){
+    return this._settings
+  }
+  set settings(s){
+    this.adopt(s)
+    this._settings = s
+  }
+
   get isReading(){
     return this.w.isReading
   }
+
   get currentWord(){
     return this.w.currentWord
   }
@@ -76,4 +88,10 @@ export default class PragmaLector extends Pragma {
   pause(){
     this.w.pause()
   }
+
+  setFont(font){
+    console.log(this.w)
+    this.w.css(`font-family ${font}`)
+  }
+
 }

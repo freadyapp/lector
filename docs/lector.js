@@ -107,6 +107,7 @@ pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
 
+console.log(lec.mark.settings)
 //setTimeout(_ => {
   //lec.paginator.goTo(parseInt(prompt()))
 //}, 5000)

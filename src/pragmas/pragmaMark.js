@@ -1,9 +1,10 @@
 // mark is responsible for marking words in the screen
 // import $ from "jquery"
-import { Pragma, _e } from "pragmajs"
+import { Pragma, _e, util } from "pragmajs"
 import PragmaWord from "./pragmaWord"
 import anime from "animejs"
 import { PinkyPromise, Idle, airway } from "../helpers/index"
+import { mode_ify } from '../config/modes.js'
 
 const defaultStyles = `
   position absolute
@@ -18,18 +19,15 @@ const defaultStyles = `
 `
 
 export default class PragmaMark extends Pragma {
-  constructor(parent) {
+  constructor() {
     super('marker')
 
-    this.parent = parent
     this.element = _e("marker")
-    document.body.appendChild(this.element)
+    this.appendTo('body')
+    this.hide()
     this.css(defaultStyles)
-    //this.parent.element.append(this.element)
-    this.currentlyMarking = null
-    //this.element.width("180px")
-    this.colors = ["tomato", "#FFDFD6", "teal"] // TODO change this
 
+    this.currentlyMarking = null
     window.addEventListener('resize', () => {
       this.mark(this.last_marked, 0)
     })
@@ -37,28 +35,25 @@ export default class PragmaMark extends Pragma {
     this.runningFor = 0
     this.pausing = false
 
-    this.idle = new Idle(8000)
-      .onAfk(()=> {
-        console.log('user is afk')
-        this.shout()
-      })
-      .onActive(() => {
-        console.log('user is back')
-        this.shutUp()
-      })
+    //this.idle = new Idle(8000)
+      //.onAfk(()=> {
+        //util.log('user is afk')
+        //this.shout()
+      //})
+      //.onActive(() => {
+        //util.log('user is back')
+        //this.shutUp()
+      //})
   }
-
-  shout(){
-    return console.log("AAAAAAAAAA")
-    this.setTippy("space to read", {
-          showOnCreate: true,
-          theme: "marker"
-        })
+  hide(){
+    if (this._hidden) return
+    this._hidden = true
+    this.element.hide()
   }
-
-  shutUp(){
-    return console.log("SHUTTING UP")
-    if (this.tippy) this.tippy.destroy()
+  show(){
+    if (!this._hidden) return
+    this._hidden = false
+    this.element.show()
   }
 
   set last_marked(n){
@@ -69,39 +64,34 @@ export default class PragmaMark extends Pragma {
     return this.value
   }
 
-  setWidth(n) {
-    this.element.width(n)
-    return this
-  }
-
   get settings() {
-    return {
-      get: function(){
-        return null
-      }
-    }
-    return this.parent.settings
+    return this.parent ? this.parent.settings : console.error('mark has no settings attached')
   }
 
-  set color(hex) {
-    return
-    this.settings.set({ "color": this.colors[index] })
-    this.element.css({ "background": this.colors[index] })
-  }
   get cw() {
-    return this.fovea * 30
+    return this._fovea * 30
   }
-  get fovea() {
-    return this.settings.get("markerfovea") || 4
-  }
-  set fovea(n) {
-    console.table(['writing fovea', this.settings.find("fovea")])
-    this.settings.set({ "fovea": n })
-    this.element.css({ "width": this.settings.find("fovea") * 30 })
+  
+  get wpm() { return this._wpm || 260 }
+  
+  setMode(mode){
+    this._mode = mode
+    mode_ify(this)
   }
 
-  get wpm() { return this.settings.get("wpm") || 260 }
-  set wpm(n) { this.settings.set({ "wpm": n }) }
+  setWpm(wpm){
+    this._wpm = wpm
+  }
+
+  setColor(hex){
+    this._color = hex
+    this.css(`background-color ${hex}`)
+  }
+
+  setFovea(val){
+    this._fovea = val
+    this.css(`width ${this.cw}px`)
+  }
 
   pause() {
     return new Promise((resolve, reject) => {
@@ -130,6 +120,7 @@ export default class PragmaMark extends Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
+    this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {

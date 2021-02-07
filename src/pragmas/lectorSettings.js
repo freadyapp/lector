@@ -1,6 +1,5 @@
 import { _p, util } from "pragmajs"
 import { select, monitor, slider } from "../extensions/index"
-import { mode_ify } from "../config/modes"
 
 import { colors, fonts, modes } from "../config/marker.config"
 import shc from "../config/shortcuts.config"
@@ -51,37 +50,72 @@ export default function lectorSettings(lector){
   //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
   //     .html.class("slider")
 
+  const actions = {
+    changeColor(hex=this.value){
+      lector.mark.setColor(hex)
+    },
+
+    changeFovea(fovea=this.value){
+      lector.mark.setFovea(fovea)
+    },
+
+    changeWpm(wpm=this.value){
+      lector.mark.setWpm(wpm) 
+    },
+
+    changeFont(font=this.value){
+      lector.setFont(font)
+    },
+
+    changeMode(mode=this.value){
+      lector.mark.setMode(mode) 
+    }
+  }
+
   let settings = _p("settingsWrapper")
                   .addClass("items-center")
                   .run(function(){
                     this.value = {}
-                    this.set = function(set){
+
+                    this._setVal = function(edit){
                       this.value = util.objDiff(this.value, edit)
                     }
+
+                    this.set = function(edit){
+                     this._setting = true 
+                      for (let [key, val] of Object.entries(edit)){
+                        let child = this.find('!'+key)
+                        if (child) child.value = val
+                      }
+                     this._setting = false
+                    }
+                    
                     this.get = function(key){
                       return this.value[key] 
                     }
                   })
-                  .do(function(){
-                    console.log('set value', this.value)
-                  })
+                  //.do(function(){
+                    //console.log('set value', this.value)
+                  //})
 
-  let foveaComp = _p("markerfovea")
+  let foveaComp = _p("!fovea")
                   .from(slider({
                     min: 2,
                     max: 10,
                     value: 5
                   }))
                   .addClass('slider')
+                  .do(actions.changeFovea)
 
 
-  let modeComp = _p('markermodes')
+  let modeComp = _p('!mode')
                   .from(activeSelectTpl({
                     options: modes
                   }))
+                  .do(actions.changeMode)
 
 
-  let fontComp = _p('markerfont')
+  let fontComp = _p('!font')
                   .run(function(){
                     console.log(this.key)
                   })
@@ -94,8 +128,9 @@ export default function lectorSettings(lector){
                               })
                   }))
                   .css(`flex-direction row`)
+                  .do(actions.changeFont)
 
-  let colorsComp = _p('markercolor')
+  let colorsComp = _p('!color')
                   .from(activeSelectTpl({
                     options: colors,
                     optionTemplate: option => {
@@ -111,9 +146,9 @@ export default function lectorSettings(lector){
                               })
                     }
                   }))
+                  .do(actions.changeColor)
 
-
-  let wpmComp = _p("wpm")
+  let wpmComp = _p("!wpm")
                   .from(monitor())
                   .setTemplate(
                     v => `${v} wpm`
@@ -122,26 +157,47 @@ export default function lectorSettings(lector){
                   .setValue(250)
                   .bind(shc.wpmPlus, function(){ this.value+=10 })
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
+                  .do(actions.changeWpm)
 
 
-  const comps = [colorsComp, fontComp, foveaComp, modeComp]
+  //const comps = [colorsComp, fontComp, foveaComp, modeComp]
 
-  comps.forEach(comp => {
-    comp.do(function(){
-      console.log(this.key, this.value)
-    })
-  })
+  //comps.forEach(comp => {
+    //comp.do(function(){
+      //console.log(this.key, this.value)
+    //})
+  //})
 
   let popUpSettings = _p("popupsettings")
-        .contain(...comps)
-
+        .contain(colorsComp, fontComp, foveaComp, modeComp)
 
   settings.contain(popUpSettings, wpmComp)
+  
 
-  // extend settings
-  settings.get = (key) => {
-    return settings.bridge ? settings.bridge.value[key] : null
-  }
+  const listenTo_ = p => p.key && p.key.indexOf('!') === 0
+
+  settings.allChildren.forEach(child => {
+    if (listenTo_(child)){
+      child.do(_ => settings._setVal({[child.key.substring(1)]: child.value}))
+    }
+  })
+  
+
+  settings.do(function(){
+    // sync
+    if (!this._setting){
+      console.log('syncing',this.value)
+    }
+  })
+
+  settings.set({
+    'color': colors[1],
+    'font': fonts[1],
+    'mode': modes[2],
+    'fovea': 4,
+    'wpm': 420
+  })
+ 
 
   return settings.pragmatize()
 }

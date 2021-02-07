@@ -17,12 +17,8 @@ const modes = (mode, bg) => {
   }[mode])
 }
 
-// TODO add default modes
-export const mode_ify = (mark, mode = "hotbox", bg ="#edd1b0") => {
+export const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
   mode = mode.toString().toLowerCase()
-  // console.log("mode-ifying,", mark)
-  // console.log(mode, bg)
-  // console.log(modes(mode, bg))
   let css = modes(mode, bg)
   if (mark) mark.css(css)
   return css

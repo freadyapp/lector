@@ -355,14 +355,26 @@ class PragmaLector extends pragmajs.Pragma {
   }
 
   get mark(){
-    return this.markPragma
+    return this._mark
   }
+
   set mark(m){
-    this.markPragma = m;
+    this.adopt(m);
+    this._mark = m;
   }
+
+  get settings(){
+    return this._settings
+  }
+  set settings(s){
+    this.adopt(s);
+    this._settings = s;
+  }
+
   get isReading(){
     return this.w.isReading
   }
+
   get currentWord(){
     return this.w.currentWord
   }
@@ -420,6 +432,12 @@ class PragmaLector extends pragmajs.Pragma {
   pause(){
     this.w.pause();
   }
+
+  setFont(font){
+    console.log(this.w);
+    this.w.css(`font-family ${font}`);
+  }
+
 }
 
 class PragmaWord extends pragmajs.Pragma {
@@ -621,6 +639,32 @@ class PragmaWord extends pragmajs.Pragma {
   }
 }
 
+const reset = `border 0
+               border-radius 3px
+               z-index 10
+               opacity 1
+               mix-blend-mode darken;`;
+
+const modes = (mode, bg) => {
+  return reset.concat({
+    "hotbox": `background ${bg}`,
+    "underneath": `background transparent
+                   border-bottom 3px solid ${bg}
+                   border-radius 4px
+                   `,
+    "faded": `
+      background linear-gradient(0.25turn, rgba(255, 0, 0, 0), ${ bg }, ${ bg }, ${ bg }, rgba(255, 0, 0, 0))
+    `, 
+  }[mode])
+};
+
+const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+  mode = mode.toString().toLowerCase();
+  let css = modes(mode, bg);
+  if (mark) mark.css(css);
+  return css
+};
+
 // mark is responsible for marking words in the screen
 
 const defaultStyles = `
@@ -636,18 +680,15 @@ const defaultStyles = `
 `;
 
 class PragmaMark extends pragmajs.Pragma {
-  constructor(parent) {
+  constructor() {
     super('marker');
 
-    this.parent = parent;
     this.element = pragmajs._e("marker");
-    document.body.appendChild(this.element);
+    this.appendTo('body');
+    this.hide();
     this.css(defaultStyles);
-    //this.parent.element.append(this.element)
-    this.currentlyMarking = null;
-    //this.element.width("180px")
-    this.colors = ["tomato", "#FFDFD6", "teal"]; // TODO change this
 
+    this.currentlyMarking = null;
     window.addEventListener('resize', () => {
       this.mark(this.last_marked, 0);
     });
@@ -655,23 +696,25 @@ class PragmaMark extends pragmajs.Pragma {
     this.runningFor = 0;
     this.pausing = false;
 
-    this.idle = new Idle(8000)
-      .onAfk(()=> {
-        console.log('user is afk');
-        this.shout();
-      })
-      .onActive(() => {
-        console.log('user is back');
-        this.shutUp();
-      });
+    //this.idle = new Idle(8000)
+      //.onAfk(()=> {
+        //util.log('user is afk')
+        //this.shout()
+      //})
+      //.onActive(() => {
+        //util.log('user is back')
+        //this.shutUp()
+      //})
   }
-
-  shout(){
-    return console.log("AAAAAAAAAA")
+  hide(){
+    if (this._hidden) return
+    this._hidden = true;
+    this.element.hide();
   }
-
-  shutUp(){
-    return console.log("SHUTTING UP")
+  show(){
+    if (!this._hidden) return
+    this._hidden = false;
+    this.element.show();
   }
 
   set last_marked(n){
@@ -682,36 +725,34 @@ class PragmaMark extends pragmajs.Pragma {
     return this.value
   }
 
-  setWidth(n) {
-    this.element.width(n);
-    return this
-  }
-
   get settings() {
-    return {
-      get: function(){
-        return null
-      }
-    }
+    return this.parent ? this.parent.settings : console.error('mark has no settings attached')
   }
 
-  set color(hex) {
-    return
-  }
   get cw() {
-    return this.fovea * 30
+    return this._fovea * 30
   }
-  get fovea() {
-    return this.settings.get("markerfovea") || 4
-  }
-  set fovea(n) {
-    console.table(['writing fovea', this.settings.find("fovea")]);
-    this.settings.set({ "fovea": n });
-    this.element.css({ "width": this.settings.find("fovea") * 30 });
+  
+  get wpm() { return this._wpm || 260 }
+  
+  setMode(mode){
+    this._mode = mode;
+    mode_ify(this);
   }
 
-  get wpm() { return this.settings.get("wpm") || 260 }
-  set wpm(n) { this.settings.set({ "wpm": n }); }
+  setWpm(wpm){
+    this._wpm = wpm;
+  }
+
+  setColor(hex){
+    this._color = hex;
+    this.css(`background-color ${hex}`);
+  }
+
+  setFovea(val){
+    this._fovea = val;
+    this.css(`width ${this.cw}px`);
+  }
 
   pause() {
     return new Promise((resolve, reject) => {
@@ -740,6 +781,7 @@ class PragmaMark extends pragmajs.Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
+    this.show();
     //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
@@ -1270,7 +1312,7 @@ function monitor(conf={}){
 
 const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
 const fonts = ["Helvetica", "Open Sans", "Space Mono"];
-const modes = ["HotBox", "Underneath", "Faded"];
+const modes$1 = ["HotBox", "Underneath", "Faded"];
 
 var shc = {
   wpmPlus: ['+', '='],
@@ -1313,37 +1355,72 @@ function lectorSettings(lector){
   //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
   //     .html.class("slider")
 
+  const actions = {
+    changeColor(hex=this.value){
+      lector.mark.setColor(hex);
+    },
+
+    changeFovea(fovea=this.value){
+      lector.mark.setFovea(fovea);
+    },
+
+    changeWpm(wpm=this.value){
+      lector.mark.setWpm(wpm); 
+    },
+
+    changeFont(font=this.value){
+      lector.setFont(font);
+    },
+
+    changeMode(mode=this.value){
+      lector.mark.setMode(mode); 
+    }
+  };
+
   let settings = pragmajs._p("settingsWrapper")
                   .addClass("items-center")
                   .run(function(){
                     this.value = {};
-                    this.set = function(set){
+
+                    this._setVal = function(edit){
                       this.value = pragmajs.util.objDiff(this.value, edit);
                     };
+
+                    this.set = function(edit){
+                     this._setting = true; 
+                      for (let [key, val] of Object.entries(edit)){
+                        let child = this.find('!'+key);
+                        if (child) child.value = val;
+                      }
+                     this._setting = false;
+                    };
+                    
                     this.get = function(key){
                       return this.value[key] 
                     };
-                  })
-                  .do(function(){
-                    console.log('set value', this.value);
                   });
+                  //.do(function(){
+                    //console.log('set value', this.value)
+                  //})
 
-  let foveaComp = pragmajs._p("markerfovea")
+  let foveaComp = pragmajs._p("!fovea")
                   .from(slider({
                     min: 2,
                     max: 10,
                     value: 5
                   }))
-                  .addClass('slider');
+                  .addClass('slider')
+                  .do(actions.changeFovea);
 
 
-  let modeComp = pragmajs._p('markermodes')
+  let modeComp = pragmajs._p('!mode')
                   .from(activeSelectTpl({
-                    options: modes
-                  }));
+                    options: modes$1
+                  }))
+                  .do(actions.changeMode);
 
 
-  let fontComp = pragmajs._p('markerfont')
+  let fontComp = pragmajs._p('!font')
                   .run(function(){
                     console.log(this.key);
                   })
@@ -1355,9 +1432,10 @@ function lectorSettings(lector){
                                 this.parent.value = this.key;
                               })
                   }))
-                  .css(`flex-direction row`);
+                  .css(`flex-direction row`)
+                  .do(actions.changeFont);
 
-  let colorsComp = pragmajs._p('markercolor')
+  let colorsComp = pragmajs._p('!color')
                   .from(activeSelectTpl({
                     options: colors,
                     optionTemplate: option => {
@@ -1372,10 +1450,10 @@ function lectorSettings(lector){
                                 this.parent.value = this.key;
                               })
                     }
-                  }));
+                  }))
+                  .do(actions.changeColor);
 
-
-  let wpmComp = pragmajs._p("wpm")
+  let wpmComp = pragmajs._p("!wpm")
                   .from(monitor())
                   .setTemplate(
                     v => `${v} wpm`
@@ -1383,27 +1461,48 @@ function lectorSettings(lector){
                   .setRange(40, 4200)
                   .setValue(250)
                   .bind(shc.wpmPlus, function(){ this.value+=10; })
-                  .bind(shc.wpmMinus, function(){ this.value-=10; });
+                  .bind(shc.wpmMinus, function(){ this.value-=10; })
+                  .do(actions.changeWpm);
 
 
-  const comps = [colorsComp, fontComp, foveaComp, modeComp];
+  //const comps = [colorsComp, fontComp, foveaComp, modeComp]
 
-  comps.forEach(comp => {
-    comp.do(function(){
-      console.log(this.key, this.value);
-    });
-  });
+  //comps.forEach(comp => {
+    //comp.do(function(){
+      //console.log(this.key, this.value)
+    //})
+  //})
 
   let popUpSettings = pragmajs._p("popupsettings")
-        .contain(...comps);
-
+        .contain(colorsComp, fontComp, foveaComp, modeComp);
 
   settings.contain(popUpSettings, wpmComp);
+  
 
-  // extend settings
-  settings.get = (key) => {
-    return settings.bridge ? settings.bridge.value[key] : null
-  };
+  const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
+
+  settings.allChildren.forEach(child => {
+    if (listenTo_(child)){
+      child.do(_ => settings._setVal({[child.key.substring(1)]: child.value}));
+    }
+  });
+  
+
+  settings.do(function(){
+    // sync
+    if (!this._setting){
+      console.log('syncing',this.value);
+    }
+  });
+
+  settings.set({
+    'color': colors[1],
+    'font': fonts[1],
+    'mode': modes$1[2],
+    'fovea': 4,
+    'wpm': 420
+  });
+ 
 
   return settings.pragmatize()
 }
@@ -1417,7 +1516,7 @@ const default_options = {
 };
 
 const Mark = (lec) => {
-  let mark = new PragmaMark(lec);
+  let mark = new PragmaMark();
 
   function logger(w){
   }
@@ -1525,7 +1624,8 @@ const Reader = (l, options=default_options) => {
               .setValue(0)
               .connectTo(w);
   
-  if (options.settings) lec.settings = lectorSettings()
+  lec.mark = Mark(lec);
+  if (options.settings) lec.settings = lectorSettings(lec)
                                           .css(`position fixed
                                                 bottom 10px
                                                 left 10px
@@ -1534,8 +1634,6 @@ const Reader = (l, options=default_options) => {
                                                 background #303030
                                                 padding 10px`);
 
-  lec.mark = Mark(lec);
-  lec.contain(lec.settings);
 
   function bindKeys(){
     lec.bind("right", _ => lec.goToNext());
