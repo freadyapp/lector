@@ -69,6 +69,10 @@ export default function lectorSettings(lector){
 
     changeMode(mode=this.value){
       lector.mark.setMode(mode) 
+    },
+
+    changePage(page=this.value){
+      lector.paginator.goTo(page) 
     }
   }
 
@@ -159,6 +163,30 @@ export default function lectorSettings(lector){
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
                   .do(actions.changeWpm)
 
+  let pageComp = _p("!page")
+                  .from(monitor())
+                  .setTemplate(
+                    p => `page [${p}]`
+                  )
+                  .run(function(){
+                    util.createChains(this, 'userEdit')
+
+                    this.editValue = function(val){
+                      this.value = val  
+                      this.userEditChain.exec(this.value)
+                    }
+
+                    this.onUserEdit(actions.changePage)
+                  })
+                  .setValue(1)
+                  .bind(shc.pageNext, function(){
+                    this.editValue(this.value+1)
+                  }, 'keyup')
+                  .bind(shc.pagePre, function(){
+                    this.editValue(this.value-1)
+                  }, 'keyup')
+                  
+                  //.do(actions.changePage)
 
   //const comps = [colorsComp, fontComp, foveaComp, modeComp]
 
@@ -170,11 +198,28 @@ export default function lectorSettings(lector){
 
   let popUpSettings = _p("popupsettings")
         .contain(colorsComp, fontComp, foveaComp, modeComp)
+        .run(function(){
+          this.show = function(){
+            this.hidden = false
+            this.element.show()
+          }
+          this.hide = function(){
+            this.hidden = true
+            this.element.hide()
+          }
+          this.toggle = function(){
+            this.hidden ? this.show() : this.hide()
+          }
 
-  settings.contain(popUpSettings, wpmComp)
+          this.show()
+        })
+        .bind("h", function() { this.toggle() })
+
+
+  settings.contain(popUpSettings, wpmComp, pageComp)
   
-
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
+
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -182,9 +227,7 @@ export default function lectorSettings(lector){
     }
   })
   
-
   settings.do(function(){
-    // sync
     if (!this._setting){
       console.log('syncing',this.value)
     }

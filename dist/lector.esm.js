@@ -1022,13 +1022,10 @@ function paginator(pageTemplate, conf={}){
             let _actionKey = `add-${this.value}`;
 
             this.value = val;
-              /// added the page, scroll to it
-            setTimeout(_ => {
-              let page = this.pages.get(val);
-              page.onRender(function(){
-                scrollTo(page, speed||20);
-              });
-            }, 200);
+            let page = this.pages.get(val);
+            page.onRender(function(){
+              scrollTo(page, speed||20);
+            });
           };
 
           this.export(
@@ -1308,6 +1305,9 @@ const modes$1 = ["HotBox", "Underneath", "Faded"];
 var shc = {
   wpmPlus: ['+', '='],
   wpmMinus: ['-'],
+
+  pageNext: ']',
+  pagePre: '['
 };
 
 function activate(self, key){
@@ -1365,6 +1365,10 @@ function lectorSettings(lector){
 
     changeMode(mode=this.value){
       lector.mark.setMode(mode); 
+    },
+
+    changePage(page=this.value){
+      lector.paginator.goTo(page); 
     }
   };
 
@@ -1455,6 +1459,30 @@ function lectorSettings(lector){
                   .bind(shc.wpmMinus, function(){ this.value-=10; })
                   .do(actions.changeWpm);
 
+  let pageComp = _p$1("!page")
+                  .from(monitor())
+                  .setTemplate(
+                    p => `page [${p}]`
+                  )
+                  .run(function(){
+                    util.createChains(this, 'userEdit');
+
+                    this.editValue = function(val){
+                      this.value = val;  
+                      this.userEditChain.exec(this.value);
+                    };
+
+                    this.onUserEdit(actions.changePage);
+                  })
+                  .setValue(1)
+                  .bind(shc.pageNext, function(){
+                    this.editValue(this.value+1);
+                  }, 'keyup')
+                  .bind(shc.pagePre, function(){
+                    this.editValue(this.value-1);
+                  }, 'keyup');
+                  
+                  //.do(actions.changePage)
 
   //const comps = [colorsComp, fontComp, foveaComp, modeComp]
 
@@ -1465,12 +1493,29 @@ function lectorSettings(lector){
   //})
 
   let popUpSettings = _p$1("popupsettings")
-        .contain(colorsComp, fontComp, foveaComp, modeComp);
+        .contain(colorsComp, fontComp, foveaComp, modeComp)
+        .run(function(){
+          this.show = function(){
+            this.hidden = false;
+            this.element.show();
+          };
+          this.hide = function(){
+            this.hidden = true;
+            this.element.hide();
+          };
+          this.toggle = function(){
+            this.hidden ? this.show() : this.hide();
+          };
 
-  settings.contain(popUpSettings, wpmComp);
+          this.show();
+        })
+        .bind("h", function() { this.toggle(); });
+
+
+  settings.contain(popUpSettings, wpmComp, pageComp);
   
-
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
+
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -1478,9 +1523,7 @@ function lectorSettings(lector){
     }
   });
   
-
   settings.do(function(){
-    // sync
     if (!this._setting){
       console.log('syncing',this.value);
     }
@@ -1690,13 +1733,19 @@ const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    let reader = Reader(_e(l).parentElement, options)
+    let lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer);
-    reader.paginator = paginator;
+
+    lector.paginator = paginator;
+    if (lector.settings){
+      console.log("lector has settings! connecting paginator's value to pagecomp");
+      let pageComp = lector.settings.find('!page');
+      pageComp.wireTo(lector.paginator);
+    }
     console.log('paginator', paginator);
 
     paginator.fill();
-    return reader
+    return lector
 
     //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
 

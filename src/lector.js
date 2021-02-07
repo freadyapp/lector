@@ -196,13 +196,19 @@ export const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    let reader = Reader(_e(l).parentElement, options)
+    let lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
-    reader.paginator = paginator
+
+    lector.paginator = paginator
+    if (lector.settings){
+      console.log("lector has settings! connecting paginator's value to pagecomp")
+      let pageComp = lector.settings.find('!page')
+      pageComp.wireTo(lector.paginator)
+    }
     console.log('paginator', paginator)
 
     paginator.fill()
-    return reader
+    return lector
 
     //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
 

@@ -148,13 +148,10 @@ export function paginator(pageTemplate, conf={}){
             let _actionKey = `add-${this.value}`
 
             this.value = val
-              /// added the page, scroll to it
-            setTimeout(_ => {
-              let page = this.pages.get(val)
-              page.onRender(function(){
-                scrollTo(page, speed||20)
-              })
-            }, 200)
+            let page = this.pages.get(val)
+            page.onRender(function(){
+              scrollTo(page, speed||20)
+            })
           }
 
           this.export(
