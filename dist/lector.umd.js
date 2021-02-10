@@ -8,1231 +8,12 @@
 
   var anime__default = /*#__PURE__*/_interopDefaultLegacy(anime);
 
-  function throwSoft (desc, potential=null, fixes=['rerun the code 10 times'], trigger=null, force=false) {
-    if (!_deving() && !force) return null
-    console.error(`%c 🧯 pragma.js  %c \n
-      encountered a soft error 🔫 %c \n
-      \n${trigger ? `Triggered by: [${trigger.key} ${trigger}]` :``}
-      \n${desc} %c\n
-      \n${ potential!=null ? `Potential ${potential}: \n\t${fixes.join("\n\t")}` : '' }
-      `, "font-size:15px", "font-size: 12px;", "color:whitesmoke", "color:white");
-  }
-
-  function log(){
-    if (!_deving()) return null
-    console.log(...arguments);
-  }
-
-  function suc(){
-    if (!_deving()) return null
-    console.log(`%c 🌴 [pragma] \n
-      `, "font-size:12px; color:#86D787;", ...arguments, "\n");
-  }
-
-  class ActionChain {
-    constructor(self){
-      this.self = self;
-      this.actions = new Map();
-
-      //API extension
-      this.delete = this.destroy;
-    }
-
-    addWithKey(cb, key=null){
-      key = key || this.actions.size;
-      this.actions.set(key, cb);
-    }
-
-    add(...cbs){
-      for (let cb of cbs){
-        this.addWithKey(cb);
-      }
-    }
-
-    forAction(cb){
-      for (let [key, action] of this.actions) {
-        cb(key, action);
-      }
-    }
-
-    exec(...args){
-      this.execAs(this.self, ...args);
-    }
-
-    destroy(...keys){
-      keys.forEach(k => this.actions.delete(k));
-    }
-
-    execAs(self, ...args){
-      this.forAction(function(key, act) {
-        act.bind(self)(...args);
-      });
-    }
-  }
-
-  function rk5(){
-   return Math.random().toString(36).substring(3, 6) + Math.random().toString(36).substring(5, 8)
-  }
-  function rk8(){ return rk(8)}
-
-  function rk(l=7) {
-   if (l < 5) return rk5()
-   return (rk5() + rk(l-5)).substring(0, l)
-  }
-
-  function generateRandomKey(l){
-    return rk(l)
-  }
-
-  function aryDiff(a, b){
-    return a.filter(i => b.indexOf(i)<0)
-  }
-
-  function bench(cb, name){
-    console.time(name);
-    cb();
-    console.timeEnd(name);
-  }
-
-  function objDiff(obj, edit){
-    // TODO add recursive feature
-    for (let [key, value] of Object.entries(edit)){
-      obj[key] = value;
-    }
-
-    return obj
-  }
-
-  // function addProperties(obj){
-  //   for (let [attr, val] of obj){
-  //     obj[attr] = val
-  //   }
-  //   return obj
-  // }
-
-  const snake2camel = str => str.replace(/([-_]\w)/g, g => g[1].toUpperCase()); 
-
-  function _extend(e, proto){
-    Object.setPrototypeOf(e, objDiff(Object.getPrototypeOf(e), proto));
-  }
-
-  function mimic(obj, mimic, props){
-    for (let prop of (props || Object.keys(mimic))){
-      let desc = Object.getOwnPropertyDescriptor(mimic, prop); 
-      if (!desc) break
-      Object.defineProperty(obj, prop, desc);
-    }
-  }
-
-  String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1)
-  };
-
-  function _newChain(name, obj){
-    let chainName = `${name}Chain`;
-    let eventName = `on${name.capitalize()}`;
-
-    obj[chainName] = new ActionChain(obj);
-
-    obj[eventName] = function (cb, key) {
-      obj[chainName].addWithKey(cb, key);
-    };
-
-    return {
-        chainName: chainName,
-        eventName: eventName
-    }
-  }
-
-  function createChains(obj, ...chains){
-    for (let chain of chains){
-        _newChain(chain, obj);
-    }
-  }
-
-  function _newEventChain(name, obj){
-    let refs = _newChain(name, obj);
-    let done = `is${name.capitalize()}ed`;
-
-    obj[refs.chainName].add(() => {
-      obj[done] = true;
-    });
-
-    obj[refs.eventName] = function (cb) {
-      if (obj[done]) return cb(obj)
-      obj[refs.chainName].add(cb);
-    };
-  }
-
-  function createEventChains(obj, ...chains){
-    for (let chain of chains){
-        _newEventChain(chain, obj);
-    }
-  }
-
-  const toHTMLAttr = s => s.toString().replace(/[^a-z0-9]/gi, '-').toLowerCase();
-
-  if (!globalThis.pragmaSpace) globalThis.pragmaSpace = {}; // initialize Pragma Space # TODO put this somewhere else
-  createEventChains(globalThis.pragmaSpace, "docLoad");
-  const whenDOM = globalThis.pragmaSpace.onDocLoad;
-
-  function _docLoad(){
-    if (globalThis.pragmaSpace.isDocLoaded) return
-
-    suc("📰 document is loaded.");
-    globalThis.pragmaSpace.docLoadChain.exec();
-  }
-  document.addEventListener('readystatechange', () => {
-    if (document.readyState === "complete") _docLoad();
-  });
-
-  document.addEventListener('turbolinks:load', () => {
-    suc("🚀 TURBOLINKS loaded");
-    _docLoad();
-  });
-
-  var search = /[#.]/g;
-
-  // Create a hast element from a simple CSS selector.
-  function parseQuery(selector, defaultTagName = "div") {
-    var value = selector || '';
-    var props = {
-      tag: defaultTagName
-    };
-    var start = 0;
-    let subvalue, previous, match;
-
-    while (start < value.length) {
-      search.lastIndex = start;
-      match = search.exec(value);
-      subvalue = value.slice(start, match ? match.index : value.length);
-      if (subvalue) {
-        if (!previous) {
-          props.tag = subvalue;
-        } else if (previous === '#') {
-          props.id = subvalue;
-        } else if (props.class) {
-          props.class.push(subvalue);
-        } else {
-          props.class = [subvalue];
-        }
-        start += subvalue.length;
-      }
-      if (match) {
-        previous = match[0];
-        start++;
-      }
-    }
-    return props
-  }
-
-  function loopThruClassAryAndDo(cary, el, action){
-    if (!(Array.isArray(cary))) return throwSoft(`Could not ${action} class [${cary}] -> [${el}]`)
-    for (let c of cary){
-      let _subary = c.split(" ");
-      if (_subary.length>1) {
-        loopThruClassAryAndDo(_subary, el, action);
-        //loopThruClassAryTo(_subary, el)
-        continue
-      }
-      el.classList[action](c);
-    }
-  }
-
-  function addClassAryTo(cary, el){ loopThruClassAryAndDo(cary, el, 'add'); }
-  function removeClassAryFrom(cary, el){ loopThruClassAryAndDo(cary, el, 'remove'); }
-  function toggleClassAryOf(cary, el){ loopThruClassAryAndDo(cary, el, 'toggle'); }
-
-  function selectOrCreateDOM(query){
-    try {
-      let e = document.querySelector(query);
-      if (e) return e
-    } catch {}
-
-    let q = parseQuery(query);
-
-    let el =  document.createElement(q.tag || "div");
-    if (q.id) el.id = q.id;
-    if (q.class) addClassAryTo(q.class, el);
-
-    return el
-  }
-
-  function fragmentFromString(strHTML) {
-      return document.createRange().createContextualFragment(strHTML);
-  }
-
-  function elementFrom(e){
-    if (e instanceof Element) return e
-    if (typeof e === "string"){
-      if (e[0] === "<") return fragmentFromString(e)
-      return selectOrCreateDOM(e)
-    }
-
-    return throwSoft(`Could not find/create element from [${e}]`)
-  }
-
-  function fillSVG(svg, color){
-    _e(svg).findAll("path").forEach(path => {
-      const ff = path.attr("fill");
-      if (ff!="none" && ff!="transparent"){
-        path.attr("fill", color);
-      }
-    });
-  }
-
-  const apply = {
-    html: ((html, dom) => {
-      dom.innerHTML = html; 
-    }),
-
-    pcss: ((pcss, dom) => {
-      for (let [key, value] of parse.cssToDict(pcss)){
-        dom.style[snake2camel(key)] = value; 
-      }
-    })
-  };
-
-  const parse = {
-    cssToDict: ((str) => {
-      str = str.replace(/\n/g, ";").replace(/:/g, " ");
-      let cssDict = new Map();
-      for (let style of str.split(";")) {
-        if (style.replace(/\s/g, "").length < 2) continue
-        style = style.trim().split(" ");
-        let key = style[0];
-        style.shift();
-        cssDict.set(key.trim(), style.join(" ").trim());
-      }
-
-      // check css properties
-      let unsupported = [];
-      for (const [key, value] of cssDict.entries()) {
-        if (!CSS.supports(key, value)) unsupported.push(`${key.trim()}: ${value.trim()}`);
-      }
-
-      if (unsupported.length > 0) {
-        throwSoft(`CSS syntax error`, 'typos', unsupported);
-      }
-      return cssDict
-    }),
-
-    css: ((pcss) => {
-      let css = "";
-      for (let [key, value] of parse.cssToDict(pcss)) {
-        //console.log(key, value)
-        css += `${key}:${value};`;
-      }
-      return css
-    }),
-
-    html: ((html) => {
-      return html
-    })
-  };
-
-  const createTemplate = conf => _p()
-      .run(function () {
-          util.createChains(this, 'config');
-
-          this.config = function(conf){
-              this.configChain.exec(conf);
-              return this
-          };
-          
-          this.onConfig((conf = {}) => {
-              const defaults = ['events', 'chains', 'exports', 'persistentExports'];
-              defaults.forEach(attr => {
-                  if (!conf[attr]) return
-                  this[`_${attr}`] = conf[attr];
-                  delete conf[attr];
-              });
-
-              if (this._events) util.createEventChains(this, ...(this._events));
-              if (this._chains) util.createChains(this, ...(this._chains));
-              
-              for (let [attr, val] of Object.entries(conf)) {
-                  this[attr] = val;
-                  this.export(attr);
-              }
-              if (this._exports) this.export(...(this._exports));
-
-          });
-
-          this.export('exports', 'config', 'exportChain', 'configChain', 'onConfig');
-          
-      }, function () {
-          if (typeof conf === 'object') this.config(conf);
-      });
-
-  if (!globalThis.pragmaSpace) globalThis.pragmaSpace = {}; // initialize Pragma Space # TODO put this somewhere else
-  globalThis.pragmaSpace.dev =  globalThis.pragmaSpace.dev
-      || (typeof process !== "undefined" && process.env && process.env.NODE_ENV === 'development');
-
-  function _deving(){
-    return globalThis.pragmaSpace.dev
-  }
-
-  var index = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    _deving: _deving,
-    throwSoft: throwSoft,
-    log: log,
-    suc: suc,
-    whenDOM: whenDOM,
-    parseQuery: parseQuery,
-    addClassAryTo: addClassAryTo,
-    removeClassAryFrom: removeClassAryFrom,
-    toggleClassAryOf: toggleClassAryOf,
-    selectOrCreateDOM: selectOrCreateDOM,
-    elementFrom: elementFrom,
-    toHTMLAttr: toHTMLAttr,
-    fragmentFromString: fragmentFromString,
-    fillSVG: fillSVG,
-    generateRandomKey: generateRandomKey,
-    objDiff: objDiff,
-    aryDiff: aryDiff,
-    _extend: _extend,
-    createEventChains: createEventChains,
-    createChains: createChains,
-    snake2camel: snake2camel,
-    mimic: mimic,
-    bench: bench,
-    rk: rk,
-    rk5: rk5,
-    rk8: rk8,
-    parse: parse,
-    apply: apply,
-    createTemplate: createTemplate
-  });
-
-  // Its like $("#id") of jquery
-
-
-  function domify(e){
-    if (e == null || e == undefined) return throwSoft(`Could not find a DOM element for ${e}`)
-    if (e.element) return domify(e.element)
-    let a = elementFrom(e);
-    return a
-  }
-
-  // function elementify(e){
-  //   if (e == null) return document.body
-  //   if (e.isPragmaElement === true) return e
-  //   return new Element(e)
-  // }
-
-  function convertShadowToLight(e){
-    var l = document.createElement('template');
-    l.appendChild(e.cloneNode(true));
-    return l.firstChild
-  }
-
-  function _e(query, innerHTML){
-      let element = domify(query);
-
-      if (element.constructor === DocumentFragment){
-        element = convertShadowToLight(element);
-      }
-
-      if (element instanceof Element){
-        element.init();
-        element._render();
-      }
-
-      if (typeof innerHTML === "string") element.html(innerHTML);
-      //if (typeof cb === "function") cb(element)
-      return element
-    //})
-  }
-
-  const elementProto = {
-    init: function(){
-      this.isPragmaElement = true;
-      //this.eventChains("docLoad", "render")
-      createEventChains(this, "docLoad", "render");
-      whenDOM(() => this.docLoadChain.exec(this));
-    },
-
-    _render: function(){
-      this.renderChain.exec(this);
-    },
-
-    appendTo: function(where){
-      this.onDocLoad(() => {
-        this._parentElement = domify(where);
-        this._parentElement.appendChild(this);
-        this._render();
-      });
-      return this
-    },
-
-    prependTo: function(where){
-      this.onDocLoad(() => {
-        this._parentElement = domify(where);
-        this._parentElement.prepend(this);
-        this._render();
-      });
-      return this
-    },
-
-    append: function(...elements){
-      this.onRender(() => {
-        for (let e of elements){
-          let d = domify(e);
-          this.appendChild(d);  
-        }
-      });
-      return this
-    },
-
-    destroy: function(){
-      this.onRender(()=> {
-        // console.log(`destroy ${this}`, this)
-        if (this.parentElement) this.parentElement.removeChild(this);
-      });
-    },
-
-    css: function(styles){
-      this.onRender(() => {
-        apply.pcss(styles, this);
-      });
-      return this
-    },
-
-    html: function(inner){
-      if (!inner) return this.innerHTML
-      this.onRender(() => {
-        apply.html(inner, this);
-      });
-      return this
-    },
-
-    setId: function(id){
-      this.id = id;
-      return this
-    },
-
-    setData: function(obj){
-      for (let [key, val] of Object.entries(obj)){
-        this.dataset[key] = val;
-      }
-      return this
-    },
-
-    getData: function(key){
-      return this.dataset[key] 
-    },
-
-    addClass: function(...classes){
-      addClassAryTo(classes, this);
-      return this
-    },
-
-    removeClass: function(...classes){
-      removeClassAryFrom(classes, this);
-      return this
-    },
-
-    toggleClass: function(...classes){
-      toggleClassAryOf(classes, this); 
-      return this
-    },
-
-    listenTo: function(...args){
-      this.onRender(() => {
-        this.addEventListener(...args);
-      });
-      return this
-    },
-
-    attr: function(a, val=undefined){
-      if (typeof a === 'string'){
-        if (val === undefined) return this.getAttribute(a)
-        const key = a;
-        a = {};
-        a[key] = val;
-      }
-
-      for (let [attr, val] of Object.entries(a)){
-        this.setAttribute(attr, val);
-      }
-
-      return this
-    },
-
-    find: function(){
-      return _e(this.query(...arguments))
-    },
-
-    findAll: function(query){
-      return Array.from(this.queryAll(query)).map(c => _e(c))
-    },
-
-    query: function(){
-      return this.querySelector(...arguments)
-    },
-
-    queryAll: function(query){
-      return this.querySelectorAll(query)
-    },
-    
-    hide: function(){
-      this.style.display = 'none';
-      return this
-    },
-    
-    show: function(){
-      this.style.display = '';
-      return this
-    },
-
-    deepQueryAll: function(query){
-      let hits = Array.from(this.queryAll(query));
-      for (let child of this.children){
-        hits = hits.concat(child.deepQueryAll(query));
-      }
-      return hits
-    },
-    deepFindAll: function(query){
-      return this.deepQueryAll(query).map(c => _e(c))
-    },
-
-    rect: function rect(){
-      return typeof this.getBoundingClientRect === "function" ?
-              this.getBoundingClientRect() : {}
-    },
-
-    offset: function offset(){
-      var rect = this.rect();
-      return {
-        top: rect.top + window.scrollY,
-        left: rect.left + window.scrollX
-      }
-    },
-
-    x: function(relative_width){
-      return this.left + this.width/2 - relative_width/2
-    }
-  };
-
-  const elementGetters = {
-    top:  function(){
-      return this.offset().top
-    },
-    left: function(){
-      return this.offset().left
-    },
-    width: function(){
-      return this.rect().width
-    },
-    height: function(){
-      return this.rect().height
-    },
-    text: function(){
-      return this.textContent
-    },
-    classArray: function(){
-      return Array.from(this.classList)
-    },
-    childrenArray: function(){
-      return Array.from(this.children)
-    }
-  };
-
-  for (let [key, val] of Object.entries(elementProto)){
-    Element.prototype[key] = val;
-  }
-
-  for (let [key, val] of Object.entries(elementGetters)){
-    Object.defineProperty(Element.prototype, key, {
-      get: val,
-      configurable: true
-    });
-  }
-
-  // extend element instead of this weird ass thing
-
-  // recursively connected with other nodes
-
-  class Node {
-    constructor(key) {
-      this._childMap = new Map();
-      this.key = typeof key === 'string' ? key : rk8();
-      // API
-      this.containsKey = this.childMap.has;
-    }
-    set childMap(n){
-      for (let [key, child] of n){
-        if (child instanceof Node){
-          this.add(child);
-        }
-      }
-    }
-    get childMap(){
-      return this._childMap
-    }
-
-    get kidsum() { return this.childMap.size }
-    get hasKids() { return this.kidsum > 0 }
-    get shape() { return this.shapePrefix() }
-
-    get master() {
-      if (this.parent == null || this.parent.parent == null) return this.parent
-      return this.parent.master
-    }
-
-    get children() {
-      return Array.from(this.childMap.values())
-    }
-
-    get depthKey() {
-      if (this.parent) {
-        return this.parent.depthKey + "<~<" + this.key
-      }
-      return this.key
-    }
-
-    get allChildren() {
-      if (!this.hasKids) return null
-      let childs = this.children;
-      for (let child of childs) {
-        let descs = child.allChildren;
-        if (descs) childs = childs.concat(descs);
-      }
-      return childs
-    }
-
-    get(key){
-      return this.childMap.get(key)
-    }
-
-    find(key) {
-      // key = key.toString()
-      // recursively find a key
-      // return false
-      // console.log('trying to find', key)
-      // console.log(this.childMap)
-      if (this.childMap.has(key)) return this.childMap.get(key)
-      for (let value of this.childMap.values()) {
-        let v = value.find(key);
-        if (v) return v
-      }
-    }
-
-    adopt(...children){
-        for (let child of children){
-          this.add(child);
-        }
-        return this
-    }
-
-    add(node) {
-      if (!node) return throwSoft(`Could not add [${node}] to [${this.id}]`)
-      if (this.childMap.has(node.key)) {
-        node.key = `${node.key}<${rk5()}`;
-        return this.add(node)
-      }
-      node.parent = this;
-      this.childMap.set(node.key, node);
-      // this.children.push(spragma)
-    }
-
-    delete(key){return this.remove(key)}
-    remove(key){
-      let node = this.childMap.get(key);
-      if (node) this.childMap.delete(key);
-    }
-
-    shapePrefix(prefix = "") {
-      let shape = `${prefix}| ${this.type} - ${this.key} \n`;
-      if (this.hasKids) {
-        prefix += "| ";
-        for (let child of this.children) {
-          shape += child.shapePrefix(prefix);
-        }
-      }
-      return shape
-    }
-  }
-
-  const _parseMap = {
-
-    parent: (self, parent) => {
-      self.parent = parent;
-    },
-
-    value: (self, v) => {
-      self.value = v;
-    },
-
-    key: (self, key) => {
-      self.key = key;
-    },
-
-    class: (self, className) => {
-      self._class = className;
-    },
-
-    element: (self, element) => {
-      if (!(element instanceof Element)) return throwSoft(`Could not add ${element} as the element of [${self}]`)
-      self.element = element;
-    },
-
-    children: (self, children) => {
-      if (children.constructor == Array) return self.buildAry(children)
-      self.build(children);
-    },
-
-    childTemplate: (self, temp) => {
-
-    }
-  };
-
-  function parseMap(map, obj) {
-    let _notParsed = new Map();
-
-    for (let [key, val] of Object.entries(map)){
-      if (_parseMap.hasOwnProperty(key)){
-        _parseMap[key](obj, val);
-        continue
-      }
-      _notParsed.set(key, val);
-    }
-
-    // add listener callbacks
-    if (obj.element) {
-      obj.element.whenInDOM((self) => {
-        for (let [key, val] of _notParsed) {
-          key = key.toLowerCase();
-          if (key.includes("on")){
-            let event = key.split("on")[1].trim();
-            self.listenTo(event, () => {
-              obj.action(val);
-            });
-          }
-        }
-      });
-    }
-  }
-
-
-  function _isRangeBounded(range){
-    return range.min != undefined && range.max != undefined
-  }
-  function _retValObj(val, set){
-    return {
-      val: val,
-      set: set
-    }
-  }
-  function _rangeBoundVal(v, range){
-    v = range.min ? Math.max(range.min, v) : v;
-    v = range.max ? Math.min(range.max, v) : v;
-    // console.log(v)
-    return v
-    // r ? Math.max(r[0], Math.min(v, r[1])) : v
-  }
-
-  function _loopBoundVal(v, range){
-    if (!(_isRangeBounded(range)))
-      return throwSoft(`Could not loop value, since range (${JSON.stringify(range)}) is unbounded`)
-
-    v = v > range.max ? range.min : v;
-    v = v < range.min ? range.max : v;
-    return v
-  }
-
-  function _processValue(v, range, _loop) {
-    if (!range) return _retValObj(v, true)
-    if (_loop) return _retValObj(_loopBoundVal(v, range), true)
-    let r = _rangeBoundVal(v, range);
-    return _retValObj(r, r==v)
-  }
-
-  class Pragma extends Node {
-    constructor(map, parent){
-      super();
-      createEventChains(this, 'export');
-
-      this.actionChain = new ActionChain();
-
-      // console.log("-------------")
-      if (typeof map === "object"){
-        parseMap(map, this);
-      } else {
-        this.key = map;
-      }
-
-      if (!this.element) this.as();
-    }
-
-
-    get _e(){ return this.element }
-    setElement(e, inheritId=true){
-      this.elementDOM = e;
-      if (inheritId && this.element.id){
-        // console.log(this.element, 'has id')
-        this.id = this.element.id;
-      }
-
-      return this
-    }
-
-    get element(){ return this.elementDOM }
-    set element(n) {
-      this.setElement(n);
-      // TODO check if element is of type elememtn blah blha
-      // log(">> SETTING THIS DOM ELEMENT", n, this.id)
-
-
-      // this.id = this.element.id || this.id
-    }
-
-  // -------------------- VALUE THINGS
-
-    setRange(min=null, max=null){
-      this.range = this.range || {};
-      this.range.min = min === null ? this.range.min : min;
-      this.range.max = max === null ? this.range.max : max;
-      return this
-    }
-
-    breakLoop() { this._loopVal = false; return this }
-    setLoop(min, max){
-      this.setRange(min, max);
-      this._loopVal = true;
-      return this
-    }
-
-    get dv(){
-      return this.v - this._lv
-    }
-    get value(){
-      return this.v
-    }
-    setValue(n) { this.value = n; return this }
-
-    set value(n) {
-      let pv = _processValue(n, this.range, this._loopVal);
-
-      if (pv.set) {
-        this._lv = this.v;
-        this.v = pv.val;
-        this.exec();
-      }
-    }
-
-
-  //  -------------------------------
-
-    exec() {
-      this.actionChain.execAs(this, ...arguments);
-      return this
-    }
-
-    setKey(key) { this.key = key; return this }
-    set key(key){
-      // console.log('setting key to ', key)
-      this._KEY = key == null ? generateRandomKey() : key;
-    }
-
-    get key() { return this._KEY }
-
-    set id(n) {
-      // console.log('setting key to from id ', n)
-      // this.key = n
-      if (this.element) this.element.id = this.id;
-    }
-
-    get id() {
-      return toHTMLAttr(this.key)
-    }
-
-    buildAry(aryOfMaps){
-      for (let map of aryOfMaps){
-        this.add(new Pragma(map, this));
-      }
-      return this
-    }
-
-    build(...maps) {
-      return this.buildAry(maps)
-    }
-
-    on(event, cb=null){
-      var self = this;
-      return {
-        do: function(cb){
-          self.element.listenTo(event, () => {
-            self.run(cb);
-          });
-          return self
-        }
-      }
-    }
-
-
-    // FOR HTML DOM
-    as(query=null, innerHTML){
-      query = query || `div#${this.id}.pragma`;
-      // this.element = _e(query, innerHTML)
-      this.setElement(_e(query, innerHTML), false);
-      return this
-    }
-
-    // FOR TEMPLATES
-    addExport(exp){
-      this.exports = this.exports || new Set();
-      this.exports.add(exp);
-    }
-
-    export(...attrs){
-      for (let a of attrs) {
-        this.addExport(a);
-      }
-    }
-
-    from(pragma){
-      if (pragma.exports){
-        index.mimic(this, pragma, pragma.exports);
-        //for (let attr of pragma.exports){
-          //// this[attr] = pragma[attr]
-          //let desc = Object.getOwnPropertyDescriptor(pragma, attr) 
-          //if (!desc) break
-
-          //Object.defineProperty(this, attr, desc)
-        //}
-      }
-
-      if (pragma.exportChain) pragma.exportChain.exec(this);
-      return this
-    }
-
-    wireTo(pragma){
-      let self = this;
-      pragma.do(function(){
-        // console.log(this)
-        // console.log(p.value)
-        // this.value = pragma.value
-        self.value = this.value;
-      });
-      return this
-    }
-
-    // ADD SCRIPT TO RUN WHEN VALUE CHANGES
-    do(){
-      this.actionChain.add(...arguments);
-      return this
-    }
-
-
-    // RUN SCRIPTS WITH THIS SCOPE
-
-
-    run(...scripts){
-      let sample = scripts[0];
-      if (typeof sample === 'function'){
-        this._runAry(scripts);
-      } else if (typeof sample === 'object'){
-        this._runAry(Object.values(sample));
-      } else {
-        throwSoft(`Could not run [${scripts}] as [${this}]`);
-      }
-      return this
-    }
-
-    _runAry(scripts){
-      for (let script of scripts){
-        this.runAs(script);
-      }
-    }
-
-    runAs(script){
-      return script.bind(this)()
-    }
-    
-    containAry(childs){
-      for (let child of childs) {
-        super.add(child);
-        if (child.isRendered){
-          throwSoft(`[${child}] is already appended`);
-        }else {
-          this.element.append(child);
-        }
-      }
-      return this
-    }
-
-    contain(...childs){
-      return this.containAry(childs)
-    }
-
-    pragmatize(){
-      this.element.appendTo(this.parent ? this.parent.element || "body" : "body");
-      return this
-    }
-
-    pragmatizeAt(query){
-      this.element.appendTo(query);
-      return this
-    }
-
-    addListeners(listeners){
-      for (let [ev, action] of Object.entries(listeners)){
-        this.on(ev).do(action);
-      }
-      return this
-    }
-  }
-
-
-  const _hostElementAttrs = [
-    "html",
-    "css",
-    "addClass",
-    "removeClass",
-    "toggleClass",
-    "setId",
-    'append',
-    'prepend',
-    'appendTo',
-    'prependTo',
-    'listenTo',
-    'setData'
-  ];
-
-  for (let a of _hostElementAttrs) {
-   Pragma.prototype[a] = function() {
-      this.element[a](...arguments);
-      return this
-    };
-  }
-
-  const _adoptElementAttrs = [
-    'getData'
-  ];
-
-  for (let a of _adoptElementAttrs) {
-   Pragma.prototype[a] = function() {
-      return this.element[a](...arguments)
-    };
-  }
-
-  const _adoptGetters = [
-    // html things
-    // "text",
-    "offset", "text",
-    'top', 'left', 'width', 'height', 'x',
-    'classArray'
-  ];
-
-  for (let a of _adoptGetters) {
-    Object.defineProperty(Pragma.prototype, a, {
-      get: function() {
-        return this.element[a]
-      }
-    });
-  }
-
-
-  // Mousetrap integration TODO improve this
-  globalThis.pragmaSpace.integrateMousetrap = function(trap){
-    if (typeof trap === 'function') {
-     Pragma.prototype.bind = function(key, f, on=undefined){
-       let self = this;
-        trap.bind(key, function(){
-          return self.runAs(f)
-        }, on);
-        return this
-     };
-
-     globalThis.pragmaSpace.mousetrapIntegration = true;
-     suc('Mousetrap configuration detected! Extended Pragmas to support .bind() method!');
-   }
-  };
-
-  try {
-    globalThis.pragmaSpace.integrateMousetrap(Mousetrap);
-  } catch (e) {
-    log(`Tried to integrate extensions, but failed. To disable,
-  this attempt: globalThis.pragmaSpace.integrate3rdParties = false`);
-  }
-
-   // Pragma.prototype[a] = function() {
-   //    this.element[a](...arguments)
-   //  }
-  /*
-   *pragmaMap = {
-   *  id: "",
-   *  class: "",
-   *  value: 0,
-   *  elements: [],
-   *  element: "" / dom,
-   *  onSet: () => {
-   *
-   *  },
-   *  onClick: () => {
-   *
-   *  }
-   *}
-   */
-
-  function _thread(cb) {
-    let code = `
-  onmessage = e => postMessage(JSON.stringify((${cb.toString()})(e.data))) 
-  `;  
-    var blob = new Blob([code], {
-      type: "application/javascript"
-    });
-
-    var worker = new Worker(URL.createObjectURL(blob));
-    
-    return function(){
-    	worker.postMessage(arguments);
-      return new Promise(resolve=> {
-      	worker.addEventListener('message', m => resolve(JSON.parse(m.data)));
-      })
-    }
-  }
-
-  /*
-   *
-   usage:
-   
-       const threadedFunction = _thread(data => {
-          return 'your palms are ' + data
-       })
-   
-      threadedFunction("sweaty").then(d => console.log('heee', d))
-  */
-      
-
-  function _runAsync(cb) {
-      return new Promise(r => r(cb()))
-  }
-
-  function runAsync(...cbs) {
-      return _runAsync(_ => {
-          for (let cb of cbs) {
-              _runAsync(cb);
-          }
-      })
-  }
-
-  // API layer
-
-  //const ε = function() {
-    //return new Element(...arguments)
-  //}
-
-  const π = (query, opt) => new Pragma(query, opt);
-  const _p$1 = π;
+  function e(t,e=null,n=["rerun the code 10 times"],r=null,i=!1){if(!$()&&!i)return null;console.error(`%c 🧯 pragma.js  %c \n\n      encountered a soft error 🔫 %c \n\n      \n${r?`Triggered by: [${r.key} ${r}]`:""}\n      \n${t} %c\n\n      \n${null!=e?`Potential ${e}: \n\t${n.join("\n\t")}`:""}\n      `,"font-size:15px","font-size: 12px;","color:whitesmoke","color:white");}function n(){if(!$())return null;console.log(...arguments);}function r(){if(!$())return null;console.log("%c 🌴 [pragma] \n\n      ","font-size:12px; color:#86D787;",...arguments,"\n");}class i{constructor(t){this.self=t,this.actions=new Map,this.delete=this.destroy;}addWithKey(t,e=null){e=e||this.actions.size,this.actions.set(e,t);}add(...t){for(let e of t)this.addWithKey(e);}forAction(t){for(let[e,n]of this.actions)t(e,n);}exec(...t){this.execAs(this.self,...t);}destroy(...t){t.forEach((t=>this.actions.delete(t)));}execAs(t,...e){this.forAction((function(n,r){r.bind(t)(...e);}));}}function s(){return Math.random().toString(36).substring(3,6)+Math.random().toString(36).substring(5,8)}function o(){return a(8)}function a(t=7){return t<5?s():(s()+a(t-5)).substring(0,t)}function l(t){return a(t)}function h(t,e){for(let[n,r]of Object.entries(e))t[n]=r;return t}const c=t=>t.replace(/([-_]\w)/g,(t=>t[1].toUpperCase()));function u(t,e){let n=`${t}Chain`,r=`on${t.capitalize()}`;return e[n]=new i(e),e[r]=function(t,r){e[n].addWithKey(t,r);},{chainName:n,eventName:r}}function f(t,...e){for(let n of e)u(n,t);}function d(t,e){let n=u(t,e),r=`is${t.capitalize()}ed`;e[n.chainName].add((()=>{e[r]=!0;})),e[n.eventName]=function(t){if(e[r])return t(e);e[n.chainName].add(t);};}function p(t,...e){for(let n of e)d(n,t);}String.prototype.capitalize=function(){return this.charAt(0).toUpperCase()+this.slice(1)};const m=t=>t.toString().replace(/[^a-z0-9]/gi,"-").toLowerCase();globalThis.pragmaSpace||(globalThis.pragmaSpace={}),p(globalThis.pragmaSpace,"docLoad");const g=globalThis.pragmaSpace.onDocLoad;function y(){globalThis.pragmaSpace.isDocLoaded||(r("📰 document is loaded."),globalThis.pragmaSpace.docLoadChain.exec());}document.addEventListener("readystatechange",(()=>{"complete"===document.readyState&&y();})),document.addEventListener("turbolinks:load",(()=>{r("🚀 TURBOLINKS loaded"),y();}));var b=/[#.]/g;function x(t,e="div"){var n=t||"",r={tag:e},i=0;let s,o,a;for(;i<n.length;)b.lastIndex=i,a=b.exec(n),s=n.slice(i,a?a.index:n.length),s&&(o?"#"===o?r.id=s:r.class?r.class.push(s):r.class=[s]:r.tag=s,i+=s.length),a&&(o=a[0],i++);return r}function v(t,n,r){if(!Array.isArray(t))return e(`Could not ${r} class [${t}] -> [${n}]`);for(let e of t){let t=e.split(" ");t.length>1?v(t,n,r):n.classList[r](e);}}function C(t,e){v(t,e,"add");}function A(t,e){v(t,e,"remove");}function _(t,e){v(t,e,"toggle");}function T(t){try{let e=document.querySelector(t);if(e)return e}catch{}let e=x(t),n=document.createElement(e.tag||"div");return e.id&&(n.id=e.id),e.class&&C(e.class,n),n}function M(t){return document.createRange().createContextualFragment(t)}function w(t){return t instanceof Element?t:"string"==typeof t?"<"===t[0]?M(t):T(t):e(`Could not find/create element from [${t}]`)}const O={html:(t,e)=>{e.innerHTML=t;},pcss:(t,e)=>{for(let[n,r]of S.cssToDict(t))e.style[c(n)]=r;}},S={cssToDict:t=>{t=t.replace(/\n/g,";").replace(/:/g," ");let n=new Map;for(let e of t.split(";")){if(e.replace(/\s/g,"").length<2)continue;e=e.trim().split(" ");let t=e[0];e.shift(),n.set(t.trim(),e.join(" ").trim());}let r=[];for(const[t,e]of n.entries())CSS.supports(t,e)||r.push(`${t.trim()}: ${e.trim()}`);return r.length>0&&e("CSS syntax error","typos",r),n},css:t=>{let e="";for(let[n,r]of S.cssToDict(t))e+=`${n}:${r};`;return e},html:t=>t};function $(){return globalThis.pragmaSpace.dev}globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.dev=globalThis.pragmaSpace.dev||"undefined"!=typeof process&&process.env&&"development"===process.env.NODE_ENV;var E=Object.freeze({__proto__:null,_deving:$,throwSoft:e,log:n,suc:r,whenDOM:g,parseQuery:x,addClassAryTo:C,removeClassAryFrom:A,toggleClassAryOf:_,selectOrCreateDOM:T,elementFrom:w,toHTMLAttr:m,fragmentFromString:M,fillSVG:function(t,e){j(t).findAll("path").forEach((t=>{const n=t.attr("fill");"none"!=n&&"transparent"!=n&&t.attr("fill",e);}));},generateRandomKey:l,objDiff:h,aryDiff:function(t,e){return t.filter((t=>e.indexOf(t)<0))},_extend:function(t,e){Object.setPrototypeOf(t,h(Object.getPrototypeOf(t),e));},createEventChains:p,createChains:f,snake2camel:c,mimic:function(t,e,n){for(let r of n||Object.keys(e)){let n=Object.getOwnPropertyDescriptor(e,r);if(!n)break;Object.defineProperty(t,r,n);}},bench:function(t,e){console.time(e),t(),console.timeEnd(e);},rk:a,rk5:s,rk8:o,parse:S,apply:O,createTemplate:t=>(new N).run((function(){f(this,"config"),this.config=function(t){return this.configChain.exec(t),this},this.onConfig(((t={})=>{["events","chains","exports","persistentExports"].forEach((e=>{t[e]&&(this[`_${e}`]=t[e],delete t[e]);})),this._events&&p(this,...this._events),this._chains&&f(this,...this._chains);for(let[e,n]of Object.entries(t))this[e]=n,this.export(e);this._exports&&this.export(...this._exports);})),this.export("exports","config","exportChain","configChain","onConfig");}),(function(){"object"==typeof t&&this.config(t);}))});function k(t){if(null==t||null==t)return e(`Could not find a DOM element for ${t}`);if(t.element)return k(t.element);return w(t)}function j(t,e){let n=k(t);var r,i;return n.constructor===DocumentFragment&&(r=n,(i=document.createElement("template")).appendChild(r.cloneNode(!0)),n=i.firstChild),n instanceof Element&&(n.init(),n._render()),"string"==typeof e&&n.html(e),n}const L={init:function(){this.isPragmaElement=!0,p(this,"docLoad","render"),g((()=>this.docLoadChain.exec(this)));},_render:function(){this.renderChain.exec(this);},appendTo:function(t){return this.onDocLoad((()=>{this._parentElement=k(t),this._parentElement.appendChild(this),this._render();})),this},prependTo:function(t){return this.onDocLoad((()=>{this._parentElement=k(t),this._parentElement.prepend(this),this._render();})),this},append:function(...t){return this.onRender((()=>{for(let e of t){let t=k(e);this.appendChild(t);}})),this},destroy:function(){this.onRender((()=>{this.parentElement&&this.parentElement.removeChild(this);}));},css:function(t){return this.onRender((()=>{O.pcss(t,this);})),this},html:function(t){return t?(this.onRender((()=>{O.html(t,this);})),this):this.innerHTML},setId:function(t){return this.id=t,this},setData:function(t){for(let[e,n]of Object.entries(t))this.dataset[e]=n;return this},getData:function(t){return this.dataset[t]},addClass:function(...t){return C(t,this),this},removeClass:function(...t){return A(t,this),this},toggleClass:function(...t){return _(t,this),this},listenTo:function(...t){return this.onRender((()=>{this.addEventListener(...t);})),this},attr:function(t,e){if("string"==typeof t){if(void 0===e)return this.getAttribute(t);const n=t;(t={})[n]=e;}for(let[e,n]of Object.entries(t))this.setAttribute(e,n);return this},find:function(){return j(this.query(...arguments))},findAll:function(t){return Array.from(this.queryAll(t)).map((t=>j(t)))},query:function(){return this.querySelector(...arguments)},queryAll:function(t){return this.querySelectorAll(t)},hide:function(){return this.style.display="none",this},show:function(){return this.style.display="",this},deepQueryAll:function(t){let e=Array.from(this.queryAll(t));for(let n of this.children)e=e.concat(n.deepQueryAll(t));return e},deepFindAll:function(t){return this.deepQueryAll(t).map((t=>j(t)))},rect:function(){return "function"==typeof this.getBoundingClientRect?this.getBoundingClientRect():{}},offset:function(){var t=this.rect();return {top:t.top+window.scrollY,left:t.left+window.scrollX}},x:function(t){return this.left+this.width/2-t/2}},D={top:function(){return this.offset().top},left:function(){return this.offset().left},width:function(){return this.rect().width},height:function(){return this.rect().height},text:function(){return this.textContent},classArray:function(){return Array.from(this.classList)},childrenArray:function(){return Array.from(this.children)}};for(let[t,e]of Object.entries(L))Element.prototype[t]=e;for(let[t,e]of Object.entries(D))Object.defineProperty(Element.prototype,t,{get:e,configurable:!0});class P{constructor(t){this._childMap=new Map,this.key="string"==typeof t?t:o(),this.containsKey=this.childMap.has;}set childMap(t){for(let[e,n]of t)n instanceof P&&this.add(n);}get childMap(){return this._childMap}get kidsum(){return this.childMap.size}get hasKids(){return this.kidsum>0}get shape(){return this.shapePrefix()}get master(){return null==this.parent||null==this.parent.parent?this.parent:this.parent.master}get children(){return Array.from(this.childMap.values())}get depthKey(){return this.parent?this.parent.depthKey+"<~<"+this.key:this.key}get allChildren(){if(!this.hasKids)return null;let t=this.children;for(let e of t){let n=e.allChildren;n&&(t=t.concat(n));}return t}get(t){return this.childMap.get(t)}find(t){if(this.childMap.has(t))return this.childMap.get(t);for(let e of this.childMap.values()){let n=e.find(t);if(n)return n}}adopt(...t){for(let e of t)this.add(e);return this}add(t,n=!1){return t?!n&&this.childMap.has(t.key)?(t.key=`${t.key}<${s()}`,this.add(t)):(t.parent=this,void this.childMap.set(t.key,t)):e(`Could not add [${t}] to [${this.id}]`)}delete(t){return this.remove(t)}remove(t){this.childMap.get(t)&&this.childMap.delete(t);}shapePrefix(t=""){let e=`${t}| ${this.type} - ${this.key} \n`;if(this.hasKids){t+="| ";for(let n of this.children)e+=n.shapePrefix(t);}return e}}const R={parent:(t,e)=>{t.parent=e;},value:(t,e)=>{t.value=e;},key:(t,e)=>{t.key=e;},class:(t,e)=>{t._class=e;},element:(t,n)=>{if(!(n instanceof Element))return e(`Could not add ${n} as the element of [${t}]`);t.element=n;},children:(t,e)=>{if(e.constructor==Array)return t.buildAry(e);t.build(e);},childTemplate:(t,e)=>{}};function K(t,e){return {val:t,set:e}}function z(t,n,r){if(!n)return K(t,!0);if(r)return K(function(t,n){return function(t){return null!=t.min&&null!=t.max}(n)?t=(t=t>n.max?n.min:t)<n.min?n.max:t:e(`Could not loop value, since range (${JSON.stringify(n)}) is unbounded`)}(t,n),!0);let i=function(t,e){return t=e.min?Math.max(e.min,t):t,e.max?Math.min(e.max,t):t}(t,n);return K(i,i==t)}class N extends P{constructor(t,e){super(),p(this,"export"),this.actionChain=new i,"object"==typeof t?function(t,e){let n=new Map;for(let[r,i]of Object.entries(t))R.hasOwnProperty(r)?R[r](e,i):n.set(r,i);e.element&&e.element.whenInDOM((t=>{for(let[r,i]of n)if(r=r.toLowerCase(),r.includes("on")){let n=r.split("on")[1].trim();t.listenTo(n,(()=>{e.action(i);}));}}));}(t,this):this.key=t,this.element||this.as();}get _e(){return this.element}setElement(t,e=!0){return this.elementDOM=t,e&&this.element.id&&(this.id=this.element.id),this}get element(){return this.elementDOM}set element(t){this.setElement(t);}setRange(t=null,e=null){return this.range=this.range||{},this.range.min=null===t?this.range.min:t,this.range.max=null===e?this.range.max:e,this}breakLoop(){return this._loopVal=!1,this}setLoop(t,e){return this.setRange(t,e),this._loopVal=!0,this}get dv(){return this.v-this._lv}get value(){return this.v}setValue(t){return this.value=t,this}set value(t){let e=z(t,this.range,this._loopVal);e.set&&(this._lv=this.v,this.v=e.val,this.exec());}exec(){return this.actionChain.execAs(this,...arguments),this}setKey(t){return this.key=t,this}set key(t){this._KEY=null==t?l():t;}get key(){return this._KEY}set id(t){this.element&&(this.element.id=this.id);}get id(){return m(this.key)}buildAry(t){for(let e of t)this.add(new N(e,this));return this}build(...t){return this.buildAry(t)}on(t,e=null){var n=this;return {do:function(e){return n.element.listenTo(t,(()=>{n.run(e);})),n}}}as(t=null,e){return t=t||`div#${this.id}.pragma`,this.setElement(j(t,e),!1),this}addExport(t){this.exports=this.exports||new Set,this.exports.add(t);}export(...t){for(let e of t)this.addExport(e);}from(e){return e.exports&&E.mimic(this,e,e.exports),e.exportChain&&e.exportChain.exec(this),this}wireTo(t){let e=this;return t.do((function(){e.value=this.value;})),this}do(){return this.actionChain.add(...arguments),this}run(...t){let n=t[0];return "function"==typeof n?this._runAry(t):"object"==typeof n?this._runAry(Object.values(n)):e(`Could not run [${t}] as [${this}]`),this}_runAry(t){for(let e of t)this.runAs(e);}runAs(t){return t.bind(this)()}containAry(t,n="append"){for(let r of t)super.add(r),r.isRendered?e(`[${r}] is already appended`):this.element[n](r);return this}contain(...t){return this.containAry(t)}containFirst(...t){return this.containAry(t.reverse(),"prepend")}pragmatize(){return this.element.appendTo(this.parent&&this.parent.element||"body"),this}pragmatizeAt(t){return this.element.appendTo(t),this}addListeners(t){for(let[e,n]of Object.entries(t))this.on(e).do(n);return this}}const q=["html","css","addClass","removeClass","toggleClass","setId","append","prepend","appendTo","prependTo","listenTo","setData"];for(let t of q)N.prototype[t]=function(){return this.element[t](...arguments),this};const F=["getData"];for(let t of F)N.prototype[t]=function(){return this.element[t](...arguments)};const I=["offset","text","top","left","width","height","x","classArray"];for(let t of I)Object.defineProperty(N.prototype,t,{get:function(){return this.element[t]}});globalThis.pragmaSpace.integrateMousetrap=function(t){"function"==typeof t&&(N.prototype.bind=function(e,n,r){let i=this;return t.bind(e,(function(){return i.runAs(n)}),r),this},globalThis.pragmaSpace.mousetrapIntegration=!0,r("Mousetrap configuration detected! Extended Pragmas to support .bind() method!"));};try{globalThis.pragmaSpace.integrateMousetrap(Mousetrap);}catch(t){n("Tried to integrate extensions, but failed. To disable,\n  this attempt: globalThis.pragmaSpace.integrate3rdParties = false");}function V(t){let e=`\n    onmessage = e => postMessage(JSON.stringify((${t.toString()})(e.data))) \n  `;var n=new Blob([e],{type:"application/javascript"}),r=new Worker(URL.createObjectURL(n));return function(){return r.postMessage(arguments),new Promise((t=>{r.addEventListener("message",(e=>t(JSON.parse(e.data))));}))}}function U(t){return new Promise((e=>e(t())))}function B(...t){return U((()=>{for(let e of t)U(e);}))}const Q=(t,e)=>new N(t,e),W=Q;
 
   function elementify(el){
     // pipeline to vanillafy pragma objects to html elements
-    if (el instanceof Pragma) el = el.element;
-    if (!el.isPragmaElement) el = _e(el);
+    if (el instanceof N) el = el.element;
+    if (!el.isPragmaElement) el = j(el);
     return el
   }
 
@@ -1260,13 +41,13 @@
   }
 
   function isMostlyInScreen(el, percent=.5){
-    if (!el) throw index.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+    if (!el) throw E.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
     el = elementify(el);
     return isOnScreen(el, percent*el.rect().height) // is 70% on screen
   }
 
   function isOnScreen(el, threshold=100){
-    if (!el) throw index.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+    if (!el) throw E.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
     el = elementify(el);
     let winTop = window.scrollY;
     let winBot = winTop + window.innerHeight;
@@ -1318,7 +99,7 @@
 
   function onScroll(cb){
     if (!globalThis.lectorSpace.scrollChain){
-      index.createChains(globalThis.lectorSpace, 'scroll');
+      E.createChains(globalThis.lectorSpace, 'scroll');
       _onScroll((scroll, ds) => {
         globalThis.lectorSpace.scrollChain.exec(scroll, ds);
       });
@@ -1347,7 +128,7 @@
 
   function onScrollEnd(cb){
     if (!globalThis.lectorSpace.scrollEndChain){
-      index.createChains(globalThis.lectorSpace, 'scrollEnd');
+      E.createChains(globalThis.lectorSpace, 'scrollEnd');
 
         _onScrollEnd((scroll, ds) => {
           globalThis.lectorSpace.scrollEndChain.exec(scroll, ds);
@@ -12649,7 +11430,7 @@
     return parsed;
   };
 
-  var parse$1 = parseTerm;
+  var parse = parseTerm;
 
   function createCommonjsModule$1(fn) {
     var module = { exports: {} };
@@ -13446,7 +12227,7 @@
       _classCallCheck(this, Term);
 
       text = String(text);
-      var obj = parse$1(text); // the various forms of our text
+      var obj = parse(text); // the various forms of our text
 
       this.text = obj.text || '';
       this.clean = obj.clean;
@@ -13472,7 +12253,7 @@
     _createClass(Term, [{
       key: "set",
       value: function set(str) {
-        var obj = parse$1(str);
+        var obj = parse(str);
         this.text = obj.text;
         this.clean = obj.clean;
         return this;
@@ -17322,8 +16103,8 @@
     conjugations[inf] = _final;
   };
 
-  for (var i = 0; i < keys.length; i++) {
-    _loop(i);
+  for (var i$1 = 0; i$1 < keys.length; i$1++) {
+    _loop(i$1);
   }
 
   var conjugations_1 = conjugations;
@@ -25134,7 +23915,7 @@
 
   // .nouns() supports some noun-phrase-ish groupings
   // pull these apart, if necessary
-  var parse$1$1 = function parse(doc) {
+  var parse$1 = function parse(doc) {
     var res = {
       main: doc
     }; //support 'mayor of chicago' as one noun-phrase
@@ -25148,7 +23929,7 @@
     return res;
   };
 
-  var parse_1 = parse$1$1;
+  var parse_1 = parse$1;
 
   var methods$6 = {
     /** overload the original json with noun information */
@@ -26838,7 +25619,7 @@
 
   function wfyInner(desc){
     if (!desc) return false
-    desc = _e(desc);
+    desc = j(desc);
     let txt = desc.textContent;
     let inner = "";
     for (let txt of desc.textContent.split(" ")){
@@ -26852,7 +25633,7 @@
   }
 
   function wfyElement(element){
-    element = _e(element);
+    element = j(element);
     let nodes = element.findAll("*");
     if (nodes.length == 0) return wfyInner(wfyInner(element))
     nodes.forEach(desc => wfyElement(desc));
@@ -26860,7 +25641,7 @@
 
   function wfy(element){
     // console.log(`wfying ${JSON.stringify(element)}`)
-    element = _e(element);
+    element = j(element);
     // if (element.textContent.replaceAll(" ", "").length<1) return false
     let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
     if (txtNodes.length==0) return wfyElement(element)
@@ -26913,7 +25694,7 @@
     airway: airway
   });
 
-  class PragmaLector extends Pragma {
+  class PragmaLector extends N {
 
     constructor(){
       super(arguments);
@@ -26984,7 +25765,7 @@
     }
 
     read(){
-      index.log("::LECTOR reading", this);
+      E.log("::LECTOR reading", this);
       if (!this.w.hasKids) return console.error('nothing to read')
       console.log(this.w);
       this.w.read();
@@ -27009,7 +25790,7 @@
 
   }
 
-  class PragmaWord extends Pragma {
+  class PragmaWord extends N {
 
     constructor(k){
         super(k);
@@ -27040,7 +25821,7 @@
 
     get lector(){
       if (this.parent) return this.parent.lector
-      index.throwSoft('could not find lector for');
+      E.throwSoft('could not find lector for');
     }
 
     get txt(){
@@ -27071,7 +25852,7 @@
       // console.log(this.childMap)
       // console.log(this.element, this.value, this.childMap, this.get(this.value))
       let subW = this.get(this.value);
-      if (!subW) return index.throwSoft(`Could not find current Word of ${this.key}`)
+      if (!subW) return E.throwSoft(`Could not find current Word of ${this.key}`)
       return subW.currentWord
     }
 
@@ -27248,11 +26029,11 @@
   border-radius 3px
 `;
 
-  class PragmaMark extends Pragma {
+  class PragmaMark extends N {
     constructor() {
       super('marker');
 
-      this.element = _e("marker");
+      this.element = j("marker");
       this.appendTo('body');
       this.hide();
       this.css(defaultStyles);
@@ -27377,7 +26158,7 @@
 
     mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
       //console.log("marking", word)
-      if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
+      if (!(word instanceof N)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
       let w = fit ? word.width + 5 : this.cw;
       //this.setWidth(w)
       return this.moveTo({
@@ -27394,7 +26175,7 @@
     }
 
     guide(word) {
-      if (!(word instanceof Pragma)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error"); })
+      if (!(word instanceof N)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error"); })
       return new PinkyPromise((resolve, reject) => {
         let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear";
         return this.moveTo({
@@ -27427,7 +26208,7 @@
         *
         * */
 
-      if (!word instanceof Pragma) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+      if (!word instanceof N) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
       if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
       if (word.isFirstInLine) return 500 // mark has to change line
       if (!this.last_marked) return 0 // failsafe
@@ -27454,29 +26235,29 @@
   }
 
   function paginator(pageTemplate, conf={}){
-    return new Pragma()
-          .from(index.createTemplate({
+    return new N()
+          .from(E.createTemplate({
             // make this nicer
             // defaultSet: pageTemplate,
             pageTemplate: pageTemplate,
-            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ index.throwSoft('no fetch source specified'); },
-            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => index.log('created', p),
+            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ E.throwSoft('no fetch source specified'); },
+            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => E.log('created', p),
             onFetch: conf.onFetch,
 
             onPageAdd: null,
             onPageRender: null,
             //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
-            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){index.log('active', page); },
-            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { index.log('inactive', page); },
+            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){E.log('active', page); },
+            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { E.log('inactive', page); },
           }))
 
           .run(function(){
 
-            let _ptemp = _e(this.pageTemplate).hide();
+            let _ptemp = j(this.pageTemplate).hide();
             this.pageTemplate = _ptemp.cloneNode(false);
 
             this._clonePage = function() {
-              let page = _e(this.pageTemplate.cloneNode(false)).show();
+              let page = j(this.pageTemplate.cloneNode(false)).show();
               //if (this._lastAddedPage){
                 ////page.style.height = this._lastAddedPage.height
                 //page.css(`height ${this._lastAddedPage.height}px`)
@@ -27484,7 +26265,7 @@
               //}
               this.adopt(page);
               page.lec = this.parent;
-              index.createEventChains(page, 'fetch');
+              E.createEventChains(page, 'fetch');
               return page
             };
 
@@ -27621,9 +26402,9 @@
   }
 
   function infinityPaginator(streamer, pageTemplate, config={}){
-    let inf = _p$1("infinity paginator")
+    let inf = W("infinity paginator")
           .from(
-            paginator(pageTemplate, index.objDiff(
+            paginator(pageTemplate, E.objDiff(
               {
                 streamer: streamer,
                 fetch: streamer.fetch,
@@ -27653,12 +26434,12 @@
                 let pageRange = range(start, this.value+conf.headspace);
                 let pagesRendered = Array.from(this.pages.keys());
 
-                let pagesToRender = index.aryDiff(pageRange, pagesRendered);
-                let pagesToDelete = index.aryDiff(pagesRendered, pageRange);
+                let pagesToRender = E.aryDiff(pageRange, pagesRendered);
+                let pagesToDelete = E.aryDiff(pagesRendered, pageRange);
 
 
                 let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
-                let pagesToRenderBefore = index.aryDiff(pagesToRender, pagesToRenderAfter);
+                let pagesToRenderBefore = E.aryDiff(pagesToRender, pagesToRenderAfter);
 
                 // console.log(">> ALREADY RENDERED", pagesRendered)
                  console.log(">> DEL", pagesToDelete);
@@ -27667,7 +26448,7 @@
                  console.log(">> ADD BEFORE", pagesToRenderBefore);
 
                 // pararellize?
-                runAsync(
+                B(
                   _ => {
                     for (let pageIndex of pagesToRenderAfter){
                       this.create(pageIndex, 'append');
@@ -27800,7 +26581,7 @@
       //.from(util.createTemplate())
       .run(function(){
         let options = conf.options;
-        if (!options) return index.throwSoft('need to define options when creating a select template')
+        if (!options) return E.throwSoft('need to define options when creating a select template')
 
         let onOptionCreate = conf.onOptionCreate || defaults$1.onOptionCreate;
         let optionTemplate = conf.optionTemplate || defaults$1.optionTemplate; 
@@ -27823,7 +26604,7 @@
       });
 
   function slider(conf={}){
-    return new Pragma()
+    return new N()
       .run(function() {
         this.as(`<input type='range'></input>`);
 
@@ -27847,8 +26628,8 @@
     }
 
   function monitor(conf={}){
-    return new Pragma()
-            .from(index.createTemplate(index.objDiff({
+    return new N()
+            .from(E.createTemplate(E.objDiff({
                 template: v => v,
               }, conf)))
             .do(function() {
@@ -27876,6 +26657,65 @@
    *
    */
 
+  function input(conf = {}) {
+      return new N()
+          .from(E.createTemplate(conf))
+          .run(function () {
+              this.as(`<input type='text'></input>`);
+
+              this.setValue = function(v){
+                  console.log(this.valueSanitizer);
+                  this.value = this.valueSanitizer ? this.valueSanitizer(v) : v;
+                  return this
+              };
+
+              //this.element.listenTo('input', function () {
+                  
+                  //// pragma.value = this.value
+                  //// this.parent.value = parseInt(this.value)
+              //})
+              
+              this.element.listenTo('focus', function(){
+                  console.log(this, 'has been focused');
+                  this.parent._listenToEsc = document.addEventListener('keydown', k => {
+                      if (k.key === 'Enter'){
+                          this.blur();
+                      }
+                  });
+              });
+              
+              this.element.listenTo('focusout', function(){
+                  console.log(this, 'has lost focused');
+                  console.log(this.value);
+                  
+                  this.parent.setValue(this.value);
+                  document.removeEventListener('keydown', this.parent._listenToEsc);
+              });
+
+
+              this.export('actionChain', 'elementDOM', 'setValue');
+              this.onExport(pragma => {
+                  pragma.adopt(this.element);
+              });
+          })
+          .do(function(){
+              this.element.value = this.value;
+              this.element.placeholder = this.value;
+          })
+          .run(function(){
+              this.setTemplate = function(tpl){
+                this.template = tpl;
+                return this
+              };
+
+              this.setValueSanitizer = function(cb){
+                  this.valueSanitizer = cb;
+                  return this
+              };
+              this.export('setTemplate', 'setValueSanitizer');
+            })
+  }
+
   const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
   const fonts = ["Helvetica", "Open Sans", "Space Mono"];
   const modes$1 = ["HotBox", "Underneath", "Faded"];
@@ -27899,8 +26739,8 @@
     self.find(key).css('opacity .7'); 
   }
 
-  const activeSelectTpl = (conf={}) => _p$1()
-    .from(select(index.objDiff({
+  const activeSelectTpl = (conf={}) => W()
+    .from(select(E.objDiff({
       onOptionCreate: (self, el) => {
         self.contain(el);
         cssOption(self, el.key);
@@ -27955,13 +26795,13 @@
       }
     };
 
-    let settings = _p$1("settingsWrapper")
+    let settings = W("settingsWrapper")
                     .addClass("items-center")
                     .run(function(){
                       this.value = {};
 
                       this._setVal = function(edit){
-                        this.value = index.objDiff(this.value, edit);
+                        this.value = E.objDiff(this.value, edit);
                       };
 
                       this.set = function(edit){
@@ -27981,7 +26821,7 @@
                       //console.log('set value', this.value)
                     //})
 
-    let foveaComp = _p$1("!fovea")
+    let foveaComp = W("!fovea")
                     .from(slider({
                       min: 2,
                       max: 10,
@@ -27991,20 +26831,20 @@
                     .do(actions.changeFovea);
 
 
-    let modeComp = _p$1('!mode')
+    let modeComp = W('!mode')
                     .from(activeSelectTpl({
                       options: modes$1
                     }))
                     .do(actions.changeMode);
 
 
-    let fontComp = _p$1('!font')
+    let fontComp = W('!font')
                     .run(function(){
                       console.log(this.key);
                     })
                     .from(activeSelectTpl({
                       options: fonts,
-                      optionTemplate: option => _p$1(option)
+                      optionTemplate: option => W(option)
                                 .html(option)
                                 .on('click').do(function(){
                                   this.parent.value = this.key;
@@ -28013,11 +26853,11 @@
                     .css(`flex-direction row`)
                     .do(actions.changeFont);
 
-    let colorsComp = _p$1('!color')
+    let colorsComp = W('!color')
                     .from(activeSelectTpl({
                       options: colors,
                       optionTemplate: option => {
-                        return _p$1(option)
+                        return W(option)
                                 .css(`
                                 width 25px
                                 height 25px
@@ -28031,10 +26871,13 @@
                     }))
                     .do(actions.changeColor);
 
-    let wpmComp = _p$1("!wpm")
-                    .from(monitor())
+    let wpmComp = W("!wpm")
+                    .from(input())
                     .setTemplate(
                       v => `${v} wpm`
+                    )
+                    .setValueSanitizer(
+                      v => parseInt(v)
                     )
                     .setRange(40, 4200)
                     .setValue(250)
@@ -28042,13 +26885,13 @@
                     .bind(shc.wpmMinus, function(){ this.value-=10; })
                     .do(actions.changeWpm);
 
-    let pageComp = _p$1("!page")
+    let pageComp = W("!page")
                     .from(monitor())
                     .setTemplate(
                       p => `page [${p}]`
                     )
                     .run(function(){
-                      index.createChains(this, 'userEdit');
+                      E.createChains(this, 'userEdit');
 
                       this.editValue = function(val){
                         this.value = val;  
@@ -28075,7 +26918,7 @@
       //})
     //})
 
-    let popUpSettings = _p$1("popupsettings")
+    let popUpSettings = W("popupsettings")
           .contain(colorsComp, fontComp, foveaComp, modeComp)
           .run(function(){
             this.show = function(){
@@ -28232,7 +27075,7 @@
   };
 
   const Reader = (l, options=default_options) => {
-    l = _e(l);
+    l = j(l);
     if (options.wfy) wfy(l);
     let w = Word(l);
 
@@ -28288,7 +27131,7 @@
 
 
   function _streamer(sf){
-    return _p$1('streamer')
+    return W('streamer')
             .setValue(0)
             .run(function(){
               this.fetch = sf;
@@ -28302,7 +27145,7 @@
   const Lector = (l, options=default_options) => {
     if (!_needWrapper(options)) return Reader(l, options)
 
-    index.log("configuration appears to be a bit more complicated");
+    E.log("configuration appears to be a bit more complicated");
 
     if (options.experimental &&
         options.stream &&
@@ -28310,7 +27153,7 @@
         options.paginate.from === 'stream' &&
         options.paginate.as === 'infiniteScroll'){
 
-      index.log('setting up streamer service');
+      E.log('setting up streamer service');
 
       let streamer = _streamer(options.stream);
       let paginator = infinityPaginator(streamer, l, options.paginate.config || {});
@@ -28322,7 +27165,7 @@
       // console.log(l)
       // console.log(_e(l).parentElement)
       // let options = util.objDiff({ skip: true })
-      let lector = Reader(_e(l).parentElement, options)
+      let lector = Reader(j(l).parentElement, options)
                     .adopt(paginator, streamer);
 
       lector.paginator = paginator;
@@ -28349,11 +27192,11 @@
     const attrs = {
       Lector: Lector,
       Word: Word,
-      _e: _e,
-      _p: _p$1,
-      util: index,
+      _e: j,
+      _p: W,
+      util: E,
       lecUtil: helpers,
-      _thread: _thread
+      _thread: V
     };
 
     for (let [key, val] of Object.entries(attrs)){

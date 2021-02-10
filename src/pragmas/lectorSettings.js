@@ -1,5 +1,5 @@
 import { _p, util } from "pragmajs"
-import { select, monitor, slider } from "../extensions/index"
+import { select, monitor, slider, input } from "../extensions/index"
 
 import { colors, fonts, modes } from "../config/marker.config"
 import shc from "../config/shortcuts.config"
@@ -158,9 +158,12 @@ export default function lectorSettings(lector){
                   .do(actions.changeColor)
 
   let wpmComp = _p("!wpm")
-                  .from(monitor())
+                  .from(input())
                   .setTemplate(
                     v => `${v} wpm`
+                  )
+                  .setValueSanitizer(
+                    v => parseInt(v)
                   )
                   .setRange(40, 4200)
                   .setValue(250)
