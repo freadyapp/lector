@@ -125,8 +125,7 @@ export const Reader = (l, options=default_options) => {
               .connectTo(w)
   
   lec.mark = Mark(lec)
-  if (options.settings) lec.settings = LectorSettings(lec)
-                                          .addClass('lector-settings')
+  if (options.settings) lec.settings = LectorSettings(lec).addClass('lector-settings')
                                           .css(`
                                           position fixed
                                           bottom 20px
@@ -143,6 +142,7 @@ export const Reader = (l, options=default_options) => {
                                           border-radius: 10px;
                                           border: 1px solid rgba( 255, 255, 255, 0.18 );
                                                 `)
+                                          
 
 
   function bindKeys(){

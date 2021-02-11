@@ -1698,7 +1698,24 @@ function lectorSettings(lector){
       //console.log(this.key, this.value)
     //})
   //})
+  let miniSettings = _p$1('mini-settings')
+                      .css(`
+                                          position fixed
+                                          bottom 20px
+                                          width: fit-content;
+                                          right 20px
+                                          color whitesmoke
+                                          border-radius 5px
+                                          padding 20px 40px
+                                          transition: all .2s
 
+                                          background: rgba( 35, 35, 35, 0.55 );
+                                          backdrop-filter: blur( 30.5px );
+                                          -webkit-backdrop-filter: blur( 30.5px );
+                                          border-radius: 10px;
+                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
+`).contain(pageComp).pragmatize();
+  
   let popUpSettings = _p$1("popupsettings")
         .contain(colorsComp, fontComp, foveaComp, modeComp)
         .run(function(){
@@ -1718,8 +1735,9 @@ function lectorSettings(lector){
         })
         .bind("h", function() { this.toggle(); });
 
-
-  settings.contain(popUpSettings, wpmComp, pageComp);
+// pageComp
+  settings.contain(popUpSettings, wpmComp);
+  settings.adopt(miniSettings);
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
@@ -1870,8 +1888,7 @@ const Reader = (l, options=default_options) => {
               .connectTo(w);
   
   lec.mark = Mark(lec);
-  if (options.settings) lec.settings = lectorSettings(lec)
-                                          .addClass('lector-settings')
+  if (options.settings) lec.settings = lectorSettings(lec).addClass('lector-settings')
                                           .css(`
                                           position fixed
                                           bottom 20px
@@ -1888,6 +1905,7 @@ const Reader = (l, options=default_options) => {
                                           border-radius: 10px;
                                           border: 1px solid rgba( 255, 255, 255, 0.18 );
                                                 `);
+                                          
 
 
   function bindKeys(){
