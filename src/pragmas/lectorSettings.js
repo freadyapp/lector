@@ -1,7 +1,8 @@
 import { _p, util } from "pragmajs"
-import { select, monitor, slider, input } from "../extensions/index"
+import { select, monitor, slider, input, withLabel } from "../extensions/index"
 
 import { colors, fonts, modes } from "../config/marker.config"
+import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
 function cssOption(self, key){
@@ -57,6 +58,8 @@ export default function lectorSettings(lector){
 
   const actions = {
     changeColor(hex=this.value){
+      modeComp.update(hex)
+      foveaComp.update(hex)
       lector.mark.setColor(hex)
     },
 
@@ -108,36 +111,42 @@ export default function lectorSettings(lector){
                   //})
 
   let foveaComp = _p("!fovea")
-                  .from(slider({
-                    min: 2,
-                    max: 10,
-                    value: 5
-                  }))
-                  .addClass('slider')
+                  .run(slider)
+                  .import(withLabel)
+                  .setRange(2, 10)
+                  .setValue(5)
+                  .setLabel('fovea')
                   .do(actions.changeFovea)
+                  .run(function(){
+                    this.update = function(bg){
+                      this._bar.css(`background-color ${bg}`)
+                    }
+                  })
 
 
   let modeComp = _p('!mode')
                   .from(activeSelectTpl({
-                    options: modes
-                  }))
-                  .do(actions.changeMode)
-
-
-  let fontComp = _p('!font')
-                  .run(function(){
-                    console.log(this.key)
-                  })
-                  .from(activeSelectTpl({
-                    options: fonts,
+                    options: modes,
                     optionTemplate: option => _p(option)
-                              .html(option)
-                              .on('click').do(function(){
-                                this.parent.value = this.key
-                              })
+                        .css(`width 35px;
+                              height 20px;
+                         `)
+                        .on('click').do(function(){
+                          this.parent.value = this.key
+                        })
+                        .run(function(){
+                          this.update = bg => {
+                            mode_ify(this, option, bg)
+                            this.css('mix-blend-mode normal')  
+                          }
+                        })
                   }))
-                  .css(`flex-direction row`)
-                  .do(actions.changeFont)
+                  .run(function(){
+                    this.update = function(bg){
+                      this.children.forEach(child => child.update(bg))
+                    }
+                  })
+                  .do(actions.changeMode)
 
   let colorsComp = _p('!color')
                   .from(activeSelectTpl({
@@ -147,8 +156,8 @@ export default function lectorSettings(lector){
                               .css(`
                                 width 25px
                                 height 25px
+                                border-radius 25px
                                 background-color ${option} 
-
                               `)
                               .on('click').do(function(){
                                 this.parent.value = this.key
@@ -157,25 +166,51 @@ export default function lectorSettings(lector){
                   }))
                   .do(actions.changeColor)
 
+
+  let fontComp = _p('!font')
+                  .run(function(){
+                    console.log(this.key)
+                  })
+                  .from(activeSelectTpl({
+                    options: fonts,
+                    optionTemplate: option => _p(option)
+                              .html("Aa")
+                              .css(`font-family ${option}`)
+                              .on('click').do(function(){
+                                this.parent.value = this.key
+                              })
+                  }))
+                  .css(`flex-direction row`)
+                  .do(actions.changeFont)
+
   let wpmComp = _p("!wpm")
-                  .from(input())
-                  .setTemplate(
-                    v => `${v} wpm`
-                  )
+                  .import(input, withLabel)
+                  .addClass('settings-input')
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
+                  .setLabel('wpm')
                   .setRange(40, 4200)
                   .setValue(250)
                   .bind(shc.wpmPlus, function(){ this.value+=10 })
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
                   .do(actions.changeWpm)
-
+  
   let pageComp = _p("!page")
-                  .from(monitor())
-                  .setTemplate(
-                    p => `page [${p}]`
+                  .import(input, withLabel)
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
+                  .addClass('settings-input')
+                  .setValueSanitizer(
+                    v => parseInt(v)
                   )
+                  .setLabel('page')
                   .run(function(){
                     util.createChains(this, 'userEdit')
 
@@ -185,6 +220,12 @@ export default function lectorSettings(lector){
                     }
 
                     this.onUserEdit(actions.changePage)
+                  })
+                  .run(function(){
+                    this.onUserInput(val => {
+                      console.log(val)
+                      this.editValue(val)
+                    })
                   })
                   .setValue(1)
                   .bind(shc.pageNext, function(){
@@ -249,6 +290,6 @@ export default function lectorSettings(lector){
     'wpm': 420
   })
  
-
   return settings.pragmatize()
 }
+

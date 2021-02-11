@@ -85,7 +85,8 @@ export default class PragmaMark extends Pragma {
 
   setColor(hex){
     this._color = hex
-    this.css(`background-color ${hex}`)
+    //this.css(`background-color ${hex}`)
+    mode_ify(this)
   }
 
   setFovea(val){

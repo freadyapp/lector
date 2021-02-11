@@ -1,4 +1,3 @@
-import $ from "jquery"
 import { greek_prefixes } from "./greek"
 import nlp from 'compromise'
 

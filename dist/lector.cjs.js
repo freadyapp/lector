@@ -4,7 +4,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var pragmajs = require('pragmajs');
 var anime = require('animejs');
-require('jquery');
 var nlp = require('compromise');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -645,22 +644,30 @@ const reset = `border 0
                opacity 1
                mix-blend-mode darken;`;
 
-const modes = (mode, bg) => {
-  return reset.concat({
-    "hotbox": `background ${bg}`,
-    "underneath": `background transparent
-                   border-bottom 3px solid ${bg}
-                   border-radius 4px
-                   `,
-    "faded": `
-      background linear-gradient(0.25turn, rgba(255, 0, 0, 0), ${ bg }, ${ bg }, ${ bg }, rgba(255, 0, 0, 0))
-    `, 
-  }[mode])
+
+const modes = {
+  'hotbox': bg => `background ${bg}`,
+
+  'underneath': bg => ` background transparent
+                        border-bottom 3px solid ${bg}
+                        border-radius 4px`,
+
+  'faded': bg => `
+      background: rgb(255,255,255);
+      background: -moz-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+      background: -webkit-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+    `
 };
 
+function grabMode(mode, bg) {
+  return reset + modes[mode](bg)
+}
+
 const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
-  mode = mode.toString().toLowerCase();
-  let css = modes(mode, bg);
+  mode = (mode || 'hotbox').toString().toLowerCase();
+  let css = grabMode(mode, bg);
   if (mark) mark.css(css);
   return css
 };
@@ -746,7 +753,8 @@ class PragmaMark extends pragmajs.Pragma {
 
   setColor(hex){
     this._color = hex;
-    this.css(`background-color ${hex}`);
+    //this.css(`background-color ${hex}`)
+    mode_ify(this);
   }
 
   setFovea(val){
@@ -1253,117 +1261,209 @@ const select = (conf) => _p()
       this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
     });
 
+pragmajs.util.addStyles(`
+    .pragma-slider {
+      user-select: none;      
+      cursor: grab;
+    }
+  
+    .pragma-slider:active {
+      cursor: grabbing;
+    }
+
+    .pragma-slider-bg {
+      width: 100%;
+      height: 8px;
+      background: #2525259c;
+      border-radius: 15px;
+    }
+
+    .pragma-slider-bar {
+      height: 100%;
+      width: 25%;
+      background: #0074D9;
+      position: relative;
+      transition: all .05s ease;
+      border-radius: 15px;
+    }
+
+    .pragma-slider-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 25px;
+
+      background: #f1f1f1;
+      transition: all .05s ease;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      bottom: 50%;
+      margin: auto;
+    }
+  `);
+  
 function slider(conf={}){
-  return new pragmajs.Pragma()
-    .run(function() {
-      this.as(`<input type='range'></input>`);
+  
+  
+  this._n = function(){ 
+    let range = this.range || { min: 1, max: 100};
+    return 100/(range.max||100-range.min||1)
+  };
 
-      const defs = ['min', 'max', 'value'];
 
-      defs.forEach(attr => {
-        if (conf[attr]) this.element.attr(attr, conf[attr]);
+  this.do(function(){
+    this.element.setData({ value: this.value});
+    this._setBarTo(this.value*this._n());
+  });
+
+  this._setBarTo = wp => {
+    this._bar.css(`width ${wp}%`);
+    this._thumb.offset();
+  };
+
+  this._clipValue = perc => {
+    let v = Math.round(perc/this._n());
+    if (this._lv !== v) {
+      this.value = v;
+    }
+    //console.log(this.value)
+  };
+  
+  this._input = _e('div.').addClass('pragma-slider-bg');
+  this._bar = _e('div.')
+    .addClass('pragma-slider-bar');
+  
+  this._thumb = _e('div.pragma-slider-thumb');
+  this._bar.append(this._thumb);
+
+  this._input.append(this._bar);
+  
+
+  let onDown = function(){
+    this._clicked = true;
+  };
+
+  this._input.listenTo('mousedown', onDown);
+  this._thumb.listenTo('mousedown', onDown);
+  
+  document.addEventListener('mouseup', ()=> {
+    this._input._clicked = false;
+  });      
+  
+  let ticking = false;
+
+  document.addEventListener("mousemove", yx => {
+    if (this._input._clicked && !ticking) {
+      window.requestAnimationFrame(() => {
+        //doSomething(last_known_scroll_position);
+        ticking = false;
+        let w = yx.screenX-this._input.offset().left;
+        let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100);
+        this._clipValue(wp);
       });
+      ticking = true;
+    }
+  });
 
-      this.setRange(this.min || -100, this.max || 100);
-
-      this.element.listenTo('input', function(){
-        this.parent.value = parseInt(this.value);
-      });
-
-      this.export('actionChain', 'elementDOM');
-      this.onExport(pragma => {
-        pragma.adopt(this.element);
-      });
-    })
-  }
-
-function monitor(conf={}){
-  return new pragmajs.Pragma()
-          .from(pragmajs.util.createTemplate(pragmajs.util.objDiff({
-              template: v => v,
-            }, conf)))
-          .do(function() {
-            this.html(this.template(this.value));
-          })
-          .run(function(){
-            this.setTemplate = function(tpl){
-              this.template = tpl;
-              return this
-            };
-            this.export('actionChain', 'setTemplate');
-          })
+  this.adopt(this._input);
+  this.append(this._input);
+  this.element.addClass('pragma-slider');
 }
-
-
-/*
- *use: 
- *let monitor = _p('tv')
- *  .setValue(0)
- *  .from(tpl.monitor())
- *  .setMonitorTemplate(
- *    v => `${v} second${v == 1 ? ' has' : 's have'} passed`)
- *  .pragmatizeAt("#paper")
- *  .setLoop(0, 10)
- *
- */
 
 function input(conf = {}) {
     return new pragmajs.Pragma()
         .from(pragmajs.util.createTemplate(conf))
-        .run(function () {
-            this.as(`<input type='text'></input>`);
+        .run({
+            makeChains(){
+                pragmajs.util.createChains(this, 'userInput');
+            },
+            makeInput () {
+                this.input = _e(`<input type='text'></input>`)
+                    .addClass('pragma-input-text');
 
-            this.setValue = function(v){
-                console.log(this.valueSanitizer);
-                this.value = this.valueSanitizer ? this.valueSanitizer(v) : v;
-                return this
-            };
+                this.setValue = function(v){
+                    let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v;
 
-            //this.element.listenTo('input', function () {
-                
-                //// pragma.value = this.value
-                //// this.parent.value = parseInt(this.value)
-            //})
-            
-            this.element.listenTo('focus', function(){
-                console.log(this, 'has been focused');
-                this.parent._listenToEsc = document.addEventListener('keydown', k => {
-                    if (k.key === 'Enter'){
-                        this.blur();
+                    this.value = newVal;
+
+                    if (this.value != newVal){
+                        this.updateFront();
                     }
+                    return this
+                };
+
+                this.input.listenTo('focus', function(){
+                    this.parent._listenToEsc = document.addEventListener('keydown', k => {
+                        if (k.key === 'Enter'){
+                            this.blur();
+                        }
+                    });
                 });
-            });
-            
-            this.element.listenTo('focusout', function(){
-                console.log(this, 'has lost focused');
-                console.log(this.value);
                 
-                this.parent.setValue(this.value);
-                document.removeEventListener('keydown', this.parent._listenToEsc);
-            });
+                this.input.listenTo('focusout', function(){
+                    this.parent.setValue(this.value);
+                    this.parent.userInputChain.exec(this.parent.value);
+                    document.removeEventListener('keydown', this.parent._listenToEsc);
+                });
 
+                this.export(
+                    'actionChain',
+                    'input',
+                    'setValue',
+                    'userInputChain',
+                    'onUserInput');
 
-            this.export('actionChain', 'elementDOM', 'setValue');
-            this.onExport(pragma => {
-                pragma.adopt(this.element);
-            });
+                this.onExport(pragma => {
+                    // pragma.adopt(this.input)
+                    pragma.adopt(this.input);
+                    pragma.append(this.input);
+                });
+            },
+        
+            extend(){
+                this.updateFront = function(val=this.value){
+                    this.input.value = val;
+                    this.input.placeholder = val;
+                };
+                this.export('updateFront');
+            }
         })
         .do(function(){
-            this.element.value = this.value;
-            this.element.placeholder = this.value;
+            this.updateFront(this.value);
         })
+
         .run(function(){
-            this.setTemplate = function(tpl){
-              this.template = tpl;
-              return this
+            this.setInputAttrs = function(attrs){
+                for (let [key, val] of Object.entries(attrs)){
+                    this.input.attr(key, val);
+                }
+                return this
             };
 
             this.setValueSanitizer = function(cb){
                 this.valueSanitizer = cb;
                 return this
             };
-            this.export('setTemplate', 'setValueSanitizer');
+            this.export('setInputAttrs', 'setValueSanitizer');
           })
+}
+
+function withLabel(conf = {}) {
+    return new pragmajs.Pragma()
+        // this.from(input(conf))
+        .run(function(){
+            this.setLabel = function(html){
+                this._label.html(html);
+                return this
+            };
+            
+            this.onExport(function(pragma){
+                pragma._label = _e('div.pragma-label', conf.label);
+                pragma.append(pragma._label);    
+            });
+            
+            this.export('setLabel');
+        })
 }
 
 const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
@@ -1421,6 +1521,8 @@ function lectorSettings(lector){
 
   const actions = {
     changeColor(hex=this.value){
+      modeComp.update(hex);
+      foveaComp.update(hex);
       lector.mark.setColor(hex);
     },
 
@@ -1472,36 +1574,42 @@ function lectorSettings(lector){
                   //})
 
   let foveaComp = pragmajs._p("!fovea")
-                  .from(slider({
-                    min: 2,
-                    max: 10,
-                    value: 5
-                  }))
-                  .addClass('slider')
-                  .do(actions.changeFovea);
+                  .run(slider)
+                  .import(withLabel)
+                  .setRange(2, 10)
+                  .setValue(5)
+                  .setLabel('fovea')
+                  .do(actions.changeFovea)
+                  .run(function(){
+                    this.update = function(bg){
+                      this._bar.css(`background-color ${bg}`);
+                    };
+                  });
 
 
   let modeComp = pragmajs._p('!mode')
                   .from(activeSelectTpl({
-                    options: modes$1
-                  }))
-                  .do(actions.changeMode);
-
-
-  let fontComp = pragmajs._p('!font')
-                  .run(function(){
-                    console.log(this.key);
-                  })
-                  .from(activeSelectTpl({
-                    options: fonts,
+                    options: modes$1,
                     optionTemplate: option => pragmajs._p(option)
-                              .html(option)
-                              .on('click').do(function(){
-                                this.parent.value = this.key;
-                              })
+                        .css(`width 35px;
+                              height 20px;
+                         `)
+                        .on('click').do(function(){
+                          this.parent.value = this.key;
+                        })
+                        .run(function(){
+                          this.update = bg => {
+                            mode_ify(this, option, bg);
+                            this.css('mix-blend-mode normal');  
+                          };
+                        })
                   }))
-                  .css(`flex-direction row`)
-                  .do(actions.changeFont);
+                  .run(function(){
+                    this.update = function(bg){
+                      this.children.forEach(child => child.update(bg));
+                    };
+                  })
+                  .do(actions.changeMode);
 
   let colorsComp = pragmajs._p('!color')
                   .from(activeSelectTpl({
@@ -1511,8 +1619,8 @@ function lectorSettings(lector){
                               .css(`
                                 width 25px
                                 height 25px
+                                border-radius 25px
                                 background-color ${option} 
-
                               `)
                               .on('click').do(function(){
                                 this.parent.value = this.key;
@@ -1521,25 +1629,51 @@ function lectorSettings(lector){
                   }))
                   .do(actions.changeColor);
 
+
+  let fontComp = pragmajs._p('!font')
+                  .run(function(){
+                    console.log(this.key);
+                  })
+                  .from(activeSelectTpl({
+                    options: fonts,
+                    optionTemplate: option => pragmajs._p(option)
+                              .html("Aa")
+                              .css(`font-family ${option}`)
+                              .on('click').do(function(){
+                                this.parent.value = this.key;
+                              })
+                  }))
+                  .css(`flex-direction row`)
+                  .do(actions.changeFont);
+
   let wpmComp = pragmajs._p("!wpm")
-                  .from(input())
-                  .setTemplate(
-                    v => `${v} wpm`
-                  )
+                  .import(input, withLabel)
+                  .addClass('settings-input')
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
+                  .setLabel('wpm')
                   .setRange(40, 4200)
                   .setValue(250)
                   .bind(shc.wpmPlus, function(){ this.value+=10; })
                   .bind(shc.wpmMinus, function(){ this.value-=10; })
                   .do(actions.changeWpm);
-
+  
   let pageComp = pragmajs._p("!page")
-                  .from(monitor())
-                  .setTemplate(
-                    p => `page [${p}]`
+                  .import(input, withLabel)
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
+                  .addClass('settings-input')
+                  .setValueSanitizer(
+                    v => parseInt(v)
                   )
+                  .setLabel('page')
                   .run(function(){
                     pragmajs.util.createChains(this, 'userEdit');
 
@@ -1549,6 +1683,12 @@ function lectorSettings(lector){
                     };
 
                     this.onUserEdit(actions.changePage);
+                  })
+                  .run(function(){
+                    this.onUserInput(val => {
+                      console.log(val);
+                      this.editValue(val);
+                    });
                   })
                   .setValue(1)
                   .bind(shc.pageNext, function(){
@@ -1613,16 +1753,20 @@ function lectorSettings(lector){
     'wpm': 420
   });
  
-
   return settings.pragmatize()
 }
+
+var css = {
+	"default": ".lector-settings{position:fixed;bottom:20px;left:20px;color:#f5f5f5;border-radius:5px;padding:20px 40px;transition:all .2s;background:rgba(35,35,35,.55);backdrop-filter:blur( 30.5px );-webkit-backdrop-filter:blur( 30.5px );border-radius:10px;border:1px solid rgba(255,255,255,.18)}#settingswrapper .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center;align-items:center}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:#f5f5f5}.pragma-input-text{font-family:Poppins,sans-serif;border-style:none;outline:0;color:#f5f5f5;background:#252525;border-radius:2px;margin:5px 10px;padding:4px 5px;text-align:center}"
+};
 
 // TODO add more default options
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
   experimental: false,
-  settings: false
+  settings: false,
+  defaultsStyles: true
 };
 
 const Mark = (lec) => {
@@ -1736,18 +1880,22 @@ const Reader = (l, options=default_options) => {
   
   lec.mark = Mark(lec);
   if (options.settings) lec.settings = lectorSettings(lec)
-                                          .css(`position fixed
-                                                bottom 20px
-                                                left 20px
-                                                color whitesmoke
-                                                border-radius 5px
-                                                padding 20px 40px
+                                          .addClass('lector-settings')
+                                          .css(`
+                                          position fixed
+                                          bottom 20px
+                                          width: 150px;
+                                          left 20px
+                                          color whitesmoke
+                                          border-radius 5px
+                                          padding 20px 40px
+                                          transition: all .2s
 
-                                                background: rgba( 35, 35, 35, 0.55 );
-                                                backdrop-filter: blur( 30.5px );
-                                                -webkit-backdrop-filter: blur( 30.5px );
-                                                border-radius: 10px;
-                                                border: 1px solid rgba( 255, 255, 255, 0.18 );
+                                          background: rgba( 35, 35, 35, 0.55 );
+                                          backdrop-filter: blur( 30.5px );
+                                          -webkit-backdrop-filter: blur( 30.5px );
+                                          border-radius: 10px;
+                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
                                                 `);
 
 
@@ -1797,6 +1945,11 @@ const Lector = (l, options=default_options) => {
 
   pragmajs.util.log("configuration appears to be a bit more complicated");
 
+  if (options.defaultStyles){
+    console.log('adding styles');
+    pragmajs.util.addStyles(css.default);
+  }
+
   if (options.experimental &&
       options.stream &&
       options.paginate &&
@@ -1837,6 +1990,60 @@ const Lector = (l, options=default_options) => {
 
   }
 };
+
+//util.addstyles(`
+
+  //.lector-settings {
+    //position fixed
+    //bottom 20px
+    //left 20px
+    //color whitesmoke
+    //border-radius 5px
+    //padding 20px 40px
+    //transition: all .2s
+
+    //background: rgba( 35, 35, 35, 0.55 );
+    //backdrop-filter: blur( 30.5px );
+    //-webkit-backdrop-filter: blur( 30.5px );
+    //border-radius: 10px;
+    //border: 1px solid rgba( 255, 255, 255, 0.18 );
+
+  //}
+
+  //#settingswrapper .pragma-input-element{
+
+    //display: flex;
+    //flex-direction: column;
+    //width: fit-content;
+    //justify-content: center;
+    //align-items: center;
+
+  //}
+
+  //.settings-input{
+    //display: flex;
+    //flex-direction: column;
+    //align-items: center;
+  //}
+  //.pragma-label{
+    //font-size: 12px;
+    //color: whitesmoke;
+  //}
+  //.pragma-input-text {
+    //font-family: 'poppins', sans-serif;
+
+     //border-style: none;
+     //outline: none;
+     //color: whitesmoke;
+     //background: #252525;
+     //border-radius: 2px;
+
+     //margin: 5px 10px;
+     //padding: 4px 5px;
+     //text-align: center;
+  //}
+//}
+//`)
 
 function globalify(){
   const attrs = {

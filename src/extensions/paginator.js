@@ -1,4 +1,4 @@
-import { Pragma, tpl, _e, util } from "pragmajs"
+import { Pragma, _e, util } from "pragmajs"
 import { scrollTo } from "../helpers/autoScroll"
 
 export function paginator(pageTemplate, conf={}){

@@ -3,13 +3,16 @@ import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark, LectorSettings } from "./pragmas/index"
 import * as _ext from "./extensions/index"
 
+import css from "./styles/main.json"
+
 
 // TODO add more default options
 const default_options = {
   wfy: true,
   pragmatizeOnCreate: true,
   experimental: false,
-  settings: false
+  settings: false,
+  defaultsStyles: true
 }
 
 const Mark = (lec) => {
@@ -123,18 +126,22 @@ export const Reader = (l, options=default_options) => {
   
   lec.mark = Mark(lec)
   if (options.settings) lec.settings = LectorSettings(lec)
-                                          .css(`position fixed
-                                                bottom 20px
-                                                left 20px
-                                                color whitesmoke
-                                                border-radius 5px
-                                                padding 20px 40px
+                                          .addClass('lector-settings')
+                                          .css(`
+                                          position fixed
+                                          bottom 20px
+                                          width: 150px;
+                                          left 20px
+                                          color whitesmoke
+                                          border-radius 5px
+                                          padding 20px 40px
+                                          transition: all .2s
 
-                                                background: rgba( 35, 35, 35, 0.55 );
-                                                backdrop-filter: blur( 30.5px );
-                                                -webkit-backdrop-filter: blur( 30.5px );
-                                                border-radius: 10px;
-                                                border: 1px solid rgba( 255, 255, 255, 0.18 );
+                                          background: rgba( 35, 35, 35, 0.55 );
+                                          backdrop-filter: blur( 30.5px );
+                                          -webkit-backdrop-filter: blur( 30.5px );
+                                          border-radius: 10px;
+                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
                                                 `)
 
 
@@ -184,6 +191,11 @@ export const Lector = (l, options=default_options) => {
 
   util.log("configuration appears to be a bit more complicated")
 
+  if (options.defaultStyles){
+    console.log('adding styles')
+    util.addStyles(css.default)
+  }
+
   if (options.experimental &&
       options.stream &&
       options.paginate &&
@@ -225,3 +237,56 @@ export const Lector = (l, options=default_options) => {
   }
 }
 
+//util.addstyles(`
+
+  //.lector-settings {
+    //position fixed
+    //bottom 20px
+    //left 20px
+    //color whitesmoke
+    //border-radius 5px
+    //padding 20px 40px
+    //transition: all .2s
+
+    //background: rgba( 35, 35, 35, 0.55 );
+    //backdrop-filter: blur( 30.5px );
+    //-webkit-backdrop-filter: blur( 30.5px );
+    //border-radius: 10px;
+    //border: 1px solid rgba( 255, 255, 255, 0.18 );
+
+  //}
+
+  //#settingswrapper .pragma-input-element{
+
+    //display: flex;
+    //flex-direction: column;
+    //width: fit-content;
+    //justify-content: center;
+    //align-items: center;
+
+  //}
+
+  //.settings-input{
+    //display: flex;
+    //flex-direction: column;
+    //align-items: center;
+  //}
+  //.pragma-label{
+    //font-size: 12px;
+    //color: whitesmoke;
+  //}
+  //.pragma-input-text {
+    //font-family: 'poppins', sans-serif;
+
+     //border-style: none;
+     //outline: none;
+     //color: whitesmoke;
+     //background: #252525;
+     //border-radius: 2px;
+
+     //margin: 5px 10px;
+     //padding: 4px 5px;
+     //text-align: center;
+  //}
+//}
+//`)

@@ -2,58 +2,77 @@ import { Pragma, util } from "pragmajs"
 export function input(conf = {}) {
     return new Pragma()
         .from(util.createTemplate(conf))
-        .run(function () {
-            this.as(`<input type='text'></input>`)
+        .run({
+            makeChains(){
+                util.createChains(this, 'userInput')
+            },
+            makeInput () {
+                this.input = _e(`<input type='text'></input>`)
+                    .addClass('pragma-input-text')
 
-            this.setValue = function(v){
-                console.log(this.valueSanitizer)
-                this.value = this.valueSanitizer ? this.valueSanitizer(v) : v
-                return this
-            }
+                this.setValue = function(v){
+                    let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v
 
-            //this.element.listenTo('input', function () {
-                
-                //// pragma.value = this.value
-                //// this.parent.value = parseInt(this.value)
-            //})
-            
-            this.element.listenTo('focus', function(){
-                console.log(this, 'has been focused')
-                this.parent._listenToEsc = document.addEventListener('keydown', k => {
-                    if (k.key === 'Enter'){
-                        this.blur()
+                    this.value = newVal
+
+                    if (this.value != newVal){
+                        this.updateFront()
                     }
+                    return this
+                }
+
+                this.input.listenTo('focus', function(){
+                    this.parent._listenToEsc = document.addEventListener('keydown', k => {
+                        if (k.key === 'Enter'){
+                            this.blur()
+                        }
+                    })
                 })
-            })
-            
-            this.element.listenTo('focusout', function(){
-                console.log(this, 'has lost focused')
-                console.log(this.value)
                 
-                this.parent.setValue(this.value)
-                document.removeEventListener('keydown', this.parent._listenToEsc)
-            })
+                this.input.listenTo('focusout', function(){
+                    this.parent.setValue(this.value)
+                    this.parent.userInputChain.exec(this.parent.value)
+                    document.removeEventListener('keydown', this.parent._listenToEsc)
+                })
 
+                this.export(
+                    'actionChain',
+                    'input',
+                    'setValue',
+                    'userInputChain',
+                    'onUserInput')
 
-            this.export('actionChain', 'elementDOM', 'setValue')
-            this.onExport(pragma => {
-                pragma.adopt(this.element)
-            })
+                this.onExport(pragma => {
+                    // pragma.adopt(this.input)
+                    pragma.adopt(this.input)
+                    pragma.append(this.input)
+                })
+            },
+        
+            extend(){
+                this.updateFront = function(val=this.value){
+                    this.input.value = val
+                    this.input.placeholder = val
+                }
+                this.export('updateFront')
+            }
         })
         .do(function(){
-            this.element.value = this.value
-            this.element.placeholder = this.value
+            this.updateFront(this.value)
         })
+
         .run(function(){
-            this.setTemplate = function(tpl){
-              this.template = tpl
-              return this
+            this.setInputAttrs = function(attrs){
+                for (let [key, val] of Object.entries(attrs)){
+                    this.input.attr(key, val)
+                }
+                return this
             }
 
             this.setValueSanitizer = function(cb){
                 this.valueSanitizer = cb
                 return this
             }
-            this.export('setTemplate', 'setValueSanitizer')
+            this.export('setInputAttrs', 'setValueSanitizer')
           })
 }

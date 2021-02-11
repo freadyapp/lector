@@ -2536,6 +2536,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/plugin-json@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@rollup/plugin-json@npm:4.1.0"
+  dependencies:
+    "@rollup/pluginutils": ^3.0.8
+  peerDependencies:
+    rollup: ^1.20.0 || ^2.0.0
+  checksum: 07bc6bc83d07aefd35278e4e1a125e65210061b3dcab50c0f01273c54f43a60a3e01c1a0fed451e35d592ef1cbc8288ec8148a6229cf8cca9cdbf11a6d2d7d1c
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-node-resolve@npm:^11.0.1":
   version: 11.0.1
   resolution: "@rollup/plugin-node-resolve@npm:11.0.1"
@@ -2552,7 +2563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/pluginutils@npm:^3.1.0":
+"@rollup/pluginutils@npm:^3.0.8, @rollup/pluginutils@npm:^3.1.0":
   version: 3.1.0
   resolution: "@rollup/pluginutils@npm:3.1.0"
   dependencies:
@@ -6679,6 +6690,7 @@ fsevents@~2.3.1:
     "@babel/core": ^7.12.3
     "@babel/preset-env": ^7.12.1
     "@rollup/plugin-commonjs": ^17.0.0
+    "@rollup/plugin-json": ^4.1.0
     "@rollup/plugin-node-resolve": ^11.0.1
     "@types/jquery": ^3.5.4
     animejs: ^3.2.1
@@ -6694,6 +6706,7 @@ fsevents@~2.3.1:
     mousetrap: ^1.6.5
     pragmajs: latest
     rollup: ^2.36.1
+    rollup-plugin-execute: ^1.1.1
     rollup-plugin-sizes: ^1.0.3
     rollup-plugin-terser: ^7.0.2
     rollup-plugin-visualizer: ^4.2.0
@@ -8294,6 +8307,13 @@ fsevents@~2.3.1:
   bin:
     rimraf: bin.js
   checksum: f0de3e445581e64a8a077af476cc30708e659f5779ec2ca2a161556d0792aa318a685923798ae22055b4ecd02b9aff444ef619578f7af53cf8e0e248031e3dee
+  languageName: node
+  linkType: hard
+
+"rollup-plugin-execute@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "rollup-plugin-execute@npm:1.1.1"
+  checksum: 72043bbd61bea5f7c3ad8e597f75be691d6ec99e62be7ca55b897cf58323ce5ecf0e16622f567718b927e37f107e6204c7c1d6836c2f756bd2a1a64847e9b976
   languageName: node
   linkType: hard
 

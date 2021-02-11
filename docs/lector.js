@@ -40,7 +40,7 @@ let lectorSettings = {
    wfy: true,
    loop: false,
    autostart: false,
-
+   defaultStyles: true,
    pragmatizeOnCreate: true,
    experimental: true,
 
