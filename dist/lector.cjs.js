@@ -1261,48 +1261,16 @@ const select = (conf) => _p()
       this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
     });
 
-pragmajs.util.addStyles(`
-    .pragma-slider {
-      user-select: none;      
-      cursor: grab;
-    }
+var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:#2525259c;border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.glass-block-border,.lector-settings{background:rgba(35,35,35,0.55);backdrop-filter:blur(30.5px);-webkit-backdrop-filter:blur(30.5px);border-radius:10px}.glass-block-border,.lector-settings{border:1px solid rgba(255,255,255,0.18)}.lector-settings{position:fixed;bottom:20px;left:20px;color:whitesmoke;border-radius:5px;padding:20px 40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}#settingswrapper .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center;align-items:center}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:4px 5px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1}.active-select-template .inactive{opacity:.5}";
+var css = {
+	slider: slider,
+	main: main
+};
+
+pragmajs.util.addStyles(css.slider);
   
-    .pragma-slider:active {
-      cursor: grabbing;
-    }
-
-    .pragma-slider-bg {
-      width: 100%;
-      height: 8px;
-      background: #2525259c;
-      border-radius: 15px;
-    }
-
-    .pragma-slider-bar {
-      height: 100%;
-      width: 25%;
-      background: #0074D9;
-      position: relative;
-      transition: all .05s ease;
-      border-radius: 15px;
-    }
-
-    .pragma-slider-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 25px;
-
-      background: #f1f1f1;
-      transition: all .05s ease;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      bottom: 50%;
-      margin: auto;
-    }
-  `);
-  
-function slider(conf={}){
+function slider$1(conf={}){
   
   
   this._n = function(){ 
@@ -1478,34 +1446,25 @@ var shc = {
   pagePre: '['
 };
 
-function cssOption(self, key){
-  self.find(key).css('cursor pointer');
-}
 function activate(self, key){
-  self.find(key).css('opacity 1'); 
+  self.find(key).addClass('active')
+                .removeClass('inactive');
 }
 
 function deactivate(self, key){
-  self.find(key).css('opacity .7'); 
+  self.find(key).removeClass('active')
+                .addClass('inactive');
 }
 
 const activeSelectTpl = (conf={}) => pragmajs._p()
   .from(select(pragmajs.util.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el);
-      cssOption(self, el.key);
+      el.addClass('option');
       deactivate(self, el.key);
     }
   }, conf)))
-  .css(`
-    display flex
-    flex-direction row
-    flex-wrap no wrap
-    justify-content space-around
-    align-items center
-    width 100%
-    padding 10px
-  `)
+  .addClass('active-select-template')
   .do(function(){
     if (this.value === this._lv) return
     activate(this, this.value);
@@ -1574,7 +1533,7 @@ function lectorSettings(lector){
                   //})
 
   let foveaComp = pragmajs._p("!fovea")
-                  .run(slider)
+                  .run(slider$1)
                   .import(withLabel)
                   .setRange(2, 10)
                   .setValue(5)
@@ -1774,10 +1733,6 @@ function lectorSettings(lector){
   return settings.pragmatize()
 }
 
-var css = {
-	"default": ".lector-settings{position:fixed;bottom:20px;left:20px;color:#f5f5f5;border-radius:5px;padding:20px 40px;transition:all .2s;background:rgba(35,35,35,.55);backdrop-filter:blur( 30.5px );-webkit-backdrop-filter:blur( 30.5px );border-radius:10px;border:1px solid rgba(255,255,255,.18)}#settingswrapper .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center;align-items:center}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:#f5f5f5}.pragma-input-text{font-family:Poppins,sans-serif;border-style:none;outline:0;color:#f5f5f5;background:#252525;border-radius:2px;margin:5px 10px;padding:4px 5px;text-align:center}"
-};
-
 // TODO add more default options
 const default_options = {
   wfy: true,
@@ -1897,24 +1852,8 @@ const Reader = (l, options=default_options) => {
               .connectTo(w);
   
   lec.mark = Mark(lec);
-  if (options.settings) lec.settings = lectorSettings(lec).addClass('lector-settings')
-                                          .css(`
-                                          position fixed
-                                          bottom 20px
-                                          width: 150px;
-                                          left 20px
-                                          color whitesmoke
-                                          border-radius 5px
-                                          padding 20px 40px
-                                          transition: all .2s
-
-                                          background: rgba( 35, 35, 35, 0.55 );
-                                          backdrop-filter: blur( 30.5px );
-                                          -webkit-backdrop-filter: blur( 30.5px );
-                                          border-radius: 10px;
-                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
-                                                `);
-                                          
+  if (options.settings) lec.settings = lectorSettings(lec)
+                                  .addClass('lector-settings');
 
 
   function bindKeys(){
@@ -1964,8 +1903,8 @@ const Lector = (l, options=default_options) => {
   pragmajs.util.log("configuration appears to be a bit more complicated");
 
   if (options.defaultStyles){
-    console.log('adding styles');
-    pragmajs.util.addStyles(css.default);
+    console.log('adding styles', css.main);
+    pragmajs.util.addStyles(css.main);
   }
 
   if (options.experimental &&

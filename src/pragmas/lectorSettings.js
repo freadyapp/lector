@@ -5,34 +5,25 @@ import { colors, fonts, modes } from "../config/marker.config"
 import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
-function cssOption(self, key){
-  self.find(key).css('cursor pointer')
-}
 function activate(self, key){
-  self.find(key).css('opacity 1') 
+  self.find(key).addClass('active')
+                .removeClass('inactive')
 }
 
 function deactivate(self, key){
-  self.find(key).css('opacity .7') 
+  self.find(key).removeClass('active')
+                .addClass('inactive')
 }
 
 const activeSelectTpl = (conf={}) => _p()
   .from(select(util.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el)
-      cssOption(self, el.key)
+      el.addClass('option')
       deactivate(self, el.key)
     }
   }, conf)))
-  .css(`
-    display flex
-    flex-direction row
-    flex-wrap no wrap
-    justify-content space-around
-    align-items center
-    width 100%
-    padding 10px
-  `)
+  .addClass('active-select-template')
   .do(function(){
     if (this.value === this._lv) return
     activate(this, this.value)

@@ -1,45 +1,7 @@
 import { Pragma, util } from "pragmajs"
+import css from "../styles/styles.json"
 
-util.addStyles(`
-    .pragma-slider {
-      user-select: none;      
-      cursor: grab;
-    }
-  
-    .pragma-slider:active {
-      cursor: grabbing;
-    }
-
-    .pragma-slider-bg {
-      width: 100%;
-      height: 8px;
-      background: #2525259c;
-      border-radius: 15px;
-    }
-
-    .pragma-slider-bar {
-      height: 100%;
-      width: 25%;
-      background: #0074D9;
-      position: relative;
-      transition: all .05s ease;
-      border-radius: 15px;
-    }
-
-    .pragma-slider-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 25px;
-
-      background: #f1f1f1;
-      transition: all .05s ease;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      bottom: 50%;
-      margin: auto;
-    }
-  `)
+util.addStyles(css.slider)
   
 export function slider(conf={}){
   

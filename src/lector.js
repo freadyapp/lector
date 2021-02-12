@@ -3,7 +3,7 @@ import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark, LectorSettings } from "./pragmas/index"
 import * as _ext from "./extensions/index"
 
-import css from "./styles/main.json"
+import css from "./styles/styles.json"
 
 
 // TODO add more default options
@@ -125,24 +125,8 @@ export const Reader = (l, options=default_options) => {
               .connectTo(w)
   
   lec.mark = Mark(lec)
-  if (options.settings) lec.settings = LectorSettings(lec).addClass('lector-settings')
-                                          .css(`
-                                          position fixed
-                                          bottom 20px
-                                          width: 150px;
-                                          left 20px
-                                          color whitesmoke
-                                          border-radius 5px
-                                          padding 20px 40px
-                                          transition: all .2s
-
-                                          background: rgba( 35, 35, 35, 0.55 );
-                                          backdrop-filter: blur( 30.5px );
-                                          -webkit-backdrop-filter: blur( 30.5px );
-                                          border-radius: 10px;
-                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
-                                                `)
-                                          
+  if (options.settings) lec.settings = LectorSettings(lec)
+                                  .addClass('lector-settings')
 
 
   function bindKeys(){
@@ -192,8 +176,8 @@ export const Lector = (l, options=default_options) => {
   util.log("configuration appears to be a bit more complicated")
 
   if (options.defaultStyles){
-    console.log('adding styles')
-    util.addStyles(css.default)
+    console.log('adding styles', css.main)
+    util.addStyles(css.main)
   }
 
   if (options.experimental &&

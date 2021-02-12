@@ -49,7 +49,6 @@ import pkg from './package.json';
 
 const plugs = [
   // terser(), // mini
-  //execute('say fuck'),
   sizes(),
   json(),
   visualizer({
@@ -87,3 +86,4 @@ export default [
     ].concat(plugs)
   }
 ]
+
