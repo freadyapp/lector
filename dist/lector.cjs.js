@@ -1261,8 +1261,8 @@ const select = (conf) => _p()
       this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
     });
 
-var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:#2525259c;border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.glass-block-border,.lector-settings{background:rgba(35,35,35,0.55);backdrop-filter:blur(30.5px);-webkit-backdrop-filter:blur(30.5px);border-radius:10px}.glass-block-border,.lector-settings{border:1px solid rgba(255,255,255,0.18)}.lector-settings{position:fixed;bottom:20px;left:20px;color:whitesmoke;border-radius:5px;padding:20px 40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}#settingswrapper .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center;align-items:center}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:4px 5px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1}.active-select-template .inactive{opacity:.5}";
+var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(30.5px);-webkit-backdrop-filter:blur(30.5px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:0;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:10px 0}.lector-settings #fovea{height:fit-content;padding:10px}.lector-mini-settings{right:0;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
 var css = {
 	slider: slider,
 	main: main
@@ -1507,7 +1507,7 @@ function lectorSettings(lector){
   };
 
   let settings = pragmajs._p("settingsWrapper")
-                  .addClass("items-center")
+                  .addClass("items-center", 'lector-settings')
                   .run(function(){
                     this.value = {};
 
@@ -1533,11 +1533,12 @@ function lectorSettings(lector){
                   //})
 
   let foveaComp = pragmajs._p("!fovea")
+                  .addClass('section')
                   .run(slider$1)
                   .import(withLabel)
                   .setRange(2, 10)
                   .setValue(5)
-                  .setLabel('fovea')
+                  // .setLabel('fovea')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
@@ -1568,6 +1569,7 @@ function lectorSettings(lector){
                       this.children.forEach(child => child.update(bg));
                     };
                   })
+                  .addClass('section')
                   .do(actions.changeMode);
 
   let colorsComp = pragmajs._p('!color')
@@ -1586,6 +1588,7 @@ function lectorSettings(lector){
                               })
                     }
                   }))
+                  .addClass('section')
                   .do(actions.changeColor);
 
 
@@ -1603,11 +1606,12 @@ function lectorSettings(lector){
                               })
                   }))
                   .css(`flex-direction row`)
+                  .addClass('section')
                   .do(actions.changeFont);
 
   let wpmComp = pragmajs._p("!wpm")
                   .import(input, withLabel)
-                  .addClass('settings-input')
+                  .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -1628,7 +1632,7 @@ function lectorSettings(lector){
                     maxlength: 4,
                     size: 4
                   })
-                  .addClass('settings-input')
+                  .addClass('settings-input', 'section')
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
@@ -1667,25 +1671,16 @@ function lectorSettings(lector){
     //})
   //})
   let miniSettings = pragmajs._p('mini-settings')
-                      .css(`
-                                          position fixed
-                                          bottom 20px
-                                          width: fit-content;
-                                          right 20px
-                                          color whitesmoke
-                                          border-radius 5px
-                                          padding 20px 40px
-                                          transition: all .2s
-
-                                          background: rgba( 35, 35, 35, 0.55 );
-                                          backdrop-filter: blur( 30.5px );
-                                          -webkit-backdrop-filter: blur( 30.5px );
-                                          border-radius: 10px;
-                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
-`).contain(pageComp).pragmatize();
+                      .addClass('lector-mini-settings')
+                      .contain(pageComp)
+                      .pragmatize();
   
   let popUpSettings = pragmajs._p("popupsettings")
-        .contain(colorsComp, fontComp, foveaComp, modeComp)
+        .contain(
+          fontComp.setId('font'), 
+          colorsComp.setId('color'), 
+          modeComp.setId('mode'),
+          foveaComp.setId('fovea'),) 
         .run(function(){
           this.show = function(){
             this.hidden = false;
@@ -1852,8 +1847,7 @@ const Reader = (l, options=default_options) => {
               .connectTo(w);
   
   lec.mark = Mark(lec);
-  if (options.settings) lec.settings = lectorSettings(lec)
-                                  .addClass('lector-settings');
+  if (options.settings) lec.settings = lectorSettings(lec);
 
 
   function bindKeys(){

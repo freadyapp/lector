@@ -76,7 +76,7 @@ export default function lectorSettings(lector){
   }
 
   let settings = _p("settingsWrapper")
-                  .addClass("items-center")
+                  .addClass("items-center", 'lector-settings')
                   .run(function(){
                     this.value = {}
 
@@ -102,11 +102,12 @@ export default function lectorSettings(lector){
                   //})
 
   let foveaComp = _p("!fovea")
+                  .addClass('section')
                   .run(slider)
                   .import(withLabel)
                   .setRange(2, 10)
                   .setValue(5)
-                  .setLabel('fovea')
+                  // .setLabel('fovea')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
@@ -137,6 +138,7 @@ export default function lectorSettings(lector){
                       this.children.forEach(child => child.update(bg))
                     }
                   })
+                  .addClass('section')
                   .do(actions.changeMode)
 
   let colorsComp = _p('!color')
@@ -155,6 +157,7 @@ export default function lectorSettings(lector){
                               })
                     }
                   }))
+                  .addClass('section')
                   .do(actions.changeColor)
 
 
@@ -172,11 +175,12 @@ export default function lectorSettings(lector){
                               })
                   }))
                   .css(`flex-direction row`)
+                  .addClass('section')
                   .do(actions.changeFont)
 
   let wpmComp = _p("!wpm")
                   .import(input, withLabel)
-                  .addClass('settings-input')
+                  .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -197,7 +201,7 @@ export default function lectorSettings(lector){
                     maxlength: 4,
                     size: 4
                   })
-                  .addClass('settings-input')
+                  .addClass('settings-input', 'section')
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
@@ -236,25 +240,16 @@ export default function lectorSettings(lector){
     //})
   //})
   let miniSettings = _p('mini-settings')
-                      .css(`
-                                          position fixed
-                                          bottom 20px
-                                          width: fit-content;
-                                          right 20px
-                                          color whitesmoke
-                                          border-radius 5px
-                                          padding 20px 40px
-                                          transition: all .2s
-
-                                          background: rgba( 35, 35, 35, 0.55 );
-                                          backdrop-filter: blur( 30.5px );
-                                          -webkit-backdrop-filter: blur( 30.5px );
-                                          border-radius: 10px;
-                                          border: 1px solid rgba( 255, 255, 255, 0.18 );
-`).contain(pageComp).pragmatize()
+                      .addClass('lector-mini-settings')
+                      .contain(pageComp)
+                      .pragmatize()
   
   let popUpSettings = _p("popupsettings")
-        .contain(colorsComp, fontComp, foveaComp, modeComp)
+        .contain(
+          fontComp.setId('font'), 
+          colorsComp.setId('color'), 
+          modeComp.setId('mode'),
+          foveaComp.setId('fovea'),) 
         .run(function(){
           this.show = function(){
             this.hidden = false

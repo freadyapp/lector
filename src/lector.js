@@ -126,7 +126,6 @@ export const Reader = (l, options=default_options) => {
   
   lec.mark = Mark(lec)
   if (options.settings) lec.settings = LectorSettings(lec)
-                                  .addClass('lector-settings')
 
 
   function bindKeys(){
