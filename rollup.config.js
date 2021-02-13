@@ -48,7 +48,7 @@ import execute from 'rollup-plugin-execute'
 import pkg from './package.json';
 
 const plugs = [
-  // terser(), // mini
+  terser(), // mini
   sizes(),
   json(),
   visualizer({

@@ -55,11 +55,11 @@ export default function lectorSettings(lector){
   // let icons = new IconBuilder()
   // icons.default.fill = "white"
 
-  const tippyOption = {
-                        theme: 'lector-settings',
-                        arrow: false,
-                        hideOnClick: false
-                      }
+  //const tippyOption = {
+                        //theme: 'lector-settings',
+                        //arrow: false,
+                        //hideOnClick: false
+                      //}
   //
   // let foveaComp = Slider.value("markerfovea", 1, 10)
   //     .bind(">", (comp) => { comp.value+=1 }, 'keyup')
@@ -318,7 +318,7 @@ export default function lectorSettings(lector){
       // this.css('opacity 0')
     })
     .onActive(function(){
-      this.elements.forEach(elemenet => element.css('opacity 1'))
+      this.elements.forEach(element => element.css('opacity 1'))
     })
   
   settings.fader = fader
