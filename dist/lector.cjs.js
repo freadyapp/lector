@@ -1262,7 +1262,7 @@ const select = (conf) => _p()
     });
 
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(30.5px);-webkit-backdrop-filter:blur(30.5px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:0;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:10px 0}.lector-settings #fovea{height:fit-content;padding:10px}.lector-mini-settings{right:0;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:0;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:10px 0}.lector-settings #fovea{height:fit-content;padding:10px}.lector-mini-settings{right:0;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
 var css = {
 	slider: slider,
 	main: main
@@ -1323,9 +1323,8 @@ function slider$1(conf={}){
   document.addEventListener("mousemove", yx => {
     if (this._input._clicked && !ticking) {
       window.requestAnimationFrame(() => {
-        //doSomething(last_known_scroll_position);
         ticking = false;
-        let w = yx.screenX-this._input.offset().left;
+        let w = yx.pageX-this._input.offset().left;
         let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100);
         this._clipValue(wp);
       });
@@ -1417,21 +1416,51 @@ function input(conf = {}) {
 }
 
 function withLabel(conf = {}) {
-    return new pragmajs.Pragma()
-        // this.from(input(conf))
-        .run(function(){
-            this.setLabel = function(html){
-                this._label.html(html);
-                return this
-            };
-            
-            this.onExport(function(pragma){
-                pragma._label = _e('div.pragma-label', conf.label);
-                pragma.append(pragma._label);    
-            });
-            
-            this.export('setLabel');
-        })
+    this.setLabel = function(html){
+        this._label.html(html);
+        return this
+    };
+    
+    this._label = _e('div.pragma-label', conf.label);
+    this.append(this._label);    
+}
+
+function _createIdler(timeout, afk, active) {
+    let _idler = new Idle(timeout)
+      .onAfk(()=> {
+        console.log('user is afk');
+        if (afk) afk();
+        // this.shout()
+      })
+      .onActive(() => {
+        console.log('user is back');
+        if (active) active();
+        // this.shutUp()
+    });
+    return _idler
+}
+
+function idler(){
+    pragmajs.util.createChains(this, 'idle', 'active');
+
+    this.setIdleTime = function(time=5000){
+        this._idler = _createIdler(time, () => {
+            this.idleChain.exec();
+        }, () => {
+            this.activeChain.exec();
+        });
+        return this
+    };
+    
+    this.extend('onIdle', function(){
+        this._onIdle(...arguments);
+        return this
+    });
+
+    this.extend('onActive', function(){
+        this._onActive(...arguments);
+        return this
+    });
 }
 
 const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
@@ -1508,6 +1537,7 @@ function lectorSettings(lector){
 
   let settings = pragmajs._p("settingsWrapper")
                   .addClass("items-center", 'lector-settings')
+
                   .run(function(){
                     this.value = {};
 
@@ -1534,11 +1564,11 @@ function lectorSettings(lector){
 
   let foveaComp = pragmajs._p("!fovea")
                   .addClass('section')
-                  .run(slider$1)
-                  .import(withLabel)
+                  .run(slider$1, withLabel) // label
+                  // .import(withLabel)
                   .setRange(2, 10)
                   .setValue(5)
-                  // .setLabel('fovea')
+                  .setLabel('fovea')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
@@ -1610,7 +1640,8 @@ function lectorSettings(lector){
                   .do(actions.changeFont);
 
   let wpmComp = pragmajs._p("!wpm")
-                  .import(input, withLabel)
+                  .import(input)
+                  .run(withLabel)
                   .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
@@ -1627,7 +1658,8 @@ function lectorSettings(lector){
                   .do(actions.changeWpm);
   
   let pageComp = pragmajs._p("!page")
-                  .import(input, withLabel)
+                  .import(input)
+                  .run(withLabel)
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -1671,9 +1703,9 @@ function lectorSettings(lector){
     //})
   //})
   let miniSettings = pragmajs._p('mini-settings')
-                      .addClass('lector-mini-settings')
-                      .contain(pageComp)
-                      .pragmatize();
+    .addClass('lector-mini-settings')
+    .contain(pageComp)
+    .pragmatize();
   
   let popUpSettings = pragmajs._p("popupsettings")
         .contain(
@@ -1697,12 +1729,34 @@ function lectorSettings(lector){
           this.show();
         })
         .bind("h", function() { this.toggle(); });
-
+// 
 // pageComp
   settings.contain(popUpSettings, wpmComp);
   settings.adopt(miniSettings);
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
+
+  let fader = pragmajs._p('fader')
+    .run(idler, function(){
+      this.elements = [];
+      this.include =function(){
+        this.elements = this.elements.concat(Array.from(arguments));
+        return this
+      };
+    })
+    .setIdleTime(3000)
+    .include(settings, miniSettings)
+    .onIdle(function(){
+      this.elements.forEach(element => {
+        console.log(element);
+        element.css('opacity 0');
+      });
+      // this.css('opacity 0')
+    })
+    .onActive(function(){
+      this.elements.forEach(child => child.css('opacity 1'));
+    });
+
 
 
   settings.allChildren.forEach(child => {

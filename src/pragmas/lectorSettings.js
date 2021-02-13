@@ -1,5 +1,5 @@
 import { _p, util } from "pragmajs"
-import { select, monitor, slider, input, withLabel } from "../extensions/index"
+import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
 import { colors, fonts, modes } from "../config/marker.config"
 import { mode_ify } from "../config/modes.js"
@@ -77,6 +77,7 @@ export default function lectorSettings(lector){
 
   let settings = _p("settingsWrapper")
                   .addClass("items-center", 'lector-settings')
+
                   .run(function(){
                     this.value = {}
 
@@ -103,11 +104,11 @@ export default function lectorSettings(lector){
 
   let foveaComp = _p("!fovea")
                   .addClass('section')
-                  .run(slider)
-                  .import(withLabel)
+                  .run(slider, withLabel) // label
+                  // .import(withLabel)
                   .setRange(2, 10)
                   .setValue(5)
-                  // .setLabel('fovea')
+                  .setLabel('fovea')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
@@ -179,7 +180,8 @@ export default function lectorSettings(lector){
                   .do(actions.changeFont)
 
   let wpmComp = _p("!wpm")
-                  .import(input, withLabel)
+                  .import(input)
+                  .run(withLabel)
                   .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
@@ -196,7 +198,8 @@ export default function lectorSettings(lector){
                   .do(actions.changeWpm)
   
   let pageComp = _p("!page")
-                  .import(input, withLabel)
+                  .import(input)
+                  .run(withLabel)
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -240,9 +243,9 @@ export default function lectorSettings(lector){
     //})
   //})
   let miniSettings = _p('mini-settings')
-                      .addClass('lector-mini-settings')
-                      .contain(pageComp)
-                      .pragmatize()
+    .addClass('lector-mini-settings')
+    .contain(pageComp)
+    .pragmatize()
   
   let popUpSettings = _p("popupsettings")
         .contain(
@@ -266,12 +269,34 @@ export default function lectorSettings(lector){
           this.show()
         })
         .bind("h", function() { this.toggle() })
-
+// 
 // pageComp
   settings.contain(popUpSettings, wpmComp)
   settings.adopt(miniSettings)
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
+
+  let fader = _p('fader')
+    .run(idler, function(){
+      this.elements = []
+      this.include =function(){
+        this.elements = this.elements.concat(Array.from(arguments))
+        return this
+      }
+    })
+    .setIdleTime(3000)
+    .include(settings, miniSettings)
+    .onIdle(function(){
+      this.elements.forEach(element => {
+        console.log(element)
+        element.css('opacity 0')
+      })
+      // this.css('opacity 0')
+    })
+    .onActive(function(){
+      this.elements.forEach(child => child.css('opacity 1'))
+    })
+
 
 
   settings.allChildren.forEach(child => {

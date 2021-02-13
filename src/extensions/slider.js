@@ -56,9 +56,8 @@ export function slider(conf={}){
   document.addEventListener("mousemove", yx => {
     if (this._input._clicked && !ticking) {
       window.requestAnimationFrame(() => {
-        //doSomething(last_known_scroll_position);
-        ticking = false;
-        let w = yx.screenX-this._input.offset().left
+        ticking = false
+        let w = yx.pageX-this._input.offset().left
         let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100)
         this._clipValue(wp)
       })
