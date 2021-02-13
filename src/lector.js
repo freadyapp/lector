@@ -176,8 +176,11 @@ export const Lector = (l, options=default_options) => {
   util.log("configuration appears to be a bit more complicated")
 
   if (options.defaultStyles){
-    console.log('adding styles', css.main)
     util.addStyles(css.main)
+  }
+
+  if (options.fullStyles){
+    util.addStyles(css.full)
   }
 
   if (options.experimental &&
@@ -212,65 +215,5 @@ export const Lector = (l, options=default_options) => {
     paginator.fill()
     return lector
 
-    //streamer.wireTo(paginator) // when paginator changes value, change value of streamer as well
-
-    //streamer.do(function(){
-      //console.log(`fetching page [${this.value}]`)
-    //})
-
   }
 }
-
-//util.addstyles(`
-
-  //.lector-settings {
-    //position fixed
-    //bottom 20px
-    //left 20px
-    //color whitesmoke
-    //border-radius 5px
-    //padding 20px 40px
-    //transition: all .2s
-
-    //background: rgba( 35, 35, 35, 0.55 );
-    //backdrop-filter: blur( 30.5px );
-    //-webkit-backdrop-filter: blur( 30.5px );
-    //border-radius: 10px;
-    //border: 1px solid rgba( 255, 255, 255, 0.18 );
-
-  //}
-
-  //#settingswrapper .pragma-input-element{
-
-    //display: flex;
-    //flex-direction: column;
-    //width: fit-content;
-    //justify-content: center;
-    //align-items: center;
-
-  //}
-
-  //.settings-input{
-    //display: flex;
-    //flex-direction: column;
-    //align-items: center;
-  //}
-  //.pragma-label{
-    //font-size: 12px;
-    //color: whitesmoke;
-  //}
-  //.pragma-input-text {
-    //font-family: 'poppins', sans-serif;
-
-     //border-style: none;
-     //outline: none;
-     //color: whitesmoke;
-     //background: #252525;
-     //border-radius: 2px;
-
-     //margin: 5px 10px;
-     //padding: 4px 5px;
-     //text-align: center;
-  //}
-//}
-//`)

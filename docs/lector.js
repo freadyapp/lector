@@ -40,10 +40,12 @@ let lectorSettings = {
    wfy: true,
    loop: false,
    autostart: false,
+
    defaultStyles: true,
+   fullStyles: true,
+
    pragmatizeOnCreate: true,
    experimental: true,
-
    settings: true,
    stream: fetchContent,
     // function with index as param that
