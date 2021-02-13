@@ -650,7 +650,6 @@ const modes = {
       background: -moz-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
       background: -webkit-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
       background: linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
     `
 };
 
@@ -1773,16 +1772,15 @@ function lectorSettings(lector){
     .include(settings, miniSettings)
     .onIdle(function(){
       this.elements.forEach(element => {
-        console.log(element);
         element.css('opacity 0');
       });
       // this.css('opacity 0')
     })
     .onActive(function(){
-      this.elements.forEach(child => child.css('opacity 1'));
+      this.elements.forEach(elemenet => element.css('opacity 1'));
     });
-
-
+  
+  settings.fader = fader;
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
