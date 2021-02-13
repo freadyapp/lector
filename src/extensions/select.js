@@ -1,4 +1,4 @@
-import { util } from "pragmajs"
+import { util, _p } from "pragmajs"
 
 const defaults = {
   onOptionCreate: function(self, option){

@@ -198,7 +198,7 @@ export default class PragmaMark extends Pragma {
       *
       * */
 
-    if (!word instanceof Pragma) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+    if (!(word instanceof Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
     if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
     if (word.isFirstInLine) return 500 // mark has to change line
     if (!this.last_marked) return 0 // failsafe

@@ -15026,6 +15026,8 @@
       }
 
       return sib
+
+      // return this.parent ? this.parent.get(this.index + n) : null
     }
 
     get next() {
@@ -15366,7 +15368,7 @@
         *
         * */
 
-      if (!word instanceof N) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+      if (!(word instanceof N)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
       if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
       if (word.isFirstInLine) return 500 // mark has to change line
       if (!this.last_marked) return 0 // failsafe
@@ -15725,7 +15727,7 @@
       self.contain(option);
     },
     optionTemplate: function(option){
-        return _p(option)
+        return W(option)
                 .html(option)
                 .addClass('pragma-click')
                 .on('click').do(function(){
@@ -15735,7 +15737,7 @@
   };  
 
 
-  const select = (conf) => _p()
+  const select = (conf) => W()
       //.from(util.createTemplate())
       .run(function(){
         let options = conf.options;
@@ -15797,11 +15799,11 @@
       //console.log(this.value)
     };
     
-    this._input = _e('div.').addClass('pragma-slider-bg');
-    this._bar = _e('div.')
+    this._input = j('div.').addClass('pragma-slider-bg');
+    this._bar = j('div.')
       .addClass('pragma-slider-bar');
     
-    this._thumb = _e('div.pragma-slider-thumb');
+    this._thumb = j('div.pragma-slider-thumb');
     this._bar.append(this._thumb);
 
     this._input.append(this._bar);
@@ -15845,7 +15847,7 @@
                   E.createChains(this, 'userInput');
               },
               makeInput () {
-                  this.input = _e(`<input type='text'></input>`)
+                  this.input = j(`<input type='text'></input>`)
                       .addClass('pragma-input-text');
 
                   this.setValue = function(v){
@@ -15922,7 +15924,7 @@
           return this
       };
       
-      this._label = _e('div.pragma-label', conf.label);
+      this._label = j('div.pragma-label', conf.label);
       this.append(this._label);    
   }
 

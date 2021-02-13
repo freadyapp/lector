@@ -1,4 +1,4 @@
-import { Pragma, util } from "pragmajs"
+import { Pragma, util, _e } from "pragmajs"
 export function input(conf = {}) {
     return new Pragma()
         .from(util.createTemplate(conf))

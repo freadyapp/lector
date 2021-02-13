@@ -1,11 +1,11 @@
-import { Pragma, _e as _e$1, util, _p as _p$1, runAsync, _thread } from 'pragmajs';
+import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import nlp from 'compromise';
 
 function elementify(el){
   // pipeline to vanillafy pragma objects to html elements
   if (el instanceof Pragma) el = el.element;
-  if (!el.isPragmaElement) el = _e$1(el);
+  if (!el.isPragmaElement) el = _e(el);
   return el
 }
 
@@ -259,7 +259,7 @@ function doMap(map){
 
 function wfyInner(desc){
   if (!desc) return false
-  desc = _e$1(desc);
+  desc = _e(desc);
   let txt = desc.textContent;
   let inner = "";
   for (let txt of desc.textContent.split(" ")){
@@ -273,7 +273,7 @@ function wfyInner(desc){
 }
 
 function wfyElement(element){
-  element = _e$1(element);
+  element = _e(element);
   let nodes = element.findAll("*");
   if (nodes.length == 0) return wfyInner(wfyInner(element))
   nodes.forEach(desc => wfyElement(desc));
@@ -281,7 +281,7 @@ function wfyElement(element){
 
 function wfy(element){
   // console.log(`wfying ${JSON.stringify(element)}`)
-  element = _e$1(element);
+  element = _e(element);
   // if (element.textContent.replaceAll(" ", "").length<1) return false
   let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
   if (txtNodes.length==0) return wfyElement(element)
@@ -517,6 +517,8 @@ class PragmaWord extends Pragma {
     }
 
     return sib
+
+    // return this.parent ? this.parent.get(this.index + n) : null
   }
 
   get next() {
@@ -681,7 +683,7 @@ class PragmaMark extends Pragma {
   constructor() {
     super('marker');
 
-    this.element = _e$1("marker");
+    this.element = _e("marker");
     this.appendTo('body');
     this.hide();
     this.css(defaultStyles);
@@ -857,7 +859,7 @@ class PragmaMark extends Pragma {
       *
       * */
 
-    if (!word instanceof Pragma) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+    if (!(word instanceof Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
     if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
     if (word.isFirstInLine) return 500 // mark has to change line
     if (!this.last_marked) return 0 // failsafe
@@ -902,11 +904,11 @@ function paginator(pageTemplate, conf={}){
 
         .run(function(){
 
-          let _ptemp = _e$1(this.pageTemplate).hide();
+          let _ptemp = _e(this.pageTemplate).hide();
           this.pageTemplate = _ptemp.cloneNode(false);
 
           this._clonePage = function() {
-            let page = _e$1(this.pageTemplate.cloneNode(false)).show();
+            let page = _e(this.pageTemplate.cloneNode(false)).show();
             //if (this._lastAddedPage){
               ////page.style.height = this._lastAddedPage.height
               //page.css(`height ${this._lastAddedPage.height}px`)
@@ -1051,7 +1053,7 @@ function paginator(pageTemplate, conf={}){
 }
 
 function infinityPaginator(streamer, pageTemplate, config={}){
-  let inf = _p$1("infinity paginator")
+  let inf = _p("infinity paginator")
         .from(
           paginator(pageTemplate, util.objDiff(
             {
@@ -1502,7 +1504,7 @@ function lecLabel(){
   });
 }
 
-const activeSelectTpl = (conf={}) => _p$1()
+const activeSelectTpl = (conf={}) => _p()
   .from(select(util.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el);
@@ -1552,7 +1554,7 @@ function lectorSettings(lector){
     }
   };
 
-  let settings = _p$1("settingsWrapper")
+  let settings = _p("settingsWrapper")
                   .addClass("items-center", 'lector-settings')
 
                   .run(function(){
@@ -1579,7 +1581,7 @@ function lectorSettings(lector){
                     //console.log('set value', this.value)
                   //})
 
-  let foveaComp = _p$1("!fovea")
+  let foveaComp = _p("!fovea")
                   .addClass('section')
                   .run(lecLabel, slider$1) // label
                   .setRange(2, 10)
@@ -1594,10 +1596,10 @@ function lectorSettings(lector){
                   
 
 
-  let modeComp = _p$1('!mode')
+  let modeComp = _p('!mode')
                   .from(activeSelectTpl({
                     options: modes$1,
-                    optionTemplate: option => _p$1(option)
+                    optionTemplate: option => _p(option)
                         .css(`width 35px;
                               height 20px;
                          `)
@@ -1621,11 +1623,11 @@ function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeMode);
 
-  let colorsComp = _p$1('!color')
+  let colorsComp = _p('!color')
                   .from(activeSelectTpl({
                     options: colors,
                     optionTemplate: option => {
-                      return _p$1(option)
+                      return _p(option)
                               .css(`
                                 width 25px
                                 height 25px
@@ -1644,13 +1646,13 @@ function lectorSettings(lector){
                   .do(actions.changeColor);
 
 
-  let fontComp = _p$1('!font')
+  let fontComp = _p('!font')
                   .run(function(){
                     console.log(this.key);
                   })
                   .from(activeSelectTpl({
                     options: fonts,
-                    optionTemplate: option => _p$1(option)
+                    optionTemplate: option => _p(option)
                               .html("Aa")
                               .css(`font-family ${option}`)
                               .on('click').do(function(){
@@ -1661,7 +1663,7 @@ function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeFont);
 
-  let wpmComp = _p$1("!wpm")
+  let wpmComp = _p("!wpm")
                   .import(input)
                   .run(withLabel)
                   .addClass('settings-input', 'section')
@@ -1680,7 +1682,7 @@ function lectorSettings(lector){
                   .bind(shc.wpmMinus, function(){ this.value-=10; })
                   .do(actions.changeWpm);
   
-  let pageComp = _p$1("!page")
+  let pageComp = _p("!page")
                   .import(input)
                   .run(withLabel)
                   .setInputAttrs({
@@ -1725,12 +1727,12 @@ function lectorSettings(lector){
       //console.log(this.key, this.value)
     //})
   //})
-  let miniSettings = _p$1('mini-settings')
+  let miniSettings = _p('mini-settings')
     .addClass('lector-mini-settings')
     .contain(pageComp)
     .pragmatize();
   
-  let popUpSettings = _p$1("popupsettings")
+  let popUpSettings = _p("popupsettings")
         .contain(
           fontComp.setId('font'), 
           colorsComp.setId('color'), 
@@ -1759,7 +1761,7 @@ function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
-  let fader = _p$1('fader')
+  let fader = _p('fader')
     .run(idler, function(){
       this.elements = [];
       this.include =function(){
@@ -1914,7 +1916,7 @@ const Word = (element, i) => {
 };
 
 const Reader = (l, options=default_options) => {
-  l = _e$1(l);
+  l = _e(l);
   if (options.wfy) wfy(l);
   let w = Word(l);
 
@@ -1957,7 +1959,7 @@ function _needWrapper(op){
 
 
 function _streamer(sf){
-  return _p$1('streamer')
+  return _p('streamer')
           .setValue(0)
           .run(function(){
             this.fetch = sf;
@@ -1996,7 +1998,7 @@ const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    let lector = Reader(_e$1(l).parentElement, options)
+    let lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer);
 
     lector.paginator = paginator;
@@ -2077,8 +2079,8 @@ function globalify(){
   const attrs = {
     Lector: Lector,
     Word: Word,
-    _e: _e$1,
-    _p: _p$1,
+    _e: _e,
+    _p: _p,
     util: util,
     lecUtil: helpers,
     _thread: _thread

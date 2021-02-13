@@ -1,4 +1,4 @@
-import { Pragma, util } from "pragmajs"
+import { Pragma, util, _e } from "pragmajs"
 import css from "../styles/styles.json"
 
 util.addStyles(css.slider)

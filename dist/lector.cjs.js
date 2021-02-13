@@ -526,6 +526,8 @@ class PragmaWord extends pragmajs.Pragma {
     }
 
     return sib
+
+    // return this.parent ? this.parent.get(this.index + n) : null
   }
 
   get next() {
@@ -866,7 +868,7 @@ class PragmaMark extends pragmajs.Pragma {
       *
       * */
 
-    if (!word instanceof pragmajs.Pragma) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+    if (!(word instanceof pragmajs.Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
     if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
     if (word.isFirstInLine) return 500 // mark has to change line
     if (!this.last_marked) return 0 // failsafe
@@ -1225,7 +1227,7 @@ const defaults = {
     self.contain(option);
   },
   optionTemplate: function(option){
-      return _p(option)
+      return pragmajs._p(option)
               .html(option)
               .addClass('pragma-click')
               .on('click').do(function(){
@@ -1235,7 +1237,7 @@ const defaults = {
 };  
 
 
-const select = (conf) => _p()
+const select = (conf) => pragmajs._p()
     //.from(util.createTemplate())
     .run(function(){
       let options = conf.options;
@@ -1297,11 +1299,11 @@ function slider$1(conf={}){
     //console.log(this.value)
   };
   
-  this._input = _e('div.').addClass('pragma-slider-bg');
-  this._bar = _e('div.')
+  this._input = pragmajs._e('div.').addClass('pragma-slider-bg');
+  this._bar = pragmajs._e('div.')
     .addClass('pragma-slider-bar');
   
-  this._thumb = _e('div.pragma-slider-thumb');
+  this._thumb = pragmajs._e('div.pragma-slider-thumb');
   this._bar.append(this._thumb);
 
   this._input.append(this._bar);
@@ -1345,7 +1347,7 @@ function input(conf = {}) {
                 pragmajs.util.createChains(this, 'userInput');
             },
             makeInput () {
-                this.input = _e(`<input type='text'></input>`)
+                this.input = pragmajs._e(`<input type='text'></input>`)
                     .addClass('pragma-input-text');
 
                 this.setValue = function(v){
@@ -1422,7 +1424,7 @@ function withLabel(conf = {}) {
         return this
     };
     
-    this._label = _e('div.pragma-label', conf.label);
+    this._label = pragmajs._e('div.pragma-label', conf.label);
     this.append(this._label);    
 }
 

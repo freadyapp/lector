@@ -89,7 +89,7 @@ export default class PragmaWord extends Pragma {
 
     return sib
 
-    return this.parent ? this.parent.get(this.index + n) : null
+    // return this.parent ? this.parent.get(this.index + n) : null
   }
 
   get next() {

@@ -1,3 +1,4 @@
+import { _e } from 'pragmajs'
 export function withLabel(conf = {}) {
     this.setLabel = function(html){
         this._label.html(html)
