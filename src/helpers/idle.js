@@ -4,12 +4,12 @@ export default class Idle {
     this.activeChain = new Map
     this.idleTime = idleTime
     this.isIdle = false
-    window.onload = 
-    window.onmousedown =             // catches touchscreen presses as well      
-    window.onmousemove =             // catches touchscreen presses as well      
-    window.onscroll = 
-      () => { this.reset() }
+    
+    const events = [ 'load', 'mousemove']
 
+    events.forEach( event => {
+      window.addEventListener(event, _ => this.reset())
+    })
   }
 
   generateActionKey(key){

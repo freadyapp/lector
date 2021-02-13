@@ -12,6 +12,7 @@ export function input(conf = {}) {
 
                 this.setValue = function(v){
                     let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v
+                    if (newVal === this._lv) return 
 
                     this.value = newVal
 

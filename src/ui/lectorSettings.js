@@ -1,7 +1,7 @@
 import { _p, util } from "pragmajs"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
-import { colors, fonts, modes } from "../config/marker.config"
+import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.config"
 import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
@@ -13,6 +13,25 @@ function activate(self, key){
 function deactivate(self, key){
   self.find(key).removeClass('active')
                 .addClass('inactive')
+}
+
+const labelify = (option, val) => `<span class='option-title'>${option}:</span> ${val}`
+function lecLabel(){
+  this.run(withLabel)
+  this._labelTemplate = v => v
+
+  this.setLabelTemplate = function(lbt){
+    this._labelTemplate = lbt
+    return this
+  }
+  this.setLabelName = function(lb){
+    this._labelName = lb
+    return this
+  }
+  this.do(function(){
+    let v = this._labelTemplate(this.value)
+    this.setLabel(labelify(this._labelName, v))
+  })
 }
 
 const activeSelectTpl = (conf={}) => _p()
@@ -104,17 +123,17 @@ export default function lectorSettings(lector){
 
   let foveaComp = _p("!fovea")
                   .addClass('section')
-                  .run(slider, withLabel) // label
-                  // .import(withLabel)
+                  .run(lecLabel, slider) // label
                   .setRange(2, 10)
                   .setValue(5)
-                  .setLabel('fovea')
+                  .setLabelName('Pointer Width')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
                       this._bar.css(`background-color ${bg}`)
                     }
                   })
+                  
 
 
   let modeComp = _p('!mode')
@@ -139,6 +158,8 @@ export default function lectorSettings(lector){
                       this.children.forEach(child => child.update(bg))
                     }
                   })
+                  .run(lecLabel)
+                  .setLabelName('Pointer mode')
                   .addClass('section')
                   .do(actions.changeMode)
 
@@ -159,6 +180,9 @@ export default function lectorSettings(lector){
                     }
                   }))
                   .addClass('section')
+                  .run(lecLabel)
+                  .setLabelName('Pointer Color')
+                  .setLabelTemplate(v => colorsHumanFriendly[v])
                   .do(actions.changeColor)
 
 
@@ -190,6 +214,7 @@ export default function lectorSettings(lector){
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
+                  .setId('wpm')
                   .setLabel('wpm')
                   .setRange(40, 4200)
                   .setValue(250)

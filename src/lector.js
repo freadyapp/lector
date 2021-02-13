@@ -1,6 +1,7 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
-import { PragmaWord, PragmaLector, PragmaMark, LectorSettings } from "./pragmas/index"
+import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
+import { LectorSettings } from "./ui/index"
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"

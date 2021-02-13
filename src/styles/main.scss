@@ -25,7 +25,7 @@
   @extend .fixed-bottom-box;
   @extend .glass-block;
 
-  left: 0px;
+  left: -10px;
   padding-left: 40px;
   transition: all .2s;
   font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
@@ -37,7 +37,26 @@
     justify-content: center;
   }
   .section {
-    margin: 10px 0;
+    margin: 20px 0;
+
+    &:hover > .pragma-label {
+      opacity: 1;
+      //  visibility: visible;
+    }
+
+    .pragma-label{
+      opacity: 0;
+      transition: all .2s ease;
+      position: absolute;
+      // left: 10px;
+      left: 25%;
+      margin-top: -55px;
+      font-size: 12px;
+      color: whitesmoke;
+      .option-title{
+        color: rgba(199, 199, 199, 0.92);
+      }
+    }
   }
   
   #font {
@@ -56,13 +75,28 @@
     // margin-top: 15px;
     height: fit-content;
     padding: 10px;
+    .pragma-label{
+      margin-top: -25px;
+    }
   }
+  
+  #wpm {
+    .pragma-label {
+      position: relative;
+      left: 0;
+      margin: 0;
+      opacity: 1;
+      font-size: 18px;
+    }
+  }
+  
+  
 }
 
 .lector-mini-settings{
   @extend .glass-block;
   @extend .fixed-bottom-box;
-  right: 0px;
+  right: -10px;
   padding-right: 40px;
 }
 .settings-input{
@@ -71,10 +105,7 @@
   align-items: center;
 }
 
-.pragma-label{
-  font-size: 12px;
-  color: whitesmoke;
-}
+
 
 .pragma-input-text {
   font-family: 'Poppins', sans-serif;
@@ -113,6 +144,4 @@
     opacity: .5 !important;
   }
 }
-
-
 

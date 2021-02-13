@@ -213,12 +213,12 @@ class Idle {
     this.activeChain = new Map;
     this.idleTime = idleTime;
     this.isIdle = false;
-    window.onload = 
-    window.onmousedown =             // catches touchscreen presses as well      
-    window.onmousemove =             // catches touchscreen presses as well      
-    window.onscroll = 
-      () => { this.reset(); };
+    
+    const events = [ 'load', 'mousemove'];
 
+    events.forEach( event => {
+      window.addEventListener(event, _ => this.reset());
+    });
   }
 
   generateActionKey(key){
@@ -1262,7 +1262,7 @@ const select = (conf) => _p()
     });
 
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:0;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:10px 0}.lector-settings #fovea{height:fit-content;padding:10px}.lector-mini-settings{right:0;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-label{font-size:12px;color:whitesmoke}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
 var css = {
 	slider: slider,
 	main: main
@@ -1350,6 +1350,7 @@ function input(conf = {}) {
 
                 this.setValue = function(v){
                     let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v;
+                    if (newVal === this._lv) return 
 
                     this.value = newVal;
 
@@ -1463,7 +1464,13 @@ function idler(){
     });
 }
 
-const colors = ["#a8f19a", "#eddd6e", "#edd1b0", "#96adfc"];
+const colorsHumanFriendly = {
+    "#a8f19a": 'bez', 
+    "#eddd6e": 'roz', 
+    "#edd1b0": 'mua', 
+    "#96adfc": 'fua'
+};
+const colors = Object.keys(colorsHumanFriendly);
 const fonts = ["Helvetica", "Open Sans", "Space Mono"];
 const modes$1 = ["HotBox", "Underneath", "Faded"];
 
@@ -1483,6 +1490,25 @@ function activate(self, key){
 function deactivate(self, key){
   self.find(key).removeClass('active')
                 .addClass('inactive');
+}
+
+const labelify = (option, val) => `<span class='option-title'>${option}:</span> ${val}`;
+function lecLabel(){
+  this.run(withLabel);
+  this._labelTemplate = v => v;
+
+  this.setLabelTemplate = function(lbt){
+    this._labelTemplate = lbt;
+    return this
+  };
+  this.setLabelName = function(lb){
+    this._labelName = lb;
+    return this
+  };
+  this.do(function(){
+    let v = this._labelTemplate(this.value);
+    this.setLabel(labelify(this._labelName, v));
+  });
 }
 
 const activeSelectTpl = (conf={}) => pragmajs._p()
@@ -1564,17 +1590,17 @@ function lectorSettings(lector){
 
   let foveaComp = pragmajs._p("!fovea")
                   .addClass('section')
-                  .run(slider$1, withLabel) // label
-                  // .import(withLabel)
+                  .run(lecLabel, slider$1) // label
                   .setRange(2, 10)
                   .setValue(5)
-                  .setLabel('fovea')
+                  .setLabelName('Pointer Width')
                   .do(actions.changeFovea)
                   .run(function(){
                     this.update = function(bg){
                       this._bar.css(`background-color ${bg}`);
                     };
                   });
+                  
 
 
   let modeComp = pragmajs._p('!mode')
@@ -1599,6 +1625,8 @@ function lectorSettings(lector){
                       this.children.forEach(child => child.update(bg));
                     };
                   })
+                  .run(lecLabel)
+                  .setLabelName('Pointer mode')
                   .addClass('section')
                   .do(actions.changeMode);
 
@@ -1619,6 +1647,9 @@ function lectorSettings(lector){
                     }
                   }))
                   .addClass('section')
+                  .run(lecLabel)
+                  .setLabelName('Pointer Color')
+                  .setLabelTemplate(v => colorsHumanFriendly[v])
                   .do(actions.changeColor);
 
 
@@ -1650,6 +1681,7 @@ function lectorSettings(lector){
                   .setValueSanitizer(
                     v => parseInt(v)
                   )
+                  .setId('wpm')
                   .setLabel('wpm')
                   .setRange(40, 4200)
                   .setValue(250)
