@@ -91,6 +91,10 @@ export default function lectorSettings(lector){
 
     changePage(page=this.value){
       if (lector.paginator) lector.paginator.goTo(page) 
+    },
+
+    changeScale(scale=this.value){
+      if (lector.scaler) lector.scaler.scaleTo(scale)
     }
   }
 
@@ -204,8 +208,7 @@ export default function lectorSettings(lector){
                   .do(actions.changeFont)
 
   let wpmComp = _p("!wpm")
-                  .import(input)
-                  .run(withLabel)
+                  .run(input, withLabel)
                   .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
@@ -223,8 +226,7 @@ export default function lectorSettings(lector){
                   .do(actions.changeWpm)
   
   let pageComp = _p("!page")
-                  .import(input)
-                  .run(withLabel)
+                  .run(input, withLabel)
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -268,9 +270,49 @@ export default function lectorSettings(lector){
       //console.log(this.key, this.value)
     //})
   //})
+
+  let scaleComp = _p("!scale")
+                  .run(input, withLabel)
+                  .setInputAttrs({
+                    maxlength: 3,
+                    size: 4
+                  })
+                  .addClass('settings-input', 'section')
+                  .setValueSanitizer(
+                    v => parseInt(v)
+                  )
+                  .setLabel('scale')
+                  .run(function(){
+                    util.createChains(this, 'userEdit')
+
+                    this.editValue = function(val){
+                      this.value = val
+                      this.userEditChain.exec(this.value)
+                    }
+
+                    this.onUserEdit(actions.changeScale)
+                  })
+                  // .do(actions.changePage
+                  .run(function(){
+                     this.onUserInput(val => {
+                       console.log(val)
+                       this.editValue(val)
+                     })
+                  })
+                  .setValue(100)
+                  .bind(shc.scaleUp, function(){
+                    this.editValue(this.value+5)
+                    return false
+                  })
+                  .bind(shc.scaleDown, function(){
+                    this.editValue(this.value-5)
+                    return false
+                  })                  
+
+                    
   let miniSettings = _p('mini-settings')
     .addClass('lector-mini-settings')
-    .contain(pageComp)
+    .contain(scaleComp, pageComp)
     .pragmatize()
   
   let popUpSettings = _p("popupsettings")

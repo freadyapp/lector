@@ -1271,7 +1271,7 @@ const select = (conf) => pragmajs._p()
 
 var full = "@charset \"utf-8\";body{background-color:#232323}";
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
 var css = {
 	full: full,
 	slider: slider,
@@ -1348,13 +1348,13 @@ function slider$1(conf={}){
 }
 
 function input(conf = {}) {
-    return new pragmajs.Pragma()
-        .from(pragmajs.util.createTemplate(conf))
-        .run({
-            makeChains(){
+    // return new Pragma()
+        // .from(util.createTemplate(conf))
+        // .run({
+            // makeChains(){
                 pragmajs.util.createChains(this, 'userInput');
-            },
-            makeInput () {
+            // },
+            // makeInput () {
                 this.input = pragmajs._e(`<input type='text'></input>`)
                     .addClass('pragma-input-text');
 
@@ -1384,33 +1384,30 @@ function input(conf = {}) {
                     document.removeEventListener('keydown', this.parent._listenToEsc);
                 });
 
-                this.export(
-                    'actionChain',
-                    'input',
-                    'setValue',
-                    'userInputChain',
-                    'onUserInput');
 
-                this.onExport(pragma => {
+                // this.onExport(pragma => {
                     // pragma.adopt(this.input)
-                    pragma.adopt(this.input);
-                    pragma.append(this.input);
-                });
-            },
+                    this.adopt(this.input);
+                    this.append(this.input);
+                // })
+            // },
         
-            extend(){
+            this.setMonitorTemplate = function(n){
+                this._monitorTemplate = n;
+                return this
+            };
+            // extend(){
                 this.updateFront = function(val=this.value){
-                    this.input.value = val;
+                    this.input.value = this._monitorTemplate ? this._monitorTemplate(val) : val;
                     this.input.placeholder = val;
                 };
-                this.export('updateFront');
-            }
-        })
-        .do(function(){
+            // }
+        // })
+        this.do(function(){
             this.updateFront(this.value);
-        })
+        });
 
-        .run(function(){
+        // .run(function(){
             this.setInputAttrs = function(attrs){
                 for (let [key, val] of Object.entries(attrs)){
                     this.input.attr(key, val);
@@ -1422,8 +1419,7 @@ function input(conf = {}) {
                 this.valueSanitizer = cb;
                 return this
             };
-            this.export('setInputAttrs', 'setValueSanitizer');
-          })
+        //   })
 }
 
 function withLabel(conf = {}) {
@@ -1478,26 +1474,36 @@ class Scaler extends pragmajs.Pragma {
     constructor(target){
         super();
         this.target = target;
+        this.target.css(`transition transform .07s ease`);
 
-        this.value = 1.0;
+        this.value = 100;
         this.do(function(){
             this.scaleTo(this.value);
         });
-        this.setRange(0, 50);
+
+        this.setRange(10, 400);
     }
     
     setTarget(n) { this.target = n; return this }
     
+    set scaleStep(n){
+        this._scaleStep = n;
+    }
+
+    get scaleStep(){
+        return this._scaleStep || 5
+    }
+
     scaleUp(){
-        this.value-= 0.1;
+        this.value+= this.scaleStep;
     }
     
     scaleDown(){
-        this.value-= 0.1;
+        this.value-= this.scaleStep;
     }
     
     scaleTo(to){
-        this.target.css(`transform scale(${to})`);
+        this.target.css(`transform scale(${to/100})`);
     }
 }
 
@@ -1522,7 +1528,10 @@ var shc = {
   wpmMinus: ['-'],
 
   pageNext: ']',
-  pagePre: '['
+  pagePre: '[',
+
+  scaleUp: 'mod+=',
+  scaleDown: 'mod+-'
 };
 
 function activate(self, key){
@@ -1611,6 +1620,10 @@ function lectorSettings(lector){
 
     changePage(page=this.value){
       if (lector.paginator) lector.paginator.goTo(page); 
+    },
+
+    changeScale(scale=this.value){
+      if (lector.scaler) lector.scaler.scaleTo(scale);
     }
   };
 
@@ -1724,8 +1737,7 @@ function lectorSettings(lector){
                   .do(actions.changeFont);
 
   let wpmComp = pragmajs._p("!wpm")
-                  .import(input)
-                  .run(withLabel)
+                  .run(input, withLabel)
                   .addClass('settings-input', 'section')
                   .setInputAttrs({
                     maxlength: 4,
@@ -1743,8 +1755,7 @@ function lectorSettings(lector){
                   .do(actions.changeWpm);
   
   let pageComp = pragmajs._p("!page")
-                  .import(input)
-                  .run(withLabel)
+                  .run(input, withLabel)
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -1788,9 +1799,49 @@ function lectorSettings(lector){
       //console.log(this.key, this.value)
     //})
   //})
+
+  let scaleComp = pragmajs._p("!scale")
+                  .run(input, withLabel)
+                  .setInputAttrs({
+                    maxlength: 3,
+                    size: 4
+                  })
+                  .addClass('settings-input', 'section')
+                  .setValueSanitizer(
+                    v => parseInt(v)
+                  )
+                  .setLabel('scale')
+                  .run(function(){
+                    pragmajs.util.createChains(this, 'userEdit');
+
+                    this.editValue = function(val){
+                      this.value = val;
+                      this.userEditChain.exec(this.value);
+                    };
+
+                    this.onUserEdit(actions.changeScale);
+                  })
+                  // .do(actions.changePage
+                  .run(function(){
+                     this.onUserInput(val => {
+                       console.log(val);
+                       this.editValue(val);
+                     });
+                  })
+                  .setValue(100)
+                  .bind(shc.scaleUp, function(){
+                    this.editValue(this.value+5);
+                    return false
+                  })
+                  .bind(shc.scaleDown, function(){
+                    this.editValue(this.value-5);
+                    return false
+                  });                  
+
+                    
   let miniSettings = pragmajs._p('mini-settings')
     .addClass('lector-mini-settings')
-    .contain(pageComp)
+    .contain(scaleComp, pageComp)
     .pragmatize();
   
   let popUpSettings = pragmajs._p("popupsettings")
@@ -2043,7 +2094,7 @@ const Lector = (l, options=default_options) => {
     pragmajs.util.addStyles(css.full);
   }
 
-  if (!options.experimental) pragmajs.util.throwSoft('EXPERIMENTAL FEATURES TURNED OFF');
+  if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
   let lector;
 
   if (options.stream &&
@@ -2079,15 +2130,25 @@ const Lector = (l, options=default_options) => {
   }
 
   
-  {
+  if (options.scaler){
     // let _scaler = _p().run(_ext.scaler)
     let _scaler = new Scaler(lector.element);
-    lector.adopt(_scaler);
+    
     // _scaler.setTarget(lector.element)
-    console.log('scaler', _scaler);
     
     _scaler.scaleUp();
+    // _scaler.bind("mod+=", function() { _scaler.scaleUp();  return false;})
+    // _scaler.bind("mod+-", function() { _scaler.scaleDown();  return false;})
     
+    lector.adopt(_scaler);
+    lector.scaler = _scaler;
+
+    if (lector.settings){
+      console.log("lector has settings! connecting scaler's value to scalercomp");
+      let scaleComp = lector.settings.find('!scale');
+      if (scaleComp) scaleComp.wireTo(lector.scaler);
+    }  
+
   }
 
 

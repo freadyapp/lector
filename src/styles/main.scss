@@ -98,6 +98,11 @@
   @extend .fixed-bottom-box;
   right: -10px;
   padding-right: 40px;
+  
+  .section {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
 }
 .settings-input{
   display: flex;

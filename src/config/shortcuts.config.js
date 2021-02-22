@@ -3,5 +3,8 @@ export default {
   wpmMinus: ['-'],
 
   pageNext: ']',
-  pagePre: '['
+  pagePre: '[',
+
+  scaleUp: 'mod+=',
+  scaleDown: 'mod+-'
 }

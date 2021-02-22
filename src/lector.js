@@ -183,7 +183,7 @@ export const Lector = (l, options=default_options) => {
     util.addStyles(css.full)
   }
 
-  if (!options.experimental) util.throwSoft('EXPERIMENTAL FEATURES TURNED OFF')
+  if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
   let lector
 
   if (options.stream &&
@@ -219,15 +219,25 @@ export const Lector = (l, options=default_options) => {
   }
 
   
-  if (true||options.scaler){
+  if (options.scaler){
     // let _scaler = _p().run(_ext.scaler)
     let _scaler = new _ext.Scaler(lector.element)
-    lector.adopt(_scaler)
+    
     // _scaler.setTarget(lector.element)
-    console.log('scaler', _scaler)
     
     _scaler.scaleUp()
+    // _scaler.bind("mod+=", function() { _scaler.scaleUp();  return false;})
+    // _scaler.bind("mod+-", function() { _scaler.scaleDown();  return false;})
     
+    lector.adopt(_scaler)
+    lector.scaler = _scaler
+
+    if (lector.settings){
+      console.log("lector has settings! connecting scaler's value to scalercomp")
+      let scaleComp = lector.settings.find('!scale')
+      if (scaleComp) scaleComp.wireTo(lector.scaler)
+    }  
+
   }
 
 

@@ -44,8 +44,10 @@ let lectorSettings = {
    defaultStyles: true,
    fullStyles: true,
 
+   scaler: true,
    pragmatizeOnCreate: true,
    experimental: true,
+  
    settings: true,
    stream: fetchContent,
     // function with index as param that
