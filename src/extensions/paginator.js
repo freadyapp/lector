@@ -143,17 +143,7 @@ export function paginator(pageTemplate, conf={}){
             })
           }
           
-          // this.goTo()
-          this.goTo = function(val, speed){
-            let _actionKey = `add-${this.value}`
-
-            this.value = val
-            let page = this.pages.get(val)
-            page.onRender(function(){
-              scrollTo(page, speed||20)
-            })
-          }
-
+      
           this.export(
             "pageTemplate",
             "_clonePage",
@@ -163,7 +153,6 @@ export function paginator(pageTemplate, conf={}){
             "addPage",
             "delPage",
             'activate',
-            'inactivate',
-            'goTo')
+            'inactivate')
         })
 }

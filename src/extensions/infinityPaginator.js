@@ -1,6 +1,6 @@
 import { _e, _p, Pragma, util, runAsync } from "pragmajs"
 import { paginator } from "./paginator"
-import { range, isOnScreen, isMostlyInScreen, onScroll, PinkyPromise } from "../helpers/index"
+import { range, isOnScreen, isMostlyInScreen, onScroll, PinkyPromise, scrollTo } from "../helpers/index"
 import { onScrollEnd } from "../helpers/autoScroll"
 
 export function infinityPaginator(streamer, pageTemplate, config={}){
@@ -23,6 +23,8 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
         .setValue(0)
         .run({
           initialConfig(){
+
+            this._watching = true
             const conf = {
               headspace: 10,
               timeout: 5 
@@ -76,12 +78,27 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
                 console.log(this.pages)
               }, conf.timeout)
           }
+        }, scrollSetup(){
+          // this.goTo()
+          this.goTo = function (val, speed) {
+            let _actionKey = `add-${this.value}`
+            let paginator = this
+            this.value = val
+            let page = this.pages.get(val)
+
+            page.onRender(function () {
+              paginator._watching = false
+              scrollTo(page, speed || 20).then(() => {
+                paginator._watching = true
+              })
+            })
+          }
+
+          this.export('goTo')
         },
         findActivePages(){
-          
 
           function findCandidates(pages, scroll){
-
             let bestIndex = null
             let best = 999999999999
             const middle = scroll + window.innerHeight/2
@@ -117,7 +134,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           let searching = false
           let owe = false
           const doOnScroll= (pos, dp) => {
-            if (this.fetching) return 
+            if (this.fetching || !this._watching) return 
             if (searching) return owe = { pos: pos, dp: dp }
 
             searching = true

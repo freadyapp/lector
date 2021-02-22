@@ -246,7 +246,7 @@ export default function lectorSettings(lector){
                   })
                   .run(function(){
                     this.onUserInput(val => {
-                      console.log(val)
+                      // console.log(val)
                       this.editValue(val)
                     })
                   })

@@ -60,9 +60,10 @@ let lectorSettings = {
         //p.css("background lightgray")
         //console.log(p)
         p.setData({ index: index })
+      //  )
       },
 
-      onCreate: p => p.html("loading..."),
+      // onCreate: p => p.html("loading..."),
 
       onPageActive: (p, index) => {
         p.onFetch(function(){
