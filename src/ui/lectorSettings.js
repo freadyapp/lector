@@ -90,7 +90,7 @@ export default function lectorSettings(lector){
     },
 
     changePage(page=this.value){
-      lector.paginator.goTo(page) 
+      if (lector.paginator) lector.paginator.goTo(page) 
     }
   }
 
@@ -242,9 +242,9 @@ export default function lectorSettings(lector){
                       this.userEditChain.exec(this.value)
                     }
 
-                    // this.onUserEdit(actions.changePage)
+                    this.onUserEdit(actions.changePage)
                   })
-                  .do(actions.changePage)
+                  // .do(actions.changePage
                   .run(function(){
                     this.onUserInput(val => {
                       // console.log(val)

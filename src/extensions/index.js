@@ -7,3 +7,5 @@ export { monitor } from "./monitor"
 export { input } from "./input"
 export { withLabel } from "./withLabel"
 export { idler } from "./idler"
+
+export { scaler, Scaler, newScaler } from './scaler'

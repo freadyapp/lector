@@ -1,1 +1,2105 @@
-import{Pragma as t,_e as e,util as i,_p as n,runAsync as s,_thread as r}from"pragmajs";import o from"animejs";import a from"compromise";function h(i){return i instanceof t&&(i=i.element),i.isPragmaElement||(i=e(i)),i}function l(t,e=100){if(!t)throw i.throwSoft(`couldnt not evaluate if [${t}] is on screen`);t=h(t);let n=window.scrollY;return function(t,e={}){let i=t.offset(),n=i.top,s=i.top+t.rect().height;return n<=e.bot&&s>=e.top||n<=e.top&&s>=e.bot}(t,{top:n+e,bot:n+window.innerHeight-e})}function c(t,e=200,i=200){return t=h(t),new Promise(((n,s)=>{const r=window.document.scrollingElement||window.document.body||window.document.documentElement,a=t.offset().top-i;o({targets:r,scrollTop:a,duration:e,easing:"easeInOutSine"}).finished.then((()=>{setTimeout(n,20)}))}))}function u(t){globalThis.lectorSpace.scrollChain||(i.createChains(globalThis.lectorSpace,"scroll"),function(t){let e=0,i=!1;document.addEventListener("scroll",(function(n){let s=e;e=window.scrollY,i||(window.requestAnimationFrame((function(){t(e,e-s),i=!1})),i=!0)}))}(((t,e)=>{globalThis.lectorSpace.scrollChain.exec(t,e)}))),globalThis.lectorSpace.onScroll(t)}function p(t){globalThis.lectorSpace.scrollEndChain||(i.createChains(globalThis.lectorSpace,"scrollEnd"),function(t){let e,i={s:null,ds:null};u(((n,s)=>{i={s:n,ds:s},e&&clearTimeout(e),e=setTimeout((e=>{t(i.s,i.ds)}),50)}))}(((t,e)=>{globalThis.lectorSpace.scrollEndChain.exec(t,e)}))),globalThis.lectorSpace.onScrollEnd(t)}globalThis.lectorSpace=globalThis.lectorSpace||{};const d=["an","an","ap","di","dy","ec","eg","en","em","eo","ep","eu","id","is","my","ne","od","oo","ot","sy","ur","ur","zo","pto","pyl","acr","aer","agr","ana","ant","apo","aut","bar","bio","cac","cat","cen","cen","con","cub","cyn","dec","dek","dem","dia","dox","eco","ego","eme","eos","epi","erg","eso","eth","eur","exo","geo","gen","hem","hal","hen","hex","hod","hol","hor","hor","hyo","hyp","ide","idi","iso","kil","lei","lep","lip","log","meg","mei","men","mer","mes","mim","mis","mit","mne","mon","myx","nes","nom","oct","oed","oen","omm","ont","opt","pan","pam","par","ped","pin","pis","pol","por","pro","rhe","sei","sit","syn","syl","sym","tax","the","the","tom","ton","top","tox","tri","ulo","uro","uro","xen","xer","zon","zyg","psil","prot","pros","amph","anem","anti","anth","arct","astr","athl","auto","basi","bibl","briz","brom","brom","call","carp","carp","cata","chir","cine","cirr","clad","clav","coel","copr","cosm","crep","cris","crit","cten","cyan","cycl","cyst","deca","deka","delt","derm","dexi","dino","dipl","ecto","endo","engy","eoso","etho","ethi","ethm","ethn","etym","fant","glia","gram","gymn","haem","hapl","heli","hemi","hept","herp","heur","hipp","home","horm","hyal","hydr","hygr","hypn","icos","kine","lamp","leps","leuc","leuk","lith","metr","meta","micr","myri","myth","narc","naut","necr","nect","nema","neur","noth","noto","oeco","ogdo","olig","onom","ophi","orch","orth","pach","paed","pale","path","patr","pect","pent","pept","peri","petr","phae","phag","pher","phil","phob","phon","phor","phos","phot","phyl","phys","plac","plas","plec","plut","pneu","poie","pole","poli","poli","poly","raph","rhag","rhig","rhin","rhiz","rhod","sarc","scel","scop","sema","siph","soma","soph","stea","steg","sten","stig","stom","styl","tach","tars","taur","tele","tele","temn","tetr","than","thus","ther","thym","thyr","trag","trit","trop","xiph","proct","ptych","amphi","arche","archi","arche","arist","arthr","bathy","batho","blenn","blast","botan","brady","bront","calli","calyp","cardi","centr","ceram","cerat","chlor","chore","chrom","chron","chrys","clast","clist","cochl","corac","cotyl","crani","cross","crypt","dendr","dodec","dynam","ennea","gastr","graph","heter","homal","hyper","klept","lekan","macro","melan","meter","morph","nephr","nomad","odont","organ","osteo","palae","palin","peran","phleg","phloe","phren","phryn","phyll","plagi","platy","plesi","pleth","pleur","pogon","polem","potam","rhabd","rhomb","scaph","schem","schis","scler","scoli","scept","scyph","selen","solen","sperm","sphen","spher","stern","stich","stoch","taeni","techn","therm","thyre","traum","trema","trich","troch","troph","xanth","psych","archae","brachi","brachy","bronch","cathar","cephal","chelon","cleist","cosmet","cylind","dactyl","deuter","dogmat","erythr","galact","hendec","ichthy","mening","myrmec","omphal","opisth","opoter","ornith","ostrac","persic","phalar","phaner","phragm","plinth","prasin","presby","rhynch","scalen","strept","stroph","thalam","theori","trachy","trapez","tympan","aesthet","anthrop","branchi","cleithr","epistem","parthen","phalang","pharmac","porphyr","sacchar","sphinct","stalact","stalagm","thalass","oesophag","ophthalm","physalid","pentecost","treiskaidek"];function g(t){return t<=1?4:t<=7?2/6*(t-1)+4:t<=8?1*(t-7)+6:3/8*(t-8)+7}function m(t){let e=0,i=a(t.text);i.has("#Verb")&&(e+=.5),i.has("#Acronym")&&(e+=.8);let n=function(t){let e=t.length;if(e<5)return 0;for(let i of d){if(i.length>=e-3)return 0;if(i==t.substring(0,i.length))return i.length}return 0}(t.text);return n>1&&(e+=n/10),Math.min(1,Math.min(e,1))}function f(t,e){return g(t.text.length)*(e+1)}function b(t){return 1e3/(t/60*4.7)}class v{constructor(t){let e=null,i=null;const n=new Promise(((n,s)=>(e=s,i=n,t(n,s))));return n.cancel=e,n.resolve=i,n}}class w{constructor(t){this.afkChain=new Map,this.activeChain=new Map,this.idleTime=t,this.isIdle=!1;["load","mousemove"].forEach((t=>{window.addEventListener(t,(t=>this.reset()))}))}generateActionKey(t){return null==t&&(t=this.afkChain.size),t}onAfk(t,e){return this.afkChain.set(this.generateActionKey(e),t),this}onActive(t,e){return this.activeChain.set(this.generateActionKey(e),t),this}reset(){return clearTimeout(this.t),this.t=setTimeout((()=>this.idle()),this.idleTime),this.active(),this}idle(){return!this.isIdle&&(this.isIdle=!0,y(this.afkChain),this)}active(){return!!this.isIdle&&(this.isIdle=!1,y(this.activeChain),this)}}function y(t){for(const[e,i]of t.entries())i()}function x(t){if(!t)return!1;(t=e(t)).textContent;let i="";for(let e of t.textContent.split(" ")){console.log(typeof e),i+=0!=e.replace(/\s/g,"").length?"<w>"+e.split(" ").join("</w> <w>")+"</w> ":e}t.html(i)}function k(t){let i=(t=e(t)).findAll("*");if(0==i.length)return x(x(t));i.forEach((t=>k(t)))}function _(t){let i=(t=e(t)).findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");return 0==i.length?k(t):(i.forEach((t=>_(t))),!0)}const P=8,T=8;function C(t=0,e=0){return e>P?t:t*(P-e)/T+t}function I(t,e,i){for(var n=[t],s=t;s<e;)n.push(s+=i||1);return n}var S=Object.freeze({__proto__:null,PinkyPromise:v,Idle:w,range:I,isOnScreen:l,isMostlyInScreen:function(t,e=.5){if(!t)throw i.throwSoft(`couldnt not evaluate if [${t}] is on screen`);return l(t=h(t),e*t.rect().height)},scrollTo:c,onScroll:u,crush:g,generateDifficultyIndex:m,wordValue:f,charsMsAt:b,wfy:_,airway:C});class E extends t{constructor(){super(arguments)}get lector(){return this}get mark(){return this._mark}set mark(t){this.adopt(t),this._mark=t}get settings(){return this._settings}set settings(t){this.adopt(t),this._settings=t}get isReading(){return this.w.isReading}get currentWord(){return this.w.currentWord}get currentParent(){return this.currentWord.parent}connectTo(t){return this.w=t,this.add(t),this}removeWord(t){console.log("> remove",t),this.w.remove(t)}addWord(t,e=!0){return this.w.add(t),e&&(this.w.value=t.key),this}toggle(){return this.isReading?this.pause():this.read()}read(){if(i.log("::LECTOR reading",this),!this.w.hasKids)return console.error("nothing to read");console.log(this.w),this.w.read()}summonTo(t){this.currentParent.value+=t,this.currentWord.summon()}goToNext(){this.summonTo(1)}goToPre(){this.summonTo(-1)}pause(){this.w.pause()}setFont(t){console.log(this.w),this.w.css(`font-family ${t}`)}}class A extends t{constructor(t){super(t),this.do((function(){this.hasKids&&this.parent&&(this.parent.value=this.key)}))}destroy(){return this.childMap=null,null}get lector(){if(this.parent)return this.parent.lector;i.throwSoft("could not find lector for")}get txt(){return this.text}get index(){return parseInt(this.key)}get mark(){return this.parent?this.parent.mark:null}set mark(t){return this.parent&&(this.parent.mark=t),null}get isReading(){return null!=this.currentPromise}get currentWord(){if(!this.hasKids)return this;let t=this.get(this.value);return t?t.currentWord:i.throwSoft(`Could not find current Word of ${this.key}`)}getFromBottom(t){return this.get(this.kidsum-t)}sibling(t){if(!this.parent)return null;let e=this.parent.get(this.index+t);return e||(console.log(this.parent),t<0?this.parent.sibling(-1).getFromBottom(t):this.parent.sibling(1).get(t))}get next(){return this.sibling(1)}get pre(){return this.sibling(-1)}isInTheSameLine(t){return null!=this.sibling(t)&&(this.sibling(t).top-this.top)**2<10}get isFirstInLine(){return!this.isInTheSameLine(-1)}get isLastInLine(){return!this.isInTheSameLine(1)}time(t=250){return b(t)*f(this,m(this))}pause(){return new v((t=>{this.currentPromise?(this.currentPromise.catch((e=>{this.mark.pause().catch((t=>{console.warn("prevent pause event from bubbling. Chill on the keyboard bro",t)})).then((()=>{this.currentPromise=null,t("done pausing"),console.log("- - - - - PAUSED - - - - - - - -")}))})),this.currentPromise.cancel("pause")):t("already paused")}))}set currentPromise(t){if(this.parent)return this.parent.currentPromise=t;this.currentPromiseVal=new v(((e,i)=>{t.catch((t=>{console.warn(t)})).then((()=>{e(),this.currentPromiseVal=null}))}))}get currentPromise(){return this.parent?this.parent.currentPromise:this.currentPromiseVal}promiseRead(){return this.currentPromise=new v(((t,e)=>{console.time(this.text),this.mark.guide(this).then((()=>{console.timeEnd(this.text),this.parent.value=this.index+1,t(` read [ ${this.text} ] `)})).catch((t=>{console.warn("rejected promise read",t),e(t)}))})),this.currentPromise}read(){return this.currentPromise?new Promise(((t,e)=>{t("already reading")})):this.hasKids?this.currentWord?this.currentWord.read():(this.next.value=0,this.next.read()):(this.promiseRead(),new v((t=>{this.currentPromise.then((()=>(t(),this.currentPromise=null,this.parent.read()))).catch((e=>t("pause")))})))}summon(t=!1){return!this.hasKids&&(console.log("SUMMONING",this),this.parent.pause().catch((()=>console.log("no need to pause"))).then((()=>{this.mark.mark(this,50,!0),t||(this.parent.value=this.index)})))}}const z={hotbox:t=>`background ${t}`,underneath:t=>` background transparent\n                        border-bottom 3px solid ${t}\n                        border-radius 4px`,faded:t=>`\n      background: rgb(255,255,255);\n      background: -moz-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${t} 25%, ${t} 75%, rgba(255,255,255,0) 100%);\n      background: -webkit-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${t} 25%, ${t} 75%, rgba(255,255,255,0) 100%);\n      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, ${t} 25%, ${t} 75%, rgba(255,255,255,0) 100%);\n    `};const F=(t,e=t._mode,i=t._color)=>{let n=function(t,e){return"border 0\n               border-radius 3px\n               z-index 10\n               opacity 1\n               mix-blend-mode darken;"+z[t](e)}(e=(e||"hotbox").toString().toLowerCase(),i);return t&&t.css(n),n};class L extends t{constructor(){super("marker"),this.element=e("marker"),this.appendTo("body"),this.hide(),this.css("\n  position absolute\n  outline solid 0px red\n  background-color #ffdf6c\n  width 10px\n  height 20px\n  z-index 10\n  opacity 1\n  mix-blend-mode darken\n  border-radius 3px\n"),this.currentlyMarking=null,window.addEventListener("resize",(()=>{this.mark(this.last_marked,0)})),this.runningFor=0,this.pausing=!1}hide(){this._hidden||(this._hidden=!0,this.element.hide())}show(){this._hidden&&(this._hidden=!1,this.element.show())}set last_marked(t){this.value=t}get last_marked(){return this.value}get settings(){return this.parent?this.parent.settings:console.error("mark has no settings attached")}get cw(){return 30*this._fovea}get wpm(){return this._wpm||260}setMode(t){this._mode=t,F(this)}setWpm(t){this._wpm=t}setColor(t){this._color=t,F(this)}setFovea(t){this._fovea=t,this.css(`width ${this.cw}px`)}pause(){return new Promise(((t,e)=>{if(this.pausing)return e("already pausing");if(this.pausing=!0,this.currentlyMarking&&this.current_anime&&this.last_marked){let i=this.last_marked;console.log("mark was running for",this.runningFor),this.runningFor=0,this.current_anime.complete(),this.current_anime.remove("marker"),this.mark(i,80,!0).then((()=>{t("paused")})).catch((t=>{e("could not mark")})).then((t=>{this.pausing=!1}))}}))}moveTo(t,e,i=(()=>{})){return this.show(),this.currentlyMarking?new Promise(((t,e)=>t())):new Promise(((n,s)=>{this.currentlyMarking=t,this.current_anime=o({targets:this.element,left:t.left,top:t.top,height:t.height,width:t.width,easing:t.ease||"easeInOutExpo",duration:e,complete:t=>{this.currentlyMarking=null,i(),n()}})}))}mark(e,i=200,n=!1,s="easeInOutExpo"){if(!(e instanceof t))return new Promise((t=>{console.warn("cannot mark"),t("error")}));let r=n?e.width+5:this.cw;return this.moveTo({top:e.top,left:e.x(r),height:e.height,width:r,ease:s},i,(()=>{this.last_marked=e}))}guide(e){return e instanceof t?new v(((t,i)=>{let n=e.isFirstInLine?"easeInOutExpo":"linear";return this.moveTo({top:e.top,left:e.x(this.width)-e.width/2,height:e.height,width:this.cw,ease:n},this.calcDuration(e,1)).then((()=>{this.last_marked=e,this.runningFor+=1,this.mark(e,this.calcDuration(e,2),!1,"linear").then((()=>{t()}))}))})):new Promise(((t,e)=>{console.warn("cannot guide thru"),e("error")}))}calcDuration(e,i=1){if(!(e instanceof t))return this.throw(`Could not calculate marking duration for [${e}] since it does not appear to be a Pragma Object`);if(1!=i&&2!=i)return this.throw(`Could not calculate duration for ${e.text} since dw was not 1 or 2`);if(e.isFirstInLine)return 500;if(!this.last_marked)return 0;const n=1==i?.4:.6;let s=(1==i?this.last_marked:e).time(this.wpm);return[t=>t*n,C].forEach((t=>{s=t(s,this.runningFor)})),s}}function M(r,o,a={}){return n("infinity paginator").from(function(n,s={}){return(new t).from(i.createTemplate({pageTemplate:n,fetch:"function"==typeof s.fetch?s.fetch:t=>{i.throwSoft("no fetch source specified")},onCreate:"function"==typeof s.onCreate?s.onCreate:t=>i.log("created",t),onFetch:s.onFetch,onPageAdd:null,onPageRender:null,onPageActive:"function"==typeof s.onPageActive?s.onPageActive:function(t,e){i.log("active",t)},onPageInactive:"function"==typeof s.onPageInactive?s.onPageInactive:function(t,e){i.log("inactive",t)}})).run((function(){let t=e(this.pageTemplate).hide();this.pageTemplate=t.cloneNode(!1),this._clonePage=function(){let t=e(this.pageTemplate.cloneNode(!1)).show();return this.adopt(t),t.lec=this.parent,i.createEventChains(t,"fetch"),t},this.create=function(t=this.value,e="append"){let i=this._clonePage();new Promise((e=>{this.onCreate(i,t);let n=this.fetch(t),r=s.onFetch||function(t,i){t.html(i),e(t)};const o=i=>{let n=this.pages.get(t);n&&(r(n,i),e(n))};n instanceof Promise?n.then((t=>{o(t)})):o(n)})).then((e=>{e.fetchChain.exec(),this.onPageRender&&this.onPageRender(e,t)})),i[`${e}To`](this.parent.element),this.addPage(i,t)},this.pages=new Map,this.destroy=function(t){let e=this.pages.get(t),i=i=>{e=this.pages.get(t),this.delPage(t),e.destroy()};if(this.onPageDestroy){let n=this.onPageDestroy(e,t);if(n instanceof Promise)return n.then(i)}i()},this.addPage=function(t,e){e=null===e?this.pages.size:e,this.onPageAdd&&this.onPageAdd(t,e),this.pages.set(e,t)},this.delPage=function(t){return this.pages.delete(t)},this.activate=function(...t){t.forEach((t=>{let e=this.pages.get(t);e&&(e.active=!0,this.onPageActive(e,t))}))},this.inactivate=function(...t){t.forEach((t=>{let e=this.pages.get(t);e&&(e.active=!1,this.onPageInactive(e,t))}))},this.export("pageTemplate","_clonePage","create","destroy","pages","addPage","delPage","activate","inactivate")}))}(o,i.objDiff({streamer:r,fetch:r.fetch},a))).setValue(0).run({initialConfig(){this._watching=!0;const t=10,e=5;this.fill=function(){this.fetching=!0;let n=I(this.value>=t?this.value-t:0,this.value+t),r=Array.from(this.pages.keys()),o=i.aryDiff(n,r),a=i.aryDiff(r,n),h=o.filter((t=>t>this.value)),l=i.aryDiff(o,h);console.log(">> DEL",a),console.log(">> ADD AFTER",h),console.log(">> ADD BEFORE",l),s((t=>{for(let t of h)this.create(t,"append")}),(t=>{for(let t of l.reverse())this.create(t,"prepend")}),(t=>{for(let t of a)this.destroy(t)})),setTimeout((t=>{this.fetching=!1,console.log(this.pages)}),e)}},scrollSetup(){this.goTo=function(t,e){this.value;let i=this;this.value=t;let n=this.pages.get(t);n.onRender((function(){i._watching=!1,c(n,e||20).then((()=>{i._watching=!0}))}))},this.export("goTo")},findActivePages(){this.findActivePage=function(t,e){return new v((e=>{e(function(t,e){let i=null,n=999999999999;const s=e+window.innerHeight/2;for(let[e,r]of t){let t=r.top+r.height/2,o=Math.abs(t-s);o<=n&&(n=o,i=e)}return i}(this.pages,t))}))};let t=!1,e=!1;const i=(n,s)=>{if(!this.fetching&&this._watching){if(t)return e={pos:n,dp:s};t=!0,this.findActivePage(n,s).then((n=>{this.value=n,t=!1,e&&(i(e.pos,e.dp),e=null)}))}};p(((t,e)=>{i(t,e)})),u(((t,e)=>{Math.abs(e)>40&&t<350&&i(t,e)}))}}).do((function(){if(0===this.dv)return;this.activate(this.value);let t=this.value-(this.dv||1);this.inactivate(t),this.fill()}))}const V={onOptionCreate:function(t,e){t.contain(e)},optionTemplate:function(t){return n(t).html(t).addClass("pragma-click").on("click").do((function(){this.parent.value=this.key}))}},O=t=>n().run((function(){let e=t.options;if(!e)return i.throwSoft("need to define options when creating a select template");let n=t.onOptionCreate||V.onOptionCreate,s=t.optionTemplate||V.optionTemplate;if(e.constructor===Array)for(let t of e)n(this,s(t));else for(let[t,i]of Object.entries(e)){const e={[t]:i};n(this,s(t,i),e)}this.onExport((function(t){t.contain(...this.children)})),this.export("elementDOM","actionChain","exportChain","exports")}));var D='@charset "utf-8";body{background-color:#232323}',$='@charset "utf-8";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}',W="@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";function R(t={}){this._n=function(){let t=this.range||{min:1,max:100};return 100/(t.max||100-t.min||1)},this.do((function(){this.element.setData({value:this.value}),this._setBarTo(this.value*this._n())})),this._setBarTo=t=>{this._bar.css(`width ${t}%`),this._thumb.offset()},this._clipValue=t=>{let e=Math.round(t/this._n());this._lv!==e&&(this.value=e)},this._input=e("div.").addClass("pragma-slider-bg"),this._bar=e("div.").addClass("pragma-slider-bar"),this._thumb=e("div.pragma-slider-thumb"),this._bar.append(this._thumb),this._input.append(this._bar);let i=function(){this._clicked=!0};this._input.listenTo("mousedown",i),this._thumb.listenTo("mousedown",i),document.addEventListener("mouseup",(()=>{this._input._clicked=!1}));let n=!1;document.addEventListener("mousemove",(t=>{this._input._clicked&&!n&&(window.requestAnimationFrame((()=>{n=!1;let e=t.pageX-this._input.offset().left,i=Math.round(100*Math.min(e/this._input.rect().width,1));this._clipValue(i)})),n=!0)})),this.adopt(this._input),this.append(this._input),this.element.addClass("pragma-slider")}function j(n={}){return(new t).from(i.createTemplate(n)).run({makeChains(){i.createChains(this,"userInput")},makeInput(){this.input=e("<input type='text'></input>").addClass("pragma-input-text"),this.setValue=function(t){let e=this.valueSanitizer?this.valueSanitizer(t):t;if(e!==this._lv)return this.value=e,this.value!=e&&this.updateFront(),this},this.input.listenTo("focus",(function(){this.parent._listenToEsc=document.addEventListener("keydown",(t=>{"Enter"===t.key&&this.blur()}))})),this.input.listenTo("focusout",(function(){this.parent.setValue(this.value),this.parent.userInputChain.exec(this.parent.value),document.removeEventListener("keydown",this.parent._listenToEsc)})),this.export("actionChain","input","setValue","userInputChain","onUserInput"),this.onExport((t=>{t.adopt(this.input),t.append(this.input)}))},extend(){this.updateFront=function(t=this.value){this.input.value=t,this.input.placeholder=t},this.export("updateFront")}}).do((function(){this.updateFront(this.value)})).run((function(){this.setInputAttrs=function(t){for(let[e,i]of Object.entries(t))this.input.attr(e,i);return this},this.setValueSanitizer=function(t){return this.valueSanitizer=t,this},this.export("setInputAttrs","setValueSanitizer")}))}function N(t={}){this.setLabel=function(t){return this._label.html(t),this},this._label=e("div.pragma-label",t.label),this.append(this._label)}function K(){i.createChains(this,"idle","active"),this.setIdleTime=function(t=5e3){var e,i;return this._idler=(e=()=>{this.idleChain.exec()},i=()=>{this.activeChain.exec()},new w(t).onAfk((()=>{console.log("user is afk"),e&&e()})).onActive((()=>{console.log("user is back"),i&&i()}))),this},this.extend("onIdle",(function(){return this._onIdle(...arguments),this})),this.extend("onActive",(function(){return this._onActive(...arguments),this}))}i.addStyles($);const B={"#a8f19a":"bez","#eddd6e":"roz","#edd1b0":"mua","#96adfc":"fua"},U=Object.keys(B),H=["Helvetica","Open Sans","Space Mono"],q=["HotBox","Underneath","Faded"];var Y=["+","="],G=["-"],Q="]",X="[";function J(t,e){t.find(e).removeClass("active").addClass("inactive")}function Z(){this.run(N),this._labelTemplate=t=>t,this.setLabelTemplate=function(t){return this._labelTemplate=t,this},this.setLabelName=function(t){return this._labelName=t,this},this.do((function(){let t=this._labelTemplate(this.value);this.setLabel(`<span class='option-title'>${this._labelName}:</span> ${t}`)}))}const tt=(t={})=>n().from(O(i.objDiff({onOptionCreate:(t,e)=>{t.contain(e),e.addClass("option"),J(t,e.key)}},t))).addClass("active-select-template").do((function(){var t,e;this.value!==this._lv&&(t=this,e=this.value,t.find(e).addClass("active").removeClass("inactive"),this._lv&&J(this,this._lv))}));const et={wfy:!0,pragmatizeOnCreate:!0,experimental:!1,settings:!1,defaultsStyles:!0},it=t=>{let e=new L;let i=!1,n=0;function s(){return n-Date.now()>-10}let r=0;return u((e=>{if(n=i?n:Date.now(),s()&&t.isReading){let i=Math.abs(r-e);r=e,i>40&&t.pause()}})),e.on("mouseover",(function(){console.log(this,"hover")})),e.do((function(t){}),(function(n){if(s()||l(e.element)||i)return!1;i=!0;let r=[];t.isReading&&(t.pause(),r.push((()=>{t.read()}))),r.push((()=>{})),c(e).then((()=>{r.forEach((t=>t())),i=!1}))})),e},nt=(t,e)=>{let i=new A(e).as(t).setValue(0),n=i.element.deepQueryAll("w");return e&&0===n.length&&i.addListeners({click:function(t,e){this.summon()}}),n.forEach(((t,e)=>{let n=nt(t,e);i.add(n)})),i},st=(t,s=et)=>{t=e(t),s.wfy&&_(t);let r=nt(t),o=new E("lector").as(t).setValue(0).connectTo(r);return o.mark=it(o),s.settings&&(o.settings=function(t){const e={changeColor(e=this.value){o.update(e),r.update(e),t.mark.setColor(e)},changeFovea(e=this.value){t.mark.setFovea(e)},changeWpm(e=this.value){t.mark.setWpm(e)},changeFont(e=this.value){t.setFont(e)},changeMode(e=this.value){t.mark.setMode(e)},changePage(e=this.value){t.paginator.goTo(e)}};let s=n("settingsWrapper").addClass("items-center","lector-settings").run((function(){this.value={},this._setVal=function(t){this.value=i.objDiff(this.value,t)},this.set=function(t){this._setting=!0;for(let[e,i]of Object.entries(t)){let t=this.find("!"+e);t&&(t.value=i)}this._setting=!1},this.get=function(t){return this.value[t]}})),r=n("!fovea").addClass("section").run(Z,R).setRange(2,10).setValue(5).setLabelName("Pointer Width").do(e.changeFovea).run((function(){this.update=function(t){this._bar.css(`background-color ${t}`)}})),o=n("!mode").from(tt({options:q,optionTemplate:t=>n(t).css("width 35px;\n                              height 20px;\n                         ").on("click").do((function(){this.parent.value=this.key})).run((function(){this.update=e=>{F(this,t,e),this.css("mix-blend-mode normal")}}))})).run((function(){this.update=function(t){this.children.forEach((e=>e.update(t)))}})).run(Z).setLabelName("Pointer mode").addClass("section").do(e.changeMode),a=n("!color").from(tt({options:U,optionTemplate:t=>n(t).css(`\n                                width 25px\n                                height 25px\n                                border-radius 25px\n                                background-color ${t} \n                              `).on("click").do((function(){this.parent.value=this.key}))})).addClass("section").run(Z).setLabelName("Pointer Color").setLabelTemplate((t=>B[t])).do(e.changeColor),h=n("!font").run((function(){console.log(this.key)})).from(tt({options:H,optionTemplate:t=>n(t).html("Aa").css(`font-family ${t}`).on("click").do((function(){this.parent.value=this.key}))})).css("flex-direction row").addClass("section").do(e.changeFont),l=n("!wpm").import(j).run(N).addClass("settings-input","section").setInputAttrs({maxlength:4,size:4}).setValueSanitizer((t=>parseInt(t))).setId("wpm").setLabel("wpm").setRange(40,4200).setValue(250).bind(Y,(function(){this.value+=10})).bind(G,(function(){this.value-=10})).do(e.changeWpm),c=n("!page").import(j).run(N).setInputAttrs({maxlength:4,size:4}).addClass("settings-input","section").setValueSanitizer((t=>parseInt(t))).setLabel("page").run((function(){i.createChains(this,"userEdit"),this.editValue=function(t){this.value=t,this.userEditChain.exec(this.value)}})).do(e.changePage).run((function(){this.onUserInput((t=>{this.editValue(t)}))})).setValue(1).bind(Q,(function(){this.editValue(this.value+1)}),"keyup").bind(X,(function(){this.editValue(this.value-1)}),"keyup"),u=n("mini-settings").addClass("lector-mini-settings").contain(c).pragmatize(),p=n("popupsettings").contain(h.setId("font"),a.setId("color"),o.setId("mode"),r.setId("fovea")).run((function(){this.show=function(){this.hidden=!1,this.element.show()},this.hide=function(){this.hidden=!0,this.element.hide()},this.toggle=function(){this.hidden?this.show():this.hide()},this.show()})).bind("h",(function(){this.toggle()}));s.contain(p,l),s.adopt(u);let d=n("fader").run(K,(function(){this.elements=[],this.include=function(){return this.elements=this.elements.concat(Array.from(arguments)),this}})).setIdleTime(3e3).include(s,u).onIdle((function(){this.elements.forEach((t=>{t.css("opacity 0")}))})).onActive((function(){this.elements.forEach((t=>t.css("opacity 1")))}));return s.fader=d,s.allChildren.forEach((t=>{var e;(e=t).key&&0===e.key.indexOf("!")&&t.do((e=>s._setVal({[t.key.substring(1)]:t.value})))})),s.do((function(){this._setting||console.log("syncing",this.value)})),s.set({color:U[1],font:H[1],mode:q[2],fovea:4,wpm:420}),s.pragmatize()}(o)),s.pragmatizeOnCreate&&o.pragmatize(),s.experimental&&globalThis.pragmaSpace.mousetrapIntegration&&(o.bind("right",(t=>o.goToNext())),o.bind("left",(t=>o.goToPre())),o.bind("space",(t=>!1),"keydown"),o.bind("space",(function(){return this.toggle(),!1}),"keyup")),o};const rt=(t,s=et)=>{if(!(r=s).stream&&!r.paginate)return st(t,s);var r,o;if(i.log("configuration appears to be a bit more complicated"),s.defaultStyles&&i.addStyles(W),s.fullStyles&&i.addStyles(D),s.experimental&&s.stream&&s.paginate&&"stream"===s.paginate.from&&"infiniteScroll"===s.paginate.as){i.log("setting up streamer service");let r=(o=s.stream,n("streamer").setValue(0).run((function(){this.fetch=o,this.getContent=function(){return this.fetch(this.value)}}))),a=M(r,t,s.paginate.config||{}),h=st(e(t).parentElement,s).adopt(a,r);if(h.paginator=a,h.settings){console.log("lector has settings! connecting paginator's value to pagecomp"),h.settings.find("!page").wireTo(h.paginator)}return console.log("paginator",a),a.fill(),h}};function ot(){const t={Lector:rt,Word:nt,_e:e,_p:n,util:i,lecUtil:S,_thread:r};for(let[e,i]of Object.entries(t))globalThis[e]=i}export{rt as Lector,nt as Word,ot as globalify,S as helpers};
+import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
+import anime from 'animejs';
+import nlp from 'compromise';
+
+function elementify(el){
+  // pipeline to vanillafy pragma objects to html elements
+  if (el instanceof Pragma) el = el.element;
+  if (!el.isPragmaElement) el = _e(el);
+  return el
+}
+
+// function getViewportHeight(){
+//   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+// }
+//
+// export function getRelativeScreen(el){
+//   el = elementify(el)
+//   let eee = _e(el)
+//   let rect = el.getBoundingClientRect()
+//   return  {
+//             top: rect.top, // has to be bigger than 0
+//             bottom: rect.bottom-getViewportHeight()// has to be smaller than
+//           }
+// }
+
+globalThis.lectorSpace = globalThis.lectorSpace || {};
+
+function isElementWithin(el, r={}){
+  let off = el.offset();
+  let elTop = off.top;
+  let elBot = off.top + el.rect().height;
+  return (elTop <= r.bot && elBot >= r.top) || (elTop <= r.top && elBot >= r.bot)
+}
+
+function isMostlyInScreen(el, percent=.5){
+  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  el = elementify(el);
+  return isOnScreen(el, percent*el.rect().height) // is 70% on screen
+}
+
+function isOnScreen(el, threshold=100){
+  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  el = elementify(el);
+  let winTop = window.scrollY;
+  let winBot = winTop + window.innerHeight;
+  let eee = isElementWithin(el, {top: winTop+threshold , bot: winBot-threshold});
+  return eee
+}
+
+function scrollTo(el, duration=200, threshold=200){
+  // behavior
+  // closer, will scroll little bit downwards or upwards
+  // until the element is in view for more than the threshold
+
+  //return new Promise(r => r())
+  //el = jqueryfy(el)
+  //
+
+  el = elementify(el);
+  return new Promise((resolve, reject) => {
+    const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+    const top = el.offset().top - threshold;
+    anime({
+      targets: body,
+      scrollTop: top,
+      duration: duration,
+      easing: 'easeInOutSine',
+    }).finished.then(() => {
+      setTimeout(resolve, 20);
+    });
+  })
+}
+
+
+
+function _onScroll(cb){
+  let last = 0;
+  let ticking = false;
+  document.addEventListener('scroll', function(e) {
+    let temp = last;
+    last = window.scrollY;
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        cb(last, last-temp);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+}
+
+function onScroll(cb){
+  if (!globalThis.lectorSpace.scrollChain){
+    util.createChains(globalThis.lectorSpace, 'scroll');
+    _onScroll((scroll, ds) => {
+      globalThis.lectorSpace.scrollChain.exec(scroll, ds);
+    });
+  }
+  globalThis.lectorSpace.onScroll(cb);
+}
+
+function _onScrollEnd(cb){
+
+  let scrollData = { s: null, ds: null };
+  let t;
+
+  onScroll((s, ds) => {
+    scrollData = {
+      s: s,
+      ds: ds
+    };
+
+    if (t) clearTimeout(t);
+
+    t = setTimeout(_ => {
+      cb(scrollData.s, scrollData.ds);
+    }, 50);
+  });
+}
+
+function onScrollEnd(cb){
+  if (!globalThis.lectorSpace.scrollEndChain){
+    util.createChains(globalThis.lectorSpace, 'scrollEnd');
+
+      _onScrollEnd((scroll, ds) => {
+        globalThis.lectorSpace.scrollEndChain.exec(scroll, ds);
+      });  
+  }
+  globalThis.lectorSpace.onScrollEnd(cb);
+}
+
+//export function onSlowScroll(cb, sensit=10){
+  //onScroll((_, dp) => {
+    //if (dp<=sensit) cb()
+  //})
+//}
+
+const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'eo', 'ep', 'eu', 'id', 'is', 'my', 'ne', 'od', 'oo', 'ot', 'sy', 'ur', 'ur', 'zo', 'pto', 'pyl', 'acr', 'aer', 'agr', 'ana', 'ant', 'apo', 'aut', 'bar', 'bio', 'cac', 'cat', 'cen', 'cen', 'con', 'cub', 'cyn', 'dec', 'dek', 'dem', 'dia', 'dox', 'eco', 'ego', 'eme', 'eos', 'epi', 'erg', 'eso', 'eth', 'eur', 'exo', 'geo', 'gen', 'hem', 'hal', 'hen', 'hex', 'hod', 'hol', 'hor', 'hor', 'hyo', 'hyp', 'ide', 'idi', 'iso', 'kil', 'lei', 'lep', 'lip', 'log', 'meg', 'mei', 'men', 'mer', 'mes', 'mim', 'mis', 'mit', 'mne', 'mon', 'myx', 'nes', 'nom', 'oct', 'oed', 'oen', 'omm', 'ont', 'opt', 'pan', 'pam', 'par', 'ped', 'pin', 'pis', 'pol', 'por', 'pro', 'rhe', 'sei', 'sit', 'syn', 'syl', 'sym', 'tax', 'the', 'the', 'tom', 'ton', 'top', 'tox', 'tri', 'ulo', 'uro', 'uro', 'xen', 'xer', 'zon', 'zyg', 'psil', 'prot', 'pros', 'amph', 'anem', 'anti', 'anth', 'arct', 'astr', 'athl', 'auto', 'basi', 'bibl', 'briz', 'brom', 'brom', 'call', 'carp', 'carp', 'cata', 'chir', 'cine', 'cirr', 'clad', 'clav', 'coel', 'copr', 'cosm', 'crep', 'cris', 'crit', 'cten', 'cyan', 'cycl', 'cyst', 'deca', 'deka', 'delt', 'derm', 'dexi', 'dino', 'dipl', 'ecto', 'endo', 'engy', 'eoso', 'etho', 'ethi', 'ethm', 'ethn', 'etym', 'fant', 'glia', 'gram', 'gymn', 'haem', 'hapl', 'heli', 'hemi', 'hept', 'herp', 'heur', 'hipp', 'home', 'horm', 'hyal', 'hydr', 'hygr', 'hypn', 'icos', 'kine', 'lamp', 'leps', 'leuc', 'leuk', 'lith', 'metr', 'meta', 'micr', 'myri', 'myth', 'narc', 'naut', 'necr', 'nect', 'nema', 'neur', 'noth', 'noto', 'oeco', 'ogdo', 'olig', 'onom', 'ophi', 'orch', 'orth', 'pach', 'paed', 'pale', 'path', 'patr', 'pect', 'pent', 'pept', 'peri', 'petr', 'phae', 'phag', 'pher', 'phil', 'phob', 'phon', 'phor', 'phos', 'phot', 'phyl', 'phys', 'plac', 'plas', 'plec', 'plut', 'pneu', 'poie', 'pole', 'poli', 'poli', 'poly', 'raph', 'rhag', 'rhig', 'rhin', 'rhiz', 'rhod', 'sarc', 'scel', 'scop', 'sema', 'siph', 'soma', 'soph', 'stea', 'steg', 'sten', 'stig', 'stom', 'styl', 'tach', 'tars', 'taur', 'tele', 'tele', 'temn', 'tetr', 'than', 'thus', 'ther', 'thym', 'thyr', 'trag', 'trit', 'trop', 'xiph', 'proct', 'ptych', 'amphi', 'arche', 'archi', 'arche', 'arist', 'arthr', 'bathy', 'batho', 'blenn', 'blast', 'botan', 'brady', 'bront', 'calli', 'calyp', 'cardi', 'centr', 'ceram', 'cerat', 'chlor', 'chore', 'chrom', 'chron', 'chrys', 'clast', 'clist', 'cochl', 'corac', 'cotyl', 'crani', 'cross', 'crypt', 'dendr', 'dodec', 'dynam', 'ennea', 'gastr', 'graph', 'heter', 'homal', 'hyper', 'klept', 'lekan', 'macro', 'melan', 'meter', 'morph', 'nephr', 'nomad', 'odont', 'organ', 'osteo', 'palae', 'palin', 'peran', 'phleg', 'phloe', 'phren', 'phryn', 'phyll', 'plagi', 'platy', 'plesi', 'pleth', 'pleur', 'pogon', 'polem', 'potam', 'rhabd', 'rhomb', 'scaph', 'schem', 'schis', 'scler', 'scoli', 'scept', 'scyph', 'selen', 'solen', 'sperm', 'sphen', 'spher', 'stern', 'stich', 'stoch', 'taeni', 'techn', 'therm', 'thyre', 'traum', 'trema', 'trich', 'troch', 'troph', 'xanth', 'psych', 'archae', 'brachi', 'brachy', 'bronch', 'cathar', 'cephal', 'chelon', 'cleist', 'cosmet', 'cylind', 'dactyl', 'deuter', 'dogmat', 'erythr', 'galact', 'hendec', 'ichthy', 'mening', 'myrmec', 'omphal', 'opisth', 'opoter', 'ornith', 'ostrac', 'persic', 'phalar', 'phaner', 'phragm', 'plinth', 'prasin', 'presby', 'rhynch', 'scalen', 'strept', 'stroph', 'thalam', 'theori', 'trachy', 'trapez', 'tympan', 'aesthet', 'anthrop', 'branchi', 'cleithr', 'epistem', 'parthen', 'phalang', 'pharmac', 'porphyr', 'sacchar', 'sphinct', 'stalact', 'stalagm', 'thalass', 'oesophag', 'ophthalm', 'physalid', 'pentecost', 'treiskaidek'];
+
+function crush(n) {
+  const xa = 1; const ya = 4; const xb = 7; const yb = 6; const xc = 8; const yc = 7; const xd = 16; const yd = 10;
+  if (n <= xa) return ya
+  if (n <= xb) return ((yb - ya) / (xb - xa)) * (n - xa) + ya
+  if (n <= xc) return ((yc - yb) / (xc - xb)) * (n - xb) + yb
+  return ((yd - yc) / (xd - xc)) * (n - xc) + yc
+}
+
+function generateDifficultyIndex(word) {
+  // returns 0-1 with 0 being not difficult at all
+  let d = 0;
+  let w = nlp(word.text);
+  if (w.has('#Verb')) {
+    d += .5;
+  }
+  if (w.has('#Acronym')) {
+    d += .8;
+  }
+  let greekF = howGreek(word.text);
+  if (greekF > 1) {
+    d += greekF / 10;
+  }
+  return Math.min(1, Math.min(d, 1));
+}
+
+function wordValue(word, d) {
+  return crush(word.text.length) * (d + 1)
+}
+
+function charsMsAt(wpm) {
+  const avgCharsInWord = 4.7;
+  return 1000 / ((wpm / 60) * avgCharsInWord)
+}
+
+function howGreek(word) {
+  let length = word.length;
+  if (length < 5) return 0
+  for (let prefix of greek_prefixes) {
+    if (prefix.length >= length - 3) return 0
+    if (prefix == word.substring(0, prefix.length)) return prefix.length
+  }
+  return 0
+}
+
+class PinkyPromise {
+  constructor(executor) {
+    let _reject = null;
+    let _resolve = null;
+    
+    const cancelablePromise = new Promise((resolve, reject) => {
+      _reject = reject;
+      _resolve = resolve;
+      return executor(resolve, reject);
+    });
+    cancelablePromise.cancel = _reject;
+    cancelablePromise.resolve = _resolve;
+
+    return cancelablePromise;
+  }
+}
+
+class Idle {
+  constructor(idleTime){
+    this.afkChain = new Map;
+    this.activeChain = new Map;
+    this.idleTime = idleTime;
+    this.isIdle = false;
+    
+    const events = [ 'load', 'mousemove'];
+
+    events.forEach( event => {
+      window.addEventListener(event, _ => this.reset());
+    });
+  }
+
+  generateActionKey(key){
+    if (key == null) key = this.afkChain.size;
+    return key
+  }
+  
+  onAfk(cb, key){
+    this.afkChain.set(this.generateActionKey(key), cb); 
+    return this
+  }
+  
+  onActive(cb, key){
+    this.activeChain.set(this.generateActionKey(key), cb); 
+    return this
+  }
+
+  reset(){
+    clearTimeout(this.t);
+    this.t = setTimeout(() => this.idle(), this.idleTime);  // time is in milliseconds
+    this.active();
+    return this
+  }
+  
+  idle(){
+    if (this.isIdle) return false
+    this.isIdle = true;
+    doMap(this.afkChain); 
+    return this
+  }
+
+  active(){
+    if (!this.isIdle) return false
+    this.isIdle = false; 
+    doMap(this.activeChain);
+    return this
+  }
+}
+
+
+
+function doMap(map){
+  for (const [ key, cb ] of map.entries()){
+      cb();
+  }
+}
+
+function wfyInner(desc){
+  if (!desc) return false
+  desc = _e(desc);
+  let txt = desc.textContent;
+  let inner = "";
+  for (let txt of desc.textContent.split(" ")){
+    // console.log(txt)
+    console.log(typeof txt);
+    let noWhiteSpace = txt.replace(/\s/g, "");
+    inner += noWhiteSpace.length!=0 ? "<w>"+txt.split(" ").join("</w> <w>")+"</w> " : txt;
+  }
+
+  desc.html(inner);
+}
+
+function wfyElement(element){
+  element = _e(element);
+  let nodes = element.findAll("*");
+  if (nodes.length == 0) return wfyInner(wfyInner(element))
+  nodes.forEach(desc => wfyElement(desc));
+}
+
+function wfy(element){
+  // console.log(`wfying ${JSON.stringify(element)}`)
+  element = _e(element);
+  // if (element.textContent.replaceAll(" ", "").length<1) return false
+  let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
+  if (txtNodes.length==0) return wfyElement(element)
+  // txtNodes.each((i, el) => {
+  //   wfy(el)
+  // })
+  txtNodes.forEach(el => wfy(el));
+  return true
+}
+
+// airway handles the start of the marker animation
+// the target is to make it as smooooooooooooooooth
+// as possible
+//
+//
+
+
+const conf = {
+  threshold: 8, // will run for the first 8 words
+  divider: 8 // the lower the slower the acceleration
+};
+
+function airway(time=0, session=0){
+  if (session > conf.threshold) return time
+  return (time*(conf.threshold - session))/conf.divider + time
+}
+
+function range(start, stop, step) {
+    var a = [start], b = start;
+    while (b < stop) {
+        a.push(b += step || 1);
+    }
+    return a;
+}
+
+var helpers = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  PinkyPromise: PinkyPromise,
+  Idle: Idle,
+  range: range,
+  isOnScreen: isOnScreen,
+  isMostlyInScreen: isMostlyInScreen,
+  scrollTo: scrollTo,
+  onScroll: onScroll,
+  crush: crush,
+  generateDifficultyIndex: generateDifficultyIndex,
+  wordValue: wordValue,
+  charsMsAt: charsMsAt,
+  wfy: wfy,
+  airway: airway
+});
+
+class PragmaLector extends Pragma {
+
+  constructor(){
+    super(arguments);
+  }
+
+  get lector(){
+    return this
+  }
+
+  get mark(){
+    return this._mark
+  }
+
+  set mark(m){
+    this.adopt(m);
+    this._mark = m;
+  }
+
+  get settings(){
+    return this._settings
+  }
+  set settings(s){
+    this.adopt(s);
+    this._settings = s;
+  }
+
+  get isReading(){
+    return this.w.isReading
+  }
+
+  get currentWord(){
+    return this.w.currentWord
+  }
+  get currentParent(){
+    return this.currentWord.parent
+  }
+
+  connectTo(w){
+    this.w = w;
+    this.add(w);
+
+    return this
+  }
+
+  removeWord(key){
+    console.log('> remove', key);
+    this.w.remove(key);
+  }
+
+  addWord(w, setIndex=true){
+    this.w.add(w);
+    if (setIndex){
+      this.w.value = w.key;
+    }
+
+    // w.do(_ => {
+    //   if (!w.dv) return 
+    //   console.log("W VALUE", w.value,w.dv)
+    //   // this.connectTo(this.w.next())
+    // })
+    // this.connect()
+    return this
+  }
+
+  toggle(){
+    if (this.isReading) return this.pause()
+    return this.read()
+  }
+
+  read(){
+    util.log("::LECTOR reading", this);
+    if (!this.w.hasKids) return console.error('nothing to read')
+    console.log(this.w);
+    this.w.read();
+  }
+
+  summonTo(n){
+    this.currentParent.value += n;
+    this.currentWord.summon();
+  }
+
+  goToNext(){ this.summonTo(+1); }
+  goToPre(){ this.summonTo(-1); }
+
+  pause(){
+    this.w.pause();
+  }
+
+  setFont(font){
+    console.log(this.w);
+    this.w.css(`font-family ${font}`);
+  }
+
+}
+
+class PragmaWord extends Pragma {
+
+  constructor(k){
+      super(k);
+      this.do(function(){
+        if (this.hasKids && this.parent){
+          // if (this.childMap.has(this.value)){
+          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
+          
+          this.parent.value = this.key; 
+          // + excess
+          // if (excess){
+          //   console.log("EXCESSSS", excess)
+          //   console.log(this.next)
+          //   if (this.isReading){
+          //     this.pause().then(_ => {
+          //       this.parent.read()
+          //     })
+          //   }
+          // }
+         
+        }
+      });
+  }
+  destroy(){
+    this.childMap = null;
+    return null
+  }
+
+  get lector(){
+    if (this.parent) return this.parent.lector
+    util.throwSoft('could not find lector for');
+  }
+
+  get txt(){
+    return this.text
+  }
+
+  get index(){
+    return parseInt(this.key)
+  }
+
+  get mark(){
+    if (this.parent) return this.parent.mark
+    return null
+  }
+
+  set mark(m){
+    if (this.parent) this.parent.mark = m;
+    return null
+  }
+
+  get isReading(){
+    return this.currentPromise != null
+  }
+
+  get currentWord(){
+    if (!this.hasKids) return this
+    // console.log(this.value)
+    // console.log(this.childMap)
+    // console.log(this.element, this.value, this.childMap, this.get(this.value))
+    let subW = this.get(this.value);
+    if (!subW) return util.throwSoft(`Could not find current Word of ${this.key}`)
+    return subW.currentWord
+  }
+
+  getFromBottom(n){
+    // get items from last
+    return this.get(this.kidsum-n)
+  }
+  sibling(n){
+    if (!this.parent) return null
+    let sib = this.parent.get(this.index+n);
+
+    // [1, 2, 3, 4, 5]
+    // [1, 2, 3, 4, 5]
+
+    if (!sib){
+
+      console.log(this.parent);
+      if (n < 0) return this.parent.sibling(-1).getFromBottom(n)
+      return this.parent.sibling(1).get(n)
+      // this.parent.sibling(-1).get(this.parent.sibling(-1).)
+      // this.parent.sibling(n > 0 ? 1 : -1).get(n)
+    }
+
+    return sib
+
+    // return this.parent ? this.parent.get(this.index + n) : null
+  }
+
+  get next() {
+    return this.sibling(1)
+  }
+  
+  get pre() {
+    return this.sibling(-1)
+  }
+
+  isInTheSameLine(n) {
+    return this.sibling(n) != null && ((this.sibling(n).top - this.top) ** 2 < 10)
+  }
+  get isFirstInLine() {
+    return !this.isInTheSameLine(-1)
+  }
+  get isLastInLine() {
+    return !this.isInTheSameLine(1)
+  }
+  time(wpm = 250) {
+    return charsMsAt(wpm) * wordValue(this, generateDifficultyIndex(this))
+  }
+  pause(){
+    return new PinkyPromise( resolve => {
+      if (this.currentPromise){
+        this.currentPromise.catch((e)=>{
+          //console.log("broke read chain")
+          this.mark.pause().catch(e => {
+            // this will trigger if mark is already pausing and not done yet
+            console.warn("prevent pause event from bubbling. Chill on the keyboard bro", e);
+          }).then(() => {
+            this.currentPromise = null;
+            resolve("done pausing");
+            console.log("- - - - - PAUSED - - - - - - - -");
+          });
+        });
+        this.currentPromise.cancel("pause");
+      } else { resolve("already paused"); }
+    })
+  }
+
+  set currentPromise(p){
+    if (this.parent) return this.parent.currentPromise = p
+    this.currentPromiseVal = new PinkyPromise((resolve, reject) => {
+      p.catch((e) => {
+        console.warn(e);
+        // this.currentPromiseVal = null
+        // reject(e)
+      }).then(() => {
+        // this.currentPromiseVal = null
+        resolve();
+        this.currentPromiseVal = null;
+      });
+    });
+  }
+
+  get currentPromise() {
+    return this.parent ? this.parent.currentPromise : this.currentPromiseVal
+  }
+
+  promiseRead(){
+    this.currentPromise = new PinkyPromise((resolve, reject) => {
+          // this.mark = "MARK V5 " + this.text() + this.key
+          // console.log(this.mark)
+          // console.log(this.text())
+          console.time(this.text);
+          this.mark.guide(this).then(() => {
+            console.timeEnd(this.text);
+            this.parent.value = this.index + 1;
+            resolve(` read [ ${this.text} ] `);
+          }).catch((e) => {
+            console.warn('rejected promise read', e);
+            reject(e);
+          });
+      });
+    // console.log(this.mark)
+    return this.currentPromise
+  }
+
+  read(){
+    if (this.currentPromise) return new Promise((resolve, reject) => {
+      resolve('already reading');
+    })
+
+    if (this.hasKids){
+      // recursive reading 
+      if (this.currentWord) return this.currentWord.read()
+      this.next.value = 0;
+      return this.next.read()
+    } 
+
+    this.promiseRead();
+    // console.log(this)
+    return new PinkyPromise(resolve => {
+      this.currentPromise.then(() => {
+       resolve();
+       this.currentPromise = null;
+       return this.parent.read()
+      }).catch(e => resolve('pause'));
+    })
+  }
+
+  summon(silent=false) {
+    if (this.hasKids) return false
+    console.log("SUMMONING", this);
+    return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
+      this.mark.mark(this, 50, true);
+      if (!silent) this.parent.value = this.index;
+    })
+  }
+}
+
+const reset = `border 0
+               border-radius 3px
+               z-index 10
+               opacity 1
+               mix-blend-mode darken;`;
+
+
+const modes = {
+  'hotbox': bg => `background ${bg}`,
+
+  'underneath': bg => ` background transparent
+                        border-bottom 3px solid ${bg}
+                        border-radius 4px`,
+
+  'faded': bg => `
+      background: rgb(255,255,255);
+      background: -moz-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+      background: -webkit-linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, ${ bg } 25%, ${ bg } 75%, rgba(255,255,255,0) 100%);
+    `
+};
+
+function grabMode(mode, bg) {
+  return reset + modes[mode](bg)
+}
+
+const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+  mode = (mode || 'hotbox').toString().toLowerCase();
+  let css = grabMode(mode, bg);
+  if (mark) mark.css(css);
+  return css
+};
+
+// mark is responsible for marking words in the screen
+
+const defaultStyles = `
+  position absolute
+  outline solid 0px red
+  background-color #ffdf6c
+  width 10px
+  height 20px
+  z-index 10
+  opacity 1
+  mix-blend-mode darken
+  border-radius 3px
+`;
+
+class PragmaMark extends Pragma {
+  constructor() {
+    super('marker');
+
+    this.element = _e("marker");
+    this.appendTo('body');
+    this.hide();
+    this.css(defaultStyles);
+
+    this.currentlyMarking = null;
+    window.addEventListener('resize', () => {
+      this.mark(this.last_marked, 0);
+    });
+
+    this.runningFor = 0;
+    this.pausing = false;
+
+    //this.idle = new Idle(8000)
+      //.onAfk(()=> {
+        //util.log('user is afk')
+        //this.shout()
+      //})
+      //.onActive(() => {
+        //util.log('user is back')
+        //this.shutUp()
+      //})
+  }
+  hide(){
+    if (this._hidden) return
+    this._hidden = true;
+    this.element.hide();
+  }
+  show(){
+    if (!this._hidden) return
+    this._hidden = false;
+    this.element.show();
+  }
+
+  set last_marked(n){
+    this.value = n;
+  }
+
+  get last_marked(){
+    return this.value
+  }
+
+  get settings() {
+    return this.parent ? this.parent.settings : console.error('mark has no settings attached')
+  }
+
+  get cw() {
+    return this._fovea * 30
+  }
+  
+  get wpm() { return this._wpm || 260 }
+  
+  setMode(mode){
+    this._mode = mode;
+    mode_ify(this);
+  }
+
+  setWpm(wpm){
+    this._wpm = wpm;
+  }
+
+  setColor(hex){
+    this._color = hex;
+    //this.css(`background-color ${hex}`)
+    mode_ify(this);
+  }
+
+  setFovea(val){
+    this._fovea = val;
+    this.css(`width ${this.cw}px`);
+  }
+
+  pause() {
+    return new Promise((resolve, reject) => {
+      if (this.pausing) return reject("already pausing")
+
+      this.pausing = true;
+
+      if (this.currentlyMarking && this.current_anime && this.last_marked) {
+        //console.log(this.current_anime.seek(1))
+        let temp = this.last_marked;
+        console.log('mark was running for', this.runningFor);
+        this.runningFor = 0;
+        //console.table(temp)
+        this.current_anime.complete();
+        this.current_anime.remove('marker');
+        //this.current_anime = null
+        this.mark(temp, 80, true).then(() => {
+          resolve("paused");
+        }).catch(e => {
+          reject("could not mark");
+        }).then(c => {
+          this.pausing = false;
+        });
+      }
+    })
+  }
+
+  moveTo(blueprint, duration, complete = (() => {})) {
+    this.show();
+    //this.shutUp() // clear any ui elements that direct attention to mark
+    if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
+    return new Promise((resolve, reject) => {
+      this.currentlyMarking = blueprint;
+      this.current_anime = anime({
+        targets: this.element,
+        left: blueprint.left,
+        top: blueprint.top,
+        height: blueprint.height,
+        width: blueprint.width,
+        easing: blueprint.ease || 'easeInOutExpo',
+        duration: duration,
+        complete: (anim) => {
+          this.currentlyMarking = null;
+          complete();
+          resolve();
+        }
+      });
+      // console.log(blueprint)
+      // console.log(this.current_anime)
+    })
+  }
+
+
+  mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
+    //console.log("marking", word)
+    if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error"); })
+    let w = fit ? word.width + 5 : this.cw;
+    //this.setWidth(w)
+    return this.moveTo({
+        top: word.top,
+        left: word.x(w),
+        height: word.height,
+        width: w,
+        ease: ease
+      }, time, () => {
+        //console.log(`FROM MARK -> marked ${word.text}`)
+        this.last_marked = word;
+        // word.parent.value = word.index
+      })
+  }
+
+  guide(word) {
+    if (!(word instanceof Pragma)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error"); })
+    return new PinkyPromise((resolve, reject) => {
+      let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear";
+      return this.moveTo({
+        top: word.top,
+        left: word.x(this.width) - word.width / 2,
+        height: word.height,
+        width: this.cw,
+        ease: first_ease
+      }, this.calcDuration(word, 1))
+        .then(() => {
+          this.last_marked = word;
+          this.runningFor += 1;
+          this.mark(word, this.calcDuration(word, 2), false, "linear").then(() => {
+            resolve();
+          });
+        })
+    })
+  }
+
+  calcDuration(word, dw=1){
+
+    /*  @dw - either 1 or 2
+      * 1. yee|t th|e green fox
+      * 2. yeet |the| green fox
+      * 1. yeet th|e gr|een fox
+      *
+      * The marking of "the"(and every word) happens in 2 instances. First mark
+      * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
+      * it will transition from "the" to "green" (1) etc...
+      *
+      * */
+
+    if (!(word instanceof Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
+    if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
+    if (word.isFirstInLine) return 500 // mark has to change line
+    if (!this.last_marked) return 0 // failsafe
+
+    const before_weight = .4;
+    const weight = dw==1 ? before_weight : 1 - before_weight;
+
+    let w = dw==1 ? this.last_marked : word;
+    //const filters = [(d) => { return d*weight }]
+
+    let duration = w.time(this.wpm);
+    const filters = [(d) => { return d*weight }, airway];
+
+
+    filters.forEach(f => {
+      //console.log(f, duration, this.runningFor)
+      //console.log(duration, f(duration, this.runningFor))
+       duration = f(duration, this.runningFor);
+    });
+
+    return duration
+    //return airway(duration)*weight// TODO make this a chain of callbacks
+  }
+}
+
+function paginator(pageTemplate, conf={}){
+  return new Pragma()
+        .from(util.createTemplate({
+          // make this nicer
+          // defaultSet: pageTemplate,
+          pageTemplate: pageTemplate,
+          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified'); },
+          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
+          onFetch: conf.onFetch,
+
+          onPageAdd: null,
+          onPageRender: null,
+          //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page); },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page); },
+        }))
+
+        .run(function(){
+
+          let _ptemp = _e(this.pageTemplate).hide();
+          this.pageTemplate = _ptemp.cloneNode(false);
+
+          this._clonePage = function() {
+            let page = _e(this.pageTemplate.cloneNode(false)).show();
+            //if (this._lastAddedPage){
+              ////page.style.height = this._lastAddedPage.height
+              //page.css(`height ${this._lastAddedPage.height}px`)
+              //console.log('>>>>>>>>>>>>>>>>>>>>', this._lastAddedPage.height)
+            //}
+            this.adopt(page);
+            page.lec = this.parent;
+            util.createEventChains(page, 'fetch');
+            return page
+          };
+
+          this.create = function(val=this.value, action='append'){
+            // console.log('creating', val, action)
+            let cloned = this._clonePage();
+
+            new Promise( resolve => {
+
+              this.onCreate(cloned, val);
+
+              let f = this.fetch(val);
+
+              let onFetch = conf.onFetch ||
+                        function(page, fetched){
+                          page.html(fetched);
+                          resolve(page);
+                        };
+
+                        // on fetch in config or the default one
+              //
+              const onFetchAndResolve = (resolved) => {
+                let page = this.pages.get(val);
+                if (page){
+                  onFetch(page, resolved);
+                  resolve(page);
+                }
+              };
+
+              if (f instanceof Promise){
+                f.then(resolved => {
+                  onFetchAndResolve(resolved);
+                });
+              } else {
+                  onFetchAndResolve(f);
+              }
+
+              //if (f instanceof Promise){
+                //f.then(resolved => {
+                  //this.pages.get(val)
+                  //onFetch(cloned, resolved)
+                  //resolve(val)
+                //})
+              //} else {
+                //onFetch(cloned, f)
+                //resolve(val)
+              //}
+
+            }).then( page => {
+              //let page = this.pages.get(index)
+              //if (!page) return console.log('eeeeeeeeeee')
+              page.fetchChain.exec();
+              if (this.onPageRender) this.onPageRender(page, val);
+              //this._lastAddedPage = page
+            });
+
+            cloned[`${action}To`](this.parent.element);
+            this.addPage(cloned, val);
+          };
+
+          this.pages = new Map();
+
+          this.destroy = function(val){
+            //console.log('>> destroy', val)
+
+            let toDestroy = this.pages.get(val);
+
+            let destroy = _ => {
+              toDestroy = this.pages.get(val);
+              //toDestroy.destroy()
+              this.delPage(val);
+              toDestroy.destroy();
+            };
+
+            if (this.onPageDestroy){
+              let r = this.onPageDestroy(toDestroy, val);
+              if (r instanceof Promise) return r.then(destroy)
+            }
+
+            destroy();
+          };
+
+          this.addPage = function(page, key){
+            key = key === null ? this.pages.size : key;
+            if (this.onPageAdd) this.onPageAdd(page, key);
+            this.pages.set(key, page);
+          };
+
+          this.delPage = function(key){
+            return this.pages.delete(key)
+          };
+
+          this.activate = function(...pages){
+            pages.forEach(pageIndex => {
+              let page = this.pages.get(pageIndex);
+              if (!page) return
+              page.active = true;
+              this.onPageActive(page, pageIndex);  
+            });
+          };
+
+          this.inactivate = function(...pages){
+            pages.forEach(pageIndex => {
+              let page = this.pages.get(pageIndex);
+              if (!page) return
+              page.active = false;
+              this.onPageInactive(page, pageIndex);
+            });
+          };
+          
+      
+          this.export(
+            "pageTemplate",
+            "_clonePage",
+            "create",
+            'destroy',
+            "pages",
+            "addPage",
+            "delPage",
+            'activate',
+            'inactivate');
+        })
+}
+
+function infinityPaginator(streamer, pageTemplate, config={}){
+  let inf = _p("infinity paginator")
+        .from(
+          paginator(pageTemplate, util.objDiff(
+            {
+              streamer: streamer,
+              fetch: streamer.fetch,
+              // on page render
+              // on page active
+
+              // on page inactive,
+              // on page add,
+              // on create,
+              // on fetch
+            }, config)
+          )
+        )
+        .setValue(0)
+        .run({
+          initialConfig(){
+
+            this._watching = true;
+            const conf = {
+              headspace: 10,
+              timeout: 5 
+            };
+
+            this.fill = function(){
+
+              this.fetching = true;
+              // console.log(">>> FILLING WITH", this.value)
+              let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
+              let pageRange = range(start, this.value+conf.headspace);
+              let pagesRendered = Array.from(this.pages.keys());
+
+              let pagesToRender = util.aryDiff(pageRange, pagesRendered);
+              let pagesToDelete = util.aryDiff(pagesRendered, pageRange);
+
+
+              let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
+              let pagesToRenderBefore = util.aryDiff(pagesToRender, pagesToRenderAfter);
+
+              // console.log(">> ALREADY RENDERED", pagesRendered)
+               console.log(">> DEL", pagesToDelete);
+               //console.log(">> ADD", pagesToRender) 
+               console.log(">> ADD AFTER", pagesToRenderAfter);
+               console.log(">> ADD BEFORE", pagesToRenderBefore);
+
+              // pararellize?
+              runAsync(
+                _ => {
+                  for (let pageIndex of pagesToRenderAfter){
+                    this.create(pageIndex, 'append');
+                  }  
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToRenderBefore.reverse()){
+                    this.create(pageIndex, 'prepend');
+                  }
+                },
+                _ => {
+                  // pararellize?
+                  for (let pageIndex of pagesToDelete){
+                    //this.inactivate(pageIndex)
+                    //this.pages.get(pageIndex).css("background:red")
+                    this.destroy(pageIndex);
+                  }
+                }
+              );
+              setTimeout(a => {
+                this.fetching = false;
+                console.log(this.pages);
+              }, conf.timeout);
+          };
+        }, scrollSetup(){
+          // this.goTo()
+          this.goTo = function (val, speed) {
+            let _actionKey = `add-${this.value}`;
+            let paginator = this;
+
+            if (this.value != val) this.value = val;
+            let page = this.pages.get(val);
+
+            page.onRender(function () {
+              paginator._watching = false;
+              scrollTo(page, speed || 20).then(() => {
+                paginator._watching = true;
+              });
+            });
+          };
+
+          this.export('goTo');
+        },
+        findActivePages(){
+
+          function findCandidates(pages, scroll){
+            let bestIndex = null;
+            let best = 999999999999;
+            const middle = scroll + window.innerHeight/2;
+            // console.log(pages)
+            for (let [pageIndex, page] of pages){
+              let pageMiddle = page.top + page.height/2;
+              let closeness = Math.abs(pageMiddle - middle);
+              // console.log(page, pageIndex, closeness)
+              if (closeness <= best){
+                best = closeness;
+                bestIndex = pageIndex;
+              }
+            }
+
+            return bestIndex
+          }
+          
+          this.findActivePage = function(s, dp){
+            // dp is the rate of change of scroll
+            
+            // console.log(canditates)
+            //if (this.fetching) return
+            //
+            return new PinkyPromise(resolve => {
+              resolve(findCandidates(this.pages, s));
+              //let canditates
+              //util.bench(_ => canditates = findCandidates(this.pages, s))
+              ////resolve(canditates)
+              //setTimeout(_ => resolve(canditates), 5)
+            })
+          };
+
+          let searching = false;
+          let owe = false;
+          const doOnScroll= (pos, dp) => {
+            if (this.fetching || !this._watching) return 
+            if (searching) return owe = { pos: pos, dp: dp }
+
+            searching = true;
+            this.findActivePage(pos, dp).then(active => {
+              // console.log("ACTIVE>>", active, this.pages.get(active))
+              this.value = active;
+              searching = false;
+              if (owe){
+                // console.log('owe', owe)
+                doOnScroll(owe.pos, owe.dp);
+                owe = null;
+              }
+            });
+          };
+
+          onScrollEnd((pos, dp) => {
+            doOnScroll(pos, dp);
+          });
+          
+          // optimization for fast scroll
+          onScroll((pos, dp) => {
+            if (Math.abs(dp) > 40){
+              if (pos < 350) doOnScroll(pos, dp);
+            }
+          });
+          
+          //onScroll((pos, dp) => {
+            //if (pos < 300){
+              //doOnScroll(pos, dp)
+            //}
+          //})
+
+        }
+      })
+      .do(function(){
+        if (this.dv === 0) return
+        this.activate(this.value);
+        let preVal = this.value-(this.dv||1);
+        this.inactivate(preVal);
+
+        this.fill();
+      });
+
+  return inf
+}
+
+const defaults = {
+  onOptionCreate: function(self, option){
+    self.contain(option);
+  },
+  optionTemplate: function(option){
+      return _p(option)
+              .html(option)
+              .addClass('pragma-click')
+              .on('click').do(function(){
+                this.parent.value = this.key;
+              })
+  }
+};  
+
+
+const select = (conf) => _p()
+    //.from(util.createTemplate())
+    .run(function(){
+      let options = conf.options;
+      if (!options) return util.throwSoft('need to define options when creating a select template')
+
+      let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate;
+      let optionTemplate = conf.optionTemplate || defaults.optionTemplate; 
+
+      if (options.constructor === Array){
+        for (let el of options){
+          onOptionCreate(this, optionTemplate(el));
+        }
+      }else {
+        for (let [ key, val ] of Object.entries(options)){
+          const pair = {[key]: val};
+          onOptionCreate(this, optionTemplate(key, val), pair);
+        }
+      }
+
+      this.onExport(function(pragma) {
+        pragma.contain(...this.children);
+      });
+      this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
+    });
+
+var full = "@charset \"utf-8\";body{background-color:#232323}";
+var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+var css = {
+	full: full,
+	slider: slider,
+	main: main
+};
+
+util.addStyles(css.slider);
+  
+function slider$1(conf={}){
+  
+  
+  this._n = function(){ 
+    let range = this.range || { min: 1, max: 100};
+    return 100/(range.max||100-range.min||1)
+  };
+
+
+  this.do(function(){
+    this.element.setData({ value: this.value});
+    this._setBarTo(this.value*this._n());
+  });
+
+  this._setBarTo = wp => {
+    this._bar.css(`width ${wp}%`);
+    this._thumb.offset();
+  };
+
+  this._clipValue = perc => {
+    let v = Math.round(perc/this._n());
+    if (this._lv !== v) {
+      this.value = v;
+    }
+    //console.log(this.value)
+  };
+  
+  this._input = _e('div.').addClass('pragma-slider-bg');
+  this._bar = _e('div.')
+    .addClass('pragma-slider-bar');
+  
+  this._thumb = _e('div.pragma-slider-thumb');
+  this._bar.append(this._thumb);
+
+  this._input.append(this._bar);
+  
+
+  let onDown = function(){
+    this._clicked = true;
+  };
+
+  this._input.listenTo('mousedown', onDown);
+  this._thumb.listenTo('mousedown', onDown);
+  
+  document.addEventListener('mouseup', ()=> {
+    this._input._clicked = false;
+  });      
+  
+  let ticking = false;
+
+  document.addEventListener("mousemove", yx => {
+    if (this._input._clicked && !ticking) {
+      window.requestAnimationFrame(() => {
+        ticking = false;
+        let w = yx.pageX-this._input.offset().left;
+        let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100);
+        this._clipValue(wp);
+      });
+      ticking = true;
+    }
+  });
+
+  this.adopt(this._input);
+  this.append(this._input);
+  this.element.addClass('pragma-slider');
+}
+
+function input(conf = {}) {
+    return new Pragma()
+        .from(util.createTemplate(conf))
+        .run({
+            makeChains(){
+                util.createChains(this, 'userInput');
+            },
+            makeInput () {
+                this.input = _e(`<input type='text'></input>`)
+                    .addClass('pragma-input-text');
+
+                this.setValue = function(v){
+                    let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v;
+                    if (newVal === this._lv) return 
+
+                    this.value = newVal;
+
+                    if (this.value != newVal){
+                        this.updateFront();
+                    }
+                    return this
+                };
+
+                this.input.listenTo('focus', function(){
+                    this.parent._listenToEsc = document.addEventListener('keydown', k => {
+                        if (k.key === 'Enter'){
+                            this.blur();
+                        }
+                    });
+                });
+                
+                this.input.listenTo('focusout', function(){
+                    this.parent.setValue(this.value);
+                    this.parent.userInputChain.exec(this.parent.value);
+                    document.removeEventListener('keydown', this.parent._listenToEsc);
+                });
+
+                this.export(
+                    'actionChain',
+                    'input',
+                    'setValue',
+                    'userInputChain',
+                    'onUserInput');
+
+                this.onExport(pragma => {
+                    // pragma.adopt(this.input)
+                    pragma.adopt(this.input);
+                    pragma.append(this.input);
+                });
+            },
+        
+            extend(){
+                this.updateFront = function(val=this.value){
+                    this.input.value = val;
+                    this.input.placeholder = val;
+                };
+                this.export('updateFront');
+            }
+        })
+        .do(function(){
+            this.updateFront(this.value);
+        })
+
+        .run(function(){
+            this.setInputAttrs = function(attrs){
+                for (let [key, val] of Object.entries(attrs)){
+                    this.input.attr(key, val);
+                }
+                return this
+            };
+
+            this.setValueSanitizer = function(cb){
+                this.valueSanitizer = cb;
+                return this
+            };
+            this.export('setInputAttrs', 'setValueSanitizer');
+          })
+}
+
+function withLabel(conf = {}) {
+    this.setLabel = function(html){
+        this._label.html(html);
+        return this
+    };
+    
+    this._label = _e('div.pragma-label', conf.label);
+    this.append(this._label);    
+}
+
+function _createIdler(timeout, afk, active) {
+    let _idler = new Idle(timeout)
+      .onAfk(()=> {
+        console.log('user is afk');
+        if (afk) afk();
+        // this.shout()
+      })
+      .onActive(() => {
+        console.log('user is back');
+        if (active) active();
+        // this.shutUp()
+    });
+    return _idler
+}
+
+function idler(){
+    util.createChains(this, 'idle', 'active');
+
+    this.setIdleTime = function(time=5000){
+        this._idler = _createIdler(time, () => {
+            this.idleChain.exec();
+        }, () => {
+            this.activeChain.exec();
+        });
+        return this
+    };
+    
+    this.extend('onIdle', function(){
+        this._onIdle(...arguments);
+        return this
+    });
+
+    this.extend('onActive', function(){
+        this._onActive(...arguments);
+        return this
+    });
+}
+
+class Scaler extends Pragma {
+    constructor(target){
+        super();
+        this.target = target;
+
+        this.value = 1.0;
+        this.do(function(){
+            this.scaleTo(this.value);
+        });
+        this.setRange(0, 50);
+    }
+    
+    setTarget(n) { this.target = n; return this }
+    
+    scaleUp(){
+        this.value-= 0.1;
+    }
+    
+    scaleDown(){
+        this.value-= 0.1;
+    }
+    
+    scaleTo(to){
+        this.target.css(`transform scale(${to})`);
+    }
+}
+
+//scaler(element){
+    //this.target = element
+
+    //this
+//}
+
+const colorsHumanFriendly = {
+    "#a8f19a": 'bez', 
+    "#eddd6e": 'roz', 
+    "#edd1b0": 'mua', 
+    "#96adfc": 'fua'
+};
+const colors = Object.keys(colorsHumanFriendly);
+const fonts = ["Helvetica", "Open Sans", "Space Mono"];
+const modes$1 = ["HotBox", "Underneath", "Faded"];
+
+var shc = {
+  wpmPlus: ['+', '='],
+  wpmMinus: ['-'],
+
+  pageNext: ']',
+  pagePre: '['
+};
+
+function activate(self, key){
+  self.find(key).addClass('active')
+                .removeClass('inactive');
+}
+
+function deactivate(self, key){
+  self.find(key).removeClass('active')
+                .addClass('inactive');
+}
+
+const labelify = (option, val) => `<span class='option-title'>${option}:</span> ${val}`;
+function lecLabel(){
+  this.run(withLabel);
+  this._labelTemplate = v => v;
+
+  this.setLabelTemplate = function(lbt){
+    this._labelTemplate = lbt;
+    return this
+  };
+  this.setLabelName = function(lb){
+    this._labelName = lb;
+    return this
+  };
+  this.do(function(){
+    let v = this._labelTemplate(this.value);
+    this.setLabel(labelify(this._labelName, v));
+  });
+}
+
+const activeSelectTpl = (conf={}) => _p()
+  .from(select(util.objDiff({
+    onOptionCreate: (self, el) => {
+      self.contain(el);
+      el.addClass('option');
+      deactivate(self, el.key);
+    }
+  }, conf)))
+  .addClass('active-select-template')
+  .do(function(){
+    if (this.value === this._lv) return
+    activate(this, this.value);
+    if (this._lv) deactivate(this, this._lv);
+  });
+
+function lectorSettings(lector){
+
+
+  // let icons = new IconBuilder()
+  // icons.default.fill = "white"
+
+  //const tippyOption = {
+                        //theme: 'lector-settings',
+                        //arrow: false,
+                        //hideOnClick: false
+                      //}
+  //
+  // let foveaComp = Slider.value("markerfovea", 1, 10)
+  //     .bind(">", (comp) => { comp.value+=1 }, 'keyup')
+  //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
+  //     .html.class("slider")
+
+  const actions = {
+    changeColor(hex=this.value){
+      modeComp.update(hex);
+      foveaComp.update(hex);
+      lector.mark.setColor(hex);
+    },
+
+    changeFovea(fovea=this.value){
+      lector.mark.setFovea(fovea);
+    },
+
+    changeWpm(wpm=this.value){
+      lector.mark.setWpm(wpm); 
+    },
+
+    changeFont(font=this.value){
+      lector.setFont(font);
+    },
+
+    changeMode(mode=this.value){
+      lector.mark.setMode(mode); 
+    },
+
+    changePage(page=this.value){
+      if (lector.paginator) lector.paginator.goTo(page); 
+    }
+  };
+
+  let settings = _p("settingsWrapper")
+                  .addClass("items-center", 'lector-settings')
+
+                  .run(function(){
+                    this.value = {};
+
+                    this._setVal = function(edit){
+                      this.value = util.objDiff(this.value, edit);
+                    };
+
+                    this.set = function(edit){
+                     this._setting = true; 
+                      for (let [key, val] of Object.entries(edit)){
+                        let child = this.find('!'+key);
+                        if (child) child.value = val;
+                      }
+                     this._setting = false;
+                    };
+                    
+                    this.get = function(key){
+                      return this.value[key] 
+                    };
+                  });
+                  //.do(function(){
+                    //console.log('set value', this.value)
+                  //})
+
+  let foveaComp = _p("!fovea")
+                  .addClass('section')
+                  .run(lecLabel, slider$1) // label
+                  .setRange(2, 10)
+                  .setValue(5)
+                  .setLabelName('Pointer Width')
+                  .do(actions.changeFovea)
+                  .run(function(){
+                    this.update = function(bg){
+                      this._bar.css(`background-color ${bg}`);
+                    };
+                  });
+                  
+
+
+  let modeComp = _p('!mode')
+                  .from(activeSelectTpl({
+                    options: modes$1,
+                    optionTemplate: option => _p(option)
+                        .css(`width 35px;
+                              height 20px;
+                         `)
+                        .on('click').do(function(){
+                          this.parent.value = this.key;
+                        })
+                        .run(function(){
+                          this.update = bg => {
+                            mode_ify(this, option, bg);
+                            this.css('mix-blend-mode normal');  
+                          };
+                        })
+                  }))
+                  .run(function(){
+                    this.update = function(bg){
+                      this.children.forEach(child => child.update(bg));
+                    };
+                  })
+                  .run(lecLabel)
+                  .setLabelName('Pointer mode')
+                  .addClass('section')
+                  .do(actions.changeMode);
+
+  let colorsComp = _p('!color')
+                  .from(activeSelectTpl({
+                    options: colors,
+                    optionTemplate: option => {
+                      return _p(option)
+                              .css(`
+                                width 25px
+                                height 25px
+                                border-radius 25px
+                                background-color ${option} 
+                              `)
+                              .on('click').do(function(){
+                                this.parent.value = this.key;
+                              })
+                    }
+                  }))
+                  .addClass('section')
+                  .run(lecLabel)
+                  .setLabelName('Pointer Color')
+                  .setLabelTemplate(v => colorsHumanFriendly[v])
+                  .do(actions.changeColor);
+
+
+  let fontComp = _p('!font')
+                  .run(function(){
+                    console.log(this.key);
+                  })
+                  .from(activeSelectTpl({
+                    options: fonts,
+                    optionTemplate: option => _p(option)
+                              .html("Aa")
+                              .css(`font-family ${option}`)
+                              .on('click').do(function(){
+                                this.parent.value = this.key;
+                              })
+                  }))
+                  .css(`flex-direction row`)
+                  .addClass('section')
+                  .do(actions.changeFont);
+
+  let wpmComp = _p("!wpm")
+                  .import(input)
+                  .run(withLabel)
+                  .addClass('settings-input', 'section')
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
+                  .setValueSanitizer(
+                    v => parseInt(v)
+                  )
+                  .setId('wpm')
+                  .setLabel('wpm')
+                  .setRange(40, 4200)
+                  .setValue(250)
+                  .bind(shc.wpmPlus, function(){ this.value+=10; })
+                  .bind(shc.wpmMinus, function(){ this.value-=10; })
+                  .do(actions.changeWpm);
+  
+  let pageComp = _p("!page")
+                  .import(input)
+                  .run(withLabel)
+                  .setInputAttrs({
+                    maxlength: 4,
+                    size: 4
+                  })
+                  .addClass('settings-input', 'section')
+                  .setValueSanitizer(
+                    v => parseInt(v)
+                  )
+                  .setLabel('page')
+                  .run(function(){
+                    util.createChains(this, 'userEdit');
+
+                    this.editValue = function(val){
+                      this.value = val;  
+                      this.userEditChain.exec(this.value);
+                    };
+
+                    this.onUserEdit(actions.changePage);
+                  })
+                  // .do(actions.changePage
+                  .run(function(){
+                    this.onUserInput(val => {
+                      // console.log(val)
+                      this.editValue(val);
+                    });
+                  })
+                  .setValue(1)
+                  .bind(shc.pageNext, function(){
+                    this.editValue(this.value+1);
+                  }, 'keyup')
+                  .bind(shc.pagePre, function(){
+                    this.editValue(this.value-1);
+                  }, 'keyup');
+                  
+                  //.do(actions.changePage)
+
+  //const comps = [colorsComp, fontComp, foveaComp, modeComp]
+
+  //comps.forEach(comp => {
+    //comp.do(function(){
+      //console.log(this.key, this.value)
+    //})
+  //})
+  let miniSettings = _p('mini-settings')
+    .addClass('lector-mini-settings')
+    .contain(pageComp)
+    .pragmatize();
+  
+  let popUpSettings = _p("popupsettings")
+        .contain(
+          fontComp.setId('font'), 
+          colorsComp.setId('color'), 
+          modeComp.setId('mode'),
+          foveaComp.setId('fovea'),) 
+        .run(function(){
+          this.show = function(){
+            this.hidden = false;
+            this.element.show();
+          };
+          this.hide = function(){
+            this.hidden = true;
+            this.element.hide();
+          };
+          this.toggle = function(){
+            this.hidden ? this.show() : this.hide();
+          };
+
+          this.show();
+        })
+        .bind("h", function() { this.toggle(); });
+// 
+// pageComp
+  settings.contain(popUpSettings, wpmComp);
+  settings.adopt(miniSettings);
+  
+  const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
+
+  let fader = _p('fader')
+    .run(idler, function(){
+      this.elements = [];
+      this.include =function(){
+        this.elements = this.elements.concat(Array.from(arguments));
+        return this
+      };
+    })
+    .setIdleTime(3000)
+    .include(settings, miniSettings)
+    .onIdle(function(){
+      this.elements.forEach(element => {
+        element.css('opacity 0');
+      });
+      // this.css('opacity 0')
+    })
+    .onActive(function(){
+      this.elements.forEach(element => element.css('opacity 1'));
+    });
+  
+  settings.fader = fader;
+
+  settings.allChildren.forEach(child => {
+    if (listenTo_(child)){
+      child.do(_ => settings._setVal({[child.key.substring(1)]: child.value}));
+    }
+  });
+  
+  settings.do(function(){
+    if (!this._setting){
+      console.log('syncing',this.value);
+    }
+  });
+
+  settings.set({
+    'color': colors[1],
+    'font': fonts[1],
+    'mode': modes$1[2],
+    'fovea': 4,
+    'wpm': 420
+  });
+ 
+  return settings.pragmatize()
+}
+
+// TODO add more default options
+const default_options = {
+  wfy: true,
+  pragmatizeOnCreate: true,
+  experimental: false,
+  settings: false,
+  defaultsStyles: true
+};
+
+const Mark = (lec) => {
+  let mark = new PragmaMark();
+
+  function logger(w){
+  }
+
+  // auto scroll feature
+  // TODO put somewhere else
+  let scrollingIntoView = false;
+  let usersLastScroll = 0;
+
+  function userIsScrolling(){
+    return usersLastScroll - Date.now() > -10
+  }
+
+  function autoScroll(w){
+    //return
+    if (userIsScrolling() || isOnScreen(mark.element) || scrollingIntoView) return false
+    // else we're out of view
+
+    scrollingIntoView = true;
+
+    let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
+    // TODO  make a class Chain that does this.
+    // Chain.add(cb), Chain.do() to execute and shit
+    if (lec.isReading){
+      lec.pause();
+      cbs.push(() => {
+        lec.read();
+      });
+    }
+
+    cbs.push(()=>{
+      //console.warn("suck my diiiiiiiiiick")
+    });
+
+    //console.warn("mark is out of screen")
+    //console.log('lec reading:', lec.isReading)
+
+    scrollTo(mark).then(() => {
+      cbs.forEach(cb => cb());
+      scrollingIntoView = false;
+    });
+  }
+
+  const threshold = 40; // how fast should you scroll to pause the pointer
+  let lastScroll = 0;
+  onScroll(s => {
+    usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
+    // console.log('user is scrolling', userIsScrolling())
+
+    if (userIsScrolling() && lec.isReading){
+      let dscroll = Math.abs(lastScroll-s);
+      lastScroll = s;
+      if (dscroll>threshold){
+        // console.log('ds=', dscroll)
+        // TODO prevent from calling pause to many times
+        // on too fast scroll, pause mark
+        lec.pause();
+      }
+    }
+  });
+
+  mark.on('mouseover', function(){
+    console.log(this, 'hover');
+  });
+
+  mark.do(logger, autoScroll);
+  return mark
+};
+
+//console.log(_e("#div").deepQueryAll.toString())
+const Word = (element, i) => {
+  let w = new PragmaWord(i)
+          .as(element)
+          .setValue(0);
+
+  // new Promise(_ => {
+    let thisw = w.element.deepQueryAll('w');
+    // console.timeLog('deepQuery')
+    if (i && thisw.length === 0) {
+      w.addListeners({
+        "click": function(e, comp){
+          this.summon();
+        }
+      });
+    }
+
+    thisw.forEach((el, i) => {
+      let ww = Word(el, i);
+      w.add(ww);
+    });
+    // console.log('async done')
+  // })
+
+  // console.log('w done')
+  return w
+};
+
+const Reader = (l, options=default_options) => {
+  l = _e(l);
+  if (options.wfy) wfy(l);
+  let w = Word(l);
+
+  let lec = new PragmaLector("lector")
+              .as(l)
+              .setValue(0)
+              .connectTo(w);
+  
+  lec.mark = Mark(lec);
+  if (options.settings) lec.settings = lectorSettings(lec);
+
+
+  function bindKeys(){
+    lec.bind("right", _ => lec.goToNext());
+    lec.bind("left", _ => lec.goToPre());
+
+    lec.bind("space", _ => false, 'keydown'); // dont trigger the dumb fucken scroll thing
+    lec.bind("space", function(){
+      this.toggle();
+      return false
+    }, 'keyup');
+
+  }
+
+  function experiment(){
+    if (globalThis.pragmaSpace.mousetrapIntegration){
+        bindKeys();
+    }
+  }
+
+  if (options.pragmatizeOnCreate) lec.pragmatize();
+  if (options.experimental) experiment();
+
+  return lec
+};
+
+function _needWrapper(op){
+    return op.stream || op.paginate
+}
+
+
+function _streamer(sf){
+  return _p('streamer')
+          .setValue(0)
+          .run(function(){
+            this.fetch = sf;
+            this.getContent = function(){
+              return this.fetch(this.value)
+            };
+          })
+
+}
+
+const Lector = (l, options=default_options) => {
+  if (!_needWrapper(options)) return Reader(l, options)
+
+  util.log("configuration appears to be a bit more complicated");
+
+  if (options.defaultStyles){
+    util.addStyles(css.main);
+  }
+
+  if (options.fullStyles){
+    util.addStyles(css.full);
+  }
+
+  if (!options.experimental) util.throwSoft('EXPERIMENTAL FEATURES TURNED OFF');
+  let lector;
+
+  if (options.stream &&
+      options.paginate &&
+      options.paginate.from === 'stream' &&
+      options.paginate.as === 'infiniteScroll'){
+
+    util.log('setting up streamer service');
+
+    let streamer = _streamer(options.stream);
+    let paginator = infinityPaginator(streamer, l, options.paginate.config || {});
+
+    // let reader = _p()
+    //               .as(_e(l).parentElement)
+
+    // console.log('creating new lector')
+    // console.log(l)
+    // console.log(_e(l).parentElement)
+    // let options = util.objDiff({ skip: true })
+    lector = Reader(_e(l).parentElement, options)
+                  .adopt(paginator, streamer);
+
+    lector.paginator = paginator;
+    if (lector.settings){
+      console.log("lector has settings! connecting paginator's value to pagecomp");
+      let pageComp = lector.settings.find('!page');
+      pageComp.wireTo(lector.paginator);
+    }
+    console.log('paginator', paginator);
+
+    paginator.fill();
+    // return lector
+  }
+
+  
+  {
+    // let _scaler = _p().run(_ext.scaler)
+    let _scaler = new Scaler(lector.element);
+    lector.adopt(_scaler);
+    // _scaler.setTarget(lector.element)
+    console.log('scaler', _scaler);
+    
+    _scaler.scaleUp();
+    
+  }
+
+
+  
+  return lector
+};
+
+function globalify(){
+  const attrs = {
+    Lector: Lector,
+    Word: Word,
+    _e: _e,
+    _p: _p,
+    util: util,
+    lecUtil: helpers,
+    _thread: _thread
+  };
+
+  for (let [key, val] of Object.entries(attrs)){
+    globalThis[key] = val;
+  }
+}
+
+export { Lector, Word, globalify, helpers };

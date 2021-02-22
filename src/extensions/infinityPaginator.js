@@ -83,7 +83,8 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
           this.goTo = function (val, speed) {
             let _actionKey = `add-${this.value}`
             let paginator = this
-            this.value = val
+
+            if (this.value != val) this.value = val
             let page = this.pages.get(val)
 
             page.onRender(function () {

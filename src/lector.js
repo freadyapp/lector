@@ -183,8 +183,10 @@ export const Lector = (l, options=default_options) => {
     util.addStyles(css.full)
   }
 
-  if (options.experimental &&
-      options.stream &&
+  if (!options.experimental) util.throwSoft('EXPERIMENTAL FEATURES TURNED OFF')
+  let lector
+
+  if (options.stream &&
       options.paginate &&
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
@@ -201,7 +203,7 @@ export const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    let lector = Reader(_e(l).parentElement, options)
+    lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
 
     lector.paginator = paginator
@@ -213,7 +215,22 @@ export const Lector = (l, options=default_options) => {
     console.log('paginator', paginator)
 
     paginator.fill()
-    return lector
-
+    // return lector
   }
+
+  
+  if (true||options.scaler){
+    // let _scaler = _p().run(_ext.scaler)
+    let _scaler = new _ext.Scaler(lector.element)
+    lector.adopt(_scaler)
+    // _scaler.setTarget(lector.element)
+    console.log('scaler', _scaler)
+    
+    _scaler.scaleUp()
+    
+  }
+
+
+  
+  return lector
 }
