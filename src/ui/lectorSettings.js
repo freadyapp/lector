@@ -242,8 +242,9 @@ export default function lectorSettings(lector){
                       this.userEditChain.exec(this.value)
                     }
 
-                    this.onUserEdit(actions.changePage)
+                    // this.onUserEdit(actions.changePage)
                   })
+                  .do(actions.changePage)
                   .run(function(){
                     this.onUserInput(val => {
                       // console.log(val)
