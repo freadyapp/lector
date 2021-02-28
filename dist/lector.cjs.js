@@ -328,15 +328,15 @@ function range(start, stop, step) {
 
 function isClickWithin(click, el){
     el = _e(el);
-    let left = el.offset().left;
-    let top = el.offset().top;
+    let left = el.rect().x;
+    let top = el.rect().y;
     let width = el.rect().width;
     let height = el.rect().height;
 
     console.log(click, el.offset());
    
-    let _x =  left < click.pageX && left + width > click.pageX;
-    let _y =  top < click.pageY && top + height > click.pageY;
+    let _x =  left < click.x && left + width > click.x;
+    let _y =  top < click.y && top + height > click.y;
   
     return _x && _y
   }
@@ -1584,6 +1584,9 @@ function lectorSettings(lector){
     changeColor(hex=this.value){
       modeComp.update(hex);
       foveaComp.update(hex);
+      _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+        e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
+      });
       lector.mark.setColor(hex);
     },
 
@@ -1681,7 +1684,37 @@ function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeMode);
 
-  
+
+
+           
+  function popUpEditor(){
+    this.setPopupEditor = function(popup){
+      this._popupEditor = popup;
+      this._popupEditor.addClass(`displayN`);
+      return this
+    };
+
+    this.element.listenTo('click', click =>{
+      this._popped = click;
+      this._popupEditor.removeClass(`displayN`);
+    });
+
+    this.element.onRender(() => {
+      let self = this;
+      document.addEventListener('click', function _onClick(click){
+        console.log(click, self._popped);
+        if (self._popped === click){
+          // if click event was used to pop the menu, skip
+          return null
+        }
+        if (!isClickWithin(click, self._popupEditor)){
+          self._popupEditor.addClass(`displayN`);      
+        }
+      });
+    });
+  }
+
+    
   let setColor = pragmajs._p('!color')
                   .from(activeSelectTpl({
                     options: colors,
@@ -1708,35 +1741,29 @@ function lectorSettings(lector){
                   .do(actions.changeColor);
 
 
+
+
   let colorIcon = pragmajs._p().as(_e(icons['color-icon']));
-  let colorMonitor = pragmajs._p('monitor').as(_e('div.'))
-                    .addClass(`color-indicator`);
-                    
+  let colorMonitor = pragmajs._p('monitor')
+                    .as(_e('div.'))
+                    .addClass(`color-indicator`)
+                    .setData({ 'lectorMarkerColor': 'background' });
 
   let colorsComp = pragmajs._p().contain(colorIcon, colorMonitor, setColor)
-                  .run(function(){
-                    this.on('click').do(() => {
-                      setColor.removeClass(`displayN`);
-                      console.log(`parent removed class`);
-                    });
-                    setColor.addClass(`displayN`);
-                  })
                   .addClass(`setting`)
                   .css(`position relative`)
-                  .run(function(){
-                    this.element.onRender(() => {
-                      let self = this;
-                      document.addEventListener('click', function _onClick(click){
-                        if (!isClickWithin(click, self.element)){
-                          console.log(`tits`);
-                          setColor.addClass(`displayN`);      
-                        }
-                      });
-                    });
-                  });
+
+                  .run(popUpEditor)
+                  .setPopupEditor(setColor);
 
 
-  let fontComp = pragmajs._p('!font')
+
+  let fontIcon = pragmajs._p().as(_e(icons['fovea-icon']));
+
+  let fontMonitor = pragmajs._p('monitor')
+                    .addClass('font-indicator');
+
+  let setFont = pragmajs._p('!font')
                   .run(function(){
                     console.log(this.key);
                   })
@@ -1749,9 +1776,15 @@ function lectorSettings(lector){
                                 this.parent.value = this.key;
                               })
                   }))
-                  .css(`flex-direction row; display none`)
-                  .addClass('section')
+                  .css(`flex-direction row`)
+                  .addClass('section', `selector`)
                   .do(actions.changeFont);
+                
+  let fontComp = pragmajs._p()
+                  .contain(fontIcon, fontMonitor, setFont)
+                  .run(popUpEditor)
+                  .setPopupEditor(setFont);
+
 
   let wpmComp = pragmajs._p("!wpm")
                   .run(input, withLabel)
@@ -1924,14 +1957,18 @@ function lectorSettings(lector){
     }
   });
 
-  settings.set({
-    'color': colors[1],
-    'font': fonts[1],
-    'mode': modes$1[2],
-    'fovea': 4,
-    'wpm': 420
-  });
- 
+  setTimeout(() => {
+    // simulate websocket event
+    settings.set({
+      'color': colors[1],
+      'font': fonts[1],
+      'mode': modes$1[2],
+      'fovea': 4,
+      'wpm': 420
+    });
+   
+  }, 900);
+  
   return settings.pragmatize()
 }
 

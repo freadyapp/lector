@@ -74,6 +74,9 @@ export default function lectorSettings(lector){
     changeColor(hex=this.value){
       modeComp.update(hex)
       foveaComp.update(hex)
+      _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+        e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
+      })
       lector.mark.setColor(hex)
     },
 
@@ -171,7 +174,37 @@ export default function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeMode)
 
-  
+
+
+           
+  function popUpEditor(){
+    this.setPopupEditor = function(popup){
+      this._popupEditor = popup
+      this._popupEditor.addClass(`displayN`)
+      return this
+    }
+
+    this.element.listenTo('click', click =>{
+      this._popped = click
+      this._popupEditor.removeClass(`displayN`)
+    })
+
+    this.element.onRender(() => {
+      let self = this
+      document.addEventListener('click', function _onClick(click){
+        console.log(click, self._popped)
+        if (self._popped === click){
+          // if click event was used to pop the menu, skip
+          return null
+        }
+        if (!isClickWithin(click, self._popupEditor)){
+          self._popupEditor.addClass(`displayN`)      
+        }
+      })
+    })
+  }
+
+    
   let setColor = _p('!color')
                   .from(activeSelectTpl({
                     options: colors,
@@ -198,35 +231,29 @@ export default function lectorSettings(lector){
                   .do(actions.changeColor)
 
 
+
+
   let colorIcon = _p().as(_e(icons['color-icon']))
-  let colorMonitor = _p('monitor').as(_e('div.'))
+  let colorMonitor = _p('monitor')
+                    .as(_e('div.'))
                     .addClass(`color-indicator`)
-                    
+                    .setData({ 'lectorMarkerColor': 'background' })
 
   let colorsComp = _p().contain(colorIcon, colorMonitor, setColor)
-                  .run(function(){
-                    this.on('click').do(() => {
-                      setColor.removeClass(`displayN`)
-                      console.log(`parent removed class`)
-                    })
-                    setColor.addClass(`displayN`)
-                  })
                   .addClass(`setting`)
                   .css(`position relative`)
-                  .run(function(){
-                    this.element.onRender(() => {
-                      let self = this
-                      document.addEventListener('click', function _onClick(click){
-                        if (!isClickWithin(click, self.element)){
-                          console.log(`tits`)
-                          setColor.addClass(`displayN`)      
-                        }
-                      })
-                    })
-                  })
+
+                  .run(popUpEditor)
+                  .setPopupEditor(setColor)
 
 
-  let fontComp = _p('!font')
+
+  let fontIcon = _p().as(_e(icons['fovea-icon']))
+
+  let fontMonitor = _p('monitor')
+                    .addClass('font-indicator')
+
+  let setFont = _p('!font')
                   .run(function(){
                     console.log(this.key)
                   })
@@ -239,9 +266,15 @@ export default function lectorSettings(lector){
                                 this.parent.value = this.key
                               })
                   }))
-                  .css(`flex-direction row; display none`)
-                  .addClass('section')
+                  .css(`flex-direction row`)
+                  .addClass('section', `selector`)
                   .do(actions.changeFont)
+                
+  let fontComp = _p()
+                  .contain(fontIcon, fontMonitor, setFont)
+                  .run(popUpEditor)
+                  .setPopupEditor(setFont)
+
 
   let wpmComp = _p("!wpm")
                   .run(input, withLabel)
@@ -414,14 +447,18 @@ export default function lectorSettings(lector){
     }
   })
 
-  settings.set({
-    'color': colors[1],
-    'font': fonts[1],
-    'mode': modes[2],
-    'fovea': 4,
-    'wpm': 420
-  })
- 
+  setTimeout(() => {
+    // simulate websocket event
+    settings.set({
+      'color': colors[1],
+      'font': fonts[1],
+      'mode': modes[2],
+      'fovea': 4,
+      'wpm': 420
+    })
+   
+  }, 900)
+  
   return settings.pragmatize()
 }
 
