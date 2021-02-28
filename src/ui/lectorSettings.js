@@ -218,6 +218,7 @@ export default function lectorSettings(lector){
                       let self = this
                       document.addEventListener('click', function _onClick(click){
                         if (!isClickWithin(click, self.element)){
+                          console.log(`tits`)
                           setColor.addClass(`displayN`)      
                         }
                       })

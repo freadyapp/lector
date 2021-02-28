@@ -332,9 +332,11 @@ function isClickWithin(click, el){
     let top = el.offset().top;
     let width = el.rect().width;
     let height = el.rect().height;
+
+    console.log(click, el.offset());
    
-    let _x =  left < click.x && left + width > click.x;
-    let _y =  top < click.y && top + height > click.y;
+    let _x =  left < click.pageX && left + width > click.pageX;
+    let _y =  top < click.pageY && top + height > click.pageY;
   
     return _x && _y
   }
@@ -1726,6 +1728,7 @@ function lectorSettings(lector){
                       let self = this;
                       document.addEventListener('click', function _onClick(click){
                         if (!isClickWithin(click, self.element)){
+                          console.log(`tits`);
                           setColor.addClass(`displayN`);      
                         }
                       });
