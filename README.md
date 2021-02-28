@@ -35,6 +35,7 @@ yarn dev-style
 
 ### Run: 
 ```bash
+	virtualenv .lector_env
 	source setup
 	yarn dev-style
 ```
