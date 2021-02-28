@@ -8,6 +8,7 @@
 	"main": "dist/lector.cjs.js",
 	"module": "dist/lector.esm.js",
 	"browser": "dist/lector.umd.js",
+
 	"files": [
 		"dist/"
 	],
@@ -71,9 +72,5 @@
 		"setupFiles": [
 			"<rootDir>/tests/test_env.js"
 		]
-	},
-	"resolutions": {
-		"lectorjs": "portal:/Users/robo/Documents/Fready/lector",
-		"pragmajs": "portal:/Users/robo/Documents/Fready/pragmajs"
 	}
 }
