@@ -17,3 +17,16 @@ export function range(start, stop, step) {
     }
     return a;
 }
+
+export function isClickWithin(click, el){
+    el = _e(el)
+    let left = el.offset().left
+    let top = el.offset().top
+    let width = el.rect().width
+    let height = el.rect().height
+   
+    let _x =  left < click.x && left + width > click.x
+    let _y =  top < click.y && top + height > click.y
+  
+    return _x && _y
+  }

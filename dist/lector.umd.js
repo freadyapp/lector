@@ -16131,11 +16131,25 @@
       return a;
   }
 
+  function isClickWithin(click, el){
+      el = _e(el);
+      let left = el.offset().left;
+      let top = el.offset().top;
+      let width = el.rect().width;
+      let height = el.rect().height;
+     
+      let _x =  left < click.x && left + width > click.x;
+      let _y =  top < click.y && top + height > click.y;
+    
+      return _x && _y
+    }
+
   var helpers = /*#__PURE__*/Object.freeze({
     __proto__: null,
     PinkyPromise: PinkyPromise,
     Idle: Idle,
     range: range,
+    isClickWithin: isClickWithin,
     isOnScreen: isOnScreen,
     isMostlyInScreen: isMostlyInScreen,
     scrollTo: scrollTo,
@@ -17490,6 +17504,7 @@
                       }
                     }))
                     .addClass('section', `selector`)
+                    
                     //.run(lecLabel)
                     //.setLabelName('Pointer Color')
                     //.setLabelTemplate(v => colorsHumanFriendly[v])
@@ -17504,13 +17519,24 @@
     let colorsComp = W().contain(colorIcon, colorMonitor, setColor)
                     .run(function(){
                       this.on('click').do(() => {
-                        setColor.toggleClass(`displayN`);
-                        console.log('yoiiiiii');
+                        setColor.removeClass(`displayN`);
+                        console.log(`parent removed class`);
                       });
                       setColor.addClass(`displayN`);
                     })
                     .addClass(`setting`)
-                    .css(`position relative`);
+                    .css(`position relative`)
+                    .run(function(){
+                      this.element.onRender(() => {
+                        let self = this;
+                        document.addEventListener('click', function _onClick(click){
+                          if (!isClickWithin(click, self.element)){
+                            setColor.addClass(`displayN`);      
+                          }
+                        });
+                      });
+                    });
+
 
     let fontComp = W('!font')
                     .run(function(){

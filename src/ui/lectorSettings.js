@@ -7,6 +7,8 @@ import shc from "../config/shortcuts.config"
 
 import icons from './icons.json'
 
+import { isClickWithin} from "../helpers/index"
+
 function activate(self, key){
   self.find(key).addClass('active')
                 .removeClass('inactive')
@@ -189,6 +191,7 @@ export default function lectorSettings(lector){
                     }
                   }))
                   .addClass('section', `selector`)
+                  
                   //.run(lecLabel)
                   //.setLabelName('Pointer Color')
                   //.setLabelTemplate(v => colorsHumanFriendly[v])
@@ -203,13 +206,24 @@ export default function lectorSettings(lector){
   let colorsComp = _p().contain(colorIcon, colorMonitor, setColor)
                   .run(function(){
                     this.on('click').do(() => {
-                      setColor.toggleClass(`displayN`)
-                      console.log('yoiiiiii')
+                      setColor.removeClass(`displayN`)
+                      console.log(`parent removed class`)
                     })
                     setColor.addClass(`displayN`)
                   })
                   .addClass(`setting`)
                   .css(`position relative`)
+                  .run(function(){
+                    this.element.onRender(() => {
+                      let self = this
+                      document.addEventListener('click', function _onClick(click){
+                        if (!isClickWithin(click, self.element)){
+                          setColor.addClass(`displayN`)      
+                        }
+                      })
+                    })
+                  })
+
 
   let fontComp = _p('!font')
                   .run(function(){
