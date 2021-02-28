@@ -48,7 +48,7 @@
 		"pretest": "npm run build",
 		"test": "jest",
 		"test:watch": "jest --watchAll",
-		"dev-style": "nodemon -w 'src/styles/**' -e css,scss --exec ./sass",
+		"dev-style": "nodemon -w 'src/styles/**' -e css,scss --exec python3 sass",
 		"dev": "rollup -c -w",
 		"lint": "yarn run eslint src",
 		"watch": "watchify docs/demo.js -t babelify -o docs/bundle.js -v"
