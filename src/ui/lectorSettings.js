@@ -38,20 +38,37 @@ function lecLabel(){
   })
 }
 
-const activeSelectTpl = (conf={}) => _p()
-  .from(select(util.objDiff({
+function activeSelectTpl(conf){
+  select.bind(this)(util.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el)
       el.addClass('option')
       deactivate(self, el.key)
     }
-  }, conf)))
-  .addClass('active-select-template')
+  }, conf))
+
+  this.addClass('active-select-template')
   .do(function(){
     if (this.value === this._lv) return
     activate(this, this.value)
     if (this._lv) deactivate(this, this._lv)
   })
+}
+
+// const activeSelectTpl = (conf={}) => _p()
+//   .from(select(util.objDiff({
+//     onOptionCreate: (self, el) => {
+//       self.contain(el)
+//       el.addClass('option')
+//       deactivate(self, el.key)
+//     }
+//   }, conf)))
+//   .addClass('active-select-template')
+//   .do(function(){
+//     if (this.value === this._lv) return
+//     activate(this, this.value)
+//     if (this._lv) deactivate(this, this._lv)
+//   })
 
 export default function lectorSettings(lector){
 
@@ -93,7 +110,11 @@ export default function lectorSettings(lector){
     },
 
     changeMode(mode=this.value){
-      lector.mark.setMode(mode) 
+      lector.mark.setMode(mode)
+      _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+        mode_ify(e, mode, lector.mark._color)
+        // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
+      })
     },
 
     changePage(page=this.value){
@@ -147,32 +168,7 @@ export default function lectorSettings(lector){
                   
 
 
-  let modeComp = _p('!mode')
-                  .from(activeSelectTpl({
-                    options: modes,
-                    optionTemplate: option => _p(option)
-                        .css(`width 35px;
-                              height 20px;
-                         `)
-                        .on('click').do(function(){
-                          this.parent.value = this.key
-                        })
-                        .run(function(){
-                          this.update = bg => {
-                            mode_ify(this, option, bg)
-                            this.css('mix-blend-mode normal')  
-                          }
-                        })
-                  }))
-                  .run(function(){
-                    this.update = function(bg){
-                      this.children.forEach(child => child.update(bg))
-                    }
-                  })
-                  .run(lecLabel)
-                  .setLabelName('Pointer mode')
-                  .addClass('section')
-                  .do(actions.changeMode)
+  
 
 
 
@@ -204,25 +200,80 @@ export default function lectorSettings(lector){
     })
   }
 
+
+  let modeIcon = _p().as(_e(icons['mode-icon']))
+  let modeMonitor = _p('monitor')
+                    .as(_e('div.'))
+                    .addClass('mode-indicator')
+                    .setData({ 'lectorMarkerMode': 'true' })
+
+
+  let setMode = _p('!mode')
+                  .run(function(){
+                    activeSelectTpl.bind(this)({
+                    options: modes,
+                    optionTemplate: option => _p(option)
+                        .css(`
+                              width 35px;
+                              height 20px;
+                         `)
+                        .on('click').do(function(){
+                          this.parent.value = this.key
+                        })
+                        .run(function(){
+                          this.update = function(bg){
+                            mode_ify(this, option, bg)
+                            
+                            this.css('mix-blend-mode normal;')  
+                          }
+                        })
+                      
+                  })
+                })
+                  .run(function(){
+                    this.update = bg => {
+                      console.log('my options', this.getOptions())
+                      this.getOptions().forEach(option => option.update(bg))
+                      console.log(this.children)
+                    }
+                  })
+                  // .run(lecLabel)
+                  // .setLabelName('Pointer mode')
+                  .addClass('section', 'selector')
+                  .do(actions.changeMode)
+
+  let modeComp = _p().contain(modeIcon, modeMonitor, setMode)
+                    .addClass(`setting`)
+                    .css(`position relative`)
+                    .run(function() {
+                      this.update = setMode.update
+                    })
+
+                    .run(popUpEditor)
+                      .setPopupEditor(setMode)
+
     
   let setColor = _p('!color')
-                  .from(activeSelectTpl({
-                    options: colors,
-                    optionTemplate: option => {
-                      return _p(option)
-                              .css(`
-                                width 25px
-                                height 25px
-                                border-radius 25px
-                                margin-top 5px
-                                margin-bottom 5px
-                                background-color ${option} 
-                              `)
-                              .on('click').do(function(){
-                                this.parent.value = this.key
-                              })
-                    }
-                  }))
+                  .run(
+                    function(){
+                      activeSelectTpl.bind(this)({
+                      options: colors,
+                      optionTemplate: option => {
+                        return _p(option)
+                                .css(`
+                                  width 25px
+                                  height 25px
+                                  border-radius 25px
+                                  margin-top 5px
+                                  margin-bottom 5px
+                                  background-color ${option} 
+                                `)
+                                .on('click').do(function(){
+                                  this.parent.value = this.key
+                                })
+                      }
+                    })
+                  })
                   .addClass('section', `selector`)
                   
                   //.run(lecLabel)
@@ -244,36 +295,36 @@ export default function lectorSettings(lector){
                   .css(`position relative`)
 
                   .run(popUpEditor)
-                  .setPopupEditor(setColor)
+                    .setPopupEditor(setColor)
 
 
 
-  let fontIcon = _p().as(_e(icons['fovea-icon']))
+  // let fontIcon = _p().as(_e(icons['fovea-icon']))
 
-  let fontMonitor = _p('monitor')
-                    .addClass('font-indicator')
+  // let fontMonitor = _p('monitor')
+  //                   .addClass('font-indicator')
 
-  let setFont = _p('!font')
-                  .run(function(){
-                    console.log(this.key)
-                  })
-                  .from(activeSelectTpl({
-                    options: fonts,
-                    optionTemplate: option => _p(option)
-                              .html("Aa")
-                              .css(`font-family ${option}`)
-                              .on('click').do(function(){
-                                this.parent.value = this.key
-                              })
-                  }))
-                  .css(`flex-direction row`)
-                  .addClass('section', `selector`)
-                  .do(actions.changeFont)
+  // let setFont = _p('!font')
+  //                 .run(function(){
+  //                   console.log(this.key)
+  //                 })
+  //                 .from(activeSelectTpl({
+  //                   options: fonts,
+  //                   optionTemplate: option => _p(option)
+  //                             .html("Aa")
+  //                             .css(`font-family ${option}`)
+  //                             .on('click').do(function(){
+  //                               this.parent.value = this.key
+  //                             })
+  //                 }))
+  //                 .css(`flex-direction row`)
+  //                 .addClass('section', `selector`)
+  //                 .do(actions.changeFont)
                 
-  let fontComp = _p()
-                  .contain(fontIcon, fontMonitor, setFont)
-                  .run(popUpEditor)
-                  .setPopupEditor(setFont)
+  // let fontComp = _p()
+  //                 .contain(fontIcon, fontMonitor, setFont)
+  //                 .run(popUpEditor)
+  //                   .setPopupEditor(setFont)
 
 
   let wpmComp = _p("!wpm")
@@ -386,7 +437,7 @@ export default function lectorSettings(lector){
   
   let popUpSettings = _p("popupsettings")
         .contain(
-          fontComp.setId('font'), 
+          //fontComp.setId('font'), 
           colorsComp.setId('color'), 
           modeComp.setId('mode'),
           foveaComp.setId('fovea'),) 
@@ -457,7 +508,7 @@ export default function lectorSettings(lector){
       'wpm': 420
     })
    
-  }, 900)
+  }, 1200)
   
   return settings.pragmatize()
 }

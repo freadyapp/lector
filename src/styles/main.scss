@@ -95,6 +95,12 @@
     border-radius: 50%;
   }
 
+  .mode-indicator {
+    mix-blend-mode: normal !important;
+    width: 35px;
+    height: 25px;
+  }
+
   .displayN {
     display: none;
   }

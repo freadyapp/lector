@@ -17051,6 +17051,7 @@
 
   const defaults$1 = {
     onOptionCreate: function(self, option){
+      
       self.contain(option);
     },
     optionTemplate: function(option){
@@ -17064,35 +17065,72 @@
   };  
 
 
-  const select = (conf) => W()
-      //.from(util.createTemplate())
-      .run(function(){
-        let options = conf.options;
-        if (!options) return E.throwSoft('need to define options when creating a select template')
+  //  const select = (conf) => _p()
+  //     //.from(util.createTemplate())
+  //     .run(function(){
+  //       // this._options = []
+        
+  //       let options = conf.options
+  //       if (!options) return util.throwSoft('need to define options when creating a select template')
 
-        let onOptionCreate = conf.onOptionCreate || defaults$1.onOptionCreate;
-        let optionTemplate = conf.optionTemplate || defaults$1.optionTemplate; 
+  //       let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate
+  //       let optionTemplate = conf.optionTemplate || defaults.optionTemplate 
 
-        if (options.constructor === Array){
-          for (let el of options){
-            onOptionCreate(this, optionTemplate(el));
-          }
-        }else {
-          for (let [ key, val ] of Object.entries(options)){
-            const pair = {[key]: val};
-            onOptionCreate(this, optionTemplate(key, val), pair);
-          }
-        }
+  //       if (options.constructor === Array){
+  //         for (let el of options){
+  //           onOptionCreate(this, optionTemplate(el))
+  //         }
+  //       }else{
+  //         for (let [ key, val ] of Object.entries(options)){
+  //           const pair = {[key]: val}
+  //           onOptionCreate(this, optionTemplate(key, val), pair)
+  //         }
+  //       }
 
-        this.onExport(function(pragma) {
-          pragma.contain(...this.children);
-        });
-        this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
-      });
+  //       this.onExport(function(pragma) {
+  //         pragma.contain(...this.children)
+  //         pragma.getOptions = function(){
+  //           console.log(pragma.children)
+  //           return pragma.children.filter(child => child._isOption)
+  //         }
+  //       })
+  //       this.export('elementDOM', 'actionChain', 'exportChain', 'exports', '_options')
+  //     })
+
+  function select(conf){
+    // this._options = []
+    
+    let options = conf.options;
+    if (!options) return E.throwSoft('need to define options when creating a select template')
+
+    let onOptionCreate = conf.onOptionCreate || defaults$1.onOptionCreate;
+    let optionTemplate = conf.optionTemplate || defaults$1.optionTemplate; 
+
+    if (options.constructor === Array){
+      for (let el of options){
+        let option = optionTemplate(el);
+        option._isOption = true;
+
+        onOptionCreate(this, option);
+      }
+    }else {
+      for (let [ key, val ] of Object.entries(options)){
+        const pair = {[key]: val};
+        onOptionCreate(this, optionTemplate(key, val), pair);
+      }
+    }
+
+    // this.onExport(function(pragma) {
+      // pragma.contain(...this.children)
+      this.getOptions = function(){
+        console.log(this.children);
+        return this.children.filter(child => child._isOption)
+      };
+  }
 
   var full = "@charset \"utf-8\";body{background-color:#161616}";
   var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;position:absolute;left:155px;top:-80px;background-color:#393939;width:fit-content;border-radius:5px}.lector-settings .setting{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .displayN{display:none}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;position:absolute;left:155px;top:-80px;background-color:#393939;width:fit-content;border-radius:5px}.lector-settings .setting{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .displayN{display:none}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
   var css = {
   	full: full,
   	slider: slider,
@@ -17353,20 +17391,37 @@
     });
   }
 
-  const activeSelectTpl = (conf={}) => W()
-    .from(select(E.objDiff({
+  function activeSelectTpl(conf){
+    select.bind(this)(E.objDiff({
       onOptionCreate: (self, el) => {
         self.contain(el);
         el.addClass('option');
         deactivate(self, el.key);
       }
-    }, conf)))
-    .addClass('active-select-template')
+    }, conf));
+
+    this.addClass('active-select-template')
     .do(function(){
       if (this.value === this._lv) return
       activate(this, this.value);
       if (this._lv) deactivate(this, this._lv);
     });
+  }
+
+  // const activeSelectTpl = (conf={}) => _p()
+  //   .from(select(util.objDiff({
+  //     onOptionCreate: (self, el) => {
+  //       self.contain(el)
+  //       el.addClass('option')
+  //       deactivate(self, el.key)
+  //     }
+  //   }, conf)))
+  //   .addClass('active-select-template')
+  //   .do(function(){
+  //     if (this.value === this._lv) return
+  //     activate(this, this.value)
+  //     if (this._lv) deactivate(this, this._lv)
+  //   })
 
   function lectorSettings(lector){
 
@@ -17408,7 +17463,11 @@
       },
 
       changeMode(mode=this.value){
-        lector.mark.setMode(mode); 
+        lector.mark.setMode(mode);
+        _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+          mode_ify(e, mode, lector.mark._color);
+          // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
+        });
       },
 
       changePage(page=this.value){
@@ -17462,32 +17521,7 @@
                     
 
 
-    let modeComp = W('!mode')
-                    .from(activeSelectTpl({
-                      options: modes$1,
-                      optionTemplate: option => W(option)
-                          .css(`width 35px;
-                              height 20px;
-                         `)
-                          .on('click').do(function(){
-                            this.parent.value = this.key;
-                          })
-                          .run(function(){
-                            this.update = bg => {
-                              mode_ify(this, option, bg);
-                              this.css('mix-blend-mode normal');  
-                            };
-                          })
-                    }))
-                    .run(function(){
-                      this.update = function(bg){
-                        this.children.forEach(child => child.update(bg));
-                      };
-                    })
-                    .run(lecLabel)
-                    .setLabelName('Pointer mode')
-                    .addClass('section')
-                    .do(actions.changeMode);
+    
 
 
 
@@ -17519,25 +17553,80 @@
       });
     }
 
+
+    let modeIcon = W().as(_e(icons['mode-icon']));
+    let modeMonitor = W('monitor')
+                      .as(_e('div.'))
+                      .addClass('mode-indicator')
+                      .setData({ 'lectorMarkerMode': 'true' });
+
+
+    let setMode = W('!mode')
+                    .run(function(){
+                      activeSelectTpl.bind(this)({
+                      options: modes$1,
+                      optionTemplate: option => W(option)
+                          .css(`
+                              width 35px;
+                              height 20px;
+                         `)
+                          .on('click').do(function(){
+                            this.parent.value = this.key;
+                          })
+                          .run(function(){
+                            this.update = function(bg){
+                              mode_ify(this, option, bg);
+                              
+                              this.css('mix-blend-mode normal;');  
+                            };
+                          })
+                        
+                    });
+                  })
+                    .run(function(){
+                      this.update = bg => {
+                        console.log('my options', this.getOptions());
+                        this.getOptions().forEach(option => option.update(bg));
+                        console.log(this.children);
+                      };
+                    })
+                    // .run(lecLabel)
+                    // .setLabelName('Pointer mode')
+                    .addClass('section', 'selector')
+                    .do(actions.changeMode);
+
+    let modeComp = W().contain(modeIcon, modeMonitor, setMode)
+                      .addClass(`setting`)
+                      .css(`position relative`)
+                      .run(function() {
+                        this.update = setMode.update;
+                      })
+
+                      .run(popUpEditor)
+                        .setPopupEditor(setMode);
+
       
     let setColor = W('!color')
-                    .from(activeSelectTpl({
-                      options: colors,
-                      optionTemplate: option => {
-                        return W(option)
-                                .css(`
-                                width 25px
-                                height 25px
-                                border-radius 25px
-                                margin-top 5px
-                                margin-bottom 5px
-                                background-color ${option} 
-                              `)
-                                .on('click').do(function(){
-                                  this.parent.value = this.key;
-                                })
-                      }
-                    }))
+                    .run(
+                      function(){
+                        activeSelectTpl.bind(this)({
+                        options: colors,
+                        optionTemplate: option => {
+                          return W(option)
+                                  .css(`
+                                  width 25px
+                                  height 25px
+                                  border-radius 25px
+                                  margin-top 5px
+                                  margin-bottom 5px
+                                  background-color ${option} 
+                                `)
+                                  .on('click').do(function(){
+                                    this.parent.value = this.key;
+                                  })
+                        }
+                      });
+                    })
                     .addClass('section', `selector`)
                     
                     //.run(lecLabel)
@@ -17559,36 +17648,36 @@
                     .css(`position relative`)
 
                     .run(popUpEditor)
-                    .setPopupEditor(setColor);
+                      .setPopupEditor(setColor);
 
 
 
-    let fontIcon = W().as(_e(icons['fovea-icon']));
+    // let fontIcon = _p().as(_e(icons['fovea-icon']))
 
-    let fontMonitor = W('monitor')
-                      .addClass('font-indicator');
+    // let fontMonitor = _p('monitor')
+    //                   .addClass('font-indicator')
 
-    let setFont = W('!font')
-                    .run(function(){
-                      console.log(this.key);
-                    })
-                    .from(activeSelectTpl({
-                      options: fonts,
-                      optionTemplate: option => W(option)
-                                .html("Aa")
-                                .css(`font-family ${option}`)
-                                .on('click').do(function(){
-                                  this.parent.value = this.key;
-                                })
-                    }))
-                    .css(`flex-direction row`)
-                    .addClass('section', `selector`)
-                    .do(actions.changeFont);
+    // let setFont = _p('!font')
+    //                 .run(function(){
+    //                   console.log(this.key)
+    //                 })
+    //                 .from(activeSelectTpl({
+    //                   options: fonts,
+    //                   optionTemplate: option => _p(option)
+    //                             .html("Aa")
+    //                             .css(`font-family ${option}`)
+    //                             .on('click').do(function(){
+    //                               this.parent.value = this.key
+    //                             })
+    //                 }))
+    //                 .css(`flex-direction row`)
+    //                 .addClass('section', `selector`)
+    //                 .do(actions.changeFont)
                   
-    let fontComp = W()
-                    .contain(fontIcon, fontMonitor, setFont)
-                    .run(popUpEditor)
-                    .setPopupEditor(setFont);
+    // let fontComp = _p()
+    //                 .contain(fontIcon, fontMonitor, setFont)
+    //                 .run(popUpEditor)
+    //                   .setPopupEditor(setFont)
 
 
     let wpmComp = W("!wpm")
@@ -17701,7 +17790,7 @@
     
     let popUpSettings = W("popupsettings")
           .contain(
-            fontComp.setId('font'), 
+            //fontComp.setId('font'), 
             colorsComp.setId('color'), 
             modeComp.setId('mode'),
             foveaComp.setId('fovea'),) 
@@ -17772,7 +17861,7 @@
         'wpm': 420
       });
      
-    }, 900);
+    }, 1200);
     
     return settings.pragmatize()
   }
