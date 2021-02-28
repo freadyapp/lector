@@ -25,13 +25,19 @@ yarn dev
 ```
 
 To watch SASS changes (inside the styles/ folder) as well, open a new terminal tab and:
+
 ```bash
 yarn dev-style
 ```
-### Dev Requirements (to dev styles):
-* Python 3
-* `pip install css_html_js_minify sass`
 
+## To develop styles & stuff that use the custom python intepreter:
+* Python 3 required
+
+### Run: 
+```bash
+	source setup
+	yarn dev-style
+```
 
 # Get Started
 
