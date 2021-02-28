@@ -8,7 +8,6 @@
 	"main": "dist/lector.cjs.js",
 	"module": "dist/lector.esm.js",
 	"browser": "dist/lector.umd.js",
-
 	"files": [
 		"dist/"
 	],

@@ -23,11 +23,13 @@
 
 .lector-settings {
   @extend .fixed-bottom-box;
-  @extend .glass-block;
-
+  //@extend .glass-block;
+  background-color: #262626;
+  border-radius: 5px;
   left: -10px;
-  padding-left: 40px;
   transition: all .2s;
+  padding: 20px;
+  margin-left: 40px;
   font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
 
   .pragma-input-element{
@@ -38,6 +40,7 @@
   }
   .section {
     margin: 20px 0;
+    
 
     &:hover > .pragma-label {
       opacity: 1;
@@ -57,6 +60,43 @@
         color: rgba(199, 199, 199, 0.92);
       }
     }
+  }
+
+  .selector {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    position: absolute;
+    left: 155px;
+    top: -80px;
+    background-color: #393939;
+    width: fit-content;
+    border-radius: 5px;
+
+  }
+  
+  .setting {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
+  }
+
+  .color-indicator {
+    width: 25px;
+    height: 25px;
+    background-color: rgb(168, 241, 154);
+    border-radius: 50%;
+  }
+
+  .displayN {
+    display: none;
   }
   
   #font {

@@ -5,6 +5,8 @@ import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.conf
 import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
+import icons from './icons.json'
+
 function activate(self, key){
   self.find(key).addClass('active')
                 .removeClass('inactive')
@@ -167,7 +169,8 @@ export default function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeMode)
 
-  let colorsComp = _p('!color')
+  
+  let setColor = _p('!color')
                   .from(activeSelectTpl({
                     options: colors,
                     optionTemplate: option => {
@@ -176,6 +179,8 @@ export default function lectorSettings(lector){
                                 width 25px
                                 height 25px
                                 border-radius 25px
+                                margin-top 5px
+                                margin-bottom 5px
                                 background-color ${option} 
                               `)
                               .on('click').do(function(){
@@ -183,12 +188,28 @@ export default function lectorSettings(lector){
                               })
                     }
                   }))
-                  .addClass('section')
-                  .run(lecLabel)
-                  .setLabelName('Pointer Color')
-                  .setLabelTemplate(v => colorsHumanFriendly[v])
+                  .addClass('section', `selector`)
+                  //.run(lecLabel)
+                  //.setLabelName('Pointer Color')
+                  //.setLabelTemplate(v => colorsHumanFriendly[v])
                   .do(actions.changeColor)
 
+
+  let colorIcon = _p().as(_e(icons['color-icon']))
+  let colorMonitor = _p('monitor').as(_e('div.'))
+                    .addClass(`color-indicator`)
+                    
+
+  let colorsComp = _p().contain(colorIcon, colorMonitor, setColor)
+                  .run(function(){
+                    this.on('click').do(() => {
+                      setColor.toggleClass(`displayN`)
+                      console.log('yoiiiiii')
+                    })
+                    setColor.addClass(`displayN`)
+                  })
+                  .addClass(`setting`)
+                  .css(`position relative`)
 
   let fontComp = _p('!font')
                   .run(function(){
@@ -203,7 +224,7 @@ export default function lectorSettings(lector){
                                 this.parent.value = this.key
                               })
                   }))
-                  .css(`flex-direction row`)
+                  .css(`flex-direction row; display none`)
                   .addClass('section')
                   .do(actions.changeFont)
 
@@ -344,27 +365,27 @@ export default function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
 
-  let fader = _p('fader')
-    .run(idler, function(){
-      this.elements = []
-      this.include =function(){
-        this.elements = this.elements.concat(Array.from(arguments))
-        return this
-      }
-    })
-    .setIdleTime(3000)
-    .include(settings, miniSettings)
-    .onIdle(function(){
-      this.elements.forEach(element => {
-        element.css('opacity 0')
-      })
-      // this.css('opacity 0')
-    })
-    .onActive(function(){
-      this.elements.forEach(element => element.css('opacity 1'))
-    })
+  // let fader = _p('fader')
+  //   .run(idler, function(){
+  //     this.elements = []
+  //     this.include =function(){
+  //       this.elements = this.elements.concat(Array.from(arguments))
+  //       return this
+  //     }
+  //   })
+  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+  //   .include(settings, miniSettings)
+  //   .onIdle(function(){
+  //     this.elements.forEach(element => {
+  //       element.css('opacity 0')
+  //     })
+  //     // this.css('opacity 0')
+  //   })
+  //   .onActive(function(){
+  //     this.elements.forEach(element => element.css('opacity 1'))
+  //   })
   
-  settings.fader = fader
+  // settings.fader = fader
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){

@@ -1,11 +1,11 @@
-import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
+import { Pragma, _e as _e$1, util, _p, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import nlp from 'compromise';
 
 function elementify(el){
   // pipeline to vanillafy pragma objects to html elements
   if (el instanceof Pragma) el = el.element;
-  if (!el.isPragmaElement) el = _e(el);
+  if (!el.isPragmaElement) el = _e$1(el);
   return el
 }
 
@@ -259,7 +259,7 @@ function doMap(map){
 
 function wfyInner(desc){
   if (!desc) return false
-  desc = _e(desc);
+  desc = _e$1(desc);
   let txt = desc.textContent;
   let inner = "";
   for (let txt of desc.textContent.split(" ")){
@@ -273,7 +273,7 @@ function wfyInner(desc){
 }
 
 function wfyElement(element){
-  element = _e(element);
+  element = _e$1(element);
   let nodes = element.findAll("*");
   if (nodes.length == 0) return wfyInner(wfyInner(element))
   nodes.forEach(desc => wfyElement(desc));
@@ -281,7 +281,7 @@ function wfyElement(element){
 
 function wfy(element){
   // console.log(`wfying ${JSON.stringify(element)}`)
-  element = _e(element);
+  element = _e$1(element);
   // if (element.textContent.replaceAll(" ", "").length<1) return false
   let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
   if (txtNodes.length==0) return wfyElement(element)
@@ -682,7 +682,7 @@ class PragmaMark extends Pragma {
   constructor() {
     super('marker');
 
-    this.element = _e("marker");
+    this.element = _e$1("marker");
     this.appendTo('body');
     this.hide();
     this.css(defaultStyles);
@@ -903,11 +903,11 @@ function paginator(pageTemplate, conf={}){
 
         .run(function(){
 
-          let _ptemp = _e(this.pageTemplate).hide();
+          let _ptemp = _e$1(this.pageTemplate).hide();
           this.pageTemplate = _ptemp.cloneNode(false);
 
           this._clonePage = function() {
-            let page = _e(this.pageTemplate.cloneNode(false)).show();
+            let page = _e$1(this.pageTemplate.cloneNode(false)).show();
             //if (this._lastAddedPage){
               ////page.style.height = this._lastAddedPage.height
               //page.css(`height ${this._lastAddedPage.height}px`)
@@ -1260,9 +1260,9 @@ const select = (conf) => _p()
       this.export('elementDOM', 'actionChain', 'exportChain', 'exports');
     });
 
-var full = "@charset \"utf-8\";body{background-color:#232323}";
+var full = "@charset \"utf-8\";body{background-color:#161616}";
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:8px;background:rgba(66,66,66,0.5);border-radius:15px}.pragma-slider-bar{height:100%;width:25%;background:#0074D9;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:18px;height:18px;border-radius:25px;background:#f1f1f1;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.lector-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{left:-10px;padding-left:40px;transition:all .2s;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;position:absolute;left:155px;top:-80px;background-color:#393939;width:fit-content;border-radius:5px}.lector-settings .setting{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .displayN{display:none}.lector-settings #fovea{height:fit-content;padding:10px}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important}.active-select-template .inactive{opacity:.5 !important}";
 var css = {
 	full: full,
 	slider: slider,
@@ -1298,11 +1298,11 @@ function slider$1(conf={}){
     //console.log(this.value)
   };
   
-  this._input = _e('div.').addClass('pragma-slider-bg');
-  this._bar = _e('div.')
+  this._input = _e$1('div.').addClass('pragma-slider-bg');
+  this._bar = _e$1('div.')
     .addClass('pragma-slider-bar');
   
-  this._thumb = _e('div.pragma-slider-thumb');
+  this._thumb = _e$1('div.pragma-slider-thumb');
   this._bar.append(this._thumb);
 
   this._input.append(this._bar);
@@ -1346,7 +1346,7 @@ function input(conf = {}) {
                 util.createChains(this, 'userInput');
             // },
             // makeInput () {
-                this.input = _e(`<input type='text'></input>`)
+                this.input = _e$1(`<input type='text'></input>`)
                     .addClass('pragma-input-text');
 
                 this.setValue = function(v){
@@ -1419,46 +1419,8 @@ function withLabel(conf = {}) {
         return this
     };
     
-    this._label = _e('div.pragma-label', conf.label);
+    this._label = _e$1('div.pragma-label', conf.label);
     this.append(this._label);    
-}
-
-function _createIdler(timeout, afk, active) {
-    let _idler = new Idle(timeout)
-      .onAfk(()=> {
-        console.log('user is afk');
-        if (afk) afk();
-        // this.shout()
-      })
-      .onActive(() => {
-        console.log('user is back');
-        if (active) active();
-        // this.shutUp()
-    });
-    return _idler
-}
-
-function idler(){
-    util.createChains(this, 'idle', 'active');
-
-    this.setIdleTime = function(time=5000){
-        this._idler = _createIdler(time, () => {
-            this.idleChain.exec();
-        }, () => {
-            this.activeChain.exec();
-        });
-        return this
-    };
-    
-    this.extend('onIdle', function(){
-        this._onIdle(...arguments);
-        return this
-    });
-
-    this.extend('onActive', function(){
-        this._onActive(...arguments);
-        return this
-    });
 }
 
 class Scaler extends Pragma {
@@ -1523,6 +1485,13 @@ var shc = {
 
   scaleUp: 'mod+=',
   scaleDown: 'mod+-'
+};
+
+var icons = {
+	"mode-icon": "<svg width=\"28\" height=\"28\" viewBox=\"0 0 28 28\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M22.75 3.5H5.25C4.78603 3.50053 4.34122 3.68508 4.01315 4.01315C3.68508 4.34122 3.50053 4.78603 3.5 5.25V22.75C3.50053 23.214 3.68508 23.6588 4.01315 23.9868C4.34122 24.3149 4.78603 24.4995 5.25 24.5H22.75C23.214 24.4995 23.6588 24.3149 23.9868 23.9868C24.3149 23.6588 24.4995 23.214 24.5 22.75V5.25C24.4995 4.78603 24.3149 4.34122 23.9868 4.01315C23.6588 3.68508 23.214 3.50053 22.75 3.5ZM19.25 22.75V19.25H15.75V22.75H12.25V19.25H8.75V15.75H12.25V12.25H8.75V8.75H12.25V5.25H15.75V8.75H19.25V5.25H22.75V22.75H19.25Z\" fill=\"#909090\"/>\n<path d=\"M15.75 8.75H12.25V12.25H15.75V8.75Z\" fill=\"#909090\"/>\n<path d=\"M15.75 15.75H12.25V19.25H15.75V15.75Z\" fill=\"#909090\"/>\n<path d=\"M19.25 12.25H15.75V15.75H19.25V12.25Z\" fill=\"#909090\"/>\n</svg>\n",
+	"speed-icon": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M22.4979 15.7501C22.4969 13.7461 21.9163 11.7851 20.8261 10.1035L19.7422 11.1875C20.564 12.5675 20.9978 14.1439 20.9979 15.7501L22.4979 15.7501Z\" fill=\"#909090\"/>\n<path d=\"M21 7.8105L19.9394 6.75L13.5143 13.1752C13.057 12.8997 12.5338 12.7528 12 12.75C11.4067 12.75 10.8266 12.9259 10.3333 13.2556C9.83994 13.5852 9.45543 14.0538 9.22836 14.602C9.0013 15.1501 8.94189 15.7533 9.05765 16.3353C9.1734 16.9172 9.45912 17.4518 9.87868 17.8713C10.2982 18.2909 10.8328 18.5766 11.4147 18.6924C11.9967 18.8081 12.5999 18.7487 13.1481 18.5216C13.6962 18.2946 14.1648 17.9101 14.4944 17.4167C14.8241 16.9234 15 16.3433 15 15.75C14.9972 15.2162 14.8503 14.693 14.5748 14.2357L21 7.8105ZM12 17.25C11.7033 17.25 11.4133 17.162 11.1666 16.9972C10.92 16.8324 10.7277 16.5981 10.6142 16.324C10.5007 16.0499 10.4709 15.7483 10.5288 15.4574C10.5867 15.1664 10.7296 14.8991 10.9393 14.6893C11.1491 14.4796 11.4164 14.3367 11.7074 14.2788C11.9983 14.2209 12.2999 14.2506 12.574 14.3642C12.8481 14.4777 13.0824 14.67 13.2472 14.9166C13.412 15.1633 13.5 15.4533 13.5 15.75C13.4995 16.1477 13.3414 16.529 13.0602 16.8102C12.779 17.0914 12.3977 17.2495 12 17.25Z\" fill=\"#909090\"/>\n<path d=\"M12 6.75002C13.6061 6.75077 15.1822 7.18457 16.5625 8.00574L17.6527 6.91554C16.0679 5.89651 14.2378 5.32343 12.3548 5.2566C10.4719 5.18976 8.60573 5.63164 6.95268 6.53575C5.29964 7.43986 3.92082 8.77277 2.96128 10.3943C2.00174 12.0158 1.49695 13.8659 1.50001 15.75L3.00001 15.75C3.00273 13.3639 3.95182 11.0763 5.63906 9.38906C7.32629 7.70182 9.6139 6.75274 12 6.75002Z\" fill=\"#909090\"/>\n</svg>\n",
+	"color-icon": "<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M19.75 0.5L2.25 0.5C1.78605 0.500579 1.34127 0.685139 1.0132 1.0132C0.685139 1.34127 0.500579 1.78605 0.5 2.25L0.5 19.75C0.500579 20.214 0.685139 20.6587 1.0132 20.9868C1.34127 21.3149 1.78605 21.4994 2.25 21.5L19.75 21.5C20.214 21.4994 20.6587 21.3149 20.9868 20.9868C21.3149 20.6587 21.4994 20.214 21.5 19.75L21.5 2.25C21.4994 1.78605 21.3149 1.34127 20.9868 1.0132C20.6587 0.685139 20.214 0.500579 19.75 0.5ZM2.25 19.75L19.75 2.25L19.75 19.75L2.25 19.75Z\" fill=\"#919191\"/>\n</svg>\n",
+	"fovea-icon": "<svg width=\"28\" height=\"28\" viewBox=\"0 0 28 28\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M26.249 14L19.249 21L18.0117 19.7628L23.7745 14L18.0117 8.23725L19.249 7L26.249 14Z\" fill=\"#909090\"/>\n<path d=\"M14 19.25C13.8851 19.2502 13.7713 19.2276 13.6651 19.1836C13.559 19.1396 13.4625 19.075 13.3814 18.9937L9.00641 14.6187C8.92512 14.5374 8.86064 14.441 8.81664 14.3349C8.77265 14.2287 8.75 14.1149 8.75 14C8.75 13.8851 8.77265 13.7714 8.81664 13.6652C8.86064 13.5591 8.92512 13.4626 9.00641 13.3814L13.3814 9.00641C13.4626 8.92512 13.5591 8.86064 13.6652 8.81664C13.7713 8.77265 13.8851 8.75 14 8.75C14.1149 8.75 14.2287 8.77265 14.3349 8.81664C14.441 8.86064 14.5374 8.92512 14.6187 9.00641L18.9937 13.3814C19.0749 13.4626 19.1394 13.5591 19.1834 13.6652C19.2274 13.7714 19.2501 13.8851 19.2501 14C19.2501 14.1149 19.2274 14.2287 19.1834 14.3349C19.1394 14.441 19.0749 14.5374 18.9937 14.6187L14.6187 18.9937C14.5375 19.075 14.4411 19.1396 14.3349 19.1836C14.2288 19.2276 14.115 19.2502 14 19.25ZM10.8624 14L14 17.1377L17.1377 14L14 10.8624L10.8624 14Z\" fill=\"#909090\"/>\n<path d=\"M1.75 14L8.75 7L9.98725 8.23725L4.2245 14L9.98725 19.7628L8.75 21L1.75 14Z\" fill=\"#909090\"/>\n</svg>\n"
 };
 
 function activate(self, key){
@@ -1687,7 +1656,8 @@ function lectorSettings(lector){
                   .addClass('section')
                   .do(actions.changeMode);
 
-  let colorsComp = _p('!color')
+  
+  let setColor = _p('!color')
                   .from(activeSelectTpl({
                     options: colors,
                     optionTemplate: option => {
@@ -1696,6 +1666,8 @@ function lectorSettings(lector){
                                 width 25px
                                 height 25px
                                 border-radius 25px
+                                margin-top 5px
+                                margin-bottom 5px
                                 background-color ${option} 
                               `)
                               .on('click').do(function(){
@@ -1703,12 +1675,28 @@ function lectorSettings(lector){
                               })
                     }
                   }))
-                  .addClass('section')
-                  .run(lecLabel)
-                  .setLabelName('Pointer Color')
-                  .setLabelTemplate(v => colorsHumanFriendly[v])
+                  .addClass('section', `selector`)
+                  //.run(lecLabel)
+                  //.setLabelName('Pointer Color')
+                  //.setLabelTemplate(v => colorsHumanFriendly[v])
                   .do(actions.changeColor);
 
+
+  let colorIcon = _p().as(_e(icons['color-icon']));
+  let colorMonitor = _p('monitor').as(_e('div.'))
+                    .addClass(`color-indicator`);
+                    
+
+  let colorsComp = _p().contain(colorIcon, colorMonitor, setColor)
+                  .run(function(){
+                    this.on('click').do(() => {
+                      setColor.toggleClass(`displayN`);
+                      console.log('yoiiiiii');
+                    });
+                    setColor.addClass(`displayN`);
+                  })
+                  .addClass(`setting`)
+                  .css(`position relative`);
 
   let fontComp = _p('!font')
                   .run(function(){
@@ -1723,7 +1711,7 @@ function lectorSettings(lector){
                                 this.parent.value = this.key;
                               })
                   }))
-                  .css(`flex-direction row`)
+                  .css(`flex-direction row; display none`)
                   .addClass('section')
                   .do(actions.changeFont);
 
@@ -1864,27 +1852,27 @@ function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
-  let fader = _p('fader')
-    .run(idler, function(){
-      this.elements = [];
-      this.include =function(){
-        this.elements = this.elements.concat(Array.from(arguments));
-        return this
-      };
-    })
-    .setIdleTime(3000)
-    .include(settings, miniSettings)
-    .onIdle(function(){
-      this.elements.forEach(element => {
-        element.css('opacity 0');
-      });
-      // this.css('opacity 0')
-    })
-    .onActive(function(){
-      this.elements.forEach(element => element.css('opacity 1'));
-    });
+  // let fader = _p('fader')
+  //   .run(idler, function(){
+  //     this.elements = []
+  //     this.include =function(){
+  //       this.elements = this.elements.concat(Array.from(arguments))
+  //       return this
+  //     }
+  //   })
+  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+  //   .include(settings, miniSettings)
+  //   .onIdle(function(){
+  //     this.elements.forEach(element => {
+  //       element.css('opacity 0')
+  //     })
+  //     // this.css('opacity 0')
+  //   })
+  //   .onActive(function(){
+  //     this.elements.forEach(element => element.css('opacity 1'))
+  //   })
   
-  settings.fader = fader;
+  // settings.fader = fader
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -2018,7 +2006,7 @@ const Word = (element, i) => {
 };
 
 const Reader = (l, options=default_options) => {
-  l = _e(l);
+  l = _e$1(l);
   if (options.wfy) wfy(l);
   let w = Word(l);
 
@@ -2105,7 +2093,7 @@ const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    lector = Reader(_e(l).parentElement, options)
+    lector = Reader(_e$1(l).parentElement, options)
                   .adopt(paginator, streamer);
 
     lector.paginator = paginator;
@@ -2151,7 +2139,7 @@ function globalify(){
   const attrs = {
     Lector: Lector,
     Word: Word,
-    _e: _e,
+    _e: _e$1,
     _p: _p,
     util: util,
     lecUtil: helpers,
