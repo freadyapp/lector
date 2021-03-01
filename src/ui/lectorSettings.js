@@ -278,13 +278,8 @@ export default function lectorSettings(lector){
                       options: colors,
                       optionTemplate: option => {
                         return _p(option)
-                                .css(`
-                                  width 25px
-                                  height 25px
-                                  border-radius 25px
-                                  margin 5px 5px;
-                                  background-color ${option} 
-                                `)
+                                .css(`background-color ${option} `)
+                                .addClass(`color-option`)
                                 .on('click').do(function(){
                                   this.parent.value = this.key
                                 })
