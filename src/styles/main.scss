@@ -30,7 +30,7 @@
     border-radius: 5px;
     left: -10px;
     transition: all .2s;
-    padding: 15px 0 7px 0;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
+    padding: 20px 0 11px 0;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
     margin-left: 10px;
     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
     width: 120px;
@@ -133,6 +133,17 @@
       font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
       width: 115px;
       position: relative;
+
+      .speedAdjust{ // Speed Adjust arrows wrapper
+
+        .adjusticon {
+          width: 10px;
+          height: 20px;
+        }
+      }
+
+      
+
 
       &::before {
         content: "";

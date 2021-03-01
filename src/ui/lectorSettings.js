@@ -369,7 +369,14 @@ export default function lectorSettings(lector){
                 .css('width 25px; height 25px;')
                 .addClass(`setting-icon`)
 
-  let wpmPlus = _p('wpmPlusPragma').as(_e('div.wpm-icon', '+'))
+  let wpmIncreaseIcon = _p().as(_e(icons['speed-increase']))
+                      .addClass(`setting-wpm-adjusticon`)
+
+  let wpmDecreaseIcon = _p().as(_e(icons[`speed-decrease`]))
+                        .addClass(`setting-wpm-adjusticon`)
+
+  let wpmAdjust = _p('wpmAdjustPragma').contain(wpmIncreaseIcon,wpmDecreaseIcon)
+                  .addClass(`speed-adjust`)
 
   let setWpm = _p("!wpm")
                   .run(input, withLabel)
@@ -388,7 +395,7 @@ export default function lectorSettings(lector){
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
                   .do(actions.changeWpm)
     
-  let wpmComp = _p().contain(wpmIcon, setWpm, wpmPlus)
+  let wpmComp = _p().contain(wpmIcon, setWpm, wpmAdjust)
                 .addClass(`setting-wpm`)
                 .run(function () {
                   this.update = setWpm.update
