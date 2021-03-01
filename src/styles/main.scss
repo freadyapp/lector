@@ -94,10 +94,11 @@
     &-fovea {
       @extend .selector;
       width: 150px; 
-      height: 40px;
+      height: 45px;
       padding: 0 10px;
       left: -50%;
     top: -63px;
+    z-index: 45678;
     }
 
   }

@@ -254,7 +254,7 @@ export default function lectorSettings(lector){
                 .do(actions.changeFovea)
                 .run(function(){
                   this.update = (bg) => {
-                    this._bar.css(`background-color ${bg}`)
+                    this._bar.css(``)
                   }
                 })
           
