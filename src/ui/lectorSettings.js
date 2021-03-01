@@ -227,18 +227,15 @@ export default function lectorSettings(lector){
                   })
                   // .run(lecLabel)
                   // .setLabelName('Pointer mode')
-                  .addClass('section', 'selector-mode')
+                  .addClass('selector-mode')
                   .do(actions.changeMode)
 
-  let modeComp = _p().contain(modeIcon, modeMonitor, setMode)
+  let modeComp = _p().contain(modeIcon, setMode)
                     .addClass(`setting`)
                     .css(`position relative`)
                     .run(function() {
                       this.update = setMode.update
                     })
-
-                    .run(popUpEditor)
-                      .setPopupEditor(setMode)
 
   let foveaIcon = _p().as(_e(icons['fovea-icon']))
                   .addClass(`setting-icon`)
