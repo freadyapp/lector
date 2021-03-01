@@ -282,8 +282,7 @@ export default function lectorSettings(lector){
                                   width 25px
                                   height 25px
                                   border-radius 25px
-                                  margin-top 5px
-                                  margin-bottom 5px
+                                  margin 5px 5px;
                                   background-color ${option} 
                                 `)
                                 .on('click').do(function(){
@@ -486,7 +485,7 @@ export default function lectorSettings(lector){
         .bind("h", function() { this.toggle() })
 // 
 // pageComp
-  settings.contain(popUpSettings, wpmComp)
+  settings.contain(wpmComp, popUpSettings)
   settings.adopt(miniSettings)
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0

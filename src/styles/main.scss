@@ -67,13 +67,13 @@
 
   .selector {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
     align-content: stretch;
     position: absolute;
-    left: 140%;
+    left: -10%;
     top: -80px;
     background-color: #393939;
     width: fit-content;
@@ -90,8 +90,8 @@
       justify-content: center;
       align-items: center;
       align-content: center;
-      left: -50%;
-      top: -65px;
+      left: -12%;
+      top: -70px;
     }
 
     &-fovea {
@@ -99,8 +99,8 @@
       width: 150px; 
       height: 45px;
       padding: 0 10px;
-      left: -50%;
-    top: -63px;
+      left: -13%;
+    top: -70px;
     z-index: 45678;
     }
 
