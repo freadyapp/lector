@@ -131,10 +131,11 @@
       transition: all .2s;
       margin-left: 20px;
       font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-      width: 115px;
+      width: 125px;
       position: relative;
 
-      .speedAdjust{ // Speed Adjust arrows wrapper
+      .speed-adjust{ // Speed Adjust arrows wrapper
+        width: 10px;
 
         .adjusticon {
           width: 10px;
