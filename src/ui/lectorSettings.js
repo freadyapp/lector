@@ -485,7 +485,7 @@ export default function lectorSettings(lector){
         .bind("h", function() { this.toggle() })
 // 
 // pageComp
-  settings.contain(wpmComp, popUpSettings)
+  settings.contain(popUpSettings, wpmComp)
   settings.adopt(miniSettings)
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
