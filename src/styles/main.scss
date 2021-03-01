@@ -70,11 +70,35 @@
     align-items: center;
     align-content: stretch;
     position: absolute;
-    left: 155px;
+    left: 140%;
     top: -80px;
     background-color: #393939;
     width: fit-content;
-    border-radius: 5px;
+    border-radius: 2px;
+    overflow: hidden;
+
+     &-mode {
+      @extend .selector;
+      padding: 0;
+      color: #262626;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      left: -50%;
+      top: -65px;
+    }
+
+    &-fovea {
+      @extend .selector;
+      width: 150px; 
+      height: 40px;
+      padding: 0 10px;
+      left: -50%;
+    top: -63px;
+    }
 
   }
   
@@ -101,9 +125,69 @@
     height: 25px;
   }
 
+  .modeOption {
+    width: 45px;
+    height: 25px;
+    padding: 10px 5px;
+
+    filter: grayscale(1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent !important;
+    &.inactive {
+      background-color: transparent !important;
+      opacity: .5 !important;
+
+    }
+    &.active {
+    
+      filter: grayscale(0);
+      opacity: 1 !important;
+      background-color: #6F6F6F !important;
+
+    }
+
+    // background-color: red !important;
+
+    .mini-pointer {
+      height: 70%;
+      width: 70%;
+    }
+
+    // &::after {
+    //   content: "ABC";
+    //   color:black;
+    //   text-align: center;
+    // }
+
+    
+  }
+
   .displayN {
     display: none;
   }
+
+  #underneath {
+    margin: 0 !important;
+    position: relative;
+    // top: -8px;
+    // content: "A";
+    // color: #fff !important;    
+
+    // ::before {
+    //   top: 2px;
+    // }
+    
+  }
+
+  #hotbox {
+  }
+
+  #faded {
+  }
+
+  
   
   #font {
     
@@ -120,7 +204,6 @@
   #fovea {
     // margin-top: 15px;
     height: fit-content;
-    padding: 10px;
     .pragma-label{
       margin-top: -25px;
     }
@@ -189,10 +272,46 @@
   
   .active {
     opacity: 1 !important;
+    background-color: gray;
+    position: relative;
+    transform-style: preserve-3d;
+
+    &::after {
+      
+    height: 32px;
+    top: -6px;
+    left: -10px;
+
+    }
+
+    &::before {
+      width: 157%;
+    /* margin: auto; */
+    height: 32px;
+    top: -6px;
+    border-radius: 2px;
+    left: -10px;
+    background-color: #6F6F6F;
+    position: absolute;
+    
+    z-index: -1;
+    transform: translateZ(-1px);
+    transition: ease all 0.2s;        //TODO Add animation
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+      animation: sheen 1s forwards;
+    
+    
+    }
+
+   
   }
   
   .inactive {
-    opacity: .5 !important;
+    background-color: rgb(26, 26, 26);
+
+    
+
   }
 }
 

@@ -153,18 +153,7 @@ export default function lectorSettings(lector){
                     //console.log('set value', this.value)
                   //})
 
-  let foveaComp = _p("!fovea")
-                  .addClass('section')
-                  .run(lecLabel, slider) // label
-                  .setRange(2, 10)
-                  .setValue(5)
-                  .setLabelName('Pointer Width')
-                  .do(actions.changeFovea)
-                  .run(function(){
-                    this.update = function(bg){
-                      this._bar.css(`background-color ${bg}`)
-                    }
-                  })
+  
                   
 
 
@@ -213,18 +202,16 @@ export default function lectorSettings(lector){
                     activeSelectTpl.bind(this)({
                     options: modes,
                     optionTemplate: option => _p(option)
-                        .css(`
-                              width 35px;
-                              height 20px;
-                         `)
+                        .addClass(`modeOption`)
                         .on('click').do(function(){
                           this.parent.value = this.key
                         })
                         .run(function(){
+                          this._miniPointer = _e('div.mini-pointer#')
+                          this.append(this._miniPointer)
                           this.update = function(bg){
-                            mode_ify(this, option, bg)
-                            
-                            this.css('mix-blend-mode normal;')  
+                            mode_ify(this._miniPointer, option, bg)
+                            this._miniPointer.css('mix-blend-mode normal')  
                           }
                         })
                       
@@ -239,7 +226,7 @@ export default function lectorSettings(lector){
                   })
                   // .run(lecLabel)
                   // .setLabelName('Pointer mode')
-                  .addClass('section', 'selector')
+                  .addClass('section', 'selector-mode')
                   .do(actions.changeMode)
 
   let modeComp = _p().contain(modeIcon, modeMonitor, setMode)
@@ -251,6 +238,35 @@ export default function lectorSettings(lector){
 
                     .run(popUpEditor)
                       .setPopupEditor(setMode)
+
+  let foveaIcon = _p().as(_e(icons['fovea-icon']))
+  let foveaMonitor = _p('monitor')
+                    .as(_e('div.'))
+                    .addClass(`color-indicator`)
+                    .setData({ 'lectorMarkerColor': 'background' })                
+
+  let setFovea = _p("!fovea")
+                .addClass('section', 'selector-fovea' )
+                .run(slider) // label
+                .setRange(2, 10)
+                .setValue(5)
+                .css(``)
+                .do(actions.changeFovea)
+                .run(function(){
+                  this.update = (bg) => {
+                    this._bar.css(`background-color ${bg}`)
+                  }
+                })
+          
+  let foveaComp = _p().contain(foveaIcon, foveaMonitor, setFovea)
+                .addClass(`setting`)
+                .css(`position relative`)
+                .run(popUpEditor)
+                .setPopupEditor(setFovea)
+                .run(function () {
+                  this.update = setFovea.update
+                })
+
 
     
   let setColor = _p('!color')
