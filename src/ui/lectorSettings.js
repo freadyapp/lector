@@ -310,6 +310,32 @@ export default function lectorSettings(lector){
                   .run(popUpEditor)
                     .setPopupEditor(setColor)
 
+  
+  
+  let popUpSettings = _p("popupsettings")
+                    .contain(
+                      //fontComp.setId('font'), 
+                      colorsComp.setId('color'), 
+                      modeComp.setId('mode'),
+                      foveaComp.setId('fovea'),)
+                    .addClass('pop-up-settings')
+                    .run(function(){
+                      this.show = function(){
+                        this.hidden = false
+                        this.element.show()
+                      }
+                      this.hide = function(){
+                        this.hidden = true
+                        this.element.hide()
+                      }
+                      this.toggle = function(){
+                        this.hidden ? this.show() : this.hide()
+                      }
+            
+                      this.show()
+                    })
+                    .bind("h", function() { this.toggle() })
+
 
 
   // let fontIcon = _p().as(_e(icons['fovea-icon']))
@@ -370,11 +396,16 @@ export default function lectorSettings(lector){
 
 
   let settingsIcon = _p().as(_e(icons['settings-icon-white']))
-                    .css('width 25px; height 25px;')
-                    .addClass(`setting-icon`)
+                    .addClass(`settings-bar-icon`)
+                    .run(popUpEditor)
+                    .setPopupEditor(popUpSettings)
+
+                    
+
 
   let settingsBarComp = _p().contain(settingsIcon, wpmComp)
                         .addClass(`settings-bar`)
+                        
                 
   
   
@@ -468,29 +499,7 @@ export default function lectorSettings(lector){
     .contain(scaleComp, pageComp)
     .pragmatize()
   
-  let popUpSettings = _p("popupsettings")
-        .contain(
-          //fontComp.setId('font'), 
-          colorsComp.setId('color'), 
-          modeComp.setId('mode'),
-          foveaComp.setId('fovea'),)
-        .addClass('pop-up-settings')
-        .run(function(){
-          this.show = function(){
-            this.hidden = false
-            this.element.show()
-          }
-          this.hide = function(){
-            this.hidden = true
-            this.element.hide()
-          }
-          this.toggle = function(){
-            this.hidden ? this.show() : this.hide()
-          }
-
-          this.show()
-        })
-        .bind("h", function() { this.toggle() })
+  
 // 
 // pageComp
   settings.contain(popUpSettings, settingsBarComp)

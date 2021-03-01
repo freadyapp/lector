@@ -121,6 +121,7 @@
     .setting-icon { //THE COLOR ICON width is set in the colorIcon pragma because it's kinda thiccc, like yo ma
       width: 35px;
       height: 35px;
+
     }
 
     &-wpm {
@@ -131,6 +132,16 @@
       margin-left: 20px;
       font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
       width: 115px;
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        height: 30px;
+        width: 1px;
+        background-color: #6F6F6F;
+        left: -14px;
+      }
     }
   }
 
@@ -144,10 +155,20 @@
     align-items: center;
     align-content: stretch;
     margin-left: 10px;
-    padding: 5px 10px;
+    padding: 5px 0 5px 10px;
     border-radius: 5px;
     width: 200px;
+
+    &-icon {
+        width: 25px;
+        height: 25px;
+        position: relative;
+
+        
+      }
   }
+
+
 
   .wpm-icon {
     color: #fff;
