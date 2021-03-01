@@ -31,7 +31,7 @@
     left: -10px;
     transition: all .2s;
     padding: 15px 0 7px 0;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
-    margin-left: 40px;
+    margin-left: 10px;
     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
     width: 120px;
     margin-bottom: 10px;
@@ -125,15 +125,28 @@
 
     &-wpm {
       @extend .setting;
-      background-color: #262626;
       border-radius: 5px;
       left: -10px;
       transition: all .2s;
-      padding: 10px 10px;
-      margin-left: 40px;
+      margin-left: 20px;
       font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-      width: 200px;
+      width: 115px;
     }
+  }
+
+  .settings-bar {                 
+    background-color: #262626;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: stretch;
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 200px;
   }
 
   .wpm-icon {
@@ -309,7 +322,6 @@
   color: whitesmoke;
   border-radius: 2px;
   background-color: transparent;
-  margin: 5px 10px;
   text-align: center;
 
   &:hover {

@@ -339,7 +339,10 @@ export default function lectorSettings(lector){
   //                 .run(popUpEditor)
   //                   .setPopupEditor(setFont)
   
-  let wpmMinus = _p('wpmMinusPragma').as(_e('div.wpm-icon', '-'))
+  let wpmIcon = _p().as(_e(icons['speed-icon']))
+                .css('width 25px; height 25px;')
+                .addClass(`setting-icon`)
+
   let wpmPlus = _p('wpmPlusPragma').as(_e('div.wpm-icon', '+'))
 
   let setWpm = _p("!wpm")
@@ -359,11 +362,21 @@ export default function lectorSettings(lector){
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
                   .do(actions.changeWpm)
     
-  let wpmComp = _p().contain(wpmMinus, setWpm, wpmPlus)
+  let wpmComp = _p().contain(wpmIcon, setWpm, wpmPlus)
                 .addClass(`setting-wpm`)
                 .run(function () {
                   this.update = setWpm.update
                 })
+
+
+  let settingsIcon = _p().as(_e(icons['settings-icon-white']))
+                    .css('width 25px; height 25px;')
+                    .addClass(`setting-icon`)
+
+  let settingsBarComp = _p().contain(settingsIcon, wpmComp)
+                        .addClass(`settings-bar`)
+                
+  
   
   let pageComp = _p("!page")
                   .run(input, withLabel)
@@ -480,7 +493,7 @@ export default function lectorSettings(lector){
         .bind("h", function() { this.toggle() })
 // 
 // pageComp
-  settings.contain(popUpSettings, wpmComp)
+  settings.contain(popUpSettings, settingsBarComp)
   settings.adopt(miniSettings)
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
