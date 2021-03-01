@@ -30,7 +30,7 @@
     border-radius: 5px;
     left: -10px;
     transition: all .2s;
-    padding: 15px 5px;
+    padding: 15px 0 7px 0;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
     margin-left: 40px;
     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
     width: 120px;
@@ -118,9 +118,9 @@
     align-items: center;
     align-content: stretch;
 
-    .setting-icon {
-      width: 40px;
-      height: 40px;
+    .setting-icon { //THE COLOR ICON width is set in the colorIcon pragma because it's kinda thiccc, like yo ma
+      width: 35px;
+      height: 35px;
     }
 
     &-wpm {
@@ -241,7 +241,7 @@
     position: relative;
 
     &::before {
-        width: 55%;
+        width: 45%;
       height: 1px;
       background-color: #6F6F6F;
       content: "";
@@ -250,7 +250,7 @@
     }
 
     &::after {
-      width: 55%;
+      width: 45%;
       height: 1px;
       background-color: #6F6F6F;
       content: "";

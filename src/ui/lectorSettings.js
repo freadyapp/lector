@@ -296,7 +296,7 @@ export default function lectorSettings(lector){
 
 
 
-  let colorIcon = _p().as(_e(icons['color-icon'])).css('width 30px; height 30px;')
+  let colorIcon = _p().as(_e(icons['color-icon'])).css('width 25px; height 25px;')
                   .addClass(`setting-icon`)
   let colorMonitor = _p('monitor')
                     .as(_e('div.'))
