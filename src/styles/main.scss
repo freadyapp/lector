@@ -115,6 +115,29 @@
     align-items: center;
     align-content: stretch;
     margin: 20px 0;
+
+    .setting-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    &-wpm {
+      @extend .setting;
+      background-color: #262626;
+      border-radius: 5px;
+      left: -10px;
+      transition: all .2s;
+      padding: 10px 10px;
+      margin-left: 40px;
+      font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
+      width: 80%;
+    }
+  }
+
+  .wpm-icon {
+    color: #fff;
+    opacity: 75%;
+    font-size: 22px;
   }
 
   .color-indicator {
@@ -248,17 +271,20 @@
 
 .pragma-input-text {
   font-family: 'Poppins', sans-serif;
-  font-size: 18px;
+  font-size: 22px;
 
   border-style: none;
   outline: none;
   color: whitesmoke;
-  background: #1515157b;
   border-radius: 2px;
-
+  background-color: transparent;
   margin: 5px 10px;
-  padding: 7px 9px;
   text-align: center;
+
+  &:hover {
+    background: #393939;
+
+  }
 }
 
 .active-select-template {

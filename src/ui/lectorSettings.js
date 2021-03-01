@@ -191,6 +191,7 @@ export default function lectorSettings(lector){
 
 
   let modeIcon = _p().as(_e(icons['mode-icon']))
+                  .addClass(`setting-icon`)
   let modeMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass('mode-indicator')
@@ -240,6 +241,7 @@ export default function lectorSettings(lector){
                       .setPopupEditor(setMode)
 
   let foveaIcon = _p().as(_e(icons['fovea-icon']))
+                  .addClass(`setting-icon`)
   let foveaMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass(`color-indicator`)
@@ -301,6 +303,7 @@ export default function lectorSettings(lector){
 
 
   let colorIcon = _p().as(_e(icons['color-icon']))
+                  .addClass(`setting-icon`)
   let colorMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass(`color-indicator`)
@@ -341,11 +344,13 @@ export default function lectorSettings(lector){
   //                 .contain(fontIcon, fontMonitor, setFont)
   //                 .run(popUpEditor)
   //                   .setPopupEditor(setFont)
+  
+  let wpmMinus = _p('wpmMinusPragma').as(_e('div.wpm-icon', '-'))
+  let wpmPlus = _p('wpmPlusPragma').as(_e('div.wpm-icon', '+'))
 
-
-  let wpmComp = _p("!wpm")
+  let setWpm = _p("!wpm")
                   .run(input, withLabel)
-                  .addClass('settings-input', 'section')
+                  .addClass('settings-input')
                   .setInputAttrs({
                     maxlength: 4,
                     size: 4
@@ -354,12 +359,17 @@ export default function lectorSettings(lector){
                     v => parseInt(v)
                   )
                   .setId('wpm')
-                  .setLabel('wpm')
                   .setRange(40, 4200)
                   .setValue(250)
                   .bind(shc.wpmPlus, function(){ this.value+=10 })
                   .bind(shc.wpmMinus, function(){ this.value-=10 })
                   .do(actions.changeWpm)
+    
+  let wpmComp = _p().contain(wpmMinus, setWpm, wpmPlus)
+                .addClass(`setting-wpm`)
+                .run(function () {
+                  this.update = setWpm.update
+                })
   
   let pageComp = _p("!page")
                   .run(input, withLabel)

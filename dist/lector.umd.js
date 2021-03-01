@@ -17130,7 +17130,7 @@
 
   var full = "@charset \"utf-8\";body{background-color:#161616}";
   var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:10px 10px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:80%}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;position:absolute;left:140%;top:-80px;background-color:#393939;width:fit-content;border-radius:2px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-50%;top:-65px}.lector-settings .selector-fovea{width:150px;height:45px;padding:0 10px;left:-50%;top:-63px;z-index:45678}.lector-settings .setting{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin:20px 0}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 5px;filter:grayscale(1);display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{filter:grayscale(0);opacity:1 !important;background-color:#6F6F6F !important}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:18px;border-style:none;outline:none;color:whitesmoke;background:#1515157b;border-radius:2px;margin:5px 10px;padding:7px 9px;text-align:center}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:157%;height:32px;top:-6px;border-radius:2px;left:-10px;background-color:#6F6F6F;position:absolute;z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}";
+  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:10px 10px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:80%}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;position:absolute;left:140%;top:-80px;background-color:#393939;width:fit-content;border-radius:2px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-50%;top:-65px}.lector-settings .selector-fovea{width:150px;height:45px;padding:0 10px;left:-50%;top:-63px;z-index:45678}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin:20px 0}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:30px;height:30px}.lector-settings .setting-wpm{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:10px 10px;margin-left:40px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:80%}.lector-settings .wpm-icon{color:#fff;opacity:75%;font-size:22px}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 5px;filter:grayscale(1);display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{filter:grayscale(0);opacity:1 !important;background-color:#6F6F6F !important}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'Poppins',sans-serif;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;margin:5px 10px;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%;padding:10px}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:157%;height:32px;top:-6px;border-radius:2px;left:-10px;background-color:#6F6F6F;position:absolute;z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}";
   var css = {
   	full: full,
   	slider: slider,
@@ -17524,7 +17524,8 @@
     }
 
 
-    let modeIcon = W().as(_e(icons['mode-icon']));
+    let modeIcon = W().as(_e(icons['mode-icon']))
+                    .addClass(`setting-icon`);
     let modeMonitor = W('monitor')
                       .as(_e('div.'))
                       .addClass('mode-indicator')
@@ -17573,7 +17574,8 @@
                       .run(popUpEditor)
                         .setPopupEditor(setMode);
 
-    let foveaIcon = W().as(_e(icons['fovea-icon']));
+    let foveaIcon = W().as(_e(icons['fovea-icon']))
+                    .addClass(`setting-icon`);
     let foveaMonitor = W('monitor')
                       .as(_e('div.'))
                       .addClass(`color-indicator`)
@@ -17634,7 +17636,8 @@
 
 
 
-    let colorIcon = W().as(_e(icons['color-icon']));
+    let colorIcon = W().as(_e(icons['color-icon']))
+                    .addClass(`setting-icon`);
     let colorMonitor = W('monitor')
                       .as(_e('div.'))
                       .addClass(`color-indicator`)
@@ -17675,11 +17678,13 @@
     //                 .contain(fontIcon, fontMonitor, setFont)
     //                 .run(popUpEditor)
     //                   .setPopupEditor(setFont)
+    
+    let wpmMinus = W('wpmMinusPragma').as(_e('div.wpm-icon', '-'));
+    let wpmPlus = W('wpmPlusPragma').as(_e('div.wpm-icon', '+'));
 
-
-    let wpmComp = W("!wpm")
+    let setWpm = W("!wpm")
                     .run(input, withLabel)
-                    .addClass('settings-input', 'section')
+                    .addClass('settings-input')
                     .setInputAttrs({
                       maxlength: 4,
                       size: 4
@@ -17688,12 +17693,17 @@
                       v => parseInt(v)
                     )
                     .setId('wpm')
-                    .setLabel('wpm')
                     .setRange(40, 4200)
                     .setValue(250)
                     .bind(shc.wpmPlus, function(){ this.value+=10; })
                     .bind(shc.wpmMinus, function(){ this.value-=10; })
                     .do(actions.changeWpm);
+      
+    let wpmComp = W().contain(wpmMinus, setWpm, wpmPlus)
+                  .addClass(`setting-wpm`)
+                  .run(function () {
+                    this.update = setWpm.update;
+                  });
     
     let pageComp = W("!page")
                     .run(input, withLabel)
