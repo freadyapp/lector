@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap');
 
 .glass-block{
   background: rgba( 35, 35, 35, 0.55 );
@@ -73,7 +74,7 @@
     align-items: center;
     align-content: stretch;
     position: absolute;
-    left: -10%;
+    left: -6%;
     top: -80px;
     background-color: #393939;
     width: fit-content;
@@ -90,8 +91,8 @@
       justify-content: center;
       align-items: center;
       align-content: center;
-      left: -12%;
-      top: -70px;
+      left: -7%;
+    top: -70px;
     }
 
     &-fovea {
@@ -99,7 +100,7 @@
       width: 150px; 
       height: 45px;
       padding: 0 10px;
-      left: -13%;
+      left: -9%;
     top: -70px;
     z-index: 45678;
     }
@@ -136,8 +137,21 @@
 
   .wpm-icon {
     color: #fff;
-    opacity: 75%;
-    font-size: 22px;
+    opacity: 65%;
+    font-size: 28px;
+    line-height: 45px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+
+    &:hover {
+      opacity: 100%;
+      transition: all ease 0.1s;
+    }
   }
 
   .color-indicator {
@@ -270,7 +284,7 @@
 
 
 .pragma-input-text {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;  
   font-size: 22px;
 
   border-style: none;
