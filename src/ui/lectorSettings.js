@@ -456,7 +456,8 @@ export default function lectorSettings(lector){
           //fontComp.setId('font'), 
           colorsComp.setId('color'), 
           modeComp.setId('mode'),
-          foveaComp.setId('fovea'),) 
+          foveaComp.setId('fovea'),)
+        .addClass('pop-up-settings')
         .run(function(){
           this.show = function(){
             this.hidden = false

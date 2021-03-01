@@ -24,13 +24,16 @@
 .lector-settings {
   @extend .fixed-bottom-box;
   //@extend .glass-block;
-  background-color: #262626;
-  border-radius: 5px;
-  left: -10px;
-  transition: all .2s;
-  padding: 20px;
-  margin-left: 40px;
-  font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
+  .pop-up-settings {
+    background-color: #262626;
+    border-radius: 5px;
+    left: -10px;
+    transition: all .2s;
+    padding: 10px 10px;
+    margin-left: 40px;
+    font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
+    width: 80%;
+  }
 
   .pragma-input-element{
     display: flex;
@@ -111,6 +114,7 @@
     justify-content: space-around;
     align-items: center;
     align-content: stretch;
+    margin: 20px 0;
   }
 
   .color-indicator {
