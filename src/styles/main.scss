@@ -30,10 +30,10 @@
     border-radius: 5px;
     left: -10px;
     transition: all .2s;
-    padding: 20px 0 11px 0;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
+    padding: 20px 5px 11px 5px;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
     margin-left: 10px;
     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-    width: 120px;
+    width: fit-content;
     margin-bottom: 10px;
   }
 
@@ -74,14 +74,9 @@
     justify-content: center;
     align-items: center;
     align-content: stretch;
-    position: absolute;
-    left: -6%;
-    top: -80px;
-    background-color: #393939;
     width: fit-content;
     border-radius: 4px;
     overflow: hidden;
-    border: solid 2px #6F6F6F;
 
      &-mode {
       @extend .selector;
@@ -370,7 +365,6 @@
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  padding: 10px 0px;
 
   .option {
     user-select: none;
@@ -392,13 +386,14 @@
     }
 
     &::before {               // THIS APPLIES JUST ON COLOR SELECTOR
-      width: 150%;
-      height: 57px;
-      top: -16px;
+      width: 33px;
+      height: 33px;
+      top: -4px;
       border-radius: 2px;
-      left: -6px;
+      left: -4px;
       background-color: #6F6F6F;
       position: absolute;
+      border-radius: 50%;
       content: "";
       z-index: -1;
       transform: translateZ(-1px);

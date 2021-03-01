@@ -286,7 +286,7 @@ export default function lectorSettings(lector){
                       }
                     })
                   })
-                  .addClass('section', `selector`)
+                  .addClass(`selector`)
                   
                   //.run(lecLabel)
                   //.setLabelName('Pointer Color')
@@ -298,17 +298,18 @@ export default function lectorSettings(lector){
 
   let colorIcon = _p().as(_e(icons['color-icon'])).css('width 25px; height 25px;')
                   .addClass(`setting-icon`)
+
   let colorMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' })
 
-  let colorsComp = _p().contain(colorIcon, colorMonitor, setColor)
+  let colorsComp = _p().contain(colorIcon, setColor)
                   .addClass(`setting`)
                   .css(`position relative`)
 
-                  .run(popUpEditor)
-                    .setPopupEditor(setColor)
+                  // .run(popUpEditor)
+                  //   .setPopupEditor(setColor)
 
   
   
