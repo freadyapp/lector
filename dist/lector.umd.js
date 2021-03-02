@@ -17559,6 +17559,7 @@
 
     let modeIcon = W().as(j(icons['mode-icon']))
                     .addClass(`setting-icon`);
+
     let modeMonitor = W('monitor')
                       .as(j('div.'))
                       .addClass('mode-indicator')
@@ -17582,7 +17583,6 @@
                               this._miniPointer.css('mix-blend-mode normal');  
                             };
                           })
-                        
                     });
                   })
                     .run(function(){
@@ -17917,8 +17917,8 @@
       }
     });
 
-    setTimeout(() => {
-      // simulate websocket event
+    //setTimeout(() => {
+      //// simulate websocket event
       settings.set({
         'color': colors[1],
         'font': fonts[1],
@@ -17927,7 +17927,7 @@
         'wpm': 420
       });
      
-    }, 1200);
+    //}, 1200)
     
     return settings.pragmatize()
   }

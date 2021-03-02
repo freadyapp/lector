@@ -1745,6 +1745,7 @@ function lectorSettings(lector){
 
   let modeIcon = _p().as(_e(icons['mode-icon']))
                   .addClass(`setting-icon`);
+
   let modeMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass('mode-indicator')
@@ -1768,7 +1769,6 @@ function lectorSettings(lector){
                             this._miniPointer.css('mix-blend-mode normal');  
                           };
                         })
-                      
                   });
                 })
                   .run(function(){
@@ -2103,8 +2103,8 @@ function lectorSettings(lector){
     }
   });
 
-  setTimeout(() => {
-    // simulate websocket event
+  //setTimeout(() => {
+    //// simulate websocket event
     settings.set({
       'color': colors[1],
       'font': fonts[1],
@@ -2113,7 +2113,7 @@ function lectorSettings(lector){
       'wpm': 420
     });
    
-  }, 1200);
+  //}, 1200)
   
   return settings.pragmatize()
 }
