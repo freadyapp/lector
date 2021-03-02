@@ -508,27 +508,27 @@ export default function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
 
-  // let fader = _p('fader')
-  //   .run(idler, function(){
-  //     this.elements = []
-  //     this.include =function(){
-  //       this.elements = this.elements.concat(Array.from(arguments))
-  //       return this
-  //     }
-  //   })
-  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-  //   .include(settings, miniSettings)
-  //   .onIdle(function(){
-  //     this.elements.forEach(element => {
-  //       element.css('opacity 0')
-  //     })
-  //     // this.css('opacity 0')
-  //   })
-  //   .onActive(function(){
-  //     this.elements.forEach(element => element.css('opacity 1'))
-  //   })
+   let fader = _p('fader')
+     .run(idler, function(){
+       this.elements = []
+       this.include =function(){
+         this.elements = this.elements.concat(Array.from(arguments))
+         return this
+       }
+     })
+     .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+     .include(settings, miniSettings)
+     .onIdle(function(){
+       this.elements.forEach(element => {
+         element.css('opacity 0')
+       })
+       // this.css('opacity 0')
+     })
+     .onActive(function(){
+       this.elements.forEach(element => element.css('opacity 1'))
+     })
   
-  // settings.fader = fader
+   settings.fader = fader
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){

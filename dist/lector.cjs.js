@@ -1486,6 +1486,44 @@ function withLabel(conf = {}) {
     this.append(this._label);    
 }
 
+function _createIdler(timeout, afk, active) {
+    let _idler = new Idle(timeout)
+      .onAfk(()=> {
+        console.log('user is afk');
+        if (afk) afk();
+        // this.shout()
+      })
+      .onActive(() => {
+        console.log('user is back');
+        if (active) active();
+        // this.shutUp()
+    });
+    return _idler
+}
+
+function idler(){
+    pragmajs.util.createChains(this, 'idle', 'active');
+
+    this.setIdleTime = function(time=5000){
+        this._idler = _createIdler(time, () => {
+            this.idleChain.exec();
+        }, () => {
+            this.activeChain.exec();
+        });
+        return this
+    };
+    
+    this.extend('onIdle', function(){
+        this._onIdle(...arguments);
+        return this
+    });
+
+    this.extend('onActive', function(){
+        this._onActive(...arguments);
+        return this
+    });
+}
+
 class Scaler extends pragmajs.Pragma {
     constructor(target){
         super();
@@ -2040,27 +2078,27 @@ function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
-  // let fader = _p('fader')
-  //   .run(idler, function(){
-  //     this.elements = []
-  //     this.include =function(){
-  //       this.elements = this.elements.concat(Array.from(arguments))
-  //       return this
-  //     }
-  //   })
-  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-  //   .include(settings, miniSettings)
-  //   .onIdle(function(){
-  //     this.elements.forEach(element => {
-  //       element.css('opacity 0')
-  //     })
-  //     // this.css('opacity 0')
-  //   })
-  //   .onActive(function(){
-  //     this.elements.forEach(element => element.css('opacity 1'))
-  //   })
+   let fader = pragmajs._p('fader')
+     .run(idler, function(){
+       this.elements = [];
+       this.include =function(){
+         this.elements = this.elements.concat(Array.from(arguments));
+         return this
+       };
+     })
+     .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+     .include(settings, miniSettings)
+     .onIdle(function(){
+       this.elements.forEach(element => {
+         element.css('opacity 0');
+       });
+       // this.css('opacity 0')
+     })
+     .onActive(function(){
+       this.elements.forEach(element => element.css('opacity 1'));
+     });
   
-  // settings.fader = fader
+   settings.fader = fader;
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
