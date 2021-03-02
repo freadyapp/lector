@@ -245,7 +245,7 @@ export default function lectorSettings(lector){
                     .setData({ 'lectorMarkerColor': 'background' })                
 
   let setFovea = _p("!fovea")
-                .addClass('section', 'selector-fovea' )
+                .addClass( 'selector-fovea' )
                 .run(slider) // label
                 .setRange(2, 10)
                 .setValue(5)
@@ -257,11 +257,9 @@ export default function lectorSettings(lector){
                   }
                 })
           
-  let foveaComp = _p().contain(foveaIcon, foveaMonitor, setFovea)
+  let foveaComp = _p().contain(foveaIcon, setFovea)
                 .addClass(`setting`)
                 .css(`position relative`)
-                .run(popUpEditor)
-                .setPopupEditor(setFovea)
                 .run(function () {
                   this.update = setFovea.update
                 })

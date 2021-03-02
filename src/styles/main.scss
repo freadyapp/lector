@@ -33,7 +33,7 @@
     padding: 20px 5px 11px 5px;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
     margin-left: 10px;
     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-    width: fit-content;
+    width: 200px;
     margin-bottom: 10px;
   }
 
@@ -94,9 +94,8 @@
 
     &-fovea {
       @extend .selector;
-      width: 150px; 
+      width: 130px; 
       height: 45px;
-      padding: 0 10px;
       left: -9%;
     top: -70px;
     z-index: 45678;
@@ -212,9 +211,8 @@
   .modeOption {
     width: 45px;
     height: 25px;
-    padding: 10px 5px;
+    padding: 10px 1px;
 
-    filter: grayscale(1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -226,9 +224,8 @@
     }
     &.active {
     
-      filter: grayscale(0);
       opacity: 1 !important;
-      background-color: #6F6F6F !important;
+      //background-color: #6F6F6F !important;
 
       &::before {
         content: none;
@@ -244,8 +241,8 @@
   }
 
   .color-option {
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
     border-radius: 25px;
     margin: 5px 6px; 
     
@@ -278,7 +275,7 @@
   }
 
   #mode {
-    margin: 25px 0;
+    margin: 35px 0;
     position: relative;
 
     &::before {
@@ -287,7 +284,7 @@
       background-color: #6F6F6F;
       content: "";
       position: absolute;
-      top: -10px;
+      top: -14px;
     }
 
     &::after {
@@ -296,7 +293,7 @@
       background-color: #6F6F6F;
       content: "";
       position: absolute;
-      bottom: -16px;
+      bottom: -22px;
     }
 
   }
@@ -386,8 +383,8 @@
     }
 
     &::before {               // THIS APPLIES JUST ON COLOR SELECTOR
-      width: 33px;
-      height: 33px;
+      width: 30px;
+      height: 30px;
       top: -4px;
       border-radius: 2px;
       left: -4px;
