@@ -16132,7 +16132,7 @@
   }
 
   function isClickWithin(click, el){
-      el = _e(el);
+      el = j(el);
       let left = el.rect().x;
       let top = el.rect().y;
       let width = el.rect().width;
@@ -17428,7 +17428,7 @@
       changeColor(hex=this.value){
         modeComp.update(hex);
         foveaComp.update(hex);
-        _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+        j('body').findAll('[data-lector-marker-color]').forEach(e => {
           e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
         });
         lector.mark.setColor(hex);
@@ -17448,7 +17448,7 @@
 
       changeMode(mode=this.value){
         lector.mark.setMode(mode);
-        _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+        j('body').findAll('[data-lector-marker-mode]').forEach(e => {
           mode_ify(e, mode, lector.mark._color);
           // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
         });
@@ -17519,10 +17519,10 @@
     }
 
 
-    let modeIcon = W().as(_e(icons['mode-icon']))
+    let modeIcon = W().as(j(icons['mode-icon']))
                     .addClass(`setting-icon`);
     let modeMonitor = W('monitor')
-                      .as(_e('div.'))
+                      .as(j('div.'))
                       .addClass('mode-indicator')
                       .setData({ 'lectorMarkerMode': 'true' });
 
@@ -17537,7 +17537,7 @@
                             this.parent.value = this.key;
                           })
                           .run(function(){
-                            this._miniPointer = _e('div.mini-pointer#');
+                            this._miniPointer = j('div.mini-pointer#');
                             this.append(this._miniPointer);
                             this.update = function(bg){
                               mode_ify(this._miniPointer, option, bg);
@@ -17566,10 +17566,10 @@
                         this.update = setMode.update;
                       });
 
-    let foveaIcon = W().as(_e(icons['fovea-icon']))
+    let foveaIcon = W().as(j(icons['fovea-icon']))
                     .addClass(`setting-icon`);
     let foveaMonitor = W('monitor')
-                      .as(_e('div.'))
+                      .as(j('div.'))
                       .addClass(`color-indicator`)
                       .setData({ 'lectorMarkerColor': 'background' });                
 
@@ -17621,12 +17621,12 @@
 
 
     let colorIcon = W()
-                    .as(_e(icons['color-icon']))
+                    .as(j(icons['color-icon']))
                     .css('width 25px; height 25px;')
                     .addClass(`setting-icon`);
 
     let colorMonitor = W('monitor')
-                      .as(_e('div.'))
+                      .as(j('div.'))
                       .addClass(`color-indicator`)
                       .setData({ 'lectorMarkerColor': 'background' });
 
@@ -17692,17 +17692,17 @@
     //                 .run(popUpEditor)
     //                   .setPopupEditor(setFont)
     
-    let wpmIcon = W().as(_e(icons['speed-icon']))
+    let wpmIcon = W().as(j(icons['speed-icon']))
                   .css('width 25px; height 25px;')
                   .addClass(`setting-icon`);
 
-    let wpmIncreaseIcon = W().as(_e(icons['speed-increase']))
+    let wpmIncreaseIcon = W().as(j(icons['speed-increase']))
                         .addClass(`setting-wpm-adjusticon`)
                         .on('click').do(_ => {
                           setWpm.value += 10;
                         });
 
-    let wpmDecreaseIcon = W().as(_e(icons[`speed-decrease`]))
+    let wpmDecreaseIcon = W().as(j(icons[`speed-decrease`]))
                           .addClass(`setting-wpm-adjusticon`)
                           .on('click').do(_ => {
                             setWpm.value -= 10;
@@ -17735,7 +17735,7 @@
                   });
 
 
-    let settingsIcon = W().as(_e(icons['settings-icon-white']))
+    let settingsIcon = W().as(j(icons['settings-icon-white']))
                       .addClass(`settings-bar-icon`)
                       .run(popUpEditor)
                       .setPopupEditor(popUpSettings);

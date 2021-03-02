@@ -327,7 +327,7 @@ function range(start, stop, step) {
 }
 
 function isClickWithin(click, el){
-    el = _e(el);
+    el = pragmajs._e(el);
     let left = el.rect().x;
     let top = el.rect().y;
     let width = el.rect().width;
@@ -1623,7 +1623,7 @@ function lectorSettings(lector){
     changeColor(hex=this.value){
       modeComp.update(hex);
       foveaComp.update(hex);
-      _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+      pragmajs._e('body').findAll('[data-lector-marker-color]').forEach(e => {
         e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
       });
       lector.mark.setColor(hex);
@@ -1643,7 +1643,7 @@ function lectorSettings(lector){
 
     changeMode(mode=this.value){
       lector.mark.setMode(mode);
-      _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+      pragmajs._e('body').findAll('[data-lector-marker-mode]').forEach(e => {
         mode_ify(e, mode, lector.mark._color);
         // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
       });
@@ -1714,10 +1714,10 @@ function lectorSettings(lector){
   }
 
 
-  let modeIcon = pragmajs._p().as(_e(icons['mode-icon']))
+  let modeIcon = pragmajs._p().as(pragmajs._e(icons['mode-icon']))
                   .addClass(`setting-icon`);
   let modeMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass('mode-indicator')
                     .setData({ 'lectorMarkerMode': 'true' });
 
@@ -1732,7 +1732,7 @@ function lectorSettings(lector){
                           this.parent.value = this.key;
                         })
                         .run(function(){
-                          this._miniPointer = _e('div.mini-pointer#');
+                          this._miniPointer = pragmajs._e('div.mini-pointer#');
                           this.append(this._miniPointer);
                           this.update = function(bg){
                             mode_ify(this._miniPointer, option, bg);
@@ -1761,10 +1761,10 @@ function lectorSettings(lector){
                       this.update = setMode.update;
                     });
 
-  let foveaIcon = pragmajs._p().as(_e(icons['fovea-icon']))
+  let foveaIcon = pragmajs._p().as(pragmajs._e(icons['fovea-icon']))
                   .addClass(`setting-icon`);
   let foveaMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });                
 
@@ -1816,12 +1816,12 @@ function lectorSettings(lector){
 
 
   let colorIcon = pragmajs._p()
-                  .as(_e(icons['color-icon']))
+                  .as(pragmajs._e(icons['color-icon']))
                   .css('width 25px; height 25px;')
                   .addClass(`setting-icon`);
 
   let colorMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });
 
@@ -1887,17 +1887,17 @@ function lectorSettings(lector){
   //                 .run(popUpEditor)
   //                   .setPopupEditor(setFont)
   
-  let wpmIcon = pragmajs._p().as(_e(icons['speed-icon']))
+  let wpmIcon = pragmajs._p().as(pragmajs._e(icons['speed-icon']))
                 .css('width 25px; height 25px;')
                 .addClass(`setting-icon`);
 
-  let wpmIncreaseIcon = pragmajs._p().as(_e(icons['speed-increase']))
+  let wpmIncreaseIcon = pragmajs._p().as(pragmajs._e(icons['speed-increase']))
                       .addClass(`setting-wpm-adjusticon`)
                       .on('click').do(_ => {
                         setWpm.value += 10;
                       });
 
-  let wpmDecreaseIcon = pragmajs._p().as(_e(icons[`speed-decrease`]))
+  let wpmDecreaseIcon = pragmajs._p().as(pragmajs._e(icons[`speed-decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
                         .on('click').do(_ => {
                           setWpm.value -= 10;
@@ -1930,7 +1930,7 @@ function lectorSettings(lector){
                 });
 
 
-  let settingsIcon = pragmajs._p().as(_e(icons['settings-icon-white']))
+  let settingsIcon = pragmajs._p().as(pragmajs._e(icons['settings-icon-white']))
                     .addClass(`settings-bar-icon`)
                     .run(popUpEditor)
                     .setPopupEditor(popUpSettings);
