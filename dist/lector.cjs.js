@@ -1685,14 +1685,6 @@ function lectorSettings(lector){
                     //console.log('set value', this.value)
                   //})
 
-  
-                  
-
-
-  
-
-
-
            
   function popUpEditor(){
     this.setPopupEditor = function(popup){
@@ -1823,7 +1815,9 @@ function lectorSettings(lector){
 
 
 
-  let colorIcon = pragmajs._p().as(_e(icons['color-icon'])).css('width 25px; height 25px;')
+  let colorIcon = pragmajs._p()
+                  .as(_e(icons['color-icon']))
+                  .css('width 25px; height 25px;')
                   .addClass(`setting-icon`);
 
   let colorMonitor = pragmajs._p('monitor')
@@ -1898,10 +1892,16 @@ function lectorSettings(lector){
                 .addClass(`setting-icon`);
 
   let wpmIncreaseIcon = pragmajs._p().as(_e(icons['speed-increase']))
-                      .addClass(`setting-wpm-adjusticon`);
+                      .addClass(`setting-wpm-adjusticon`)
+                      .on('click').do(_ => {
+                        setWpm.value += 10;
+                      });
 
   let wpmDecreaseIcon = pragmajs._p().as(_e(icons[`speed-decrease`]))
-                        .addClass(`setting-wpm-adjusticon`);
+                        .addClass(`setting-wpm-adjusticon`)
+                        .on('click').do(_ => {
+                          setWpm.value -= 10;
+                        });
 
   let wpmAdjust = pragmajs._p('wpmAdjustPragma').contain(wpmIncreaseIcon,wpmDecreaseIcon)
                   .addClass(`speed-adjust`);
@@ -1941,8 +1941,6 @@ function lectorSettings(lector){
   let settingsBarComp = pragmajs._p().contain(settingsIcon, wpmComp)
                         .addClass(`settings-bar`);
                         
-                
-  
   
   let pageComp = pragmajs._p("!page")
                   .run(input, withLabel)

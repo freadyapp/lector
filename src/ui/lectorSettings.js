@@ -153,14 +153,6 @@ export default function lectorSettings(lector){
                     //console.log('set value', this.value)
                   //})
 
-  
-                  
-
-
-  
-
-
-
            
   function popUpEditor(){
     this.setPopupEditor = function(popup){
@@ -291,7 +283,9 @@ export default function lectorSettings(lector){
 
 
 
-  let colorIcon = _p().as(_e(icons['color-icon'])).css('width 25px; height 25px;')
+  let colorIcon = _p()
+                  .as(_e(icons['color-icon']))
+                  .css('width 25px; height 25px;')
                   .addClass(`setting-icon`)
 
   let colorMonitor = _p('monitor')
@@ -367,9 +361,15 @@ export default function lectorSettings(lector){
 
   let wpmIncreaseIcon = _p().as(_e(icons['speed-increase']))
                       .addClass(`setting-wpm-adjusticon`)
+                      .on('click').do(_ => {
+                        setWpm.value += 10
+                      })
 
   let wpmDecreaseIcon = _p().as(_e(icons[`speed-decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
+                        .on('click').do(_ => {
+                          setWpm.value -= 10
+                        })
 
   let wpmAdjust = _p('wpmAdjustPragma').contain(wpmIncreaseIcon,wpmDecreaseIcon)
                   .addClass(`speed-adjust`)
@@ -409,8 +409,6 @@ export default function lectorSettings(lector){
   let settingsBarComp = _p().contain(settingsIcon, wpmComp)
                         .addClass(`settings-bar`)
                         
-                
-  
   
   let pageComp = _p("!page")
                   .run(input, withLabel)

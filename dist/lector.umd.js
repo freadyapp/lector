@@ -17490,14 +17490,6 @@
                       //console.log('set value', this.value)
                     //})
 
-    
-                    
-
-
-    
-
-
-
              
     function popUpEditor(){
       this.setPopupEditor = function(popup){
@@ -17628,7 +17620,9 @@
 
 
 
-    let colorIcon = W().as(_e(icons['color-icon'])).css('width 25px; height 25px;')
+    let colorIcon = W()
+                    .as(_e(icons['color-icon']))
+                    .css('width 25px; height 25px;')
                     .addClass(`setting-icon`);
 
     let colorMonitor = W('monitor')
@@ -17703,10 +17697,16 @@
                   .addClass(`setting-icon`);
 
     let wpmIncreaseIcon = W().as(_e(icons['speed-increase']))
-                        .addClass(`setting-wpm-adjusticon`);
+                        .addClass(`setting-wpm-adjusticon`)
+                        .on('click').do(_ => {
+                          setWpm.value += 10;
+                        });
 
     let wpmDecreaseIcon = W().as(_e(icons[`speed-decrease`]))
-                          .addClass(`setting-wpm-adjusticon`);
+                          .addClass(`setting-wpm-adjusticon`)
+                          .on('click').do(_ => {
+                            setWpm.value -= 10;
+                          });
 
     let wpmAdjust = W('wpmAdjustPragma').contain(wpmIncreaseIcon,wpmDecreaseIcon)
                     .addClass(`speed-adjust`);
@@ -17746,8 +17746,6 @@
     let settingsBarComp = W().contain(settingsIcon, wpmComp)
                           .addClass(`settings-bar`);
                           
-                  
-    
     
     let pageComp = W("!page")
                     .run(input, withLabel)
