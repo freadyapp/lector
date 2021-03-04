@@ -104,6 +104,7 @@
 
   }
   
+
   .setting {
     width: 100%;
     display: flex;
@@ -280,7 +281,7 @@
     position: relative;
 
     &::before {
-        width: 45%;
+      width: 70%;
       height: 1px;
       background-color: #6F6F6F;
       content: "";
@@ -288,8 +289,9 @@
       top: -14px;
     }
 
+
     &::after {
-      width: 45%;
+      width: 70%;
       height: 1px;
       background-color: #6F6F6F;
       content: "";
