@@ -79,10 +79,10 @@ export default class PragmaWord extends Pragma {
     // [1, 2, 3, 4, 5]
 
     if (!sib){
+      if (typeof this.parent.sibling !== 'function') return null
 
-      console.log(this.parent)
       if (n < 0) return this.parent.sibling(-1).getFromBottom(n)
-      return this.parent.sibling(1).get(n)
+      return this.parent.sibling(1)?.get(n)
       // this.parent.sibling(-1).get(this.parent.sibling(-1).)
       // this.parent.sibling(n > 0 ? 1 : -1).get(n)
     }

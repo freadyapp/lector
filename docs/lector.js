@@ -63,7 +63,26 @@ let lectorSettings = {
         //p.css("background lightgray")
         //console.log(p)
         p.setData({ index: index })
-      //  )
+
+      },
+
+      onCreate: (p, index) => {
+        console.log(index)
+        p.self_activate = function(){
+          console.log('pooper')
+          console.log('self activating', p)
+           if (!p.word) {
+             // generate lector for the page
+             lector.helpers.wfy(p)
+             p.word = Word(p).setKey(index)
+             p.lec.addWord(p.word)
+             //console.log("appended new page with key", p.word.key)
+           }
+
+           p.css('background whitesmoke')
+        }
+
+          p.addEventListener('click', () => p.self_activate())
       },
 
       // onCreate: p => p.html("loading..."),
@@ -72,19 +91,12 @@ let lectorSettings = {
         p.onFetch(function(){
           console.log('fetched', p)
           // return onFetch(p)
-          if (p.active) {
-            if (!p.word){
-              // generate lector for the page
 
-              lector.helpers.wfy(p)
-              p.word = Word(p).setKey(index)
-              
-              p.lec.addWord(p.word)
-              //console.log("appended new page with key", p.word.key)
-            }
-            //console.log(p.word)
-            p.css('background whitesmoke')
+          if (p.active) {
+            p.self_activate() 
           }
+
+          console.log(p)
         })
       },
 

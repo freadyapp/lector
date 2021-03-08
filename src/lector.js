@@ -96,11 +96,30 @@ export const Word = (element, i, options={ shallow: false }) => {
 
 
     function hoverCluster(epicenter){
-      epicenter.toggleClass(`hover-0`)
-      epicenter.next.toggleClass(`hover-1`)
-      epicenter.next.next.toggleClass(`hover-2`)
-      epicenter.pre.toggleClass(`hover-1`)
-      epicenter.pre.pre.toggleClass(`hover-2`)
+
+      //hover(epicenter, 0)
+      function spreadRight(element, cap=1, iter=0){
+        hover(element, iter)
+        if (element.isInTheSameLine(1) && cap > iter){
+          let next = element.next
+          spreadRight(next, cap, iter+1)
+        }
+      }
+
+      function spreadLeft(element, cap=1, iter=0){
+        if (iter>0) hover(element, iter)
+        if (element.isInTheSameLine(-1) && cap > iter){
+          let pre = element.pre
+          spreadLeft(pre, cap, iter+1)
+        }
+      }
+
+      spreadRight(epicenter, 2)
+      spreadLeft(epicenter, 2)
+
+      function hover(element, depth){
+        element.toggleClass(`hover-${depth}`)
+      }
     }
 
     let thisw = w.element.findAll('w')
