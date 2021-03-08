@@ -73,8 +73,7 @@ export default class PragmaLector extends Pragma {
   read(){
     util.log("::LECTOR reading", this)
     if (!this.w.hasKids) return console.error('nothing to read')
-    console.log(this.w)
-    this.w.read()
+    this.w.read(true)
   }
 
   summonTo(n){

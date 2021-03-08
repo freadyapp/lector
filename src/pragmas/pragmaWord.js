@@ -150,38 +150,54 @@ export default class PragmaWord extends Pragma {
     return this.parent ? this.parent.currentPromise : this.currentPromiseVal
   }
 
-  promiseRead(){
+  promiseRead(startingToRead){
     this.currentPromise = new PinkyPromise((resolve, reject) => {
           // this.mark = "MARK V5 " + this.text() + this.key
           // console.log(this.mark)
           // console.log(this.text())
           console.time(this.text)
-          this.mark.guide(this).then(() => {
-            console.timeEnd(this.text)
-            this.parent.value = this.index + 1
-            resolve(` read [ ${this.text} ] `)
-          }).catch((e) => {
-            console.warn('rejected promise read', e)
-            reject(e)
-          })
+         
+          function launchMark(){
+            let time = startingToRead ? 500 : null
+            this.mark.guide(this, time).then(() => {
+              console.timeEnd(this.text)
+              this.parent.value = this.index + 1
+              resolve(` read [ ${this.text} ] `)
+            }).catch((e) => {
+              console.warn('rejected promise read', e)
+              reject(e)
+            })
+          }
+      
+
+          let self = this
+          if (startingToRead){
+            new Promise(resolve => {
+              resolve()
+            }).then(data => {
+              launchMark.bind(self)()
+            })
+          } else {
+            launchMark.bind(self)()
+          }
       })
     // console.log(this.mark)
     return this.currentPromise
   }
 
-  read(){
+  read(source=false){
     if (this.currentPromise) return new Promise((resolve, reject) => {
       resolve('already reading')
     })
 
     if (this.hasKids){
       // recursive reading 
-      if (this.currentWord) return this.currentWord.read()
+      if (this.currentWord) return this.currentWord.read(source)
       this.next.value = 0
       return this.next.read()
     } 
 
-    this.promiseRead()
+    this.promiseRead(source)
     // console.log(this)
     return new PinkyPromise(resolve => {
       this.currentPromise.then(() => {
@@ -196,7 +212,7 @@ export default class PragmaWord extends Pragma {
     if (this.hasKids) return false
     console.log("SUMMONING", this)
     return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
-      this.mark.mark(this, 50, true)
+      this.mark.mark(this, 50, false)
       if (!silent) this.parent.value = this.index
     })
   }

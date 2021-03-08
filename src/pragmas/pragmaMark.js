@@ -109,7 +109,7 @@ export default class PragmaMark extends Pragma {
         this.current_anime.complete()
         this.current_anime.remove('marker')
         //this.current_anime = null
-        this.mark(temp, 80, true).then(() => {
+        this.mark(temp, 80, false).then(() => {
           resolve("paused")
         }).catch(e => {
           reject("could not mark")
@@ -164,7 +164,7 @@ export default class PragmaMark extends Pragma {
       })
   }
 
-  guide(word) {
+  guide(word, time) {
     if (!(word instanceof Pragma)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error") })
     return new PinkyPromise((resolve, reject) => {
       let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear"
@@ -174,7 +174,7 @@ export default class PragmaMark extends Pragma {
         height: word.height,
         width: this.cw,
         ease: first_ease
-      }, this.calcDuration(word, 1))
+      }, time || this.calcDuration(word, 1))
         .then(() => {
           this.last_marked = word
           this.runningFor += 1
