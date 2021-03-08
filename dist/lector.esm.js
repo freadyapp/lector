@@ -396,14 +396,12 @@ class PragmaLector extends Pragma {
   }
 
   removeWord(key){
-    console.log('> remove', key);
     this.w.remove(key);
   }
 
   addWord(w, setIndex=false){
     w.value = w.value ?? 0;
     this.w.add(w);
-    console.log('adding word', w);
     w.currentWord.summon();
 
     // w.do(_ => {
@@ -439,7 +437,6 @@ class PragmaLector extends Pragma {
   }
 
   setFont(font){
-    console.log(this.w);
     this.w.css(`font-family ${font}`);
   }
 

@@ -67,16 +67,14 @@ let lectorSettings = {
       },
 
       onCreate: (p, index) => {
-        console.log(index)
         p.self_activate = function(){
-          console.log('pooper')
           console.log('self activating', p)
            if (!p.word) {
              // generate lector for the page
              lector.helpers.wfy(p)
              p.word = Word(p).setKey(index)
              p.lec.addWord(p.word)
-            //  p.word.value = 0
+             //p.word.value = 0
              //console.log("appended new page with key", p.word.key)
            }
 
@@ -97,7 +95,7 @@ let lectorSettings = {
             p.self_activate() 
           }
 
-          console.log(p)
+          //console.log(p)
         })
       },
 
@@ -126,7 +124,7 @@ pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
 
-console.log(lec.mark.settings)
+//console.log(lec.mark.settings)
 //setTimeout(_ => {
   //lec.paginator.goTo(parseInt(prompt()))
 //}, 5000)
