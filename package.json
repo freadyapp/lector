@@ -44,11 +44,12 @@
 	},
 	"scripts": {
 		"build": "rollup -c",
-		"pretest": "npm run build",
+		"pretest": "yarn build",
 		"test": "jest",
 		"test:watch": "jest --watchAll",
 		"dev-style": "nodemon -w 'src/styles/**' -e css,scss --exec python3 sass",
-		"dev": "rollup -c -w",
+		"dev": "nodemon -w 'src/' -e css,scss,js --exec python3 watchtower",
+		"dev-rollup": "rollup -c -w",
 		"lint": "yarn run eslint src",
 		"watch": "watchify docs/demo.js -t babelify -o docs/bundle.js -v"
 	},

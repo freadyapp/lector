@@ -1,0 +1,6 @@
+#!/usr/local/bin/python3
+import subprocess
+
+subprocess.call("python sass", shell=True)
+subprocess.call("yarn build", shell=True)
+

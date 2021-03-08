@@ -12,45 +12,29 @@ To achieve this, Lector attempts to move the pointer precisely as your eyes woul
 your mind. This dynamic can be expressed as "wiring in". Also known as super fucking focused on the text.
 
 
-# To Dev:
+# Contribute
+
+## First time:
 
 ```bash
 git clone git@github.com:robo-monk/lector.git
 cd lector
 yarn install
 ```
-To watch JavaScript files, and trigger the rollup bundle:
+* Python 3 required (prefferably installed with `brew`)
+* virtualenv (`pip install virtualenv`)
+
+## Run this to compile the code when you make changes:
 ```bash
-yarn dev
+source setup
 ```
 
-To watch SASS changes (inside the styles/ folder) as well, open a new terminal tab and:
 
-```bash
-yarn dev-style
-```
-
-## To develop styles & stuff that use the custom python intepreter:
-* Python 3 required
-
-### Run: 
-```bash
-	virtualenv .lector_env
-	source setup
-	yarn dev-style
-```
-
-# Get Started
-
-## Install
+# Install
 
 ### Use npm or yarn:
 ```bash
 $ npm install @robomonk/lector
-```
-### CDN:
-```html
-<script> coming soon </script>
 ```
 
 ## Set up

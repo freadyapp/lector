@@ -556,4 +556,3 @@ export default function lectorSettings(lector){
   
   return settings.pragmatize()
 }
-

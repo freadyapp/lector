@@ -1,10 +1,16 @@
 #!/usr/local/bin/python3
 from css_html_js_minify import css_minify
+from rich.console import Console
 import sass
 import glob
 import json
 import os
 import time
+import sys
+
+
+start = time.time()
+console = Console()
 
 def compile(t):
     return sass.compile(string=t)
@@ -13,6 +19,7 @@ def minify(t):
     return css_minify(t)
 
 
+console.print(f"[bold]Compiling styles... [/bold]")
 path = 'src/styles'
 jayson_name = "styles"
 
@@ -30,5 +37,7 @@ for file in files:
 with open(jayson_fn, "w") as j:
     json.dump(jayson, j)
     
-    # time.sleep(1)
-print(f":: compiled & minified [{path}] to {jayson_fn} \n :: size -> {round(os.stat(jayson_fn).st_size/1000, 2)} KB")
+check = "[green bold](✓)[/green bold]"
+console.print(f"{check} compiled & minified [bold]{path}[/bold] to {{{jayson_fn}}}")
+console.print(f"{check} size - [bold]{round(os.stat(jayson_fn).st_size/1000, 2)} KB")
+console.print(f"{check} [bold]Done compiling[blue] .sass [/blue][/bold]in {round(time.time()-start, 3)} seconds\n")

@@ -1,7 +1,26 @@
 #!/bin/bash
 
-echo ':: welcome to lector js' 
+echo "
+welcome to
+
+█░░ █▀▀ █▀▀ ▀▀█▀▀ █▀▀█ █▀▀█ ░░▀ █▀▀ 
+█░░ █▀▀ █░░ ░░█░░ █░░█ █▄▄▀ ░░█ ▀▀█ 
+▀▀▀ ▀▀▀ ▀▀▀ ░░▀░░ ▀▀▀▀ ▀░▀▀ █▄█ ▀▀▀
+
+
+
+Setting up..
+"
 source "./.lector_env/bin/activate"
 pip install -r .requirements.txt
+yarn dev
+
+echo "
 
 
+
+
+Goodbye.
+
+We'll meet again.
+"
