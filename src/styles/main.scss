@@ -405,3 +405,18 @@
   }
 }
 
+
+.word-element {
+  cursor: pointer;
+  transition: all .05s ease;
+  &.hover-0{
+    background-color: lightblue;
+  }
+  &.hover-1 {
+    background-color: rgba(184, 184, 184, 0.249);
+  }
+  &.hover-2 {
+    background-color: rgba(184, 184, 184, 0.119);
+    //filter: blur(.5px);
+  }
+}

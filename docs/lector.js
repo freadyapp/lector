@@ -21,7 +21,8 @@ function fetchContent(index){
           words --
         }
       }
-      resolve(`<h1> Page ${index} </h1> <p>${txt}</p>`)
+      //resolve(`<div class="t m0 x0 h3 y27 ff1 fs0 fc0 sc0 ls0 ws0"><w>Fabian</w> <w>Dälken.</w> <w>(2014).</w> <span class="ff2 ls1"><w>Are</w> <w>Porter’s</w> <w>Five</w> <w>Competitive</w> <w>Forces</w> <w>still</w> </span></div>`)
+      resolve(`<h1> Page ${index} </h1> <p>This is a test which copefully will not confirm my own suspicions. ${txt}</p>`)
     }, Math.random()*1900)
   })
 }

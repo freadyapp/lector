@@ -88,30 +88,46 @@ const Mark = (lec) => {
 }
 
 //console.log(_e("#div").deepQueryAll.toString())
-export const Word = (element, i) => {
+export const Word = (element, i, options={ shallow: false }) => {
+
   let w = new PragmaWord(i)
           .as(element)
           .setValue(0)
 
-  // new Promise(_ => {
-    let thisw = w.element.deepQueryAll('w')
+
+    function hoverCluster(epicenter){
+      epicenter.toggleClass(`hover-0`)
+      epicenter.next.toggleClass(`hover-1`)
+      epicenter.next.next.toggleClass(`hover-2`)
+      epicenter.pre.toggleClass(`hover-1`)
+      epicenter.pre.pre.toggleClass(`hover-2`)
+    }
+
+    let thisw = w.element.findAll('w')
     // console.timeLog('deepQuery')
     if (i && thisw.length === 0) {
+      w.addClass('word-element')
+      
       w.addListeners({
         "click": function(e, comp){
           this.summon()
+        },
+        "mouseover": function(){
+          hoverCluster(this)
+        },
+        "mouseout": function(){
+          hoverCluster(this)
         }
       })
     }
 
-    thisw.forEach((el, i) => {
-      let ww = Word(el, i)
-      w.add(ww)
-    })
-    // console.log('async done')
-  // })
-
-  // console.log('w done')
+    if (!options.shallow){
+      thisw.forEach((el, i) => {
+        let ww = Word(el, i, { shallow: true })
+        w.add(ww)
+      })
+    }
+    
   return w
 }
 
