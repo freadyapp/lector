@@ -76,6 +76,7 @@ let lectorSettings = {
              lector.helpers.wfy(p)
              p.word = Word(p).setKey(index)
              p.lec.addWord(p.word)
+            //  p.word.value = 0
              //console.log("appended new page with key", p.word.key)
            }
 

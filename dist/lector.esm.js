@@ -1,11 +1,11 @@
-import { Pragma, _e as _e$1, util, _p, runAsync, _thread } from 'pragmajs';
+import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import nlp from 'compromise';
 
 function elementify(el){
   // pipeline to vanillafy pragma objects to html elements
   if (el instanceof Pragma) el = el.element;
-  if (!el.isPragmaElement) el = _e$1(el);
+  if (!el.isPragmaElement) el = _e(el);
   return el
 }
 
@@ -259,7 +259,7 @@ function doMap(map){
 
 function wfyInner(desc){
   if (!desc) return false
-  desc = _e$1(desc);
+  desc = _e(desc);
   let txt = desc.textContent;
   let inner = "";
   for (let txt of desc.textContent.split(" ")){
@@ -273,7 +273,7 @@ function wfyInner(desc){
 }
 
 function wfyElement(element){
-  element = _e$1(element);
+  element = _e(element);
   let nodes = element.findAll("*");
   if (nodes.length == 0) return wfyInner(wfyInner(element))
   nodes.forEach(desc => wfyElement(desc));
@@ -281,7 +281,7 @@ function wfyElement(element){
 
 function wfy(element){
   // console.log(`wfying ${JSON.stringify(element)}`)
-  element = _e$1(element);
+  element = _e(element);
   // if (element.textContent.replaceAll(" ", "").length<1) return false
   let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text");
   if (txtNodes.length==0) return wfyElement(element)
@@ -400,11 +400,11 @@ class PragmaLector extends Pragma {
     this.w.remove(key);
   }
 
-  addWord(w, setIndex=true){
+  addWord(w, setIndex=false){
+    w.value = w.value ?? 0;
     this.w.add(w);
-    if (setIndex){
-      this.w.value = w.key;
-    }
+    console.log('adding word', w);
+    w.currentWord.summon();
 
     // w.do(_ => {
     //   if (!w.dv) return 
@@ -713,7 +713,7 @@ class PragmaMark extends Pragma {
   constructor() {
     super('marker');
 
-    this.element = _e$1("marker");
+    this.element = _e("marker");
     this.appendTo('body');
     this.hide();
     this.css(defaultStyles);
@@ -934,11 +934,11 @@ function paginator(pageTemplate, conf={}){
 
         .run(function(){
 
-          let _ptemp = _e$1(this.pageTemplate).hide();
+          let _ptemp = _e(this.pageTemplate).hide();
           this.pageTemplate = _ptemp.cloneNode(false);
 
           this._clonePage = function() {
-            let page = _e$1(this.pageTemplate.cloneNode(false)).show();
+            let page = _e(this.pageTemplate.cloneNode(false)).show();
             //if (this._lastAddedPage){
               ////page.style.height = this._lastAddedPage.height
               //page.css(`height ${this._lastAddedPage.height}px`)
@@ -1367,11 +1367,11 @@ function slider$1(conf={}){
     //console.log(this.value)
   };
   
-  this._input = _e$1('div.').addClass('pragma-slider-bg');
-  this._bar = _e$1('div.')
+  this._input = _e('div.').addClass('pragma-slider-bg');
+  this._bar = _e('div.')
     .addClass('pragma-slider-bar');
   
-  this._thumb = _e$1('div.pragma-slider-thumb');
+  this._thumb = _e('div.pragma-slider-thumb');
   this._bar.append(this._thumb);
 
   this._input.append(this._bar);
@@ -1415,7 +1415,7 @@ function input(conf = {}) {
                 util.createChains(this, 'userInput');
             // },
             // makeInput () {
-                this.input = _e$1(`<input type='text'></input>`)
+                this.input = _e(`<input type='text'></input>`)
                     .addClass('pragma-input-text');
 
                 this.setValue = function(v){
@@ -1488,8 +1488,46 @@ function withLabel(conf = {}) {
         return this
     };
     
-    this._label = _e$1('div.pragma-label', conf.label);
+    this._label = _e('div.pragma-label', conf.label);
     this.append(this._label);    
+}
+
+function _createIdler(timeout, afk, active) {
+    let _idler = new Idle(timeout)
+      .onAfk(()=> {
+        console.log('user is afk');
+        if (afk) afk();
+        // this.shout()
+      })
+      .onActive(() => {
+        console.log('user is back');
+        if (active) active();
+        // this.shutUp()
+    });
+    return _idler
+}
+
+function idler(){
+    util.createChains(this, 'idle', 'active');
+
+    this.setIdleTime = function(time=5000){
+        this._idler = _createIdler(time, () => {
+            this.idleChain.exec();
+        }, () => {
+            this.activeChain.exec();
+        });
+        return this
+    };
+    
+    this.extend('onIdle', function(){
+        this._onIdle(...arguments);
+        return this
+    });
+
+    this.extend('onActive', function(){
+        this._onActive(...arguments);
+        return this
+    });
 }
 
 class Scaler extends Pragma {
@@ -1722,6 +1760,7 @@ function lectorSettings(lector){
 
   let modeIcon = _p().as(_e(icons['mode-icon']))
                   .addClass(`setting-icon`);
+
   let modeMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass('mode-indicator')
@@ -1745,7 +1784,6 @@ function lectorSettings(lector){
                             this._miniPointer.css('mix-blend-mode normal');  
                           };
                         })
-                      
                   });
                 })
                   .run(function(){
@@ -2046,27 +2084,27 @@ function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
-  // let fader = _p('fader')
-  //   .run(idler, function(){
-  //     this.elements = []
-  //     this.include =function(){
-  //       this.elements = this.elements.concat(Array.from(arguments))
-  //       return this
-  //     }
-  //   })
-  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-  //   .include(settings, miniSettings)
-  //   .onIdle(function(){
-  //     this.elements.forEach(element => {
-  //       element.css('opacity 0')
-  //     })
-  //     // this.css('opacity 0')
-  //   })
-  //   .onActive(function(){
-  //     this.elements.forEach(element => element.css('opacity 1'))
-  //   })
+   let fader = _p('fader')
+     .run(idler, function(){
+       this.elements = [];
+       this.include =function(){
+         this.elements = this.elements.concat(Array.from(arguments));
+         return this
+       };
+     })
+     .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+     .include(settings, miniSettings)
+     .onIdle(function(){
+       this.elements.forEach(element => {
+         element.css('opacity 0');
+       });
+       // this.css('opacity 0')
+     })
+     .onActive(function(){
+       this.elements.forEach(element => element.css('opacity 1'));
+     });
   
-  // settings.fader = fader
+   settings.fader = fader;
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -2080,8 +2118,8 @@ function lectorSettings(lector){
     }
   });
 
-  setTimeout(() => {
-    // simulate websocket event
+  //setTimeout(() => {
+    //// simulate websocket event
     settings.set({
       'color': colors[1],
       'font': fonts[1],
@@ -2090,7 +2128,7 @@ function lectorSettings(lector){
       'wpm': 420
     });
    
-  }, 1200);
+  //}, 1200)
   
   return settings.pragmatize()
 }
@@ -2239,7 +2277,7 @@ const Word = (element, i, options={ shallow: false }) => {
 };
 
 const Reader = (l, options=default_options) => {
-  l = _e$1(l);
+  l = _e(l);
   if (options.wfy) wfy(l);
   let w = Word(l);
 
@@ -2326,7 +2364,7 @@ const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    lector = Reader(_e$1(l).parentElement, options)
+    lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer);
 
     lector.paginator = paginator;
@@ -2372,7 +2410,7 @@ function globalify(){
   const attrs = {
     Lector: Lector,
     Word: Word,
-    _e: _e$1,
+    _e: _e,
     _p: _p,
     util: util,
     lecUtil: helpers,

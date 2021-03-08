@@ -50,10 +50,13 @@ export default class PragmaLector extends Pragma {
     this.w.remove(key)
   }
 
-  addWord(w, setIndex=true){
+  addWord(w, setIndex=false){
+    w.value = w.value ?? 0
     this.w.add(w)
+    console.log('adding word', w)
+    w.currentWord.summon()
     if (setIndex){
-      this.w.value = w.key
+      //this.w.value = w.key
     }
 
     // w.do(_ => {

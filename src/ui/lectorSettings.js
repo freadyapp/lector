@@ -1,4 +1,4 @@
-import { _p, util } from "pragmajs"
+import { _p, util, _e } from "pragmajs"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
 import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.config"
@@ -184,6 +184,7 @@ export default function lectorSettings(lector){
 
   let modeIcon = _p().as(_e(icons['mode-icon']))
                   .addClass(`setting-icon`)
+
   let modeMonitor = _p('monitor')
                     .as(_e('div.'))
                     .addClass('mode-indicator')
@@ -207,7 +208,6 @@ export default function lectorSettings(lector){
                             this._miniPointer.css('mix-blend-mode normal')  
                           }
                         })
-                      
                   })
                 })
                   .run(function(){
@@ -508,27 +508,27 @@ export default function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0
 
-  // let fader = _p('fader')
-  //   .run(idler, function(){
-  //     this.elements = []
-  //     this.include =function(){
-  //       this.elements = this.elements.concat(Array.from(arguments))
-  //       return this
-  //     }
-  //   })
-  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-  //   .include(settings, miniSettings)
-  //   .onIdle(function(){
-  //     this.elements.forEach(element => {
-  //       element.css('opacity 0')
-  //     })
-  //     // this.css('opacity 0')
-  //   })
-  //   .onActive(function(){
-  //     this.elements.forEach(element => element.css('opacity 1'))
-  //   })
+   let fader = _p('fader')
+     .run(idler, function(){
+       this.elements = []
+       this.include =function(){
+         this.elements = this.elements.concat(Array.from(arguments))
+         return this
+       }
+     })
+     .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+     .include(settings, miniSettings)
+     .onIdle(function(){
+       this.elements.forEach(element => {
+         element.css('opacity 0')
+       })
+       // this.css('opacity 0')
+     })
+     .onActive(function(){
+       this.elements.forEach(element => element.css('opacity 1'))
+     })
   
-  // settings.fader = fader
+   settings.fader = fader
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -542,8 +542,8 @@ export default function lectorSettings(lector){
     }
   })
 
-  setTimeout(() => {
-    // simulate websocket event
+  //setTimeout(() => {
+    //// simulate websocket event
     settings.set({
       'color': colors[1],
       'font': fonts[1],
@@ -552,7 +552,7 @@ export default function lectorSettings(lector){
       'wpm': 420
     })
    
-  }, 1200)
+  //}, 1200)
   
   return settings.pragmatize()
 }

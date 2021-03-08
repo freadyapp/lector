@@ -327,7 +327,7 @@ function range(start, stop, step) {
 }
 
 function isClickWithin(click, el){
-    el = _e(el);
+    el = pragmajs._e(el);
     let left = el.rect().x;
     let top = el.rect().y;
     let width = el.rect().width;
@@ -409,11 +409,11 @@ class PragmaLector extends pragmajs.Pragma {
     this.w.remove(key);
   }
 
-  addWord(w, setIndex=true){
+  addWord(w, setIndex=false){
+    w.value = w.value ?? 0;
     this.w.add(w);
-    if (setIndex){
-      this.w.value = w.key;
-    }
+    console.log('adding word', w);
+    w.currentWord.summon();
 
     // w.do(_ => {
     //   if (!w.dv) return 
@@ -1501,6 +1501,44 @@ function withLabel(conf = {}) {
     this.append(this._label);    
 }
 
+function _createIdler(timeout, afk, active) {
+    let _idler = new Idle(timeout)
+      .onAfk(()=> {
+        console.log('user is afk');
+        if (afk) afk();
+        // this.shout()
+      })
+      .onActive(() => {
+        console.log('user is back');
+        if (active) active();
+        // this.shutUp()
+    });
+    return _idler
+}
+
+function idler(){
+    pragmajs.util.createChains(this, 'idle', 'active');
+
+    this.setIdleTime = function(time=5000){
+        this._idler = _createIdler(time, () => {
+            this.idleChain.exec();
+        }, () => {
+            this.activeChain.exec();
+        });
+        return this
+    };
+    
+    this.extend('onIdle', function(){
+        this._onIdle(...arguments);
+        return this
+    });
+
+    this.extend('onActive', function(){
+        this._onActive(...arguments);
+        return this
+    });
+}
+
 class Scaler extends pragmajs.Pragma {
     constructor(target){
         super();
@@ -1638,7 +1676,7 @@ function lectorSettings(lector){
     changeColor(hex=this.value){
       modeComp.update(hex);
       foveaComp.update(hex);
-      _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+      pragmajs._e('body').findAll('[data-lector-marker-color]').forEach(e => {
         e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
       });
       lector.mark.setColor(hex);
@@ -1658,7 +1696,7 @@ function lectorSettings(lector){
 
     changeMode(mode=this.value){
       lector.mark.setMode(mode);
-      _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+      pragmajs._e('body').findAll('[data-lector-marker-mode]').forEach(e => {
         mode_ify(e, mode, lector.mark._color);
         // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
       });
@@ -1729,10 +1767,11 @@ function lectorSettings(lector){
   }
 
 
-  let modeIcon = pragmajs._p().as(_e(icons['mode-icon']))
+  let modeIcon = pragmajs._p().as(pragmajs._e(icons['mode-icon']))
                   .addClass(`setting-icon`);
+
   let modeMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass('mode-indicator')
                     .setData({ 'lectorMarkerMode': 'true' });
 
@@ -1747,14 +1786,13 @@ function lectorSettings(lector){
                           this.parent.value = this.key;
                         })
                         .run(function(){
-                          this._miniPointer = _e('div.mini-pointer#');
+                          this._miniPointer = pragmajs._e('div.mini-pointer#');
                           this.append(this._miniPointer);
                           this.update = function(bg){
                             mode_ify(this._miniPointer, option, bg);
                             this._miniPointer.css('mix-blend-mode normal');  
                           };
                         })
-                      
                   });
                 })
                   .run(function(){
@@ -1776,10 +1814,10 @@ function lectorSettings(lector){
                       this.update = setMode.update;
                     });
 
-  let foveaIcon = pragmajs._p().as(_e(icons['fovea-icon']))
+  let foveaIcon = pragmajs._p().as(pragmajs._e(icons['fovea-icon']))
                   .addClass(`setting-icon`);
   let foveaMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });                
 
@@ -1831,12 +1869,12 @@ function lectorSettings(lector){
 
 
   let colorIcon = pragmajs._p()
-                  .as(_e(icons['color-icon']))
+                  .as(pragmajs._e(icons['color-icon']))
                   .css('width 25px; height 25px;')
                   .addClass(`setting-icon`);
 
   let colorMonitor = pragmajs._p('monitor')
-                    .as(_e('div.'))
+                    .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });
 
@@ -1902,17 +1940,17 @@ function lectorSettings(lector){
   //                 .run(popUpEditor)
   //                   .setPopupEditor(setFont)
   
-  let wpmIcon = pragmajs._p().as(_e(icons['speed-icon']))
+  let wpmIcon = pragmajs._p().as(pragmajs._e(icons['speed-icon']))
                 .css('width 25px; height 25px;')
                 .addClass(`setting-icon`);
 
-  let wpmIncreaseIcon = pragmajs._p().as(_e(icons['speed-increase']))
+  let wpmIncreaseIcon = pragmajs._p().as(pragmajs._e(icons['speed-increase']))
                       .addClass(`setting-wpm-adjusticon`)
                       .on('click').do(_ => {
                         setWpm.value += 10;
                       });
 
-  let wpmDecreaseIcon = pragmajs._p().as(_e(icons[`speed-decrease`]))
+  let wpmDecreaseIcon = pragmajs._p().as(pragmajs._e(icons[`speed-decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
                         .on('click').do(_ => {
                           setWpm.value -= 10;
@@ -1945,7 +1983,7 @@ function lectorSettings(lector){
                 });
 
 
-  let settingsIcon = pragmajs._p().as(_e(icons['settings-icon-white']))
+  let settingsIcon = pragmajs._p().as(pragmajs._e(icons['settings-icon-white']))
                     .addClass(`settings-bar-icon`)
                     .run(popUpEditor)
                     .setPopupEditor(popUpSettings);
@@ -2055,27 +2093,27 @@ function lectorSettings(lector){
   
   const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
 
-  // let fader = _p('fader')
-  //   .run(idler, function(){
-  //     this.elements = []
-  //     this.include =function(){
-  //       this.elements = this.elements.concat(Array.from(arguments))
-  //       return this
-  //     }
-  //   })
-  //   .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-  //   .include(settings, miniSettings)
-  //   .onIdle(function(){
-  //     this.elements.forEach(element => {
-  //       element.css('opacity 0')
-  //     })
-  //     // this.css('opacity 0')
-  //   })
-  //   .onActive(function(){
-  //     this.elements.forEach(element => element.css('opacity 1'))
-  //   })
+   let fader = pragmajs._p('fader')
+     .run(idler, function(){
+       this.elements = [];
+       this.include =function(){
+         this.elements = this.elements.concat(Array.from(arguments));
+         return this
+       };
+     })
+     .setIdleTime(3000) // TODO CHANGE BACK TO 3000
+     .include(settings, miniSettings)
+     .onIdle(function(){
+       this.elements.forEach(element => {
+         element.css('opacity 0');
+       });
+       // this.css('opacity 0')
+     })
+     .onActive(function(){
+       this.elements.forEach(element => element.css('opacity 1'));
+     });
   
-  // settings.fader = fader
+   settings.fader = fader;
 
   settings.allChildren.forEach(child => {
     if (listenTo_(child)){
@@ -2089,8 +2127,8 @@ function lectorSettings(lector){
     }
   });
 
-  setTimeout(() => {
-    // simulate websocket event
+  //setTimeout(() => {
+    //// simulate websocket event
     settings.set({
       'color': colors[1],
       'font': fonts[1],
@@ -2099,7 +2137,7 @@ function lectorSettings(lector){
       'wpm': 420
     });
    
-  }, 1200);
+  //}, 1200)
   
   return settings.pragmatize()
 }
