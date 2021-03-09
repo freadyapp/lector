@@ -16216,8 +16216,7 @@
     addWord(w, setIndex=false){
       w.value = w.value ?? 0;
       this.w.add(w);
-      w.currentWord.summon();
-
+      //w.currentWord.summon()
       // w.do(_ => {
       //   if (!w.dv) return 
       //   console.log("W VALUE", w.value,w.dv)
@@ -16623,6 +16622,7 @@
     }
 
     moveTo(blueprint, duration, complete = (() => {})) {
+      console.log('moving to', blueprint);
       this.show();
       //this.shutUp() // clear any ui elements that direct attention to mark
       if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());

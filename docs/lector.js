@@ -74,14 +74,14 @@ let lectorSettings = {
              lector.helpers.wfy(p)
              p.word = Word(p).setKey(index)
              p.lec.addWord(p.word)
-             //p.word.value = 0
-             //console.log("appended new page with key", p.word.key)
+             // p.word.value = 0
+             // console.log("appended new page with key", p.word.key)
            }
 
            p.css('background whitesmoke')
         }
 
-          p.addEventListener('click', () => p.self_activate())
+        p.addEventListener('click', () => p.self_activate())
       },
 
       // onCreate: p => p.html("loading..."),

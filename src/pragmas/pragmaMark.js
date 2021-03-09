@@ -121,6 +121,7 @@ export default class PragmaMark extends Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
+    console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());

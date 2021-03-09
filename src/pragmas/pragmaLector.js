@@ -52,11 +52,7 @@ export default class PragmaLector extends Pragma {
   addWord(w, setIndex=false){
     w.value = w.value ?? 0
     this.w.add(w)
-    w.currentWord.summon()
-    if (setIndex){
-      //this.w.value = w.key
-    }
-
+    //w.currentWord.summon()
     // w.do(_ => {
     //   if (!w.dv) return 
     //   console.log("W VALUE", w.value,w.dv)
