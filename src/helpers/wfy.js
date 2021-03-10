@@ -4,10 +4,11 @@ function wfyInner(desc){
   if (!desc) return false
   desc = _e(desc)
   let txt = desc.textContent
+  if (txt.length === 0) return false
+
   let inner = ""
   for (let txt of desc.textContent.split(" ")){
     // console.log(txt)
-    console.log(typeof txt)
     let noWhiteSpace = txt.replace(/\s/g, "")
     inner += noWhiteSpace.length!=0 ? "<w>"+txt.split(" ").join("</w> <w>")+"</w> " : txt
   }
@@ -26,7 +27,7 @@ export function wfy(element){
   // console.log(`wfying ${JSON.stringify(element)}`)
   element = _e(element)
   // if (element.textContent.replaceAll(" ", "").length<1) return false
-  let txtNodes = element.findAll("p, div, h1, h2, h3, h3, h4, h5, article, text")
+  let txtNodes = element.findAll("*")
   if (txtNodes.length==0) return wfyElement(element)
   // txtNodes.each((i, el) => {
   //   wfy(el)
