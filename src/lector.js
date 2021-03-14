@@ -95,9 +95,9 @@ export const Word = (element, i, options={ shallow: false }) => {
           .setValue(0)
 
 
-    function hoverCluster(epicenter){
+    function unhoverCluster(epicenter) { hoverCluster(epicenter, 'remove') }
+    function hoverCluster(epicenter, action='add'){
 
-      //hover(epicenter, 0)
       function spreadRight(element, cap=1, iter=0){
         hover(element, iter)
         if (element.isInTheSameLine(1) && cap > iter){
@@ -118,26 +118,20 @@ export const Word = (element, i, options={ shallow: false }) => {
       spreadLeft(epicenter, 2)
 
       function hover(element, depth){
-        element.toggleClass(`hover-${depth}`)
+        element[`${action}Class`](`hover-${depth}`)
       }
     }
 
     let thisw = w.element.findAll('w')
-    // console.timeLog('deepQuery')
     if (i && thisw.length === 0) {
       w.addClass('word-element')
       
-      w.addListeners({
-        "click": function(e, comp){
+      w
+        .listenTo("click", function(){
           this.summon()
-        },
-        "mouseover": function(){
-          hoverCluster(this)
-        },
-        "mouseout": function(){
-          hoverCluster(this)
-        }
-      })
+        })
+        .listenTo("mouseover", function() { hoverCluster(this) })
+        .listenTo("mouseout", function() { unhoverCluster(this) })
     }
 
     if (!options.shallow){

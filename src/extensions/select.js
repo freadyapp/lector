@@ -9,7 +9,7 @@ const defaults = {
       return _p(option)
               .html(option)
               .addClass('pragma-click')
-              .on('click').do(function(){
+              .listenTo('click', function(){
                 this.parent.value = this.key
               })
   }

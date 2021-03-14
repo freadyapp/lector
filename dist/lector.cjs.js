@@ -1265,7 +1265,7 @@ const defaults = {
       return pragmajs._p(option)
               .html(option)
               .addClass('pragma-click')
-              .on('click').do(function(){
+              .listenTo('click', function(){
                 this.parent.value = this.key;
               })
   }
@@ -1751,7 +1751,7 @@ function lectorSettings(lector){
     this.element.onRender(() => {
       let self = this;
       document.addEventListener('click', function _onClick(click){
-        console.log(click, self._popped);
+        //console.log(click, self._popped)
         if (self._popped === click){
           // if click event was used to pop the menu, skip
           return null
@@ -1779,7 +1779,7 @@ function lectorSettings(lector){
                     options: modes$1,
                     optionTemplate: option => pragmajs._p(option)
                         .addClass(`modeOption`)
-                        .on('click').do(function(){
+                        .listenTo('click', function(){
                           this.parent.value = this.key;
                         })
                         .run(function(){
@@ -1794,9 +1794,9 @@ function lectorSettings(lector){
                 })
                   .run(function(){
                     this.update = bg => {
-                      console.log('my options', this.getOptions());
+                      //console.log('my options', this.getOptions())
                       this.getOptions().forEach(option => option.update(bg));
-                      console.log(this.children);
+                      //console.log(this.children)
                     };
                   })
                   // .run(lecLabel)
@@ -1849,7 +1849,7 @@ function lectorSettings(lector){
                         return pragmajs._p(option)
                                 .css(`background-color ${option} `)
                                 .addClass(`color-option`)
-                                .on('click').do(function(){
+                                .listenTo('click', function(){
                                   this.parent.value = this.key;
                                 })
                       }
@@ -1943,13 +1943,13 @@ function lectorSettings(lector){
 
   let wpmIncreaseIcon = pragmajs._p().as(pragmajs._e(icons['speed-increase']))
                       .addClass(`setting-wpm-adjusticon`)
-                      .on('click').do(_ => {
+                      .listenTo('click', _ => {
                         setWpm.value += 10;
                       });
 
   let wpmDecreaseIcon = pragmajs._p().as(pragmajs._e(icons[`speed-decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
-                        .on('click').do(_ => {
+                        .listenTo('click', _ => {
                           setWpm.value -= 10;
                         });
 
@@ -2062,7 +2062,7 @@ function lectorSettings(lector){
                   // .do(actions.changePage
                   .run(function(){
                      this.onUserInput(val => {
-                       console.log(val);
+                       //console.log(val)
                        this.editValue(val);
                      });
                   })
@@ -2227,9 +2227,9 @@ const Word = (element, i, options={ shallow: false }) => {
           .setValue(0);
 
 
-    function hoverCluster(epicenter){
+    function unhoverCluster(epicenter) { hoverCluster(epicenter, 'remove'); }
+    function hoverCluster(epicenter, action='add'){
 
-      //hover(epicenter, 0)
       function spreadRight(element, cap=1, iter=0){
         hover(element, iter);
         if (element.isInTheSameLine(1) && cap > iter){
@@ -2250,26 +2250,20 @@ const Word = (element, i, options={ shallow: false }) => {
       spreadLeft(epicenter, 2);
 
       function hover(element, depth){
-        element.toggleClass(`hover-${depth}`);
+        element[`${action}Class`](`hover-${depth}`);
       }
     }
 
     let thisw = w.element.findAll('w');
-    // console.timeLog('deepQuery')
     if (i && thisw.length === 0) {
       w.addClass('word-element');
       
-      w.addListeners({
-        "click": function(e, comp){
+      w
+        .listenTo("click", function(){
           this.summon();
-        },
-        "mouseover": function(){
-          hoverCluster(this);
-        },
-        "mouseout": function(){
-          hoverCluster(this);
-        }
-      });
+        })
+        .listenTo("mouseover", function() { hoverCluster(this); })
+        .listenTo("mouseout", function() { unhoverCluster(this); });
     }
 
     if (!options.shallow){

@@ -169,7 +169,7 @@ export default function lectorSettings(lector){
     this.element.onRender(() => {
       let self = this
       document.addEventListener('click', function _onClick(click){
-        console.log(click, self._popped)
+        //console.log(click, self._popped)
         if (self._popped === click){
           // if click event was used to pop the menu, skip
           return null
@@ -197,7 +197,7 @@ export default function lectorSettings(lector){
                     options: modes,
                     optionTemplate: option => _p(option)
                         .addClass(`modeOption`)
-                        .on('click').do(function(){
+                        .listenTo('click', function(){
                           this.parent.value = this.key
                         })
                         .run(function(){
@@ -212,9 +212,9 @@ export default function lectorSettings(lector){
                 })
                   .run(function(){
                     this.update = bg => {
-                      console.log('my options', this.getOptions())
+                      //console.log('my options', this.getOptions())
                       this.getOptions().forEach(option => option.update(bg))
-                      console.log(this.children)
+                      //console.log(this.children)
                     }
                   })
                   // .run(lecLabel)
@@ -267,7 +267,7 @@ export default function lectorSettings(lector){
                         return _p(option)
                                 .css(`background-color ${option} `)
                                 .addClass(`color-option`)
-                                .on('click').do(function(){
+                                .listenTo('click', function(){
                                   this.parent.value = this.key
                                 })
                       }
@@ -361,13 +361,13 @@ export default function lectorSettings(lector){
 
   let wpmIncreaseIcon = _p().as(_e(icons['speed-increase']))
                       .addClass(`setting-wpm-adjusticon`)
-                      .on('click').do(_ => {
+                      .listenTo('click', _ => {
                         setWpm.value += 10
                       })
 
   let wpmDecreaseIcon = _p().as(_e(icons[`speed-decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
-                        .on('click').do(_ => {
+                        .listenTo('click', _ => {
                           setWpm.value -= 10
                         })
 
@@ -480,7 +480,7 @@ export default function lectorSettings(lector){
                   // .do(actions.changePage
                   .run(function(){
                      this.onUserInput(val => {
-                       console.log(val)
+                       //console.log(val)
                        this.editValue(val)
                      })
                   })
