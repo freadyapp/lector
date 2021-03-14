@@ -18138,10 +18138,6 @@
   }
 
   const Lector = (l, options=default_options) => {
-    if (!_needWrapper(options)) return Reader(l, options)
-
-    O.log("configuration appears to be a bit more complicated");
-
     if (options.defaultStyles){
       O.addStyles(css.main);
     }
@@ -18150,6 +18146,10 @@
       O.addStyles(css.full);
     }
 
+    if (!_needWrapper(options)) return Reader(l, options)
+
+    O.log("configuration appears to be a bit more complicated");
+    
     if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
     let lector;
 
