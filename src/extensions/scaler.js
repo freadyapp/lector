@@ -9,12 +9,12 @@ export class Scaler extends Pragma {
         this.target.css(`transition transform .07s ease; transform-origin top`)
 
         this.createWire("scale")
-        this.setScaleRange(1, 10)
         this.scale = 100
 
-        this.on('scaleShift', function(v, lv){
+        this.on('scaleChange', function(v, lv){
             if (v == lv) return false
-            this._scaleTo(v)
+            this.value = this.scale
+            this._scaleTo(this.scale)
         })
     }
     

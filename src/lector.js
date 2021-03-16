@@ -264,7 +264,8 @@ export const Lector = (l, options=default_options) => {
     if (lector.settings){
       console.log("lector has settings! connecting scaler's value to scalercomp")
       let scaleComp = lector.settings.find('!scale')
-      if (scaleComp) scaleComp.wireTo(lector.scaler)
+      lector.scaler.on('scaleChange', (v) => { scaleComp.value = v })
+      //if (scaleComp) scaleComp.wireTo(lector.scaler)
     }  
 
   }

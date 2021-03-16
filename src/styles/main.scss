@@ -407,8 +407,9 @@
 .word-element {
   cursor: pointer;
   transition: all .05s ease;
+  border-radius: 2px;
   &.hover-0{
-    background-color: lightblue;
+    background-color: #2b6cce37;
   }
   &.hover-1 {
     background-color: rgba(184, 184, 184, 0.249);
@@ -416,5 +417,8 @@
   &.hover-2 {
     background-color: rgba(184, 184, 184, 0.119);
     //filter: blur(.5px);
+  }
+  &.hover-3 {
+    background-color: rgba(184, 184, 184, 0.043);
   }
 }
