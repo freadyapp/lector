@@ -7,6 +7,8 @@ export function paginator(pageTemplate, conf={}){
           // make this nicer
           // defaultSet: pageTemplate,
           pageTemplate: pageTemplate,
+          firstPage: conf.first,
+          lastPage: conf.last,
           fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified') },
           onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
           onFetch: conf.onFetch,
@@ -35,6 +37,11 @@ export function paginator(pageTemplate, conf={}){
             util.createEventChains(page, 'fetch')
             return page
           }
+
+          this.isPageAvailable = v => {
+            return (!this.firstPage || v >= this.firstPage)
+                                      && (!this.lastPage || v <= this.lastPage)
+                    }
 
           this.create = function(val=this.value, action='append'){
             // console.log('creating', val, action)
@@ -153,6 +160,9 @@ export function paginator(pageTemplate, conf={}){
             "addPage",
             "delPage",
             'activate',
+            'firstPage',
+            'lastPage',
+            'isPageAvailable',
             'inactivate')
         })
 }

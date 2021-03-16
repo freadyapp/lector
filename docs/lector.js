@@ -58,7 +58,12 @@ let lectorSettings = {
    paginate: {
      from: 'stream',
      as: 'infiniteScroll',
+
      config: {
+
+     first: 1,
+     last: 69,
+     
       onPageAdd: (p, index) => {
         //p.css("background lightgray")
         //console.log(p)

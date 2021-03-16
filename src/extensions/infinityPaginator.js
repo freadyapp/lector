@@ -36,6 +36,9 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               // console.log(">>> FILLING WITH", this.value)
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
               let pageRange = range(start, this.value+conf.headspace)
+              console.log(pageRange)
+              pageRange = pageRange.filter(v => this.isPageAvailable(v))
+              console.log(pageRange)
               let pagesRendered = Array.from(this.pages.keys())
 
               let pagesToRender = util.aryDiff(pageRange, pagesRendered)

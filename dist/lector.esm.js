@@ -919,6 +919,8 @@ function paginator(pageTemplate, conf={}){
           // make this nicer
           // defaultSet: pageTemplate,
           pageTemplate: pageTemplate,
+          firstPage: conf.first,
+          lastPage: conf.last,
           fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified'); },
           onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
           onFetch: conf.onFetch,
@@ -947,6 +949,11 @@ function paginator(pageTemplate, conf={}){
             util.createEventChains(page, 'fetch');
             return page
           };
+
+          this.isPageAvailable = v => {
+            return (!this.firstPage || v >= this.firstPage)
+                                      && (!this.lastPage || v <= this.lastPage)
+                    };
 
           this.create = function(val=this.value, action='append'){
             // console.log('creating', val, action)
@@ -1065,6 +1072,9 @@ function paginator(pageTemplate, conf={}){
             "addPage",
             "delPage",
             'activate',
+            'firstPage',
+            'lastPage',
+            'isPageAvailable',
             'inactivate');
         })
 }
@@ -1102,6 +1112,9 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               // console.log(">>> FILLING WITH", this.value)
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
               let pageRange = range(start, this.value+conf.headspace);
+              console.log(pageRange);
+              pageRange = pageRange.filter(v => this.isPageAvailable(v));
+              console.log(pageRange);
               let pagesRendered = Array.from(this.pages.keys());
 
               let pagesToRender = util.aryDiff(pageRange, pagesRendered);
@@ -1532,14 +1545,16 @@ class Scaler extends Pragma {
     constructor(target){
         super();
         this.target = target;
-        this.target.css(`transition transform .07s ease`);
+        this.target.css(`transition transform .07s ease; transform-origin top`);
 
-        this.value = 100;
-        this.do(function(){
-            this.scaleTo(this.value);
+        this.createWire("scale");
+        this.setScaleRange(1, 10);
+        this.scale = 100;
+
+        this.on('scaleShift', function(v, lv){
+            if (v == lv) return false
+            this._scaleTo(v);
         });
-
-        this.setRange(10, 400);
     }
     
     setTarget(n) { this.target = n; return this }
@@ -1553,14 +1568,17 @@ class Scaler extends Pragma {
     }
 
     scaleUp(){
-        this.value+= this.scaleStep;
+        this.scale+= this.scaleStep;
     }
     
     scaleDown(){
-        this.value-= this.scaleStep;
+        this.scale-= this.scaleStep;
+    }
+    scaleTo(to){
+        this.scale = to;
     }
     
-    scaleTo(to){
+    _scaleTo(to){
         this.target.css(`transform scale(${to/100})`);
     }
 }
