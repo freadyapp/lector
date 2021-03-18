@@ -33,3 +33,21 @@ export function isClickWithin(click, el){
   
     return _x && _y
   }
+
+export function fadeTo(el, value, ms = 500) {
+    el = _e(el)
+    el.css(`
+    transition opacity ${ms}ms 
+    opacity ${value}
+  `)
+    return new Promise(resolve => {
+        setTimeout(() => {
+            if (value == 0) {
+                el.hide()
+            } else {
+                el.show()
+            }
+            resolve()
+        }, ms)
+    })
+}

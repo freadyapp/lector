@@ -1,5 +1,6 @@
 import { Lector, Word } from "./lector.js"
 
+export * as ui from "./ui/index"
 import * as helpers from "./helpers/index"
 
 export { Lector, Word, helpers }

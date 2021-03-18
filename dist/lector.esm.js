@@ -1,6 +1,7 @@
 import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import nlp from 'compromise';
+import 'mousetrap';
 
 function elementify(el){
   // pipeline to vanillafy pragma objects to html elements
@@ -333,12 +334,31 @@ function isClickWithin(click, el){
     return _x && _y
   }
 
+function fadeTo(el, value, ms = 500) {
+    el = _e(el);
+    el.css(`
+    transition opacity ${ms}ms 
+    opacity ${value}
+  `);
+    return new Promise(resolve => {
+        setTimeout(() => {
+            if (value == 0) {
+                el.hide();
+            } else {
+                el.show();
+            }
+            resolve();
+        }, ms);
+    })
+}
+
 var helpers = /*#__PURE__*/Object.freeze({
   __proto__: null,
   PinkyPromise: PinkyPromise,
   Idle: Idle,
   range: range,
   isClickWithin: isClickWithin,
+  fadeTo: fadeTo,
   isOnScreen: isOnScreen,
   isMostlyInScreen: isMostlyInScreen,
   scrollTo: scrollTo,
@@ -1342,11 +1362,13 @@ function select(conf){
 
 var full = "@charset \"utf-8\";body{background-color:#161616}";
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
-var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:2px}.word-element.hover-0{background-color:#2b6cce37}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}";
+var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}";
+var settings = "@charset \"utf-8\";.settings{border-radius:4px;background-color:#404040;bottom:10px;left:10px;height:300px;padding:10px;width:300px;color:whitesmoke;position:fixed;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch}.setting .collapsed-section{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{cursor:pointer;background:gray}.setting .editor-content .option.selected{background:#723838}";
 var css = {
 	full: full,
 	slider: slider,
-	main: main
+	main: main,
+	settings: settings
 };
 
 util.addStyles(css.slider);
@@ -2164,6 +2186,475 @@ function lectorSettings(lector){
   return settings.pragmatize()
 }
 
+//let testPragma = _p()
+                  //.createWire("yoing")
+                  //.on('yoingChange', function(v){
+                    //settings.update(this.key, v)
+                  //})
+
+class Settings extends Pragma {
+  constructor(){
+    super();
+    this.init();
+  }
+
+  init() {
+    this.settingsMap = new Map();
+
+    this.createEvent("update");
+  }
+
+
+  _set(key, value){
+    if (value !== this.settingsMap.get(key)) return this.settingsMap.set(key, value)
+    return false 
+  }
+
+  create(pragma, wireName){
+    const settingName=wireName;
+    const event = pragma._events.get(`${wireName}Change`); 
+    if (!event){
+      let ogValue = pragma[wireName];
+      // Object.defineProperty(pragma, wireName, { writable: true })
+      pragma.createWire(wireName);
+      pragma[wireName] = ogValue;
+    }
+
+    this.adopt(pragma);
+    pragma.on(`${wireName}Change`, value => {
+      this.update(settingName, value, pragma);
+    });
+  }
+
+  update(hash, value, pragma){
+    if (value) {
+      hash = { [hash]: value };
+    }
+    
+    for (let [ key, value ] of Object.entries(hash)){
+      if (this._set(key, value)){
+        this.triggerEvent("update", key, value, pragma);
+      }
+    }
+  }
+
+  get(...keys){
+    if (keys.length==0) keys = Array.from(this.settingsMap.keys());
+    return keys.reduce((prev, key) => {
+
+      if (typeof prev === "string"){
+        prev = { [prev]: this.settingsMap.get(prev) };
+      } else {
+        prev[key] = this.settingsMap.get(key);
+      }
+
+      return prev
+    })
+  }
+
+  toObj(){
+    return this.get()
+  }
+
+  toJSON(){
+    return JSON.stringify(this.toObj())
+  }
+}
+
+let editor = setting => 
+    _e(`
+    <div id='${setting.key}-editor' class='editor' data-setting-target='editor'>
+        <div data-setting-target='back'> < ${setting.getData('setting')} </div>
+
+        <div class='editor-content' data-editor-target='content'>
+            
+        </div>
+    </div>
+    `.trim());
+
+class SettingEditor extends Pragma {
+    constructor(){
+        super();
+        this.init(...arguments);
+    }
+
+    init(setting){
+        this.setting = setting;
+        this.as(editor(setting))
+            .appendTo(setting.element);
+        
+        this.createEvents('hide');
+        this.createWire('content');
+        
+        this.on('contentChange', content => {
+            // editorContent.html(content)
+            this._setContent(content);
+        });
+        
+       
+        this.element.hide();
+        
+        this.element.findAll(`[data-setting-target='back']`)
+                    .forEach(e => e.listenTo("mousedown", () => {
+                                    this.triggerEvent("hide");
+                                })
+                            );
+        
+
+        this.on('hide', () => {
+            setting.close();
+            this.element.hide();
+        });
+        
+
+        
+        // this.triggerEvent('hide')
+        return this
+    }
+
+    _setContent(html, ...elements){
+        let editorContent = this.element.find('[data-editor-target="content"]');
+        if (typeof html === 'string'){
+            editorContent.html(html);
+        } else if (html instanceof Pragma){
+            editorContent.append(html, ...elements);
+            // elements.forEach(element => editorContent.append(element))
+
+            this.triggerEvent('contentChange');
+        }
+    }
+}
+
+let displayElement = (title) => {
+    return _e(`div#${title}-display.display`, 0).setData({'settingTarget': 'display'})
+};
+
+let sectionElement = (title, htmlTemp = v => `<div class='title' id='${title}-title'>${v}</div>`) =>
+    _e(`div.collapsed-section#${title}-section`)
+        .html(htmlTemp(title))
+        .append(displayElement(title));
+
+let settingTemplate = (pragma, id, title = id) =>
+    _e(`div.setting#${pragma.key}`)
+        .setData({ 'setting': id })
+        .append(sectionElement(title));
+        // .append(editorElement(title))
+
+// const htmlTemplate = `
+// <div class='settings'>
+//     <div class='setting'>
+//     </div>
+// </div>
+
+// `.trim()
+
+class Setting extends Pragma {
+    constructor(...args) {
+        super();
+        this.init(...args);
+    }
+
+
+    init(parent, key) {
+        parent.adopt(this);
+        parent.create(this, key);
+
+        this.as(settingTemplate(this, key))
+            .createEvents('input')
+            .on('input', function (input) {
+            })
+            .on(`${key}Change`, (v, lv) => {
+                if (v !== lv) {
+                    console.log('color changed to', v);
+                    this.element.find('.display').html(`${v}`);
+                    this.element.find('.collapsed-section').listenTo("mousedown", () => {
+                            console.log('openedd');
+                            this.open();
+                        });
+                }
+
+            })
+            .appendTo(this.parent);
+        
+        this.editor = new SettingEditor(this);
+        
+    }
+
+
+    open() {
+        const animTime = 100;
+        const jumpAhead = 10;
+
+        this.parent.element.findAll(".collapsed-section").forEach(section => {
+            fadeTo(section, 0, animTime);
+        });
+
+        console.log(this.editor);
+
+        setTimeout(() => {
+            fadeTo(this.editor.element, 1, animTime);
+        }, animTime-jumpAhead);
+
+    }
+
+    close() {
+        this.parent.element.findAll(".collapsed-section").forEach(section => {
+            section.show();
+            fadeTo(section, 1, 100);
+        });
+    }
+
+    updateDisplay(html){
+        let el = this.element.find("[data-setting-target='display']");
+        if (el) el.html(html);
+    }
+}
+
+let optionDefaultWrapper = (content, pragma) => _p(`
+        <div class="option" data-editor-option=${pragma.getData('option')}>
+        </div>
+    `.trim()).run(function(){
+        if (typeof content === 'string') return this.element.html(content)
+        this.append(content);
+    }).element;
+
+let optionDefaultContent = (pragma) => pragma.key.toString();
+
+let makeOptionElement = function(content, wrapper){
+    this.as(_e(wrapper(content, this))).setId(util.rk5()).addClass('option');
+    this.setData({'option': this.option});
+    return this
+};
+
+class Option extends Pragma {
+    constructor(){
+        super();
+        this.createWire('optionTemplate');
+        this.init(...arguments);
+        
+    }
+    
+    static fromTemplate (template, option){
+        let content = typeof template === 'function' ? template : optionDefaultContent;
+        let wrapper = optionDefaultWrapper;
+        if (typeof template === `object`){
+            if (template.contentTemplate) content = template.contentTemplate;
+            if (template.wrapperTemplate) wrapper = template.wrapperTemplate;
+        }
+        
+
+        return new Option(option, content, wrapper)
+    }
+
+    init(option, contentTemplate, wrapperTemplate){
+        this.option = option;
+        this._contentTemplate = contentTemplate;
+        this._wrapperTemplate = wrapperTemplate;
+
+        this.render(); 
+    }
+
+    render(){
+        return this.run(function(){
+            makeOptionElement.bind(this)(this._contentTemplate(this), this._wrapperTemplate);
+        }) 
+    }
+}
+
+class SettingList extends Setting {
+    init(settings, setting, conf={
+        contentTemplate: optionDefaultContent,    
+        wrapperTemplate: optionDefaultWrapper,    
+    }) {
+        super.init(settings, setting);
+        let options = conf.options ? conf.options : conf;
+
+        if (typeof options === 'object'){
+            let newOptions = [];
+            for (let [option, description] of Object.entries(options)){
+                newOptions.push(Option.fromTemplate(conf, option)
+                                            .setData({ "description": description })
+                                            .render());
+            }
+            options = newOptions;
+        } else {
+            options = options.map(x => Option.fromTemplate(conf, x));
+        }
+        this.adopt(options);
+        
+        this.createEvent('select');
+        this.createWire('currentOption');
+        
+        this.on('currentOptionChange', (option, lastOption) => {
+            if (!lastOption || option.key != lastOption.key){
+                this.triggerEvent("select", option, lastOption);
+            }
+        });
+        
+        
+
+        options.forEach(option => option.listenTo('mousedown', () => this.setCurrentOption(option)));
+
+        this.editor._setContent(...options);
+
+    }    
+}
+
+//let test=0
+//let output = html`
+//<> div#settings.yoing 
+    //this is something else
+
+  //<>div.glass
+    //pragma-click: 0, pragma
+   //can you tell?
+
+//<> div.yannies
+  //antentokoumpooo
+//`
+
+
+//console.log('out =>\n', output)
+
+//function parsePMD(html, lastDepth=-1, skipFirstCloseDiv=true){
+  //let parsed = ""
+  //let lines = html.split('\n')
+  //let i = -1 
+  //for (let line of lines){
+    //i++
+    //let [ident, content] = line.split("<>")
+
+    //if (!content){
+      //parsed += ident
+      //continue
+    //}
+
+    //console.log(lastDepth, ident.length)
+    //if (lastDepth > 0 && lastDepth == ident.length) {
+      //return parsed+parsePMD(lines.slice(i).join("\n"), ident.length, false)
+    //}
+
+    //if (lastDepth < ident.length) {
+      //return parsed+parsePMD(lines.slice(i).join("\n"), ident.length, true)
+    //}
+
+    //if (!skipFirstCloseDiv){
+      //parsed += "</div>\n\n"
+    //}
+    //skipFirstCloseDiv = false
+    //console.log('recuuur', ident.length, content)
+    //lastDepth = ident.length
+    //parsed += `<div id=${content} class=${ident.length}>\n`
+  //}
+
+  //return parsed + "\n</div>"
+//}
+
+//function html(input, ...args){
+  //let html = input.raw.reduce((last, current, index) => last+args[index-1]+current)
+  //return parsePMD(html)
+//}
+//
+
+
+let settingsComp = _e(`div.settings`);
+
+
+function addSettingsToLector(lector){
+  const actions = {
+    changeColor(hex = this.value) {
+      // modeComp.update(hex)
+      // foveaComp.update(hex)
+      _e('body').findAll('[data-lector-marker-color]').forEach(e => {
+        e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
+      });
+      lector.mark.setColor(hex);
+    },
+
+    changeFovea(fovea = this.value) {
+      lector.mark.setFovea(fovea);
+    },
+
+    changeWpm(wpm = this.value) {
+      lector.mark.setWpm(wpm);
+    },
+
+    changeFont(font = this.value) {
+      lector.setFont(font);
+    },
+
+    changeMode(mode = this.value) {
+      lector.mark.setMode(mode);
+      _e('body').findAll('[data-lector-marker-mode]').forEach(e => {
+        mode_ify(e, mode, lector.mark._color);
+        // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
+      });
+    },
+
+    changePage(page = this.value) {
+      if (lector.paginator) lector.paginator.goTo(page);
+    },
+
+    changeScale(scale = this.value) {
+      if (lector.scaler) lector.scaler.scaleTo(scale);
+    }
+  };
+
+  
+  console.log(`adding settings to`, lector);
+
+  lector.settings = new Settings()
+                        .as(settingsComp)
+                        .appendTo('body')
+                        .on('update', (key, value, pragma) => {
+                          console.log('update', key, value, pragma);
+                        });
+  
+
+  // let colorSetting = new Setting(lector.settings, 'color')
+  
+  // colorSetting.on('inputChange', (input) => {
+    // colorSetting.setColor(input)
+    // lector.settings.update(setting, 'color')
+  // })
+  
+  // Mousetrap.bind("+", () => colorSetting.color += 1)
+  // Mousetrap.bind("-", () => colorSetting.color += -1)
+  // Mousetrap.bind("=", () => colorSetting.color = 0)
+  
+
+  let options =  {
+    "#323232": 'hoing',
+    "#4bca34": 'yoing',
+    "#123456": 'pase'
+  };
+  let optionTemplate = pragma => `
+      ${pragma.getData('description')}: ${pragma.getData('option')}
+  `.trim();
+
+  let colorSetting = new SettingList(lector.settings, 'color', { 
+    options: options,
+    contentTemplate: optionTemplate
+  });
+
+  colorSetting.on('select', (optionPragma, lastOptionPragma) => {
+      optionPragma.addClass('selected');
+      if (lastOptionPragma) lastOptionPragma.removeClass('selected');
+      actions.changeColor(optionPragma.getData('option'));
+      colorSetting.updateDisplay(optionPragma.getData('option'));
+  });
+
+  colorSetting.setColor("#432323");
+  // modeSetting.setMode('ethereal')
+}
+
+var index = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  LectorSettings: lectorSettings,
+  Settings: Settings,
+  addSettingsToLector: addSettingsToLector
+});
+
 // TODO add more default options
 const default_options = {
   wfy: true,
@@ -2312,7 +2803,7 @@ const Reader = (l, options=default_options) => {
               .connectTo(w);
   
   lec.mark = Mark(lec);
-  if (options.settings) lec.settings = lectorSettings(lec);
+  if (options.settings) lector.ui.addSettingsToLector(lec); 
 
 
   function bindKeys(){
@@ -2363,6 +2854,7 @@ const Lector = (l, options=default_options) => {
 
   if (options.defaultStyles){
     util.addStyles(css.main);
+    util.addStyles(css.settings);
   }
 
   if (options.fullStyles){
@@ -2396,7 +2888,7 @@ const Lector = (l, options=default_options) => {
     if (lector.settings){
       console.log("lector has settings! connecting paginator's value to pagecomp");
       let pageComp = lector.settings.find('!page');
-      pageComp.wireTo(lector.paginator);
+      pageComp?.wireTo(lector.paginator);
     }
     console.log('paginator', paginator);
 
@@ -2448,4 +2940,4 @@ function globalify(){
   }
 }
 
-export { Lector, Word, globalify, helpers };
+export { Lector, Word, globalify, helpers, index as ui };

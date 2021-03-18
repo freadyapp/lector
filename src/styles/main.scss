@@ -407,9 +407,11 @@
 .word-element {
   cursor: pointer;
   transition: all .05s ease;
-  border-radius: 2px;
+  border-radius: 1px;
   &.hover-0{
     background-color: #2b6cce37;
+    outline: 2px solid #2b6cce37;
+    border-radius: 0px;
   }
   &.hover-1 {
     background-color: rgba(184, 184, 184, 0.249);

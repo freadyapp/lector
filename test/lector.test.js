@@ -1,13 +1,49 @@
 import { _e, _p } from "pragmajs"
-import { Lector } from "../src"
+import { ui } from "../src"
 
 const sample = ` This is just a sample text. Im writing some words. This is not reality.`
 
 describe('lector', ()=>{
-    test('1', ()=> {
-        let reader = _e("div.", sample)
-        let lector = Lector(reader)
+    test('settings only sync when necessary', ()=> {
+        let settings = new ui.Settings()
+
+        let times = 0
+        settings.on('update', (key, value) => {
+            // console.log("(!) sync:", key, "->", value)
+            times ++
+        })
         
-        expect(lector).not.toBe(null)
+        
+        let c = [ "#1", "#2", "#3" ]
+
+        let colorSetting = _p('color')
+                    .createWire("hex")
+
+        let mode = _p('mode')
+
+        settings.add(colorSetting, "hex")
+
+        settings.create(mode, "mode")
+        settings.create(colorSetting, "hex")
+
+        expect(mode.mode).toBe(undefined)
+        mode.setMode("faded")
+        colorSetting.setHex(c[0])
+        colorSetting.setHex(c[0])
+        mode.setMode("faded")
+        colorSetting.setHex(c[0])
+        mode.setMode("faded")
+        mode.setMode("yannis")
+        colorSetting.setHex(c[0])
+        mode.setMode("faded")
+        expect(mode.mode).toBe("faded")
+        colorSetting.setHex(c[0])
+        colorSetting.setHex(c[0])
+        mode.setMode("honestly")
+        mode.setMode("honestly")
+        mode.setMode("honestly")
+        expect(mode.mode).toBe("honestly")
+        
+        expect(times).toBe(5)
     })
 })

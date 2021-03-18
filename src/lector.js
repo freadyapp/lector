@@ -155,7 +155,7 @@ export const Reader = (l, options=default_options) => {
               .connectTo(w)
   
   lec.mark = Mark(lec)
-  if (options.settings) lec.settings = LectorSettings(lec)
+  if (options.settings) lector.ui.addSettingsToLector(lec) 
 
 
   function bindKeys(){
@@ -206,6 +206,7 @@ export const Lector = (l, options=default_options) => {
 
   if (options.defaultStyles){
     util.addStyles(css.main)
+    util.addStyles(css.settings)
   }
 
   if (options.fullStyles){
@@ -239,7 +240,7 @@ export const Lector = (l, options=default_options) => {
     if (lector.settings){
       console.log("lector has settings! connecting paginator's value to pagecomp")
       let pageComp = lector.settings.find('!page')
-      pageComp.wireTo(lector.paginator)
+      pageComp?.wireTo(lector.paginator)
     }
     console.log('paginator', paginator)
 
