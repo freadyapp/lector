@@ -2209,6 +2209,7 @@ class Settings extends pragmajs.Pragma {
 
   init() {
     this.settingsMap = new Map();
+    this.pragmaMap = new Map();
 
     this.createEvent("update");
   }
@@ -2222,6 +2223,8 @@ class Settings extends pragmajs.Pragma {
   create(pragma, wireName){
     const settingName=wireName;
     const event = pragma._events.get(`${wireName}Change`); 
+    this.pragmaMap.set(wireName, pragma);
+
     if (!event){
       let ogValue = pragma[wireName];
       // Object.defineProperty(pragma, wireName, { writable: true })
@@ -2239,14 +2242,24 @@ class Settings extends pragmajs.Pragma {
     if (value) {
       hash = { [hash]: value };
     }
-    
+
+    let setting = Object.keys(hash)[0];
+    value = hash[setting];
+
+    if (!pragma){
+      console.log(setting);
+      pragma = this.pragmaMap.get(setting);
+      pragma[`set${setting.capitalize()}`](value);
+    }
+    // console.log(this.pragmaMap.get('color'))
+    // console.log('pragma', this.pragmaMap.get(hash))
     for (let [ key, value ] of Object.entries(hash)){
       if (this._set(key, value)){
         this.triggerEvent("update", key, value, pragma);
       }
     }
   }
-
+  
   get(...keys){
     if (keys.length==0) keys = Array.from(this.settingsMap.keys());
     return keys.reduce((prev, key) => {
@@ -2374,17 +2387,19 @@ class Setting extends pragmajs.Pragma {
             })
             .on(`${key}Change`, (v, lv) => {
                 if (v !== lv) {
-                    console.log('color changed to', v);
-                    this.element.find('.display').html(`${v}`);
-                    this.element.find('.collapsed-section').listenTo("mousedown", () => {
-                            console.log('openedd');
-                            this.open();
-                        });
+                    this.triggerEvent('input', v, lv);
+                    // console.log('color changed to', v)
+                    // this.element.find('.display').html(`${v}`)
                 }
 
             })
             .appendTo(this.parent);
-        
+
+        this.element.find('.collapsed-section').listenTo("mousedown", () => {
+            console.log('openedd');
+            this.open();
+        });
+
         this.editor = new SettingEditor(this);
         
     }
@@ -2452,7 +2467,7 @@ class Option extends pragmajs.Pragma {
         }
         
 
-        return new Option(option, content, wrapper)
+        return new Option(option, content, wrapper).setKey(option)
     }
 
     init(option, contentTemplate, wrapperTemplate){
@@ -2489,17 +2504,26 @@ class SettingList extends Setting {
         } else {
             options = options.map(x => Option.fromTemplate(conf, x));
         }
-        this.adopt(options);
+        this.adopt(...options);
         
         this.createEvent('select');
         this.createWire('currentOption');
         
+        this.on('input', value => {
+            let pragma = this.find(value);
+            if (!pragma) return pragmajs.util.throwSoft(`couldnt find option for ${value}`)
+            this.currentOption = pragma;
+        });
+
         this.on('currentOptionChange', (option, lastOption) => {
             if (!lastOption || option.key != lastOption.key){
                 this.triggerEvent("select", option, lastOption);
             }
         });
         
+        this.on('select', option => {
+            this.parent.update(this.getData('setting'), option.getData('option'));
+        });
         
 
         options.forEach(option => option.listenTo('mousedown', () => this.setCurrentOption(option)));
@@ -2632,11 +2656,20 @@ function addSettingsToLector(lector){
   // Mousetrap.bind("=", () => colorSetting.color = 0)
   
 
+ 
+  function update(optionPragma, lastOptionPragma) {
+      optionPragma.addClass('selected');
+      if (lastOptionPragma) lastOptionPragma.removeClass('selected');
+      actions.changeColor(optionPragma.getData('option'));
+      colorSetting.updateDisplay(optionPragma.getData('option'));
+  }
+
   let options =  {
     "#323232": 'hoing',
     "#4bca34": 'yoing',
     "#123456": 'pase'
   };
+
   let optionTemplate = pragma => `
       ${pragma.getData('description')}: ${pragma.getData('option')}
   `.trim();
@@ -2646,14 +2679,13 @@ function addSettingsToLector(lector){
     contentTemplate: optionTemplate
   });
 
-  colorSetting.on('select', (optionPragma, lastOptionPragma) => {
-      optionPragma.addClass('selected');
-      if (lastOptionPragma) lastOptionPragma.removeClass('selected');
-      actions.changeColor(optionPragma.getData('option'));
-      colorSetting.updateDisplay(optionPragma.getData('option'));
+  colorSetting.on('select', update);
+  lector.settings.update({
+    color: "#323232"
   });
+  // colorSetting.setColor("#4bca34")
+  
 
-  colorSetting.setColor("#432323");
   // modeSetting.setMode('ethereal')
 }
 

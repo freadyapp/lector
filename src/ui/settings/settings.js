@@ -14,6 +14,7 @@ export class Settings extends Pragma {
 
   init() {
     this.settingsMap = new Map()
+    this.pragmaMap = new Map()
 
     this.createEvent("update")
   }
@@ -27,6 +28,8 @@ export class Settings extends Pragma {
   create(pragma, wireName){
     const settingName=wireName
     const event = pragma._events.get(`${wireName}Change`) 
+    this.pragmaMap.set(wireName, pragma)
+
     if (!event){
       let ogValue = pragma[wireName]
       // Object.defineProperty(pragma, wireName, { writable: true })
@@ -44,14 +47,24 @@ export class Settings extends Pragma {
     if (value) {
       hash = { [hash]: value }
     }
-    
+
+    let setting = Object.keys(hash)[0]
+    value = hash[setting]
+
+    if (!pragma){
+      console.log(setting)
+      pragma = this.pragmaMap.get(setting)
+      pragma[`set${setting.capitalize()}`](value)
+    }
+    // console.log(this.pragmaMap.get('color'))
+    // console.log('pragma', this.pragmaMap.get(hash))
     for (let [ key, value ] of Object.entries(hash)){
       if (this._set(key, value)){
         this.triggerEvent("update", key, value, pragma)
       }
     }
   }
-
+  
   get(...keys){
     if (keys.length==0) keys = Array.from(this.settingsMap.keys())
     return keys.reduce((prev, key) => {

@@ -43,17 +43,19 @@ export class Setting extends Pragma {
             })
             .on(`${key}Change`, (v, lv) => {
                 if (v !== lv) {
-                    console.log('color changed to', v)
-                    this.element.find('.display').html(`${v}`)
-                    this.element.find('.collapsed-section').listenTo("mousedown", () => {
-                            console.log('openedd')
-                            this.open()
-                        })
+                    this.triggerEvent('input', v, lv)
+                    // console.log('color changed to', v)
+                    // this.element.find('.display').html(`${v}`)
                 }
 
             })
             .appendTo(this.parent)
-        
+
+        this.element.find('.collapsed-section').listenTo("mousedown", () => {
+            console.log('openedd')
+            this.open()
+        })
+
         this.editor = new SettingEditor(this)
         
     }

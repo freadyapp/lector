@@ -36,7 +36,7 @@ export class Option extends Pragma {
         }
         
 
-        return new Option(option, content, wrapper)
+        return new Option(option, content, wrapper).setKey(option)
     }
 
     init(option, contentTemplate, wrapperTemplate){
@@ -73,17 +73,26 @@ export class SettingList extends Setting {
         } else {
             options = options.map(x => Option.fromTemplate(conf, x))
         }
-        this.adopt(options)
+        this.adopt(...options)
         
         this.createEvent('select')
         this.createWire('currentOption')
         
+        this.on('input', value => {
+            let pragma = this.find(value)
+            if (!pragma) return util.throwSoft(`couldnt find option for ${value}`)
+            this.currentOption = pragma
+        })
+
         this.on('currentOptionChange', (option, lastOption) => {
             if (!lastOption || option.key != lastOption.key){
                 this.triggerEvent("select", option, lastOption)
             }
         })
         
+        this.on('select', option => {
+            this.parent.update(this.getData('setting'), option.getData('option'))
+        })
         
 
         options.forEach(option => option.listenTo('mousedown', () => this.setCurrentOption(option)))

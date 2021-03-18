@@ -10,7 +10,7 @@ import shc from "../config/shortcuts.config"
 import icons from './icons.json'
 
 import { isClickWithin} from "../helpers/index"
-import { Settings } from "./settings"
+import { Settings } from "./settings/settings"
 import Mousetrap from "mousetrap"
 
 
@@ -138,11 +138,20 @@ export function addSettingsToLector(lector){
   // Mousetrap.bind("=", () => colorSetting.color = 0)
   
 
+ 
+  function update(optionPragma, lastOptionPragma) {
+      optionPragma.addClass('selected')
+      if (lastOptionPragma) lastOptionPragma.removeClass('selected')
+      actions.changeColor(optionPragma.getData('option'))
+      colorSetting.updateDisplay(optionPragma.getData('option'))
+  }
+
   let options =  {
     "#323232": 'hoing',
     "#4bca34": 'yoing',
     "#123456": 'pase'
   }
+
   let optionTemplate = pragma => `
       ${pragma.getData('description')}: ${pragma.getData('option')}
   `.trim()
@@ -152,13 +161,12 @@ export function addSettingsToLector(lector){
     contentTemplate: optionTemplate
   })
 
-  colorSetting.on('select', (optionPragma, lastOptionPragma) => {
-      optionPragma.addClass('selected')
-      if (lastOptionPragma) lastOptionPragma.removeClass('selected')
-      actions.changeColor(optionPragma.getData('option'))
-      colorSetting.updateDisplay(optionPragma.getData('option'))
+  colorSetting.on('select', update)
+  lector.settings.update({
+    color: "#323232"
   })
+  // colorSetting.setColor("#4bca34")
+  
 
-  colorSetting.setColor("#432323")
   // modeSetting.setMode('ethereal')
 }
