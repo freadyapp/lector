@@ -5,7 +5,7 @@ import { SettingInt } from "./settings/settingInt"
 import { SettingSlider } from "./settings/settingSlider"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
-import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.config"
+import { colors, fonts, modes, colorsHumanFriendly, modesHumanFriendly } from "../config/marker.config"
 import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
@@ -94,18 +94,12 @@ export function addSettingsToLector(lector){
 
   
   // mode comp
-  let modes = { 
-    'Faded': "_-_",
-    'HotBox': "|_|",
-    'Underneath': "_"
-  } 
-
   let modeOptionTemplate = pragma => `
       ${pragma.getData('option')}
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
-    options: modes,
+    options: modesHumanFriendly,
     contentTemplate: modeOptionTemplate
   }).on('select', onNewSelection)
     .on('select', function(optionPragma){
@@ -127,8 +121,8 @@ export function addSettingsToLector(lector){
 
   // fovea comp
   let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
-    min: 2, max: 10 
-  })
+                        min: 2, max: 10 
+                      })
                       .on('input', (value) => {
                         actions.changeFovea(value)
                       }).bind("]", function(){
@@ -136,8 +130,12 @@ export function addSettingsToLector(lector){
                       }).bind('[', function() {
                         this.fovea -= 5
                       })
-  // Mousetrap.bind('0', function() {wpmSetting.wpm++})
 
+  
+  // when the document is loaded, 
+  // update to the default settings, and
+  // trigger the settings load event
+  //
   pragmaSpace.onDocLoad(function() {
     lector.settings.update({
       color: "#eddd6e",
@@ -145,15 +143,7 @@ export function addSettingsToLector(lector){
       wpm: 235,
       fovea: 8
     })
+
+    lector.settings.triggerEvent('load')
   })
-
-  
-  //setInterval(function(){
-    //wpmSetting.value ++
-  //}, 1000)
-  
-  // colorSetting.setColor("#4bca34")
-  
-
-  // modeSetting.setMode('ethereal')
 }
