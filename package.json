@@ -1,6 +1,6 @@
 {
 	"name": "lectorjs",
-	"version": "0.4.2a",
+	"version": "0.4.3",
 	"description": "Read like you're on aderall",
 	"license": "MIT",
 	"repository": "robo-monk/lector",
@@ -61,7 +61,7 @@
 		"animejs": "^3.2.1",
 		"compromise": "^13.7.0",
 		"mousetrap": "^1.6.5",
-		"pragmajs": "^0.7.1"
+		"pragmajs": "latest"
 	},
 	"browserify": {
 		"transform": [

@@ -5642,7 +5642,7 @@ fsevents@~2.3.1:
     jest: ^26.6.3
     mousetrap: ^1.6.5
     nodemon: ^2.0.7
-    pragmajs: ^0.7.1
+    pragmajs: latest
     rollup: ^2.36.1
     rollup-plugin-execute: ^1.1.1
     rollup-plugin-sizes: ^1.0.3
@@ -6712,10 +6712,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"pragmajs@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "pragmajs@npm:0.7.1"
-  checksum: f8b3dc552cfdedb616190cb3ff4fa20cd5a58aa40b2e83995bb7ecc3337243354359240d5b0ed9e74788d76326223862475e68f89036b56b8f3a4b0e179e8cd9
+"pragmajs@npm:latest":
+  version: 0.7.3
+  resolution: "pragmajs@npm:0.7.3"
+  checksum: 1a5efb8d9bf9844b954af99532df637b556f0e7fd72915eab734c0906ea6cd4d3396d2901b0969e20841b6eaaaaaed8a85244bde15465301cdb9d2b8700c4a2a
   languageName: node
   linkType: hard
 

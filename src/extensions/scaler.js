@@ -1,16 +1,21 @@
 import { Pragma } from 'pragmajs'
+const MAX_SCALE = 120
+const MIN_SCALE = 50
+
 export class Scaler extends Pragma {
     constructor(target){
         super()
         this.target = target
-        this.target.css(`transition transform .07s ease`)
+        this.target.css(`transition transform .07s ease; transform-origin top`)
 
-        this.value = 100
-        this.do(function(){
-            this.scaleTo(this.value)
+        this.createWire("scale")
+        this.scale = 100
+
+        this.on('scaleChange', function(v, lv){
+            if (v == lv) return false
+            this.value = this.scale
+            this._scaleTo(this.scale)
         })
-
-        this.setRange(10, 400)
     }
     
     setTarget(n) { this.target = n; return this }
@@ -24,14 +29,17 @@ export class Scaler extends Pragma {
     }
 
     scaleUp(){
-        this.value+= this.scaleStep
+        this.scale+= this.scaleStep
     }
     
     scaleDown(){
-        this.value-= this.scaleStep
+        this.scale-= this.scaleStep
+    }
+    scaleTo(to){
+        this.scale = to
     }
     
-    scaleTo(to){
+    _scaleTo(to){
         this.target.css(`transform scale(${to/100})`)
     }
 }

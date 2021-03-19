@@ -468,29 +468,44 @@ export default function lectorSettings(lector){
                   )
                   .setLabel('scale')
                   .run(function(){
-                    util.createChains(this, 'userEdit')
+                    this.createEvent('userEdit')
 
-                    this.editValue = function(val){
-                      this.value = val
-                      this.userEditChain.exec(this.value)
+                    this.createWire('scale')
+                        .setScaleRange(40, 200)
+                        .setScale(100)
+                    
+
+                    this.editScale = function(val){
+                      this.setScale(val)
                     }
+                    
+                    this.on('scaleChange', (v) => {
+                      this.value = this.scale
+                      this.triggerEvent('userEdit')
+                    })
+                    
+                    //this.editValue = function(val){
+                      //console.log('editing value')
+                      //this.value = val
+                      //if (this.value != this._lv) 
+                    //}
 
-                    this.onUserEdit(actions.changeScale)
+                    this.on('userEdit', actions.changeScale)
                   })
                   // .do(actions.changePage
                   .run(function(){
                      this.onUserInput(val => {
                        //console.log(val)
-                       this.editValue(val)
+                       this.editScale(val)
                      })
                   })
                   .setValue(100)
                   .bind(shc.scaleUp, function(){
-                    this.editValue(this.value+5)
+                    this.editScale(this.value+5)
                     return false
                   })
                   .bind(shc.scaleDown, function(){
-                    this.editValue(this.value-5)
+                    this.editScale(this.value-5)
                     return false
                   })                  
 
