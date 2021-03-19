@@ -2,6 +2,7 @@ import { _p, util, _e, Pragma } from "pragmajs"
 import { Setting } from "./settings/setting"
 import { SettingList } from "./settings/settingList"
 import { SettingInt } from "./settings/settingInt"
+import { SettingSlider } from "./settings/settingSlider"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
 import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.config"
@@ -187,13 +188,23 @@ export function addSettingsToLector(lector){
                       }).bind("-", function() { 
                         this.wpm -= 5
                       })
+  
+  let foveaSetting = new SettingSlider(lector.settings, 'fovea')
+                      .on('input', (value) => {
+                        actions.changeFovea(value)
+                      }).bind("]", function(){
+                        this.fovea += 5
+                      }).bind('[', function() {
+                        this.fovea -= 5
+                      })
   // Mousetrap.bind('0', function() {wpmSetting.wpm++})
 
   // pragmaSpace.onDocLoad(function() {
   lector.settings.update({
     color: "#eddd6e",
     mode: "HotBox",
-    wpm: 235
+    wpm: 235,
+    fovea: 4
   })
   // })
 
