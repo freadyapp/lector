@@ -1,6 +1,6 @@
 import { _p, util, _e, Pragma } from "pragmajs"
 import { SettingEditor } from "./settingEditor"
-import { fadeTo } from "../../helpers/index"
+import { fadeTo, expand, collapse } from "../../helpers/index"
 
 
 let displayElement = (title) => {
@@ -8,7 +8,7 @@ let displayElement = (title) => {
 }
 
 let sectionElement = (title, htmlTemp = v => `<div class='title' id='${title}-title'>${v}</div>`) =>
-    _e(`div.collapsed-section#${title}-section`)
+    _e(`div.collapsed-section.collapsable#${title}-section`)
         .html(htmlTemp(title))
         .append(displayElement(title))
 
@@ -40,6 +40,7 @@ export class Setting extends Pragma {
         this.as(settingTemplate(this, key))
             .createEvents('input')
             .on('input', function (input) {
+                this.updateDisplay(input)
             })
             .on(`${key}Change`, (v, lv) => {
                 if (v !== lv) {
@@ -56,37 +57,54 @@ export class Setting extends Pragma {
             this.open()
         })
 
-        this.editor = new SettingEditor(this)
         
+        this.editor = new SettingEditor(this)
     }
 
 
     open() {
-        const animTime = 100
         const jumpAhead = 10
 
-        this.parent.element.findAll(".collapsed-section").forEach(section => {
-            fadeTo(section, 0, animTime)
+        this.parent.element.findAll(".setting").forEach(section => {
+            if (section !== this.element) collapse(section) 
+        })
+        
+        this.element.findAll('.collapsed-section').forEach(section => {
+            console.log(section)
+            collapse(section)
         })
 
-        console.log(this.editor)
 
         setTimeout(() => {
-            fadeTo(this.editor.element, 1, animTime)
-        }, animTime-jumpAhead)
+            this.addClass('expanded')
+            this._ogHeight = this.height
+            this.css(`height ${this.editor.element.scrollHeight+13}px`)
+
+            expand(this.editor)
+        }, jumpAhead)
 
     }
 
     close() {
-        this.parent.element.findAll(".collapsed-section").forEach(section => {
-            section.show()
-            fadeTo(section, 1, 100)
+        this.parent.element.findAll(".setting").forEach(section => {
+            if (section !== this.element) expand(section)
         })
+
+        this.element.findAll('.collapsed-section').forEach(section => {
+            console.log(section)
+            expand(section)
+        })
+
+        this.removeClass('expanded')
+        this.element.style.height = null
     }
 
     updateDisplay(html){
-        let el = this.element.find("[data-setting-target='display']")
-        if (el) el.html(html)
+        pragmaSpace.onDocLoad(() => {
+            let el = this.element.findAll("[data-setting-target='display']")
+            console.log('updating', html, el)
+            el.forEach(el => el.html(html))
+        })
     }
 }
 

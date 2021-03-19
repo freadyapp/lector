@@ -334,12 +334,36 @@ function isClickWithin(click, el){
     return _x && _y
   }
 
+function collapse(element){
+    
+    element.css(`
+        opacity 0
+    `);
+
+
+    element.addClass(`collapsed`);
+    element.setData({ 'collapsed': true });
+    return element
+}
+
+function expand(element){
+    element.css(`
+        opacity 1 
+    `);
+
+
+    element.removeClass(`collapsed`);
+    element.setData({ 'collapsed': true });
+}
+
+
 function fadeTo(el, value, ms = 500) {
     el = _e(el);
     el.css(`
     transition opacity ${ms}ms 
     opacity ${value}
   `);
+
     return new Promise(resolve => {
         setTimeout(() => {
             if (value == 0) {
@@ -358,6 +382,8 @@ var helpers = /*#__PURE__*/Object.freeze({
   Idle: Idle,
   range: range,
   isClickWithin: isClickWithin,
+  collapse: collapse,
+  expand: expand,
   fadeTo: fadeTo,
   isOnScreen: isOnScreen,
   isMostlyInScreen: isMostlyInScreen,
@@ -712,6 +738,25 @@ const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
   return css
 };
 
+const colorsHumanFriendly = {
+    "#a8f19a": 'bezua', 
+    "#eddd6e": 'roz', 
+    "#edd1b0": 'mua', 
+    "#96adfc": 'fua'
+};
+
+const colors = Object.keys(colorsHumanFriendly);
+const fonts = ["Helvetica", "Open Sans", "Space Mono"];
+const modes$1 = ["HotBox", "Underneath", "Faded"];
+
+const defaultVals = {
+    color: "#eddd6e",
+    font: "Helvetica",
+    mode: "Faded",
+    fovea: 4,
+    wpm: 250
+};
+
 // mark is responsible for marking words in the screen
 
 const defaultStyles = `
@@ -742,6 +787,10 @@ class PragmaMark extends Pragma {
 
     this.runningFor = 0;
     this.pausing = false;
+    
+    this.setMode(defaultVals.mode);
+    this.setWpm(defaultVals.wpm);
+    this.setFovea(defaultVals.fovea);
 
     //this.idle = new Idle(8000)
       //.onAfk(()=> {
@@ -1363,7 +1412,7 @@ function select(conf){
 var full = "@charset \"utf-8\";body{background-color:#161616}";
 var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
 var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}";
-var settings = "@charset \"utf-8\";.settings{border-radius:4px;background-color:#404040;bottom:10px;left:10px;height:300px;padding:10px;width:300px;color:whitesmoke;position:fixed;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch}.setting .collapsed-section{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{cursor:pointer;background:gray}.setting .editor-content .option.selected{background:#723838}";
+var settings = "@charset \"utf-8\";.settings{border-radius:4px;background-color:#404040;opacity:.98;bottom:10px;left:10px;height:auto;padding:10px;width:200px;color:whitesmoke;position:fixed;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;transition:all .5s ease}.collapsable,.setting{overflow:hidden;transition:all .3s ease;height:auto;flex:1}.collapsable.collapsed,.collapsed.setting{flex:0}.setting{display:flex;flex-direction:column;justify-content:flex-start;height:30px}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .collapsed-section{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{cursor:pointer;background:gray}.setting .editor-content .option.selected{background:#723838}";
 var css = {
 	full: full,
 	slider: slider,
@@ -1610,16 +1659,6 @@ class Scaler extends Pragma {
 
     //this
 //}
-
-const colorsHumanFriendly = {
-    "#a8f19a": 'bez', 
-    "#eddd6e": 'roz', 
-    "#edd1b0": 'mua', 
-    "#96adfc": 'fua'
-};
-const colors = Object.keys(colorsHumanFriendly);
-const fonts = ["Helvetica", "Open Sans", "Space Mono"];
-const modes$1 = ["HotBox", "Underneath", "Faded"];
 
 var shc = {
   wpmPlus: ['+', '='],
@@ -2174,11 +2213,11 @@ function lectorSettings(lector){
   //setTimeout(() => {
     //// simulate websocket event
     settings.set({
-      'color': colors[1],
+      // 'color': colors[1],
       'font': fonts[1],
-      'mode': modes$1[2],
+      // 'mode': modes[2],
       'fovea': 4,
-      'wpm': 420
+      // 'wpm': 420
     });
    
   //}, 1200)
@@ -2230,29 +2269,24 @@ class Settings extends Pragma {
   }
 
   update(hash, value, pragma){
+
     if (value) {
       hash = { [hash]: value };
     }
 
-    let setting = Object.keys(hash)[0];
-    value = hash[setting];
-
-    if (!pragma){
-      console.log(setting);
-      pragma = this.pragmaMap.get(setting);
-      pragma[`set${setting.capitalize()}`](value);
-    }
-    // console.log(this.pragmaMap.get('color'))
-    // console.log('pragma', this.pragmaMap.get(hash))
-    for (let [ key, value ] of Object.entries(hash)){
-      if (this._set(key, value)){
-        this.triggerEvent("update", key, value, pragma);
+    for (let [setting, value] of Object.entries(hash)){
+      if (!pragma){
+        console.log(setting);
+        this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value);
       }
-    }
+      if (this._set(setting, value)){
+        this.triggerEvent("update", setting, value, pragma);
+      } 
+    }   
   }
   
   get(...keys){
-    if (keys.length==0) keys = Array.from(this.settingsMap.keys());
+    if (keys.length==0) keys = Array.from(this.pragmaMap.keys());
     return keys.reduce((prev, key) => {
 
       if (typeof prev === "string"){
@@ -2266,7 +2300,11 @@ class Settings extends Pragma {
   }
 
   toObj(){
-    return this.get()
+    let obj = new Map();
+    for (let [key, value] of this.pragmaMap) {
+      obj.set(key, value[key]);
+    }
+    return obj
   }
 
   toJSON(){
@@ -2276,11 +2314,10 @@ class Settings extends Pragma {
 
 let editor = setting => 
     _e(`
-    <div id='${setting.key}-editor' class='editor' data-setting-target='editor'>
+    <div id='${setting.key}-editor' class='editor collapsable' data-setting-target='editor'>
         <div data-setting-target='back'> < ${setting.getData('setting')} </div>
 
         <div class='editor-content' data-editor-target='content'>
-            
         </div>
     </div>
     `.trim());
@@ -2305,32 +2342,30 @@ class SettingEditor extends Pragma {
         });
         
        
-        this.element.hide();
+        // this.element.hide()
         
+        this.editorContent = this.element.find('[data-editor-target="content"]');
         this.element.findAll(`[data-setting-target='back']`)
                     .forEach(e => e.listenTo("mousedown", () => {
                                     this.triggerEvent("hide");
                                 })
                             );
-        
 
         this.on('hide', () => {
             setting.close();
-            this.element.hide();
+            collapse(this.element);
         });
         
-
-        
+        collapse(this.element);
         // this.triggerEvent('hide')
         return this
     }
 
     _setContent(html, ...elements){
-        let editorContent = this.element.find('[data-editor-target="content"]');
         if (typeof html === 'string'){
-            editorContent.html(html);
+            this.editorContent.html(html);
         } else if (html instanceof Pragma){
-            editorContent.append(html, ...elements);
+            this.editorContent.append(html, ...elements);
             // elements.forEach(element => editorContent.append(element))
 
             this.triggerEvent('contentChange');
@@ -2343,7 +2378,7 @@ let displayElement = (title) => {
 };
 
 let sectionElement = (title, htmlTemp = v => `<div class='title' id='${title}-title'>${v}</div>`) =>
-    _e(`div.collapsed-section#${title}-section`)
+    _e(`div.collapsed-section.collapsable#${title}-section`)
         .html(htmlTemp(title))
         .append(displayElement(title));
 
@@ -2375,6 +2410,7 @@ class Setting extends Pragma {
         this.as(settingTemplate(this, key))
             .createEvents('input')
             .on('input', function (input) {
+                this.updateDisplay(input);
             })
             .on(`${key}Change`, (v, lv) => {
                 if (v !== lv) {
@@ -2391,37 +2427,54 @@ class Setting extends Pragma {
             this.open();
         });
 
-        this.editor = new SettingEditor(this);
         
+        this.editor = new SettingEditor(this);
     }
 
 
     open() {
-        const animTime = 100;
         const jumpAhead = 10;
 
-        this.parent.element.findAll(".collapsed-section").forEach(section => {
-            fadeTo(section, 0, animTime);
+        this.parent.element.findAll(".setting").forEach(section => {
+            if (section !== this.element) collapse(section); 
+        });
+        
+        this.element.findAll('.collapsed-section').forEach(section => {
+            console.log(section);
+            collapse(section);
         });
 
-        console.log(this.editor);
 
         setTimeout(() => {
-            fadeTo(this.editor.element, 1, animTime);
-        }, animTime-jumpAhead);
+            this.addClass('expanded');
+            this._ogHeight = this.height;
+            this.css(`height ${this.editor.element.scrollHeight+13}px`);
+
+            expand(this.editor);
+        }, jumpAhead);
 
     }
 
     close() {
-        this.parent.element.findAll(".collapsed-section").forEach(section => {
-            section.show();
-            fadeTo(section, 1, 100);
+        this.parent.element.findAll(".setting").forEach(section => {
+            if (section !== this.element) expand(section);
         });
+
+        this.element.findAll('.collapsed-section').forEach(section => {
+            console.log(section);
+            expand(section);
+        });
+
+        this.removeClass('expanded');
+        this.element.style.height = null;
     }
 
     updateDisplay(html){
-        let el = this.element.find("[data-setting-target='display']");
-        if (el) el.html(html);
+        pragmaSpace.onDocLoad(() => {
+            let el = this.element.findAll("[data-setting-target='display']");
+            console.log('updating', html, el);
+            el.forEach(el => el.html(html));
+        });
     }
 }
 
@@ -2520,6 +2573,34 @@ class SettingList extends Setting {
         options.forEach(option => option.listenTo('mousedown', () => this.setCurrentOption(option)));
 
         this.editor._setContent(...options);
+
+    }    
+}
+
+let defaultContent = (pragma) => `
+    <div data-setting-target='display'>240</div>
+`.trim();
+    
+
+
+
+class SettingInt extends Setting {
+    init(settings, setting, conf={
+        contentTemplate: defaultContent,    
+    }) {
+
+        // this.createWire('setting')
+
+        super.init(...arguments);
+        this.editor._setContent(defaultContent()); // this.editor._setContent(conf.contentTemplate)
+
+        this.on('input', (value) => {
+            console.log('set input', value);
+            this.setData({'value': value});
+            this.parent.update(this.getData('setting'), value, this);
+        });
+        
+        console.log(this.element.findAll(`[data-setting-target='display']`));
 
     }    
 }
@@ -2630,8 +2711,8 @@ function addSettingsToLector(lector){
   lector.settings = new Settings()
                         .as(settingsComp)
                         .appendTo('body')
-                        .on('update', (key, value, pragma) => {
-                          console.log('update', key, value, pragma);
+                        .on('update', function(key, value, pragma) {
+                          console.log('syncing', this.toObj());
                         });
   
 
@@ -2651,29 +2732,65 @@ function addSettingsToLector(lector){
   function update(optionPragma, lastOptionPragma) {
       optionPragma.addClass('selected');
       if (lastOptionPragma) lastOptionPragma.removeClass('selected');
-      actions.changeColor(optionPragma.getData('option'));
-      colorSetting.updateDisplay(optionPragma.getData('option'));
+      // [`${optionPragma.getData('setting')}Setting`].updateDisplay(optionPragma.getData('option'))
+      // actions[`change${optionPragma.getData('setting')}`](optionPragma.getData('option'))
   }
 
-  let options =  {
-    "#323232": 'hoing',
-    "#4bca34": 'yoing',
-    "#123456": 'pase'
-  };
-
-  let optionTemplate = pragma => `
+  let colorOptionTemplate = pragma => `
       ${pragma.getData('description')}: ${pragma.getData('option')}
   `.trim();
 
-  let colorSetting = new SettingList(lector.settings, 'color', { 
-    options: options,
-    contentTemplate: optionTemplate
-  });
+  let optionTemplate2 = pragma => `
+      ${pragma.getData('option')}
+  `.trim();
 
-  colorSetting.on('select', update);
+  let colorSetting = new SettingList(lector.settings, 'color', { 
+    options: colorsHumanFriendly,
+    contentTemplate: colorOptionTemplate
+  }).on('select', (pragma) => {
+    console.log('color is ', pragma.option);
+    actions.changeColor(pragma.option);
+  }).on('select', update);
+
+  
+  let modes = { 
+    'Faded': "_-_",
+    'HotBox': "|_|",
+    'Underneath': "_"
+  }; 
+
+  let modeSetting = new SettingList(lector.settings, 'mode', {
+    options: modes,
+    contentTemplate: optionTemplate2
+  }).on('select', update)
+    .on('select', function(optionPragma){
+        // this.updateDisplay(optionPragma.getData('option'))
+        actions.changeMode(optionPragma.getData('option'));
+      });
+
+  let wpmSetting = new SettingInt(lector.settings, 'wpm')
+                      .on('input', (value) => {
+                        actions.changeWpm(value);
+                      }).bind("+", function(){
+                        this.wpm += 5;
+                      }).bind("-", function() { 
+                        this.wpm -= 5;
+                      });
+  // Mousetrap.bind('0', function() {wpmSetting.wpm++})
+
+  // pragmaSpace.onDocLoad(function() {
   lector.settings.update({
-    color: "#323232"
+    color: "#eddd6e",
+    mode: "HotBox",
+    wpm: 235
   });
+  // })
+
+  
+  //setInterval(function(){
+    //wpmSetting.value ++
+  //}, 1000)
+  
   // colorSetting.setColor("#4bca34")
   
 
@@ -2836,6 +2953,7 @@ const Reader = (l, options=default_options) => {
   
   lec.mark = Mark(lec);
   if (options.settings) lector.ui.addSettingsToLector(lec); 
+  // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
   function bindKeys(){

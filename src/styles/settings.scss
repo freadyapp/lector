@@ -1,11 +1,15 @@
 .settings {
     border-radius: 4px;
     background-color: #404040;
+    opacity: 0.98;
+
     bottom: 10px;
     left: 10px;
-    height: 300px;
+    // height: fit-content;
+    // min-height: 50px;
+    height: auto;
     padding: 10px;
-    width: 300px;
+    width: 200px;
     color: whitesmoke;
     position: fixed;
 
@@ -16,10 +20,40 @@
 	align-items: stretch;
 	align-content: stretch;
 
+    transition: all .5s ease;
 
 }
 
-.setting{
+.collapsable {
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    height: auto;
+    flex: 1;
+    &.collapsed{
+        flex: 0;
+    }
+}
+
+.setting {
+    @extend .collapsable;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 30px; // sadly, we're required to set at least the container height explicitly
+
+    &.expanded {
+        height: 200px;
+    }
+
+    &.collapsed {
+
+        height:0;
+        flex: 0;
+    }
+
+
     .collapsed-section{
         display: flex;
         flex-direction: row;
@@ -39,5 +73,7 @@
             }
         }
     }
+    
+
 } 
 

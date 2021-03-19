@@ -560,11 +560,11 @@ export default function lectorSettings(lector){
   //setTimeout(() => {
     //// simulate websocket event
     settings.set({
-      'color': colors[1],
+      // 'color': colors[1],
       'font': fonts[1],
-      'mode': modes[2],
+      // 'mode': modes[2],
       'fovea': 4,
-      'wpm': 420
+      // 'wpm': 420
     })
    
   //}, 1200)

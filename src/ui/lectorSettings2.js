@@ -1,6 +1,7 @@
 import { _p, util, _e, Pragma } from "pragmajs"
 import { Setting } from "./settings/setting"
 import { SettingList } from "./settings/settingList"
+import { SettingInt } from "./settings/settingInt"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
 import { colors, fonts, modes, colorsHumanFriendly } from "../config/marker.config"
@@ -121,8 +122,8 @@ export function addSettingsToLector(lector){
   lector.settings = new Settings()
                         .as(settingsComp)
                         .appendTo('body')
-                        .on('update', (key, value, pragma) => {
-                          console.log('update', key, value, pragma)
+                        .on('update', function(key, value, pragma) {
+                          console.log('syncing', this.toObj())
                         })
   
 
@@ -142,29 +143,65 @@ export function addSettingsToLector(lector){
   function update(optionPragma, lastOptionPragma) {
       optionPragma.addClass('selected')
       if (lastOptionPragma) lastOptionPragma.removeClass('selected')
-      actions.changeColor(optionPragma.getData('option'))
-      colorSetting.updateDisplay(optionPragma.getData('option'))
+      // [`${optionPragma.getData('setting')}Setting`].updateDisplay(optionPragma.getData('option'))
+      // actions[`change${optionPragma.getData('setting')}`](optionPragma.getData('option'))
   }
 
-  let options =  {
-    "#323232": 'hoing',
-    "#4bca34": 'yoing',
-    "#123456": 'pase'
-  }
-
-  let optionTemplate = pragma => `
+  let colorOptionTemplate = pragma => `
       ${pragma.getData('description')}: ${pragma.getData('option')}
   `.trim()
 
-  let colorSetting = new SettingList(lector.settings, 'color', { 
-    options: options,
-    contentTemplate: optionTemplate
-  })
+  let optionTemplate2 = pragma => `
+      ${pragma.getData('option')}
+  `.trim()
 
-  colorSetting.on('select', update)
+  let colorSetting = new SettingList(lector.settings, 'color', { 
+    options: colorsHumanFriendly,
+    contentTemplate: colorOptionTemplate
+  }).on('select', (pragma) => {
+    console.log('color is ', pragma.option)
+    actions.changeColor(pragma.option)
+  }).on('select', update)
+
+  
+  let modes = { 
+    'Faded': "_-_",
+    'HotBox': "|_|",
+    'Underneath': "_"
+  } 
+
+  let modeSetting = new SettingList(lector.settings, 'mode', {
+    options: modes,
+    contentTemplate: optionTemplate2
+  }).on('select', update)
+    .on('select', function(optionPragma){
+        // this.updateDisplay(optionPragma.getData('option'))
+        actions.changeMode(optionPragma.getData('option'))
+      })
+
+  let wpmSetting = new SettingInt(lector.settings, 'wpm')
+                      .on('input', (value) => {
+                        actions.changeWpm(value)
+                      }).bind("+", function(){
+                        this.wpm += 5
+                      }).bind("-", function() { 
+                        this.wpm -= 5
+                      })
+  // Mousetrap.bind('0', function() {wpmSetting.wpm++})
+
+  // pragmaSpace.onDocLoad(function() {
   lector.settings.update({
-    color: "#323232"
+    color: "#eddd6e",
+    mode: "HotBox",
+    wpm: 235
   })
+  // })
+
+  
+  //setInterval(function(){
+    //wpmSetting.value ++
+  //}, 1000)
+  
   // colorSetting.setColor("#4bca34")
   
 

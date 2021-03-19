@@ -34,12 +34,38 @@ export function isClickWithin(click, el){
     return _x && _y
   }
 
+export function collapse(element){
+    const ms = 30
+    
+    element.css(`
+        opacity 0
+    `)
+
+
+    element.addClass(`collapsed`)
+    element.setData({ 'collapsed': true })
+    return element
+}
+
+export function expand(element){
+    const ms = 30
+    element.css(`
+        opacity 1 
+    `)
+
+
+    element.removeClass(`collapsed`)
+    element.setData({ 'collapsed': true })
+}
+
+
 export function fadeTo(el, value, ms = 500) {
     el = _e(el)
     el.css(`
     transition opacity ${ms}ms 
     opacity ${value}
   `)
+
     return new Promise(resolve => {
         setTimeout(() => {
             if (value == 0) {

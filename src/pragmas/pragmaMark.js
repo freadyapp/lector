@@ -5,6 +5,7 @@ import PragmaWord from "./pragmaWord"
 import anime from "animejs"
 import { PinkyPromise, Idle, airway } from "../helpers/index"
 import { mode_ify } from '../config/modes.js'
+import { modes, defaultVals } from "../config/marker.config" 
 
 const defaultStyles = `
   position absolute
@@ -34,6 +35,10 @@ export default class PragmaMark extends Pragma {
 
     this.runningFor = 0
     this.pausing = false
+    
+    this.setMode(defaultVals.mode)
+    this.setWpm(defaultVals.wpm)
+    this.setFovea(defaultVals.fovea)
 
     //this.idle = new Idle(8000)
       //.onAfk(()=> {

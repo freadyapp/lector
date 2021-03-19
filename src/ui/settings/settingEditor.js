@@ -1,14 +1,13 @@
 import { _p, util, _e, Pragma } from "pragmajs"
-import { fadeTo } from "../../helpers/index"
+import { fadeTo, collapse } from "../../helpers/index"
 
 
 let editor = setting => 
     _e(`
-    <div id='${setting.key}-editor' class='editor' data-setting-target='editor'>
+    <div id='${setting.key}-editor' class='editor collapsable' data-setting-target='editor'>
         <div data-setting-target='back'> < ${setting.getData('setting')} </div>
 
         <div class='editor-content' data-editor-target='content'>
-            
         </div>
     </div>
     `.trim())
@@ -33,32 +32,30 @@ export class SettingEditor extends Pragma {
         })
         
        
-        this.element.hide()
+        // this.element.hide()
         
+        this.editorContent = this.element.find('[data-editor-target="content"]')
         this.element.findAll(`[data-setting-target='back']`)
                     .forEach(e => e.listenTo("mousedown", () => {
                                     this.triggerEvent("hide")
                                 })
                             )
-        
 
         this.on('hide', () => {
             setting.close()
-            this.element.hide()
+            collapse(this.element)
         })
         
-
-        
+        collapse(this.element)
         // this.triggerEvent('hide')
         return this
     }
 
     _setContent(html, ...elements){
-        let editorContent = this.element.find('[data-editor-target="content"]')
         if (typeof html === 'string'){
-            editorContent.html(html)
+            this.editorContent.html(html)
         } else if (html instanceof Pragma){
-            editorContent.append(html, ...elements)
+            this.editorContent.append(html, ...elements)
             // elements.forEach(element => editorContent.append(element))
 
             this.triggerEvent('contentChange')

@@ -44,29 +44,24 @@ export class Settings extends Pragma {
   }
 
   update(hash, value, pragma){
+
     if (value) {
       hash = { [hash]: value }
     }
 
-    let setting = Object.keys(hash)[0]
-    value = hash[setting]
-
-    if (!pragma){
-      console.log(setting)
-      pragma = this.pragmaMap.get(setting)
-      pragma[`set${setting.capitalize()}`](value)
-    }
-    // console.log(this.pragmaMap.get('color'))
-    // console.log('pragma', this.pragmaMap.get(hash))
-    for (let [ key, value ] of Object.entries(hash)){
-      if (this._set(key, value)){
-        this.triggerEvent("update", key, value, pragma)
+    for (let [setting, value] of Object.entries(hash)){
+      if (!pragma){
+        console.log(setting)
+        this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value)
       }
-    }
+      if (this._set(setting, value)){
+        this.triggerEvent("update", setting, value, pragma)
+      } 
+    }   
   }
   
   get(...keys){
-    if (keys.length==0) keys = Array.from(this.settingsMap.keys())
+    if (keys.length==0) keys = Array.from(this.pragmaMap.keys())
     return keys.reduce((prev, key) => {
 
       if (typeof prev === "string"){
@@ -80,7 +75,11 @@ export class Settings extends Pragma {
   }
 
   toObj(){
-    return this.get()
+    let obj = new Map()
+    for (let [key, value] of this.pragmaMap) {
+      obj.set(key, value[key])
+    }
+    return obj
   }
 
   toJSON(){
