@@ -13,9 +13,13 @@ export function slider(conf={}){
 
 
   this.do(function(){
-    this.element.setData({ value: this.value})
-    this._setBarTo(this.value*this._n())
+    this.updateTo(this.value)
   })
+  
+  this.updateTo = function(value){
+    this.element.setData({ value: value})
+    this._setBarTo(value*this._n())
+  }
 
   this._setBarTo = wp => {
     this._bar.css(`width ${wp}%`)

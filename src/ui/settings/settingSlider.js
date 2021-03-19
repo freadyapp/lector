@@ -23,16 +23,12 @@ export class SettingSlider extends Setting {
 
         super.init(...arguments)
 
-        this.slider = _p("!fovea")
-                .addClass( 'selector-fovea' )
+        this.slider = _p()
                 .run(slider) // label
-                .setRange(2, 10)
-                .setValue(5)
-                .css(``)
                 // .do(actions.changeFovea)
                 .run(function(){
-                  this.update = (bg) => {
-                    this._bar.css(``)
+                  if (conf.min && conf.max) {
+                      this.setRange(conf.min, conf.max)
                   }
                 }).do(() => {
                     // when the slider changes value set the current setting
@@ -50,6 +46,7 @@ export class SettingSlider extends Setting {
             console.log('set input', value)
             this.setData({ 'value': value })
             this.parent.update(this.getData('setting'), value, this)
+            this.slider.updateTo(value)
         })
 
         console.log(this.element.findAll(`[data-setting-target='display']`))

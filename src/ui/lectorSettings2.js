@@ -17,67 +17,11 @@ import Mousetrap from "mousetrap"
 
 
 
-//let test=0
-//let output = html`
-//<> div#settings.yoing 
-    //this is something else
-
-  //<>div.glass
-    //pragma-click: 0, pragma
-   //can you tell?
-
-//<> div.yannies
-  //antentokoumpooo
-//`
-
-
-//console.log('out =>\n', output)
-
-//function parsePMD(html, lastDepth=-1, skipFirstCloseDiv=true){
-  //let parsed = ""
-  //let lines = html.split('\n')
-  //let i = -1 
-  //for (let line of lines){
-    //i++
-    //let [ident, content] = line.split("<>")
-
-    //if (!content){
-      //parsed += ident
-      //continue
-    //}
-
-    //console.log(lastDepth, ident.length)
-    //if (lastDepth > 0 && lastDepth == ident.length) {
-      //return parsed+parsePMD(lines.slice(i).join("\n"), ident.length, false)
-    //}
-
-    //if (lastDepth < ident.length) {
-      //return parsed+parsePMD(lines.slice(i).join("\n"), ident.length, true)
-    //}
-
-    //if (!skipFirstCloseDiv){
-      //parsed += "</div>\n\n"
-    //}
-    //skipFirstCloseDiv = false
-    //console.log('recuuur', ident.length, content)
-    //lastDepth = ident.length
-    //parsed += `<div id=${content} class=${ident.length}>\n`
-  //}
-
-  //return parsed + "\n</div>"
-//}
-
-//function html(input, ...args){
-  //let html = input.raw.reduce((last, current, index) => last+args[index-1]+current)
-  //return parsePMD(html)
-//}
-//
-
-
 let settingsComp = _e(`div.settings`)
 
 
 export function addSettingsToLector(lector){
+  // actions that talk to the lector instance
   const actions = {
     changeColor(hex = this.value) {
       // modeComp.update(hex)
@@ -118,68 +62,59 @@ export function addSettingsToLector(lector){
   }
 
   
-  console.log(`adding settings to`, lector)
-
   lector.settings = new Settings()
                         .as(settingsComp)
                         .appendTo('body')
                         .on('update', function(key, value, pragma) {
                           console.log('syncing', this.toObj())
                         })
+  console.log(`[#] added settings to`, lector)
   
 
-  // let colorSetting = new Setting(lector.settings, 'color')
-  
-  // colorSetting.on('inputChange', (input) => {
-    // colorSetting.setColor(input)
-    // lector.settings.update(setting, 'color')
-  // })
-  
-  // Mousetrap.bind("+", () => colorSetting.color += 1)
-  // Mousetrap.bind("-", () => colorSetting.color += -1)
-  // Mousetrap.bind("=", () => colorSetting.color = 0)
-  
-
- 
-  function update(optionPragma, lastOptionPragma) {
+  function onNewSelection(optionPragma, lastOptionPragma) {
       optionPragma.addClass('selected')
       if (lastOptionPragma) lastOptionPragma.removeClass('selected')
-      // [`${optionPragma.getData('setting')}Setting`].updateDisplay(optionPragma.getData('option'))
-      // actions[`change${optionPragma.getData('setting')}`](optionPragma.getData('option'))
   }
 
+
+  // color comp
   let colorOptionTemplate = pragma => `
       ${pragma.getData('description')}: ${pragma.getData('option')}
-  `.trim()
-
-  let optionTemplate2 = pragma => `
-      ${pragma.getData('option')}
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
     options: colorsHumanFriendly,
     contentTemplate: colorOptionTemplate
-  }).on('select', (pragma) => {
+  }).on('select', onNewSelection)
+    .on('select', (pragma) => {
     console.log('color is ', pragma.option)
     actions.changeColor(pragma.option)
-  }).on('select', update)
+
+  })
 
   
+  // mode comp
   let modes = { 
     'Faded': "_-_",
     'HotBox': "|_|",
     'Underneath': "_"
   } 
 
+  let modeOptionTemplate = pragma => `
+      ${pragma.getData('option')}
+  `.trim()
+
   let modeSetting = new SettingList(lector.settings, 'mode', {
     options: modes,
-    contentTemplate: optionTemplate2
-  }).on('select', update)
+    contentTemplate: modeOptionTemplate
+  }).on('select', onNewSelection)
     .on('select', function(optionPragma){
         // this.updateDisplay(optionPragma.getData('option'))
         actions.changeMode(optionPragma.getData('option'))
       })
 
+  
+  // wpm comp
   let wpmSetting = new SettingInt(lector.settings, 'wpm')
                       .on('input', (value) => {
                         actions.changeWpm(value)
@@ -189,7 +124,11 @@ export function addSettingsToLector(lector){
                         this.wpm -= 5
                       })
   
-  let foveaSetting = new SettingSlider(lector.settings, 'fovea')
+
+  // fovea comp
+  let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
+    min: 2, max: 10 
+  })
                       .on('input', (value) => {
                         actions.changeFovea(value)
                       }).bind("]", function(){
@@ -199,14 +138,14 @@ export function addSettingsToLector(lector){
                       })
   // Mousetrap.bind('0', function() {wpmSetting.wpm++})
 
-  // pragmaSpace.onDocLoad(function() {
-  lector.settings.update({
-    color: "#eddd6e",
-    mode: "HotBox",
-    wpm: 235,
-    fovea: 4
+  pragmaSpace.onDocLoad(function() {
+    lector.settings.update({
+      color: "#eddd6e",
+      mode: "HotBox",
+      wpm: 235,
+      fovea: 8
+    })
   })
-  // })
 
   
   //setInterval(function(){

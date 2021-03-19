@@ -16,7 +16,7 @@ export class Settings extends Pragma {
     this.settingsMap = new Map()
     this.pragmaMap = new Map()
 
-    this.createEvent("update")
+    this.createEvents("update", 'load')
   }
 
 
