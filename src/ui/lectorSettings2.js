@@ -119,6 +119,7 @@ export function addSettingsToLector(lector){
                       })
   
 
+
   // fovea comp
   let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
                         min: 2, max: 10 

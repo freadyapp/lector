@@ -721,7 +721,7 @@ const reset = `border 0
                mix-blend-mode darken;`;
 
 
-const modes = {
+const modes$1 = {
   'hotbox': bg => `background ${bg}`,
 
   'underneath': bg => ` background transparent
@@ -737,7 +737,7 @@ const modes = {
 };
 
 function grabMode(mode, bg) {
-  return reset + modes[mode](bg)
+  return reset + modes$1[mode](bg)
 }
 
 const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
@@ -756,7 +756,7 @@ const colorsHumanFriendly = {
 
 const colors = Object.keys(colorsHumanFriendly);
 const fonts = ["Helvetica", "Open Sans", "Space Mono"];
-const modes$1 = ["HotBox", "Underneath", "Faded"];
+const modes = ["HotBox", "Underneath", "Faded"];
 const modesHumanFriendly = {
     "HotBox": "marker is a block",
     "Underneath": "marker is slim and underneat the words",
@@ -1243,7 +1243,7 @@ function infinityPaginator(streamer, pageTemplate, config={}){
         }, scrollSetup(){
           // this.goTo()
           this.goTo = function (val, speed) {
-            let _actionKey = `add-${this.value}`;
+            `add-${this.value}`;
             let paginator = this;
 
             if (this.value != val) this.value = val;
@@ -1424,19 +1424,19 @@ function select(conf){
 }
 
 var full = "@charset \"utf-8\";body{background-color:#161616}";
-var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
+var slider$1 = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
 var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}";
 var settings = "@charset \"utf-8\";.settings{border-radius:4px;background-color:#404040;opacity:.98;bottom:10px;left:10px;height:auto;padding:10px;width:200px;color:whitesmoke;position:fixed;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;transition:all .2s ease;transition:opacity .1s ease}.collapsable,.setting{overflow:hidden;transition:all .3s ease;height:auto;flex:1}.collapsable.collapsed,.collapsed.setting{flex:0}.setting{display:flex;flex-direction:column;justify-content:flex-start;height:30px}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .collapsed-section{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{cursor:pointer;background:gray}.setting .editor-content .option.selected{background:#723838}";
 var css = {
 	full: full,
-	slider: slider,
+	slider: slider$1,
 	main: main,
 	settings: settings
 };
 
 pragmajs.util.addStyles(css.slider);
   
-function slider$1(conf={}){
+function slider(conf={}){
   
   
   this._n = function(){ 
@@ -1856,7 +1856,7 @@ function lectorSettings(lector){
   let modeIcon = pragmajs._p().as(pragmajs._e(icons['mode-icon']))
                   .addClass(`setting-icon`);
 
-  let modeMonitor = pragmajs._p('monitor')
+  pragmajs._p('monitor')
                     .as(pragmajs._e('div.'))
                     .addClass('mode-indicator')
                     .setData({ 'lectorMarkerMode': 'true' });
@@ -1865,7 +1865,7 @@ function lectorSettings(lector){
   let setMode = pragmajs._p('!mode')
                   .run(function(){
                     activeSelectTpl.bind(this)({
-                    options: modes$1,
+                    options: modes,
                     optionTemplate: option => pragmajs._p(option)
                         .addClass(`modeOption`)
                         .listenTo('click', function(){
@@ -1902,14 +1902,14 @@ function lectorSettings(lector){
 
   let foveaIcon = pragmajs._p().as(pragmajs._e(icons['fovea-icon']))
                   .addClass(`setting-icon`);
-  let foveaMonitor = pragmajs._p('monitor')
+  pragmajs._p('monitor')
                     .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });                
 
   let setFovea = pragmajs._p("!fovea")
                 .addClass( 'selector-fovea' )
-                .run(slider$1) // label
+                .run(slider) // label
                 .setRange(2, 10)
                 .setValue(5)
                 .css(``)
@@ -1959,7 +1959,7 @@ function lectorSettings(lector){
                   .css('width 25px; height 25px;')
                   .addClass(`setting-icon`);
 
-  let colorMonitor = pragmajs._p('monitor')
+  pragmajs._p('monitor')
                     .as(pragmajs._e('div.'))
                     .addClass(`color-indicator`)
                     .setData({ 'lectorMarkerColor': 'background' });
@@ -2595,7 +2595,7 @@ class SettingList extends Setting {
     }    
 }
 
-let defaultContent = (pragma) => `
+let defaultContent$1 = (pragma) => `
     <div data-setting-target='display'>240</div>
 `.trim();
     
@@ -2604,13 +2604,13 @@ let defaultContent = (pragma) => `
 
 class SettingInt extends Setting {
     init(settings, setting, conf={
-        contentTemplate: defaultContent,    
+        contentTemplate: defaultContent$1,    
     }) {
 
         // this.createWire('setting')
 
         super.init(...arguments);
-        this.editor._setContent(defaultContent()); // this.editor._setContent(conf.contentTemplate)
+        this.editor._setContent(defaultContent$1()); // this.editor._setContent(conf.contentTemplate)
 
         this.on('input', (value) => {
             console.log('set input', value);
@@ -2623,7 +2623,7 @@ class SettingInt extends Setting {
     }    
 }
 
-let defaultContent$1 = (pragma) => `
+let defaultContent = (pragma) => `
     <div data-setting-target='display'>
         8
     </div>
@@ -2635,7 +2635,7 @@ let defaultContent$1 = (pragma) => `
 
 class SettingSlider extends Setting {
     init(settings, setting, conf = {
-        contentTemplate: defaultContent$1,
+        contentTemplate: defaultContent,
     }) {
 
         // this.createWire('setting')
@@ -2643,7 +2643,7 @@ class SettingSlider extends Setting {
         super.init(...arguments);
 
         this.slider = pragmajs._p()
-                .run(slider$1) // label
+                .run(slider) // label
                 // .do(actions.changeFovea)
                 .run(function(){
                   if (conf.min && conf.max) {
@@ -2655,7 +2655,7 @@ class SettingSlider extends Setting {
                     this[setting] = this.slider.value;
                 });
           
-        this.editor._setContent(defaultContent$1()); // this.editor._setContent(conf.contentTemplate)
+        this.editor._setContent(defaultContent()); // this.editor._setContent(conf.contentTemplate)
         this.editor.element.findAll("[data-setting-target='slider']").forEach(slider => {
             slider.html(" ");
             this.slider.appendTo(slider);
@@ -2738,7 +2738,7 @@ function addSettingsToLector(lector){
       ${pragma.getData('description')}: ${pragma.getData('option')}
   `.trim();
 
-  let colorSetting = new SettingList(lector.settings, 'color', { 
+  new SettingList(lector.settings, 'color', { 
     options: colorsHumanFriendly,
     contentTemplate: colorOptionTemplate
   }).on('select', onNewSelection)
@@ -2754,7 +2754,7 @@ function addSettingsToLector(lector){
       ${pragma.getData('option')}
   `.trim();
 
-  let modeSetting = new SettingList(lector.settings, 'mode', {
+  new SettingList(lector.settings, 'mode', {
     options: modesHumanFriendly,
     contentTemplate: modeOptionTemplate
   }).on('select', onNewSelection)
@@ -2765,7 +2765,7 @@ function addSettingsToLector(lector){
 
   
   // wpm comp
-  let wpmSetting = new SettingInt(lector.settings, 'wpm')
+  new SettingInt(lector.settings, 'wpm')
                       .on('input', (value) => {
                         actions.changeWpm(value);
                       }).bind("+", function(){
@@ -2775,8 +2775,9 @@ function addSettingsToLector(lector){
                       });
   
 
+
   // fovea comp
-  let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
+  new SettingSlider(lector.settings, 'fovea', {
                         min: 2, max: 10 
                       })
                       .on('input', (value) => {
