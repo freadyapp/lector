@@ -19754,9 +19754,9 @@
       }
     });
 
-    mark.on('mouseover', function(){
-      console.log(this, 'hover');
-    });
+    //mark.listenTo('mouseover', function(){
+      //console.log(this, 'hover')
+    //})
 
     mark.do(logger, autoScroll);
     return mark
@@ -19831,6 +19831,7 @@
     
     lec.mark = Mark(lec);
     if (options.settings) lector.ui.addSettingsToLector(lec); 
+    if (options.legacySettings) lec.settings = lectorSettings(lec); 
     // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
@@ -19876,10 +19877,6 @@
   }
 
   const Lector = (l, options=default_options) => {
-    if (!_needWrapper(options)) return Reader(l, options)
-
-    O.log("configuration appears to be a bit more complicated");
-
     if (options.defaultStyles){
       O.addStyles(css.main);
       O.addStyles(css.settings);
@@ -19889,6 +19886,10 @@
       O.addStyles(css.full);
     }
 
+    if (!_needWrapper(options)) return Reader(l, options)
+
+    O.log("configuration appears to be a bit more complicated");
+    
     if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
     let lector;
 
@@ -19918,6 +19919,7 @@
         let pageComp = lector.settings.find('!page');
         pageComp?.wireTo(lector.paginator);
       }
+
       console.log('paginator', paginator);
 
       paginator.fill();

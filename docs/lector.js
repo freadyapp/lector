@@ -42,8 +42,8 @@ let lectorSettings = {
    loop: false,
    autostart: false,
 
-   defaultStyles: true,
    fullStyles: true,
+   defaultStyles: true,
 
    scaler: true,
    pragmatizeOnCreate: true,
