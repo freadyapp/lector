@@ -19830,7 +19830,7 @@
                 .connectTo(w);
     
     lec.mark = Mark(lec);
-    if (options.settings) lector.ui.addSettingsToLector(lec); 
+    if (options.settings) addSettingsToLector(lec); 
     if (options.legacySettings) lec.settings = lectorSettings(lec); 
     // if (options.settings) lec.settings = LectorSettings(lec) 
 
