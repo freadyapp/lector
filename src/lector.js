@@ -79,9 +79,9 @@ const Mark = (lec) => {
     }
   })
 
-  mark.on('mouseover', function(){
-    console.log(this, 'hover')
-  })
+  //mark.listenTo('mouseover', function(){
+    //console.log(this, 'hover')
+  //})
 
   mark.do(logger, autoScroll)
   return mark
@@ -156,6 +156,7 @@ export const Reader = (l, options=default_options) => {
   
   lec.mark = Mark(lec)
   if (options.settings) lector.ui.addSettingsToLector(lec) 
+  if (options.legacySettings) lec.settings = LectorSettings(lec) 
   // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
@@ -243,6 +244,7 @@ export const Lector = (l, options=default_options) => {
       let pageComp = lector.settings.find('!page')
       pageComp?.wireTo(lector.paginator)
     }
+
     console.log('paginator', paginator)
 
     paginator.fill()
