@@ -90,14 +90,24 @@
 
     .editor-content {
         .option {
+            display: flex;
+            margin: 15px 0;
             cursor: pointer;
-            background: gray;
+            //background: gray;
 			&.selected {
                 background: rgb(114, 56, 56);
             }
+            
         }
     }
     
+
+    .color-blob {
+        width: 22px;
+        height: 22px;
+        border-radius: 30px;
+        margin-right: 10px;
+    }
 
 } 
 

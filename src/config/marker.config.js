@@ -1,8 +1,8 @@
 export const colorsHumanFriendly = {
-    "#a8f19a": 'bezua', 
-    "#eddd6e": 'roz', 
-    "#edd1b0": 'mua', 
-    "#96adfc": 'fua'
+    "#a8f19a": 'Grass', 
+    "#eddd6e": 'Pasta', 
+    "#edd1b0": 'Floor', 
+    "#96adfc": 'Water'
 }
 
 export const colors = Object.keys(colorsHumanFriendly)

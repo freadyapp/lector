@@ -78,7 +78,7 @@ export class Setting extends Pragma {
         setTimeout(() => {
             this.addClass('expanded')
             this._ogHeight = this.height
-            this.css(`height ${this.editor.element.scrollHeight+13}px`)
+            this.css(`height ${this.editor.element.scrollHeight}px`)
 
             expand(this.editor)
         }, jumpAhead)

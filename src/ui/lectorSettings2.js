@@ -79,7 +79,7 @@ export function addSettingsToLector(lector){
 
   // color comp
   let colorOptionTemplate = pragma => `
-      ${pragma.getData('description')}: ${pragma.getData('option')}
+      <div class="color-blob" style="background-color: ${pragma.getData('option')}; " ></div>${pragma.getData('description')}
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
