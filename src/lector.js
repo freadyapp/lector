@@ -2,6 +2,8 @@ import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
+import { addSettingsToLector } from "./ui/lectorSettings2"
+
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
@@ -155,7 +157,7 @@ export const Reader = (l, options=default_options) => {
               .connectTo(w)
   
   lec.mark = Mark(lec)
-  if (options.settings) lector.ui.addSettingsToLector(lec) 
+  if (options.settings) addSettingsToLector(lec) 
   if (options.legacySettings) lec.settings = LectorSettings(lec) 
   // if (options.settings) lec.settings = LectorSettings(lec) 
 
