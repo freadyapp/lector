@@ -47,3 +47,9 @@ describe('lector', ()=>{
         expect(times).toBe(5)
     })
 })
+
+describe("initializes a lector", () => {
+    test('simple case', () => {
+        expect(true).toBe(true)
+    })
+})
