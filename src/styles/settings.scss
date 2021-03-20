@@ -1,4 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap');
+
+// font-family: 'IBM Plex Mono', monospace;
+// font-family: 'IBM Plex Sans', sans-serif;
+
 .settings {
+    font-family: 'IBM Plex Sans', sans-serif;
+
     border-radius: 4px;
     background-color: #404040;
     opacity: 0.98;
@@ -22,6 +29,22 @@
 
     transition: all .2s ease;
     transition: opacity .1s ease;
+    overflow: hidden;
+
+    [data-setting-target="back"] {
+        cursor: pointer;
+        height: 40px;
+
+        &::after {
+            content: '';
+            height: 2px;
+            width: 120%;
+            background-color: #6f6f66;
+            position: absolute;
+            top: 40px;
+            left: 0;
+        }
+    }
 
 }
 
