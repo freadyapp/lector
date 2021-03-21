@@ -77,9 +77,26 @@ export function addSettingsToLector(lector){
   }
 
 
+  function createColorBlob(color){
+    let colorThingy  = _e('div.color-blob')
+                  .css(`background-color ${color}`)
+                  .setId(`${color}`)
+                  .html("   ")
+
+    let blob = _e('div#color')
+                .append(colorThingy)
+                .html()
+
+    
+                  console.log("BLOOOOOOOOOb",blob)
+    
+    return blob
+    
+  }
+
   // color comp
   let colorOptionTemplate = pragma => `
-      <div class="color-blob" style="background-color: ${pragma.getData('option')}; " ></div>${pragma.getData('description')}
+      ${createColorBlob(pragma.getData('option'))} ${pragma.getData('description')}
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
@@ -89,6 +106,10 @@ export function addSettingsToLector(lector){
     .on('select', (pragma) => {
     console.log('color is ', pragma.option)
     actions.changeColor(pragma.option)
+
+    console.log(colorSetting.find(`${pragma.option}`))
+
+    //pragma.find(`${pragma.option}`).addClass('selected')
 
   })
 

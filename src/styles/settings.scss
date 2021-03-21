@@ -93,9 +93,10 @@
             display: flex;
             margin: 15px 0;
             cursor: pointer;
+            opacity: 70%;
             //background: gray;
 			&.selected {
-                background: rgb(114, 56, 56);
+                opacity: 100%;
             }
             
         }
@@ -107,6 +108,10 @@
         height: 22px;
         border-radius: 30px;
         margin-right: 10px;
+
+        &.selected {
+            border: 10px solid red ;
+        }
     }
 
 } 
