@@ -9,7 +9,7 @@ let editor = setting =>
     <div id='${setting.key}-editor' class='editor collapsable' data-setting-target='editor'>
         <div data-setting-target='back'> 
             <div class="back-icon">${icons['back-icon']}</div> 
-            <div class="back-copy">${setting.getData('setting')} </div>
+            <div class="back-copy">${setting.displayName || setting.getData('setting')} </div>
         </div>
 
         <div class='editor-content' data-editor-target='content'>

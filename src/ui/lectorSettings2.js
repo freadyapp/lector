@@ -103,17 +103,13 @@ export function addSettingsToLector(lector){
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
+    displayName: "Color",
     options: colorsHumanFriendly,
     contentTemplate: colorOptionTemplate
   }).on('select', onNewSelection)
     .on('select', (pragma) => {
     console.log('color is ', pragma.option)
     actions.changeColor(pragma.option)
-
-    console.log(colorSetting.find(`${pragma.option}`))
-
-    //pragma.find(`${pragma.option}`).addClass('selected')
-
   })
 
   
@@ -133,6 +129,7 @@ export function addSettingsToLector(lector){
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
+    displayName: "Mode",
     options: modesHumanFriendly,
     contentTemplate: modeOptionTemplate
   }).on('select', onNewSelection)
@@ -145,7 +142,9 @@ export function addSettingsToLector(lector){
 
   
   // wpm comp
-  let wpmSetting = new SettingInt(lector.settings, 'wpm')
+  let wpmSetting = new SettingInt(lector.settings, 'wpm', {
+                        displayName: 'Speed'
+                      })
                       .on('input', (value) => {
                         actions.changeWpm(value)
                       }).bind("+", function(){
@@ -158,6 +157,7 @@ export function addSettingsToLector(lector){
 
   // fovea comp
   let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
+                        displayName: "Fovea",
                         min: 2, max: 10 
                       })
                       .on('input', (value) => {

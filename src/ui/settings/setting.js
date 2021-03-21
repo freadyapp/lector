@@ -3,19 +3,31 @@ import { SettingEditor } from "./settingEditor"
 import { fadeTo, expand, collapse } from "../../helpers/index"
 
 
-let displayElement = (title) => {
-    return _e(`div#${title}-display.display`, 0).setData({'settingTarget': 'display'})
+let displayElement = (key) => {
+    return _e(`div#${key}-display.display`, 0).setData({'settingTarget': 'display'})
 }
 
-let sectionElement = (title, htmlTemp = v => `<div class='title' id='${title}-title'>${v}</div>`) =>
-    _e(`div.collapsed-section.collapsable#${title}-section`)
-        .html(htmlTemp(title))
-        .append(displayElement(title))
+//let sectionElement = (title, htmlTemp = v => `<div class='title' id='${key}-title'>${}</div>`) =>
+    //_e(`div.collapsed-section.collapsable#${title}-section`)
+        //.html(htmlTemp(title))
+        //.append(displayElement(title))
 
-let settingTemplate = (pragma, id, title = id) =>
-    _e(`div.setting#${pragma.key}`)
-        .setData({ 'setting': id })
-        .append(sectionElement(title))
+let sectionElement = ({
+    key,
+    title,
+    htmlTemp = (key, title) => `<div class='title' id='${key}-title'>${title}</div>`
+}) =>
+    _e(`div.collapsed-section.collapsable#${key}-section`)
+        .html(htmlTemp(key, title))
+        .append(displayElement(key))
+
+let settingTemplate = (pragma, key) =>
+    _e(`div.setting#${key}`)
+        .setData({ 'setting': key })
+        .append(sectionElement({
+            key: key,
+            title: pragma.displayName
+        }))
         // .append(editorElement(title))
 
 // const htmlTemplate = `
@@ -25,6 +37,7 @@ let settingTemplate = (pragma, id, title = id) =>
 // </div>
 
 // `.trim()
+// 
 
 export class Setting extends Pragma {
     constructor(...args) {
@@ -33,9 +46,14 @@ export class Setting extends Pragma {
     }
 
 
-    init(parent, key) {
+    init(parent, key, conf={
+        displayName: key
+    }) {
         parent.adopt(this)
         parent.create(this, key)
+
+        this.displayName = conf.displayName || key
+        console.log('this display name', this.displayName)
 
         this.as(settingTemplate(this, key))
             .createEvents('input')

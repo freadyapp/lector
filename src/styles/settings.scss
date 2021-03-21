@@ -3,7 +3,20 @@
 // font-family: 'IBM Plex Mono', monospace;
 // font-family: 'IBM Plex Sans', sans-serif;
 
+.collapsable {
+	overflow: hidden;
+	transition: all 0.2s ease-in-out;
+	// transition: opacity 0.05s eas;
+
+	height: auto;
+	flex: 1;
+	&.collapsed{
+		flex: 0;
+	}
+}   
+
 .settings {
+	@extend .collapsable;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 18px;
     border-radius: 4px;
@@ -27,10 +40,6 @@
 	justify-content: flex-start;
 	align-items: stretch;
 	align-content: stretch;
-
-    transition: all .2s ease;
-    transition: opacity .1s ease;
-    overflow: hidden;
 
     [data-setting-target="back"] {
         cursor: pointer;
@@ -62,16 +71,7 @@
 
 }
 
-.collapsable {
-    overflow: hidden;
-    transition: all 0.3s ease;
 
-    height: auto;
-    flex: 1;
-    &.collapsed{
-        flex: 0;
-    }
-}
 
 .setting {
     @extend .collapsable;
@@ -79,7 +79,11 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    height: 30px; // sadly, we're required to set at least the container height explicitly
+    height: 30px;
+	
+	user-select: none;
+	-webkit-user-select: none;
+
 
     &.expanded {
         height: 200px;

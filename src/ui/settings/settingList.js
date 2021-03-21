@@ -31,8 +31,8 @@ export class Option extends Pragma {
         let content = typeof template === 'function' ? template : optionDefaultContent
         let wrapper = optionDefaultWrapper
         if (typeof template === `object`){
-            if (template.contentTemplate) content = template.contentTemplate
-            if (template.wrapperTemplate) wrapper = template.wrapperTemplate
+            content = template.contentTemplate || optionDefaultTemplate
+            wrapper = template.wrapperTemplate || optionDefaultWrapper
         }
         
 
@@ -55,13 +55,17 @@ export class Option extends Pragma {
 }
 
 export class SettingList extends Setting {
-    init(settings, setting, conf={
-        contentTemplate: optionDefaultContent,    
-        wrapperTemplate: optionDefaultWrapper,    
-    }) {
-        super.init(settings, setting)
+    init(settings, setting, conf={}) {
+        super.init(settings, setting, conf)
+
+        //conf = util.objDiff(conf, {
+            // contentTemplate: optionDefaultContent,    
+            // wrapperTemplate: optionDefaultWrapper,    
+        // })
+
         let options = conf.options ? conf.options : conf
 
+        console.log("configureee", conf)
         if (typeof options === 'object'){
             let newOptions = []
             for (let [option, description] of Object.entries(options)){
