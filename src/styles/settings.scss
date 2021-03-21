@@ -112,9 +112,26 @@
             margin: 15px 0;
             cursor: pointer;
             opacity: 70%;
+            z-index: 420691312;
+            height: 35px;
+            line-height: 35px;
+
+            &:hover {
+                opacity: 80%;
+            }
             //background: gray;
 			&.selected {
                 opacity: 100%;
+
+                &::before {
+                    content: '';
+                    height: 40px;
+                    width: 120%;
+                    background-color: #6f6f66;
+                    position: absolute;
+                    z-index: -1;
+                    left: 0;
+                }
             }
             
         }
@@ -146,7 +163,7 @@
 
 
     [data-option='Underneath']{
-        margin: 27px 0  !important;
+        margin: 20px 0px 27px 0  !important;
         display: flex;
         align-items: center;
 
