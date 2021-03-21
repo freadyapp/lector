@@ -77,6 +77,10 @@ export function addSettingsToLector(lector){
   }
 
 
+  
+
+  // color comp
+
   function createColorBlob(color){
     let colorThingy  = _e('div.color-blob')
                   .css(`background-color ${color}`)
@@ -94,7 +98,6 @@ export function addSettingsToLector(lector){
     
   }
 
-  // color comp
   let colorOptionTemplate = pragma => `
       ${createColorBlob(pragma.getData('option'))} ${pragma.getData('description')}
   `.trim()
@@ -115,8 +118,18 @@ export function addSettingsToLector(lector){
 
   
   // mode comp
+
+  function createModeIcons(mode){
+    let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
+
+    let pointer = _e(`div#qwer`).append(modeThingy).html()
+
+    return pointer
+
+  }
+
   let modeOptionTemplate = pragma => `
-      ${pragma.getData('option')}
+    ${createModeIcons(pragma.getData('option'))} ${pragma.getData('option')}
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
@@ -126,6 +139,8 @@ export function addSettingsToLector(lector){
     .on('select', function(optionPragma){
         // this.updateDisplay(optionPragma.getData('option'))
         actions.changeMode(optionPragma.getData('option'))
+        console.log('MOOOOOOODE')
+        console.log(optionPragma.getData('option'))
       })
 
   
