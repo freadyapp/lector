@@ -1,6 +1,6 @@
 # The Lector Experience
 ![npm-size](https://img.shields.io/npm/v/@robomonk/lector?style=for-the-badge)
-![npm-size](https://img.shields.io/bundlephobia/minzip/@robomonk/lector?style=for-the-badge)
+![npm-size](https://img.shields.io/bundlephobia/min/lector-pdfjs)
 
 ### [ 🚀 Demo ](https://robo-monk.github.io/lector)
 

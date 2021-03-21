@@ -2,6 +2,8 @@ import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
+import { addSettingsToLector } from "./ui/lectorSettings2"
+
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
@@ -79,9 +81,9 @@ const Mark = (lec) => {
     }
   })
 
-  mark.on('mouseover', function(){
-    console.log(this, 'hover')
-  })
+  //mark.listenTo('mouseover', function(){
+    //console.log(this, 'hover')
+  //})
 
   mark.do(logger, autoScroll)
   return mark
@@ -155,7 +157,8 @@ export const Reader = (l, options=default_options) => {
               .connectTo(w)
   
   lec.mark = Mark(lec)
-  if (options.settings) lector.ui.addSettingsToLector(lec) 
+  if (options.settings) addSettingsToLector(lec) 
+  if (options.legacySettings) lec.settings = LectorSettings(lec) 
   // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
@@ -201,10 +204,6 @@ function _streamer(sf){
 }
 
 export const Lector = (l, options=default_options) => {
-  if (!_needWrapper(options)) return Reader(l, options)
-
-  util.log("configuration appears to be a bit more complicated")
-
   if (options.defaultStyles){
     util.addStyles(css.main)
     util.addStyles(css.settings)
@@ -214,6 +213,10 @@ export const Lector = (l, options=default_options) => {
     util.addStyles(css.full)
   }
 
+  if (!_needWrapper(options)) return Reader(l, options)
+
+  util.log("configuration appears to be a bit more complicated")
+  
   if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
   let lector
 
@@ -243,6 +246,7 @@ export const Lector = (l, options=default_options) => {
       let pageComp = lector.settings.find('!page')
       pageComp?.wireTo(lector.paginator)
     }
+
     console.log('paginator', paginator)
 
     paginator.fill()

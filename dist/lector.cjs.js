@@ -741,6 +741,8 @@ function grabMode(mode, bg) {
 }
 
 const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+  if (!bg) return util.throwSoft("could not mode_ify")
+  
   mode = (mode || 'hotbox').toString().toLowerCase();
   let css = grabMode(mode, bg);
   if (mark) mark.css(css);
@@ -802,6 +804,7 @@ class PragmaMark extends pragmajs.Pragma {
     this.runningFor = 0;
     this.pausing = false;
     
+    this.setColor(defaultVals.color);
     this.setMode(defaultVals.mode);
     this.setWpm(defaultVals.wpm);
     this.setFovea(defaultVals.fovea);
@@ -2946,9 +2949,9 @@ const Mark = (lec) => {
     }
   });
 
-  mark.on('mouseover', function(){
-    console.log(this, 'hover');
-  });
+  //mark.listenTo('mouseover', function(){
+    //console.log(this, 'hover')
+  //})
 
   mark.do(logger, autoScroll);
   return mark
@@ -3022,7 +3025,8 @@ const Reader = (l, options=default_options) => {
               .connectTo(w);
   
   lec.mark = Mark(lec);
-  if (options.settings) lector.ui.addSettingsToLector(lec); 
+  if (options.settings) addSettingsToLector(lec); 
+  if (options.legacySettings) lec.settings = lectorSettings(lec); 
   // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
@@ -3068,10 +3072,6 @@ function _streamer(sf){
 }
 
 const Lector = (l, options=default_options) => {
-  if (!_needWrapper(options)) return Reader(l, options)
-
-  pragmajs.util.log("configuration appears to be a bit more complicated");
-
   if (options.defaultStyles){
     pragmajs.util.addStyles(css.main);
     pragmajs.util.addStyles(css.settings);
@@ -3081,6 +3081,10 @@ const Lector = (l, options=default_options) => {
     pragmajs.util.addStyles(css.full);
   }
 
+  if (!_needWrapper(options)) return Reader(l, options)
+
+  pragmajs.util.log("configuration appears to be a bit more complicated");
+  
   if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
   let lector;
 
@@ -3110,6 +3114,7 @@ const Lector = (l, options=default_options) => {
       let pageComp = lector.settings.find('!page');
       pageComp?.wireTo(lector.paginator);
     }
+
     console.log('paginator', paginator);
 
     paginator.fill();

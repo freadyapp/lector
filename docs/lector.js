@@ -42,14 +42,15 @@ let lectorSettings = {
    loop: false,
    autostart: false,
 
-   defaultStyles: true,
    fullStyles: true,
+   defaultStyles: true,
 
    scaler: true,
    pragmatizeOnCreate: true,
    experimental: true,
   
-   legacySettings: true,
+  //  legacySettings: true,
+   settings: true,
    stream: fetchContent,
     // function with index as param that
     // returns the content for the page

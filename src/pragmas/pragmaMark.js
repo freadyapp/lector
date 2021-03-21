@@ -36,6 +36,7 @@ export default class PragmaMark extends Pragma {
     this.runningFor = 0
     this.pausing = false
     
+    this.setColor(defaultVals.color)
     this.setMode(defaultVals.mode)
     this.setWpm(defaultVals.wpm)
     this.setFovea(defaultVals.fovea)

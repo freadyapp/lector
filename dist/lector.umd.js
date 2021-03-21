@@ -17000,6 +17000,8 @@
   }
 
   const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+    if (!bg) return util.throwSoft("could not mode_ify")
+    
     mode = (mode || 'hotbox').toString().toLowerCase();
     let css = grabMode(mode, bg);
     if (mark) mark.css(css);
@@ -17061,6 +17063,7 @@
       this.runningFor = 0;
       this.pausing = false;
       
+      this.setColor(defaultVals.color);
       this.setMode(defaultVals.mode);
       this.setWpm(defaultVals.wpm);
       this.setFovea(defaultVals.fovea);
@@ -20272,9 +20275,9 @@
       }
     });
 
-    mark.on('mouseover', function(){
-      console.log(this, 'hover');
-    });
+    //mark.listenTo('mouseover', function(){
+      //console.log(this, 'hover')
+    //})
 
     mark.do(logger, autoScroll);
     return mark
@@ -20348,7 +20351,8 @@
                 .connectTo(w);
     
     lec.mark = Mark(lec);
-    if (options.settings) lector.ui.addSettingsToLector(lec); 
+    if (options.settings) addSettingsToLector(lec); 
+    if (options.legacySettings) lec.settings = lectorSettings(lec); 
     // if (options.settings) lec.settings = LectorSettings(lec) 
 
 
@@ -20394,10 +20398,6 @@
   }
 
   const Lector = (l, options=default_options) => {
-    if (!_needWrapper(options)) return Reader(l, options)
-
-    O.log("configuration appears to be a bit more complicated");
-
     if (options.defaultStyles){
       O.addStyles(css.main);
       O.addStyles(css.settings);
@@ -20407,6 +20407,10 @@
       O.addStyles(css.full);
     }
 
+    if (!_needWrapper(options)) return Reader(l, options)
+
+    O.log("configuration appears to be a bit more complicated");
+    
     if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
     let lector;
 
@@ -20436,6 +20440,7 @@
         let pageComp = lector.settings.find('!page');
         pageComp?.wireTo(lector.paginator);
       }
+
       console.log('paginator', paginator);
 
       paginator.fill();
