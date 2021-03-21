@@ -118,13 +118,18 @@ export function addSettingsToLector(lector){
   // mode comp
 
   function createModeIcons(mode){
-    let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
+    let icon = `${mode}-icon`
 
-    let pointer = _e(`div#qwer`).append(modeThingy).html()
+    return `<div class="mode-icon">${icons[icon]}</div>`
+    
 
-    return pointer
+    // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
 
-  }
+    // let pointer = _e(`div#qwer`).append(modeThingy).html()
+
+    // return pointer
+
+  } 
 
   let modeOptionTemplate = pragma => `
     ${createModeIcons(pragma.getData('option'))} ${pragma.getData('option')}
@@ -140,6 +145,7 @@ export function addSettingsToLector(lector){
         actions.changeMode(optionPragma.getData('option'))
         console.log('MOOOOOOODE')
         console.log(optionPragma.getData('option'))
+
       })
 
   
