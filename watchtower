@@ -12,5 +12,5 @@ if len(sys.argv) > 1:
 
 print(f"\n\n[bold cyan] Watching with package manager: {package_manager} [/bold cyan] \n\n")
 subprocess.call("python sass", shell=True)
-subprocess.call(f"{package_manager} build", shell=True)
+subprocess.call(f"{package_manager} run build", shell=True)
 
