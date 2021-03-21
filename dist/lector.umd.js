@@ -16545,6 +16545,8 @@
   }
 
   const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+    if (!bg) return util.throwSoft("could not mode_ify")
+    
     mode = (mode || 'hotbox').toString().toLowerCase();
     let css = grabMode(mode, bg);
     if (mark) mark.css(css);

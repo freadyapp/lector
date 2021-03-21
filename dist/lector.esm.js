@@ -1,4 +1,4 @@
-import { Pragma, _e, util, _p, runAsync, _thread } from 'pragmajs';
+import { Pragma, _e, util as util$1, _p, runAsync, _thread } from 'pragmajs';
 import anime from 'animejs';
 import nlp from 'compromise';
 import 'mousetrap';
@@ -34,13 +34,13 @@ function isElementWithin(el, r={}){
 }
 
 function isMostlyInScreen(el, percent=.5){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) throw util$1.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el);
   return isOnScreen(el, percent*el.rect().height) // is 70% on screen
 }
 
 function isOnScreen(el, threshold=100){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) throw util$1.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el);
   let winTop = window.scrollY;
   let winBot = winTop + window.innerHeight;
@@ -92,7 +92,7 @@ function _onScroll(cb){
 
 function onScroll(cb){
   if (!globalThis.lectorSpace.scrollChain){
-    util.createChains(globalThis.lectorSpace, 'scroll');
+    util$1.createChains(globalThis.lectorSpace, 'scroll');
     _onScroll((scroll, ds) => {
       globalThis.lectorSpace.scrollChain.exec(scroll, ds);
     });
@@ -121,7 +121,7 @@ function _onScrollEnd(cb){
 
 function onScrollEnd(cb){
   if (!globalThis.lectorSpace.scrollEndChain){
-    util.createChains(globalThis.lectorSpace, 'scrollEnd');
+    util$1.createChains(globalThis.lectorSpace, 'scrollEnd');
 
       _onScrollEnd((scroll, ds) => {
         globalThis.lectorSpace.scrollEndChain.exec(scroll, ds);
@@ -465,7 +465,7 @@ class PragmaLector extends Pragma {
   }
 
   read(){
-    util.log("::LECTOR reading", this);
+    util$1.log("::LECTOR reading", this);
     if (!this.w.hasKids) return console.error('nothing to read')
     this.w.read(true);
   }
@@ -519,7 +519,7 @@ class PragmaWord extends Pragma {
 
   get lector(){
     if (this.parent) return this.parent.lector
-    util.throwSoft('could not find lector for');
+    util$1.throwSoft('could not find lector for');
   }
 
   get txt(){
@@ -550,7 +550,7 @@ class PragmaWord extends Pragma {
     // console.log(this.childMap)
     // console.log(this.element, this.value, this.childMap, this.get(this.value))
     let subW = this.get(this.value);
-    if (!subW) return util.throwSoft(`Could not find current Word of ${this.key}`)
+    if (!subW) return util$1.throwSoft(`Could not find current Word of ${this.key}`)
     return subW.currentWord
   }
 
@@ -732,6 +732,8 @@ function grabMode(mode, bg) {
 }
 
 const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
+  if (!bg) return util.throwSoft("could not mode_ify")
+  
   mode = (mode || 'hotbox').toString().toLowerCase();
   let css = grabMode(mode, bg);
   if (mark) mark.css(css);
@@ -990,21 +992,21 @@ class PragmaMark extends Pragma {
 
 function paginator(pageTemplate, conf={}){
   return new Pragma()
-        .from(util.createTemplate({
+        .from(util$1.createTemplate({
           // make this nicer
           // defaultSet: pageTemplate,
           pageTemplate: pageTemplate,
           firstPage: conf.first,
           lastPage: conf.last,
-          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified'); },
-          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
+          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util$1.throwSoft('no fetch source specified'); },
+          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util$1.log('created', p),
           onFetch: conf.onFetch,
 
           onPageAdd: null,
           onPageRender: null,
           //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
-          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page); },
-          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page); },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util$1.log('active', page); },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util$1.log('inactive', page); },
         }))
 
         .run(function(){
@@ -1021,7 +1023,7 @@ function paginator(pageTemplate, conf={}){
             //}
             this.adopt(page);
             page.lec = this.parent;
-            util.createEventChains(page, 'fetch');
+            util$1.createEventChains(page, 'fetch');
             return page
           };
 
@@ -1157,7 +1159,7 @@ function paginator(pageTemplate, conf={}){
 function infinityPaginator(streamer, pageTemplate, config={}){
   let inf = _p("infinity paginator")
         .from(
-          paginator(pageTemplate, util.objDiff(
+          paginator(pageTemplate, util$1.objDiff(
             {
               streamer: streamer,
               fetch: streamer.fetch,
@@ -1192,12 +1194,12 @@ function infinityPaginator(streamer, pageTemplate, config={}){
               console.log(pageRange);
               let pagesRendered = Array.from(this.pages.keys());
 
-              let pagesToRender = util.aryDiff(pageRange, pagesRendered);
-              let pagesToDelete = util.aryDiff(pagesRendered, pageRange);
+              let pagesToRender = util$1.aryDiff(pageRange, pagesRendered);
+              let pagesToDelete = util$1.aryDiff(pagesRendered, pageRange);
 
 
               let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
-              let pagesToRenderBefore = util.aryDiff(pagesToRender, pagesToRenderAfter);
+              let pagesToRenderBefore = util$1.aryDiff(pagesToRender, pagesToRenderAfter);
 
               // console.log(">> ALREADY RENDERED", pagesRendered)
                console.log(">> DEL", pagesToDelete);
@@ -1388,7 +1390,7 @@ function select(conf){
   // this._options = []
   
   let options = conf.options;
-  if (!options) return util.throwSoft('need to define options when creating a select template')
+  if (!options) return util$1.throwSoft('need to define options when creating a select template')
 
   let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate;
   let optionTemplate = conf.optionTemplate || defaults.optionTemplate; 
@@ -1426,7 +1428,7 @@ var css = {
 	settings: settings
 };
 
-util.addStyles(css.slider);
+util$1.addStyles(css.slider);
   
 function slider$1(conf={}){
   
@@ -1504,7 +1506,7 @@ function input(conf = {}) {
         // .from(util.createTemplate(conf))
         // .run({
             // makeChains(){
-                util.createChains(this, 'userInput');
+                util$1.createChains(this, 'userInput');
             // },
             // makeInput () {
                 this.input = _e(`<input type='text'></input>`)
@@ -1600,7 +1602,7 @@ function _createIdler(timeout, afk, active) {
 }
 
 function idler(){
-    util.createChains(this, 'idle', 'active');
+    util$1.createChains(this, 'idle', 'active');
 
     this.setIdleTime = function(time=5000){
         this._idler = _createIdler(time, () => {
@@ -1702,7 +1704,7 @@ function deactivate(self, key){
 }
 
 function activeSelectTpl(conf){
-  select.bind(this)(util.objDiff({
+  select.bind(this)(util$1.objDiff({
     onOptionCreate: (self, el) => {
       self.contain(el);
       el.addClass('option');
@@ -1796,7 +1798,7 @@ function lectorSettings(lector){
                     this.value = {};
 
                     this._setVal = function(edit){
-                      this.value = util.objDiff(this.value, edit);
+                      this.value = util$1.objDiff(this.value, edit);
                     };
 
                     this.set = function(edit){
@@ -2085,7 +2087,7 @@ function lectorSettings(lector){
                   )
                   .setLabel('page')
                   .run(function(){
-                    util.createChains(this, 'userEdit');
+                    util$1.createChains(this, 'userEdit');
 
                     this.editValue = function(val){
                       this.value = val;  
@@ -2499,7 +2501,7 @@ let optionDefaultWrapper = (content, pragma) => _p(`
 let optionDefaultContent = (pragma) => pragma.key.toString();
 
 let makeOptionElement = function(content, wrapper){
-    this.as(_e(wrapper(content, this))).setId(util.rk5()).addClass('option');
+    this.as(_e(wrapper(content, this))).setId(util$1.rk5()).addClass('option');
     this.setData({'option': this.option});
     return this
 };
@@ -2565,7 +2567,7 @@ class SettingList extends Setting {
         
         this.on('input', value => {
             let pragma = this.find(value);
-            if (!pragma) return util.throwSoft(`couldnt find option for ${value}`)
+            if (!pragma) return util$1.throwSoft(`couldnt find option for ${value}`)
             this.currentOption = pragma;
         });
 
@@ -2999,17 +3001,17 @@ function _streamer(sf){
 
 const Lector = (l, options=default_options) => {
   if (options.defaultStyles){
-    util.addStyles(css.main);
-    util.addStyles(css.settings);
+    util$1.addStyles(css.main);
+    util$1.addStyles(css.settings);
   }
 
   if (options.fullStyles){
-    util.addStyles(css.full);
+    util$1.addStyles(css.full);
   }
 
   if (!_needWrapper(options)) return Reader(l, options)
 
-  util.log("configuration appears to be a bit more complicated");
+  util$1.log("configuration appears to be a bit more complicated");
   
   if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
   let lector;
@@ -3019,7 +3021,7 @@ const Lector = (l, options=default_options) => {
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
 
-    util.log('setting up streamer service');
+    util$1.log('setting up streamer service');
 
     let streamer = _streamer(options.stream);
     let paginator = infinityPaginator(streamer, l, options.paginate.config || {});
@@ -3081,7 +3083,7 @@ function globalify(){
     Word: Word,
     _e: _e,
     _p: _p,
-    util: util,
+    util: util$1,
     lecUtil: helpers,
     _thread: _thread
   };
