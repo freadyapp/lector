@@ -1,6 +1,16 @@
 #!/usr/local/bin/python3
 import subprocess
+import os
+import sys
+from rich import print
 
+package_manager = os.environ.get('LECTORJSPKG') or "yarn"
+
+if len(sys.argv) > 1:
+    package_manager = sys.argv[1]
+
+
+print(f"\n\n[bold cyan] Watching with package manager: {package_manager} [/bold cyan] \n\n")
 subprocess.call("python sass", shell=True)
-subprocess.call("yarn build", shell=True)
+subprocess.call(f"{package_manager} build", shell=True)
 
