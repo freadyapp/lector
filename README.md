@@ -25,10 +25,15 @@ yarn install
 * virtualenv (`pip install virtualenv`)
 
 ## Run this to compile the code when you make changes:
+
+Please use yarn as your manager for this project, but if you can use npm if you want. It will work with both.
 ```bash
-source setup
+source setup yarn
 ```
 
+```bash
+source setup npm
+```
 
 # Install
 
