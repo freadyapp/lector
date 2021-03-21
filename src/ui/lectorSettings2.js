@@ -120,7 +120,7 @@ export function addSettingsToLector(lector){
   function createModeIcons(mode){
     let icon = `${mode}-icon`
 
-    return `<div class="mode-icon">${icons[icon]}</div>`
+    return `<div class="mode-icon" id="${mode}">${icons[icon]}</div>`
     
 
     // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')

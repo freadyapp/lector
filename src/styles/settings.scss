@@ -114,7 +114,7 @@
             opacity: 70%;
             z-index: 420691312;
             height: 35px;
-            line-height: 35px;
+            line-height: 30px;
 
             &:hover {
                 opacity: 80%;
@@ -125,13 +125,26 @@
 
                 &::before {
                     content: '';
-                    height: 40px;
+                    height: 50px;
                     width: 120%;
                     background-color: #6f6f66;
                     position: absolute;
                     z-index: -1;
                     left: 0;
+                    margin-top: -10px;
                 }
+
+                &::after {
+                    content: '';
+                    width: 7px;
+                    height: 50px;
+                    background-color: #2b6cce;
+                    position: absolute;
+                    left: 0;
+                    margin-top: -10px;
+                }
+
+                
             }
             
         }
