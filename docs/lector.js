@@ -49,7 +49,7 @@ let lectorSettings = {
    pragmatizeOnCreate: true,
    experimental: true,
   
-   settings: true,
+   legacySettings: true,
    stream: fetchContent,
     // function with index as param that
     // returns the content for the page
