@@ -44,11 +44,10 @@ import { terser } from "rollup-plugin-terser"
 import sizes from 'rollup-plugin-sizes';
 import json from '@rollup/plugin-json';
 import visualizer from 'rollup-plugin-visualizer'
-import execute from 'rollup-plugin-execute'
 import pkg from './package.json';
 
 const plugs = [
-  //terser(), // mini
+  terser(), // mini
   sizes(),
   json(),
   visualizer({

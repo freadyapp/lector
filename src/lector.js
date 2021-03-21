@@ -241,6 +241,7 @@ export const Lector = (l, options=default_options) => {
                   .adopt(paginator, streamer)
 
     lector.paginator = paginator
+
     if (lector.settings){
       console.log("lector has settings! connecting paginator's value to pagecomp")
       let pageComp = lector.settings.find('!page')
