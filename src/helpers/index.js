@@ -5,6 +5,7 @@ import { _e } from "pragmajs"
 import PinkyPromise from "./pinkyPromise"
 
 import  Idle from "./idle"
+import anime from "animejs"
 export { PinkyPromise, Idle }
 
 // ultra useful functions
@@ -49,10 +50,16 @@ export function collapse(element){
 
 export function expand(element){
     const ms = 30
-    element.css(`
-        opacity 1 
-    `)
-
+    
+    element = _e(element)
+    
+    element.show()
+    anime({
+        targets: element,
+        opacity: 1,
+        duration: 110,
+        easing: 'easeInOutSine'
+    })
 
     element.removeClass(`collapsed`)
     element.setData({ 'collapsed': true })

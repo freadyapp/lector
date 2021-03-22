@@ -48,12 +48,18 @@ export class SettingEditor extends Pragma {
 
         this.on('hide', () => {
             setting.close()
-            collapse(this.element)
+            this._collapse()
         })
         
-        collapse(this.element)
+        this._collapse()
         // this.triggerEvent('hide')
         return this
+    }
+    _collapse(){
+        collapse(this.element)
+        setTimeout(() => {
+            this.element.hide()
+        }, 100)
     }
 
     _setContent(html, ...elements){

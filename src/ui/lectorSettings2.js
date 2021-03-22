@@ -2,6 +2,7 @@ import { _p, util, _e, Pragma } from "pragmajs"
 import { Setting } from "./settings/setting"
 import { SettingList } from "./settings/settingList"
 import { SettingInt } from "./settings/settingInt"
+import { SettingInline } from "./settings/settingInline"
 import { SettingSlider } from "./settings/settingSlider"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 

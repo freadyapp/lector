@@ -16160,10 +16160,16 @@
   }
 
   function expand(element){
-      element.css(`
-        opacity 1 
-    `);
-
+      
+      element = j(element);
+      
+      element.show();
+      anime({
+          targets: element,
+          opacity: 1,
+          duration: 110,
+          easing: 'easeInOutSine'
+      });
 
       element.removeClass(`collapsed`);
       element.setData({ 'collapsed': true });
@@ -17233,7 +17239,7 @@
   var full = "@charset \"utf-8\";body{background-color:#161616}";
   var slider = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}";
   var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}";
-  var settings = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);.collapsable,.setting,.settings #popup{overflow:hidden;transition:all .2s ease-in-out;height:auto;flex:1}.collapsable.collapsed,.collapsed.setting,.settings #popup.collapsed{flex:0}.box-container,.settings #settings-bar,.settings #popup{background-color:#404040;border-radius:4px;background-color:#404040;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;height:auto;padding:10px 15px;width:200px;box-sizing:border-box}.settings{font-family:'IBM Plex Sans',sans-serif;font-size:18px;bottom:10px;left:10px;color:whitesmoke;position:fixed}.settings #popup{position:absolute;bottom:60px}.settings [data-setting-target=back]{cursor:pointer;height:24px;display:flex;align-items:center;margin-bottom:27px}.settings [data-setting-target=back]::after{content:'';height:2px;width:120%;background-color:#6f6f66;position:absolute;top:40px;left:0}.settings [data-setting-target=back] .back-icon{margin-right:10px;margin-right:18px;margin-left:7px}.settings [data-setting-target=back] .back-copy{margin-bottom:3px}.setting{display:flex;flex-direction:column;justify-content:flex-start;height:30px;user-select:none;-webkit-user-select:none}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .collapsed-section{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{display:flex;margin:15px 0;cursor:pointer;opacity:70%}.setting .editor-content .option.selected{opacity:100%}.setting .color-blob{width:22px;height:22px;border-radius:30px;margin-right:10px}.setting .color-blob.selected{border:10px solid red}.setting .mode-icon{margin-right:20px}[data-setting='mode'] [data-option='Underneath']{margin:0 0 20px 0 !important;display:flex;align-items:center}.-selector *,.-settings-section-list .option.selected *,.settings>#popup #color .option.selected *,.settings>#popup #mode .option.selected *,.-color-selector *{z-index:99}.-selector::before,.-settings-section-list .option.selected::before,.settings>#popup #color .option.selected::before,.settings>#popup #mode .option.selected::before,.-color-selector::before{content:'';height:50px;width:120%;background-color:#515151;position:absolute;z-index:0 !important;left:0;margin-top:-11px}.-selector::after,.-settings-section-list .option.selected::after,.settings>#popup #color .option.selected::after,.settings>#popup #mode .option.selected::after,.-color-selector::after{content:'';width:5px;height:50px;background-color:#2b6cce;position:absolute;left:0;margin-top:-11px}.-color-selector::before,.settings>#popup #color .option.selected::before{height:40px}.-color-selector::after,.settings>#popup #color .option.selected::after{height:40px}.-settings-section-list .option,.settings>#popup #color .option,.settings>#popup #mode .option{transition:all ease .2s;align-items:stretch !important}";
+  var settings = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);.collapsable,.settings #popup{overflow:hidden;transition:all .15s ease;height:auto;flex:1}.collapsable.collapsed,.settings #popup.collapsed{flex:0}.box-container,.settings #settings-bar,.settings #popup{background-color:#404040;border-radius:4px;background-color:#404040;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;height:auto;padding:10px 15px;width:200px;box-sizing:border-box}.settings{font-family:'IBM Plex Sans',sans-serif;font-size:18px;bottom:10px;left:10px;color:whitesmoke;position:fixed}.settings #popup{position:absolute;bottom:60px}.settings [data-setting-target=back]{cursor:pointer;height:24px;display:flex;align-items:center;margin-bottom:27px}.settings [data-setting-target=back]::after{content:'';height:2px;width:120%;background-color:#6f6f66;position:absolute;top:40px;left:0}.settings [data-setting-target=back] .back-icon{margin-right:10px;margin-right:18px;margin-left:7px}.settings [data-setting-target=back] .back-copy{margin-bottom:3px}.setting{display:flex;flex-wrap:nowrap;justify-content:flex-start;height:30px;user-select:none;-webkit-user-select:none}.setting.inline{width:100%}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .section,.setting .collapsed-section{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{display:flex;margin:15px 0;cursor:pointer;opacity:70%}.setting .editor-content .option.selected{opacity:100%}.setting .color-blob{width:22px;height:22px;border-radius:30px;margin-right:10px}.setting .color-blob.selected{border:10px solid red}.setting .mode-icon{margin-right:20px}[data-setting='mode'] [data-option='Underneath']{margin:0 0 20px 0 !important;display:flex;align-items:center}.-selector *,.-settings-section-list .option.selected *,.settings>#popup #color .option.selected *,.settings>#popup #mode .option.selected *,.-color-selector *{z-index:99}.-selector::before,.-settings-section-list .option.selected::before,.settings>#popup #color .option.selected::before,.settings>#popup #mode .option.selected::before,.-color-selector::before{content:'';height:50px;width:120%;background-color:#515151;position:absolute;z-index:0 !important;left:0;margin-top:-11px}.-selector::after,.-settings-section-list .option.selected::after,.settings>#popup #color .option.selected::after,.settings>#popup #mode .option.selected::after,.-color-selector::after{content:'';width:5px;height:50px;background-color:#2b6cce;position:absolute;left:0;margin-top:-11px}.-color-selector::before,.settings>#popup #color .option.selected::before{height:40px}.-color-selector::after,.settings>#popup #color .option.selected::after{height:40px}.-settings-section-list .option,.settings>#popup #color .option,.settings>#popup #mode .option{transition:all ease .2s;align-items:stretch !important}";
   var css = {
   	full: full,
   	slider: slider,
@@ -18185,12 +18191,18 @@
 
           this.on('hide', () => {
               setting.close();
-              collapse(this.element);
+              this._collapse();
           });
           
-          collapse(this.element);
+          this._collapse();
           // this.triggerEvent('hide')
           return this
+      }
+      _collapse(){
+          collapse(this.element);
+          setTimeout(() => {
+              this.element.hide();
+          }, 100);
       }
 
       _setContent(html, ...elements){
@@ -18206,58 +18218,46 @@
   }
 
   let displayElement = (key) => {
-      return j(`div#${key}-display.display`, 0).setData({'settingTarget': 'display'})
+      return j(`div#${key}-display.display`, 0).setData({'settingTarget': 'display', 'pragmaTarget': `${key} monitor`})
   };
-
-  //let sectionElement = (title, htmlTemp = v => `<div class='title' id='${key}-title'>${}</div>`) =>
-      //_e(`div.collapsed-section.collapsable#${title}-section`)
-          //.html(htmlTemp(title))
-          //.append(displayElement(title))
 
   let sectionElement = ({
       key,
       title,
       htmlTemp = (key, title) => `<div class='title' id='${key}-title'>${title}</div>`
   }) =>
-      j(`div.collapsed-section.collapsable#${key}-section`)
+      j(`div.section#${key}-section`)
           .html(htmlTemp(key, title))
           .append(displayElement(key));
 
-  let settingTemplate = (pragma, key) =>
-      j(`div.setting#${key}`)
+  let inlineSettingTemplate = (pragma, key) =>
+      j(`div.setting.inline#${key}`)
           .setData({ 'setting': key })
           .append(sectionElement({
               key: key,
               title: pragma.displayName
           }));
-          // .append(editorElement(title))
 
-  // const htmlTemplate = `
-  // <div class='settings'>
-  //     <div class='setting'>
-  //     </div>
-  // </div>
 
-  // `.trim()
-  // 
 
-  class Setting extends q {
-      constructor(...args) {
+  class SettingInline extends q {
+      constructor() {
           super();
-          this.init(...args);
+          this.init(...arguments);
       }
 
-
-      init(parent, key, conf={
-          displayName: key
-      }) {
+     
+      init(parent, key, {
+          displayName,
+          settingTemplate,
+      }={}) {
+          console.log('im the parent setting and i was run');
           parent.adopt(this);
           parent.create(this, key);
 
-          this.displayName = conf.displayName || key;
-          console.log('this display name', this.displayName);
+          this.displayName = displayName || key;
 
-          this.as(settingTemplate(this, key))
+          this.as((settingTemplate || inlineSettingTemplate)(this, key))
               .createEvents('input')
               .on('input', function (input) {
                   this.updateDisplay(input);
@@ -18271,51 +18271,6 @@
 
               });
 
-          this.element.find('.collapsed-section').listenTo("mousedown", () => {
-              console.log('openedd');
-              this.open();
-          });
-
-          
-          this.editor = new SettingEditor(this);
-      }
-
-
-      open() {
-          const jumpAhead = 10;
-
-          this.parent.element.findAll(".setting").forEach(section => {
-              if (section !== this.element) collapse(section); 
-          });
-          
-          this.element.findAll('.collapsed-section').forEach(section => {
-              console.log(section);
-              collapse(section);
-          });
-
-
-          setTimeout(() => {
-              this.addClass('expanded');
-              this._ogHeight = this.height;
-              this.css(`height ${this.editor.element.scrollHeight}px`);
-
-              expand(this.editor);
-          }, jumpAhead);
-
-      }
-
-      close() {
-          this.parent.element.findAll(".setting").forEach(section => {
-              if (section !== this.element) expand(section);
-          });
-
-          this.element.findAll('.collapsed-section').forEach(section => {
-              console.log(section);
-              expand(section);
-          });
-
-          this.removeClass('expanded');
-          this.element.style.height = null;
       }
 
       updateDisplay(html){
@@ -18325,6 +18280,113 @@
               el.forEach(el => el.html(html));
           });
       }
+  }
+
+  // .append(editorElement(title))
+
+  // const htmlTemplate = `
+  // <div class='settings'>
+  //     <div class='setting'>
+  //     </div>
+  // </div>
+
+  // `.trim()
+  // 
+      // 
+
+  let displayElement$1 = (key) => {
+      return j(`div#${key}-display.display`, 0).setData({ 'settingTarget': 'display' })
+  };
+
+  //let sectionElement = (title, htmlTemp = v => `<div class='title' id='${key}-title'>${}</div>`) =>
+  //_e(`div.collapsed-section.collapsable#${title}-section`)
+  //.html(htmlTemp(title))
+  //.append(displayElement(title))
+
+  let sectionElement$1 = ({
+      key,
+      title,
+      htmlTemp = (key, title) => `<div class='title' id='${key}-title'>${title}</div>`
+  }) =>
+      j(`div.collapsed-section.collapsable#${key}-section`)
+          .html(htmlTemp(key, title))
+          .append(displayElement$1(key));
+
+  let _settingTemplate = (pragma, key) =>
+      j(`div.setting.collapsable#${key}`)
+          .setData({ 'setting': key })
+          .append(sectionElement$1({
+              key: key,
+              title: pragma.displayName
+          }));
+
+
+  class Setting extends SettingInline {
+
+      init(parent, key, {
+          displayName= key,
+          settingTemplate= _settingTemplate
+      }) {
+          super.init(parent, key, {
+              displayName, settingTemplate
+          });
+
+          console.log('im the child setting and i was run');
+          // super.init(...arguments)
+
+           this.element.find('.collapsed-section').listenTo("mousedown", () => {
+               console.log('opening');
+               this.open();
+           });
+          
+          // this.element.removeClass('inline')
+          
+          this.editor = new SettingEditor(this);
+      }
+
+
+      open() {
+          const jumpAhead = 10;
+
+          this.parent.element.findAll(".setting.collapsable").forEach(section => {
+              if (section !== this.element) collapse(section); 
+          });
+          
+          this.element.findAll('.collapsed-section').forEach(section => {
+              console.log(section);
+              // section.css('opacity 0')
+              collapse(section);
+          });
+
+
+          setTimeout(() => {
+              this.addClass('expanded');
+              this._ogHeight = this.height;
+
+              this.editor.element.show();
+              this.css(`height ${this.editor.element.scrollHeight}px`);
+              expand(this.editor);
+          }, jumpAhead);
+
+      }
+
+      close() {
+          this.parent.element.findAll(".setting.collapsable").forEach(section => {
+              if (section !== this.element){
+                  // expand(section)
+                  expand(section);
+              }
+          });
+
+          this.element.findAll('.collapsed-section').forEach(section => {
+              expand(section);
+          });
+
+          this.removeClass('expanded');
+          this.element.style.height = null;
+      }
+
+      
   }
 
   let optionDefaultWrapper = (content, pragma) => H(`
@@ -18435,9 +18497,7 @@
 `.trim();
       
 
-
-
-  class SettingInt extends Setting {
+  class SettingInt extends SettingInline {
       init(settings, setting, conf={
           contentTemplate: defaultContent,    
       }) {
@@ -18445,7 +18505,7 @@
           // this.createWire('setting')
 
           super.init(...arguments);
-          this.editor._setContent(defaultContent()); // this.editor._setContent(conf.contentTemplate)
+          // this.editor._setContent(defaultContent(this)) // this.editor._setContent(conf.contentTemplate)
 
           this.on('input', (value) => {
               console.log('set input', value);

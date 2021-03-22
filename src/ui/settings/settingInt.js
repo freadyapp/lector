@@ -1,16 +1,18 @@
 import { _p, Pragma, _e, util } from "pragmajs"
-import { Setting } from "./setting"
+import { SettingInline } from "./settingInline"
 
 const list = [ 1, 2, 3, 4, 5]
+
+let settingTemplate = (pragma) => {
+    
+}
 
 let defaultContent = (pragma) => `
     <div data-setting-target='display'>240</div>
 `.trim()
     
 
-
-
-export class SettingInt extends Setting {
+export class SettingInt extends SettingInline {
     init(settings, setting, conf={
         contentTemplate: defaultContent,    
     }) {
@@ -18,7 +20,7 @@ export class SettingInt extends Setting {
         // this.createWire('setting')
 
         super.init(...arguments)
-        this.editor._setContent(defaultContent(this)) // this.editor._setContent(conf.contentTemplate)
+        // this.editor._setContent(defaultContent(this)) // this.editor._setContent(conf.contentTemplate)
 
         this.on('input', (value) => {
             console.log('set input', value)
