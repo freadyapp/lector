@@ -30,7 +30,8 @@ yarn install
 
 ## Run this to compile the code when you make changes:
 
-Please use yarn as your manager for this project, but if you can use npm if you want. It will work with both.
+Depends on your package manager (my recommendation would be `yarn`)
+
 ```bash
 source setup yarn
 ```
