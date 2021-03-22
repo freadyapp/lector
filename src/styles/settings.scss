@@ -153,56 +153,87 @@
     }
 
     .mode-icon {
-        width: 40px;
-        height: 26px;
-        line-height: 26px;
-        margin-right: 10px;
-        text-align: center;
-        box-sizing: border-box;
-        font-size: 16px;
-        border: 2px solid #fff;
-        border-radius: 2px;
-
+        margin-right: 20px;
     }
 
    
 } 
 
-
-
 [data-setting='mode']{
 
-    // [data-setting-target=back] {
-    //     cursor: pointer;
-    //     height: 24px;
-    //     display: flex;
-    //     align-items: center;
-    //     margin-bottom: 38px;
-    // }
-
-    #Underneath {
-        border-top: none;
-        border-left: none;
-        border-right: none;
-    
-    }
-    
-    #Faded {
-        border-left: none;
-        border-right: none;
-        margin-bottom: 0px  !important;
-    
-    }
 
     [data-option='Underneath']{
-        margin: 27px 0  !important;
+        margin: 0px 0px 20px 0  !important;
         display: flex;
         align-items: center;
 
+
     }
-    // .option {
-    //     margin: 28px 0 !important;
-    // }
+
+        
 }
 
 
+.-selector {
+    * {
+        z-index: 99;
+    }
+
+    &::before {
+        content: '';
+        height: 50px;
+        width: 120%;
+        background-color: #515151;
+        position: absolute;
+        z-index: 0 !important;
+        left: 0;
+        margin-top: -11px;
+    }
+
+    &::after {
+        content: '';
+        width: 5px;
+        height: 50px;
+        background-color: #2b6cce;
+        position: absolute;
+        left: 0;
+        margin-top: -11px;
+    }
+}
+
+.-color-selector {
+    @extend .-selector;
+
+    $selector_height: 40px;
+
+    &::before {
+        height: $selector_height;
+    }
+
+    &::after {
+        height: $selector_height;
+    }
+}
+
+.-settings-section-list {
+    .option {
+        transition: all ease 0.2s;
+        align-items: stretch !important;
+
+        &.selected {
+            @extend .-selector;
+        }   
+    }
+}
+.settings > #popup {
+    #mode {
+       @extend .-settings-section-list; 
+    }
+
+    #color {
+        @extend .-settings-section-list;
+        .option.selected {
+            @extend .-color-selector;
+        }
+    }   
+}

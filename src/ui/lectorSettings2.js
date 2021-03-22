@@ -17,6 +17,8 @@ import Mousetrap from "mousetrap"
 
 
 
+
+
 let settingsComp = _e(`div.settings`)
 
 
@@ -91,15 +93,12 @@ export function addSettingsToLector(lector){
                 .append(colorThingy)
                 .html()
 
-    
-                  console.log("BLOOOOOOOOOb",blob)
-    
     return blob
     
   }
 
   let colorOptionTemplate = pragma => `
-      ${createColorBlob(pragma.getData('option'))} ${pragma.getData('description')}
+      ${createColorBlob(pragma.getData('option'))} <span> ${pragma.getData('description')} </span>
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
@@ -116,16 +115,23 @@ export function addSettingsToLector(lector){
   // mode comp
 
   function createModeIcons(mode){
-    let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
+    let icon = `${mode}-icon`
 
-    let pointer = _e(`div#qwer`).append(modeThingy).html()
+    return `<div class="mode-icon" id="${mode}">${icons[icon]}</div>`
+    
 
-    return pointer
+    // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
 
-  }
+
+    // let pointer = _e(`div#qwer`).append(modeThingy).html()
+
+    // return pointer
+
+
+  } 
 
   let modeOptionTemplate = pragma => `
-    ${createModeIcons(pragma.getData('option'))} ${pragma.getData('option')}
+    ${createModeIcons(pragma.getData('option'))} <span> ${pragma.getData('option')} </span>
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
@@ -138,6 +144,10 @@ export function addSettingsToLector(lector){
         actions.changeMode(optionPragma.getData('option'))
         console.log('MOOOOOOODE')
         console.log(optionPragma.getData('option'))
+        //this.setData({mode: optionPragma.getData('option')})
+
+        
+
       })
 
   
