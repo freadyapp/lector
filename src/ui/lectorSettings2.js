@@ -125,9 +125,11 @@ export function addSettingsToLector(lector){
 
     // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
 
+
     // let pointer = _e(`div#qwer`).append(modeThingy).html()
 
     // return pointer
+
 
   } 
 
@@ -145,6 +147,9 @@ export function addSettingsToLector(lector){
         actions.changeMode(optionPragma.getData('option'))
         console.log('MOOOOOOODE')
         console.log(optionPragma.getData('option'))
+        //this.setData({mode: optionPragma.getData('option')})
+
+        
 
       })
 
