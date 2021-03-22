@@ -57,7 +57,7 @@ $animation: 0.15s;
 	    @extend .collapsable;
         @extend .box-container;
 		position: absolute;
-		bottom: 60px;
+		bottom: 55px;
     }
 	
     #settings-bar {
@@ -102,13 +102,18 @@ $animation: 0.15s;
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    height: 30px;
+    height: 40px;
 	
 	user-select: none;
 	-webkit-user-select: none;
 
+    &:hover{
+        // background-color: rgb(43, 43, 43);
+    }
+
 
     &.inline {
+        height: 30px;
         width: 100%;    
     }
 

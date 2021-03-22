@@ -189,6 +189,7 @@ export function addSettingsToLector(lector){
   lector.settings.append(popupSettings, settingsBar)
   
   
+  // popup settings
   popupSettings.createWire('hidden')
               .on('hiddenChange', function(v) {
                 console.log('hidden change', v)
@@ -201,18 +202,16 @@ export function addSettingsToLector(lector){
   
   popupSettings.setHidden(true)
   document.addEventListener('mousedown', (e) => {
+    if (isClickWithin(e, settingsBar)){
+      // toggle popupSettings
+      return popupSettings.setHidden(!popupSettings.hidden)  
+    }
 
-    console.log(isClickWithin(e, lector.settings))
-    console.log(e.target)
-    console.log(e.target.parentNode)
-    console.log(lector.settings.element)
-
-    if (isClickWithin(e, lector.settings) || isClickWithin(e, popupSettings)){
+    if (isClickWithin(e, popupSettings)){
       popupSettings.setHidden(false)
     } else {
       popupSettings.setHidden(true)
     }
-
   })
 
   //lector.settings.listenTo('mouseout', () => {
