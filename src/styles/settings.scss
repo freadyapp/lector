@@ -15,24 +15,11 @@
 	}
 }   
 
-.settings {
-	@extend .collapsable;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px;
+.box-container {
+
+    background-color: #404040;
     border-radius: 4px;
     background-color: #404040;
-    opacity: 0.98;
-
-    bottom: 10px;
-    left: 10px;
-    // height: fit-content;
-    // min-height: 50px;
-    height: auto;
-    padding: 10px 15px;
-    width: 200px;
-    box-sizing: border-box;
-    color: whitesmoke;
-    position: fixed;
 
     display: flex;
 	flex-direction: column;
@@ -40,6 +27,39 @@
 	justify-content: flex-start;
 	align-items: stretch;
 	align-content: stretch;
+
+    height: auto;
+
+    padding: 10px 15px;
+    width: 200px;
+
+    box-sizing: border-box;
+}
+
+.settings {
+	// @extend .collapsable;
+
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 18px;
+        // opacity: 0.98;
+
+    bottom: 10px;
+    left: 10px;
+    // height: fit-content;
+    // min-height: 50px;
+    color: whitesmoke;
+    position: fixed;
+	
+    #popup {
+	    @extend .collapsable;
+        @extend .box-container;
+		position: absolute;
+		bottom: 60px;
+    }
+	
+    #settings-bar {
+        @extend .box-container;
+    }
 
     [data-setting-target="back"] {
         cursor: pointer;

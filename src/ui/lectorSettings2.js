@@ -169,6 +169,24 @@ export function addSettingsToLector(lector){
                       })
 
   
+  let popupSettings = _p("popup")
+      .append(colorSetting, modeSetting, foveaSetting)
+
+  let settingsBar = _p("settings-bar")
+      .append(wpmSetting)
+
+  lector.settings.append(popupSettings, settingsBar)
+  
+  // popupSettings.element.hide()
+  
+  //lector.settings.listenTo('mouseover', () => {
+    //popupSettings.element.show()
+  //})
+
+  //lector.settings.listenTo('mouseout', () => {
+    //popupSettings.element.hide()
+  //})
+
   // when the document is loaded, 
   // update to the default settings, and
   // trigger the settings load event
@@ -181,7 +199,6 @@ export function addSettingsToLector(lector){
       fovea: 8
     })
 
-    lector.settings.append(colorSetting, modeSetting, foveaSetting, wpmSetting)
     lector.settings.triggerEvent('load')
   })
 }
