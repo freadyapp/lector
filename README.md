@@ -44,7 +44,7 @@ source setup npm
 
 ### Use npm or yarn:
 ```bash
-$ npm install @robomonk/lector
+yarn install @robomonk/lector
 ```
 
 ## Set up
