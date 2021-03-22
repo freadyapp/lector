@@ -41,6 +41,7 @@ $animation: 0.15s;
 .settings {
 	// @extend .collapsable;
 
+    z-index: 999999999999999;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 18px;
         // opacity: 0.98;

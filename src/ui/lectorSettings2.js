@@ -188,11 +188,32 @@ export function addSettingsToLector(lector){
 
   lector.settings.append(popupSettings, settingsBar)
   
-  // popupSettings.element.hide()
   
-  //lector.settings.listenTo('mouseover', () => {
-    //popupSettings.element.show()
-  //})
+  popupSettings.createWire('hidden')
+              .on('hiddenChange', function(v) {
+                console.log('hidden change', v)
+                if (v){
+                  this.element.hide()
+                } else {
+                  this.element.show()
+                }
+              })
+  
+  popupSettings.setHidden(true)
+  document.addEventListener('mousedown', (e) => {
+
+    console.log(isClickWithin(e, lector.settings))
+    console.log(e.target)
+    console.log(e.target.parentNode)
+    console.log(lector.settings.element)
+
+    if (isClickWithin(e, lector.settings) || isClickWithin(e, popupSettings)){
+      popupSettings.setHidden(false)
+    } else {
+      popupSettings.setHidden(true)
+    }
+
+  })
 
   //lector.settings.listenTo('mouseout', () => {
     //popupSettings.element.hide()
