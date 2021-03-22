@@ -23,12 +23,11 @@ export class SettingInt extends SettingInline {
         // this.editor._setContent(defaultContent(this)) // this.editor._setContent(conf.contentTemplate)
 
         this.on('input', (value) => {
-            console.log('set input', value)
             this.setData({'value': value})
             this.parent.update(this.getData('setting'), value, this)
         })
         
-        console.log(this.element.findAll(`[data-setting-target='display']`))
+        // console.log(this.element.findAll(`[data-setting-target='display']`))
 
     }    
 }

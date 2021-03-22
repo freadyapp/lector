@@ -180,8 +180,28 @@ export function addSettingsToLector(lector){
                       })
 
   
+  let pageSetting = new SettingInt(lector.settings, 'page', {
+                        displayName: 'Page'
+                     })
+                     .on('input', (value) => {
+                       console.log('change page to' + value)
+                       actions.changePage(value)
+                     }).bind("shift+down", function(){
+                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
+                       this.setPage(this.page+1)
+                      //  this.triggerEvent('input', this.page+1)
+                     }, 'keyup').bind("shift+up", function(){
+                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
+                       this.setPage(this.page-1)
+                      //  this.triggerEvent('input', this.page-1)
+                     }, 'keyup')
+
+  if (lector.paginator) {
+    console.log('[!!!] lector has a paginator')
+  }
+  
   let popupSettings = _p("popup")
-      .append(colorSetting, modeSetting, foveaSetting)
+      .append(colorSetting, modeSetting, foveaSetting, pageSetting)
 
   let settingsBar = _p("settings-bar")
       .append(wpmSetting)
@@ -222,14 +242,16 @@ export function addSettingsToLector(lector){
   // update to the default settings, and
   // trigger the settings load event
   //
-  pragmaSpace.onDocLoad(function() {
+
+  lector.on('load', function() {
+   
+
     lector.settings.update({
       color: "#eddd6e",
       mode: "HotBox",
       wpm: 235,
-      fovea: 8
+      fovea: 8,
+      page: 1
     })
-
-    lector.settings.triggerEvent('load')
   })
 }
