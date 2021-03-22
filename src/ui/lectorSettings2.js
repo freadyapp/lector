@@ -181,6 +181,7 @@ export function addSettingsToLector(lector){
       fovea: 8
     })
 
+    lector.settings.append(colorSetting, modeSetting, foveaSetting, wpmSetting)
     lector.settings.triggerEvent('load')
   })
 }

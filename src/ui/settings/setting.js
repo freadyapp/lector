@@ -68,7 +68,6 @@ export class Setting extends Pragma {
                 }
 
             })
-            .appendTo(this.parent)
 
         this.element.find('.collapsed-section').listenTo("mousedown", () => {
             console.log('openedd')

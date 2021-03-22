@@ -1,7 +1,11 @@
 #!/bin/bash
 
 
-ARG1=${1:-yarn}
+default_pkg="yarn"
+default_env="dev"
+
+PKGM=${1:-$default_pkg}
+ENV=${2:-$default_env}
 
 echo "
 welcome to
@@ -12,16 +16,24 @@ welcome to
 
 
 
-Setting up using $ARG1
+Setting up using [$PKGM]
+@ [$ENV] environment
 "
+export LECTORJSPKG="$PKGM"
+export LECTOR_ENV="$ENV"
 
-source "./.lector_env/bin/activate"
-pip install -r .requirements.txt
+supported_managers=(npm yarn)
 
-export LECTORJSPKG="$ARG1"
+if (printf '%s\n' "${supported_managers[@]}" | grep -xq $PKGM); then
+	source "./.lector_env/bin/activate"
+	pip install -r .requirements.txt
+	$PKGM install
+	$PKGM run dev
+else
+	echo "[ERROR] Please specify package manager:\n\n  eg. \n \t source setup yarn \n \t source setup npm"
+fi
 
-$ARG1 install
-$ARG1 run dev
+
 
 
 echo "

@@ -69,12 +69,11 @@
 	},
 	"bugs": {
 		"url": "https://github.com/robo-monk/lector/issues"
-	},	
+	},
 	"homepage": "https://github.com/robo-monk/lector#readme",
 	"directories": {
-			"doc": "docs",
-			"test": "test"
-		},
+		"doc": "docs",
+		"test": "test"
+	},
 	"author": "robomonk"
-	
 }
