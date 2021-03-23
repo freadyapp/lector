@@ -32,12 +32,14 @@ export class SettingInline extends Pragma {
    
     init(parent, key, {
         displayName,
+        displayTemplate= (el, val) => el.html(val),
         settingTemplate,
     }={}) {
         console.log('creating new inline setting', key, settingTemplate)
         parent.adopt(this)
         parent.create(this, key)
 
+        this._displayTemplate = displayTemplate
         this.displayName = displayName || key
 
         this
@@ -57,11 +59,10 @@ export class SettingInline extends Pragma {
         this.as((settingTemplate || inlineSettingTemplate)(this, key))
     }
 
-    updateDisplay(html){
+    updateDisplay(val){
         pragmaSpace.onDocLoad(() => {
             let el = this.element.findAll("[data-setting-target='display']")
-            console.log('updating', html, el)
-            el.forEach(el => el.html(html))
+            el.forEach(el => this._displayTemplate(el, val))
         })
     }
 }

@@ -47,10 +47,11 @@ export class Setting extends SettingInline {
 
     init(parent, key, {
         displayName= key,
-        settingTemplate= _settingTemplate
+        settingTemplate= _settingTemplate,
+        displayTemplate
     }) {
         super.init(parent, key, {
-            displayName, settingTemplate
+            displayName, settingTemplate, displayTemplate
         })
 
         console.log('im the child setting and i was run')

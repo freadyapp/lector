@@ -85,12 +85,12 @@ export function addSettingsToLector(lector){
   // color comp
 
   function createColorBlob(color){
-    let colorThingy  = _e('div.color-blob')
+    let colorThingy  = _e(`div.color-blob.`)
                   .css(`background-color ${color}`)
                   .setId(`${color}`)
                   .html("   ")
 
-    let blob = _e('div#color')
+    let blob = _e('div#color.')
                 .append(colorThingy)
                 .html()
 
@@ -105,7 +105,8 @@ export function addSettingsToLector(lector){
   let colorSetting = new SettingList(lector.settings, 'color', { 
     displayName: "Color",
     options: colorsHumanFriendly,
-    contentTemplate: colorOptionTemplate
+    contentTemplate: colorOptionTemplate,
+    displayTemplate: (el, val) => el.html(createColorBlob(val))
   }).on('select', onNewSelection)
     .on('select', (pragma) => {
     console.log('color is ', pragma.option)
@@ -115,10 +116,10 @@ export function addSettingsToLector(lector){
   
   // mode comp
 
-  function createModeIcons(mode){
+  function createModeIcon(mode, location=""){
     let icon = `${mode}-icon`
 
-    return `<div class="mode-icon" id="${mode}">${icons[icon]}</div>`
+    return `<div class="mode-icon${location ? "-" + location : ''}" id="${mode}">${icons[icon]}</div>`
     
 
     // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
@@ -132,13 +133,16 @@ export function addSettingsToLector(lector){
   } 
 
   let modeOptionTemplate = pragma => `
-    ${createModeIcons(pragma.getData('option'))} <span> ${pragma.getData('option')} </span>
+    ${createModeIcon(pragma.getData('option'))} <span> ${pragma.getData('option')} </span>
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
     displayName: "Mode",
     options: modesHumanFriendly,
-    contentTemplate: modeOptionTemplate
+    contentTemplate: modeOptionTemplate,
+    displayTemplate: (element, value) => {
+      element.html(createModeIcon(value, 'menu'))
+    }
   }).on('select', onNewSelection)
     .on('select', function(optionPragma){
         // this.updateDisplay(optionPragma.getData('option'))
@@ -159,7 +163,9 @@ export function addSettingsToLector(lector){
                       })
                       .run(function(){
                         this.element
-                          .find('#title').html(icons['speed-icon'])
+                          .find('#title')
+                          .html(icons['speed-icon'])
+                          .addClass('inline-icon-2')
                       })
                       .setWpmRange(20, 2000)
                       .on('input', (value) => {
@@ -174,6 +180,9 @@ export function addSettingsToLector(lector){
   // fovea comp
   let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
                         displayName: "Fovea",
+                        displayTemplate: (el, v) => {
+                          el.html(`${v}<span class='meta'>°</span>`)
+                        },
                         min: 2, max: 10 
                       })
                       .on('input', (value) => {
@@ -187,6 +196,10 @@ export function addSettingsToLector(lector){
   
   let pageSetting = new SettingInt(lector.settings, 'page', {
                         displayName: 'Page'
+                     })
+                     .run(function(){
+                       this.element.find('#title').destroy()
+                       this.element.append(_e("div#meta.flex.meta").html("/420"))
                      })
                      .on('input', (value) => {
                        console.log('change page to' + value)
@@ -209,10 +222,11 @@ export function addSettingsToLector(lector){
       .append(colorSetting, modeSetting, foveaSetting)
 
 
+  let settingsButton = _e('div.inline-icon.clickable#settings-icon').html(icons['settings-icon-white'])
   let settingsBar = _p("settings-bar")
       .addClass('bar')
       .append(
-        _e(icons['settings-icon-white']).addClass('inline-icon'), 
+        settingsButton,
         wpmSetting
       )
 
@@ -232,7 +246,7 @@ export function addSettingsToLector(lector){
   
   popupSettings.setHidden(true)
   document.addEventListener('mousedown', (e) => {
-    if (isClickWithin(e, settingsBar)){
+    if (isClickWithin(e, settingsButton)){
       // toggle popupSettings
       return popupSettings.setHidden(!popupSettings.hidden)  
     }
@@ -256,9 +270,10 @@ export function addSettingsToLector(lector){
     if (lector.paginator){
       let p = lector.paginator
       pageSetting.setPageRange(p.firstPage, p.lastPage)
-      pageSetting._edible._setSize(p.lastPage.toString().length*2 + 1)
-      pageSetting._edible._monitorTemplate = (v) => 
-                    `${v}/${p.lastPage}`
+      pageSetting._edible._setSize(p.lastPage.toString().length)
+      pageSetting.element.find('#meta').html(`/${p.lastPage}`)
+      // pageSetting._edible._monitorTemplate = (v) => 
+                    // `${v}/${p.lastPage}`
 
     }
 
