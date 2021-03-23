@@ -96,11 +96,12 @@ $animation: 0.15s;
 
 
 .edible-display {
-   background: #404040; 
-   padding: 5px 10px;
+
+  background: #404040; 
+  padding: 1px 5px !important;
 
   font-family: 'IBM Plex Mono', monospace;  
-      font-size: 18px;
+  font-size: 18px;
 
   border-style: none;
   outline: none;
@@ -156,6 +157,7 @@ $animation: 0.15s;
         align-content: stretch;
 		cursor: pointer;
     }
+    
     .collapsed-section{
         @extend .section;
     }

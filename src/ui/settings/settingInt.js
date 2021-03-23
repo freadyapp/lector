@@ -24,13 +24,16 @@ export class SettingInt extends SettingInline {
         displayName,
         settingTemplate,
         monitorTemplate,
-        valueSanitizer= v => parseInt(v)
+        valueSanitizer= v => parseInt(v),
+        size=4
     } = {}) {
 
         if (settingTemplate) this._content = settingTemplate
 
         this._monitorTemplate = monitorTemplate
         this._valueSanitizer = valueSanitizer
+        this._size = size
+
 
 //  valueSanitizer, monitorTemplate,
         // this.createWire('setting')
@@ -45,17 +48,22 @@ export class SettingInt extends SettingInline {
         })
         
         // console.log(this.element.findAll(`[data-setting-target='display']`))
+        this.element.setId(setting)
+                    .addClass('setting', 'setting-int', 'section')
 
     }    
 
     _content(wire){
         this._edible = new EdibleDisplay(this, wire, {
             valueSanitizer: this._valueSanitizer,
-            monitorTemplate: this._monitorTemplate
+            monitorTemplate: this._monitorTemplate,
+            size: this._size
         })
-        return _p()
-                   .append(`<div>${this.displayName || wire}</div>`)
-                   .append(this._edible)
+        return _p().append(
+                        _e(`div.section#${wire}-section`)
+                            .append(`<div>${this.displayName || wire}</div>`)
+                            .append(this._edible)
+                        )
 
     }
 

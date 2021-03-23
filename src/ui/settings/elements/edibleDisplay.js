@@ -2,6 +2,7 @@ import { Pragma, util, _e } from "pragmajs"
 
 const edibleDisplayTemplate = (pragma) => _e('input')
                                     .attr('type', 'text')
+                                    
                                     .setData({settingTarget: 'display'})
                                     .addClass('edible-display')
 
@@ -9,9 +10,11 @@ const edibleDisplayTemplate = (pragma) => _e('input')
 export class EdibleDisplay extends Pragma {
     constructor(pragma, wire, {
         valueSanitizer= v=>v,
-        monitorTemplate= v=>v
+        monitorTemplate= v=>v,
+        size=4
     }={}){
         super()
+        this._size = size
         this._monitorTemplate = monitorTemplate
         console.log('new edible display', pragma, wire)
 
@@ -44,6 +47,8 @@ export class EdibleDisplay extends Pragma {
             this.parent.setVal(valueSanitizer(this.value))
             document.removeEventListener('keydown', this.parent._listenToEsc)
         })
+        
+        this._setSize(size)
     }
 
     updateFront(val) {
@@ -52,6 +57,13 @@ export class EdibleDisplay extends Pragma {
     }
 
 
+    _setSize(size){
+        this.element
+            .attr('maxlength', size)
+            .attr('size', size)
+
+        return this
+    }
 }
 
 // new EdibleDisplay(this, )

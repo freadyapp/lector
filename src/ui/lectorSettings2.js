@@ -246,8 +246,10 @@ export function addSettingsToLector(lector){
     if (lector.paginator){
       let p = lector.paginator
       pageSetting.setPageRange(p.firstPage, p.lastPage)
+      pageSetting._edible._setSize(p.lastPage.toString().length*2 + 1)
       pageSetting._edible._monitorTemplate = (v) => 
                     `${v}/${p.lastPage}`
+
     }
 
     lector.settings.update({
