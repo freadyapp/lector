@@ -4,11 +4,24 @@ import os
 import sys
 from rich import print
 
+
+final = "src/ui/icons.json"
+icons_dir = "src/icons"
+
+icona_repo = "git@github.com:robo-monk/ICONA.git"
 package_manager = os.environ.get('LECTORJSPKG') or "yarn"
+
+if not os.path.isdir("./.icona"):
+    subprocess.call(f"git clone {icona_repo} .icona", shell=True)
+
+# build icons
+print(f" [bold] Bundling icons... [/bold]")
+
+subprocess.call(f"python .icona/icona {icons_dir}", shell=True)
+subprocess.call(f"mv {icons_dir}.json {final}", shell=True)
 
 if len(sys.argv) > 1:
     package_manager = sys.argv[1]
-
 
 print(f"\n\n[bold cyan] Bundling with package manager: {package_manager} [/bold cyan] \n\n")
 subprocess.call("python sass", shell=True)
