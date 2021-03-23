@@ -19,9 +19,8 @@ $animation: 0.15s;
 
 .box-container {
 
-    background-color: #404040;
+    background-color: #262626;
     border-radius: 4px;
-    background-color: #404040;
 
     display: flex;
 	flex-direction: column;
@@ -35,11 +34,15 @@ $animation: 0.15s;
     padding: 10px 15px;
     width: 200px;
 
-    box-sizing: border-box;
+    // box-sizing: border-box;
 }
 
 .bar {
     @extend .box-container;
+    width: fit-content;
+	flex-direction: row;
+	justify-content: space-between;
+    align-items: center;
 }
 
 .settings {
@@ -64,6 +67,13 @@ $animation: 0.15s;
 		bottom: 55px;
     }
 	
+    #wpm {
+        width: 100px;
+        padding-left: 20px;
+        margin-left: 15px;
+        border-left: 1px solid gray;
+    }
+
     #settings-bar {
         // @extend .box-container;
     }
@@ -108,7 +118,7 @@ $animation: 0.15s;
 
 .edible-display {
 
-  background: #404040; 
+  background: #39393950; 
   padding: 1px 5px !important;
 
   font-family: 'IBM Plex Mono', monospace;  
@@ -117,12 +127,11 @@ $animation: 0.15s;
   border-style: none;
   outline: none;
   color: whitesmoke;
-  background: #515151; 
   border-radius: 2px;
   text-align: center;
 
   &:hover {
-    background: #393939;
+    background: #7b7b7b35;
   }
 
 }
@@ -132,7 +141,7 @@ $animation: 0.15s;
     display: flex;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    height: 40px;
+    height: 30px;
 	
 	user-select: none;
 	-webkit-user-select: none;
@@ -141,6 +150,9 @@ $animation: 0.15s;
         // background-color: rgb(43, 43, 43);
     }
 
+    &.collapsable {
+        height: 40px;
+    }
 
     &.inline {
         height: 30px;

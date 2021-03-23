@@ -154,7 +154,12 @@ export function addSettingsToLector(lector){
   
   // wpm comp
   let wpmSetting = new SettingInt(lector.settings, 'wpm', {
-                        displayName: 'Speed'
+                        displayName: 'Speed',
+                        // settingTemplate
+                      })
+                      .run(function(){
+                        this.element
+                          .find('#title').html(icons['speed-icon'])
                       })
                       .setWpmRange(20, 2000)
                       .on('input', (value) => {
@@ -206,7 +211,10 @@ export function addSettingsToLector(lector){
 
   let settingsBar = _p("settings-bar")
       .addClass('bar')
-      .append(wpmSetting)
+      .append(
+        _e(icons['settings-icon-white']).addClass('inline-icon'), 
+        wpmSetting
+      )
 
   lector.settings.append(popupSettings, settingsBar, pageBar)
   

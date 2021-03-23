@@ -4,20 +4,6 @@ import { SettingInline } from "./settingInline"
 
 const list = [ 1, 2, 3, 4, 5]
 
-let settingTemplate = (pragma) => {
-    
-}
-
-//let defaultContent = (pragma) => _e(`
-    //<div data-setting-target='display'>240</div>
-//`.trim())
-//
-let defaultContent = (pragma, wire) => _p()
-                                       .append(`<div>${pragma.displayName || wire}</div>`)
-                                       .append(new EdibleDisplay(pragma, wire))
-    
-
-   
 
 export class SettingInt extends SettingInline {
     init(settings, setting, {
@@ -61,7 +47,7 @@ export class SettingInt extends SettingInline {
         })
         return _p().append(
                         _e(`div.section#${wire}-section`)
-                            .append(`<div>${this.displayName || wire}</div>`)
+                            .append(_e(`div#title.`, this.displayName || wire))
                             .append(this._edible)
                         )
 
