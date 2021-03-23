@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
     package_manager = sys.argv[1]
 
 
-print(f"\n\n[bold cyan] Watching with package manager: {package_manager} [/bold cyan] \n\n")
+print(f"\n\n[bold cyan] Bundling with package manager: {package_manager} [/bold cyan] \n\n")
 subprocess.call("python sass", shell=True)
 subprocess.call(f"{package_manager} run build", shell=True)
 

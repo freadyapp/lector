@@ -6,8 +6,6 @@ import os
 import sys
 from rich import print, inspect, console as _console
 
-# code to automatically edit package.json to bumb version up
-# code to automatically npm publish after running tests which pass
 
 def release():
     sp.call("npm publish", shell=True)
@@ -20,10 +18,8 @@ if len(sys.argv) > 1:
     package_manager = sys.argv[1]
 
 
-# subprocess.call(["export LECTOR_ENV='production'"], shell=True)
 os.environ["LECTOR_ENV"] = 'production'
-print(f"\n\n[bold cyan] Bundling with package manager: {package_manager} [/bold cyan] \n\n")
-sp.call("python sass", shell=True)
+sp.call("python watchtower", shell=True)
 
 
 # test
