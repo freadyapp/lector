@@ -94,11 +94,8 @@ export default class PragmaLector extends Pragma {
   
   resetMark(){
     this.whenLoad().then(() => {
-      this.currentWord.summon()
+      if (this.currentWord && !this.currentWord.hasKids) this.currentWord.summon()
     })
-    // this.on('load')
-    
-    // if (this.currentWord && !this.currentWord.hasKids) this.currentWord.summon(true)
   }
 
   goToNext(){ this.summonTo(+1) }

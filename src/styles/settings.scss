@@ -112,6 +112,13 @@ $animation: 0.15s;
         right: 10px;
         bottom: 10px;
     }
+    
+
+    #zoom-bar {
+        position: fixed;
+        right: 10px;
+        top: 20px;
+    }
 
 }
 
@@ -215,6 +222,14 @@ $animation: 0.15s;
         margin-right: 20px;
     }
 
+    .arrows {
+        // position: absolute;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        justify-content: center;
+        align-items: center;
+    }
    
 } 
 

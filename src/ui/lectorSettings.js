@@ -359,13 +359,13 @@ export default function lectorSettings(lector){
                 .css('width 25px; height 25px;')
                 .addClass(`setting-icon`)
 
-  let wpmIncreaseIcon = _p().as(_e(icons['speed-increase']))
+  let wpmIncreaseIcon = _p().as(_e(icons['increase']))
                       .addClass(`setting-wpm-adjusticon`)
                       .listenTo('click', _ => {
                         setWpm.value += 10
                       })
 
-  let wpmDecreaseIcon = _p().as(_e(icons[`speed-decrease`]))
+  let wpmDecreaseIcon = _p().as(_e(icons[`decrease`]))
                         .addClass(`setting-wpm-adjusticon`)
                         .listenTo('click', _ => {
                           setWpm.value -= 10

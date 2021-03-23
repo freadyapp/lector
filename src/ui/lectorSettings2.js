@@ -159,6 +159,9 @@ export function addSettingsToLector(lector){
   // wpm comp
   let wpmSetting = new SettingInt(lector.settings, 'wpm', {
                         displayName: 'Speed',
+                        plusElement: icons['increase'],
+                        minusElement: icons['decrease'],
+                        step: 5
                         // settingTemplate
                       })
                       .run(function(){
@@ -216,18 +219,16 @@ export function addSettingsToLector(lector){
   
   
   let zoomSetting = new SettingInt(lector.settings, 'scale', {
-                        displayName: 'Zoom',
-
                         // increment: (lastValue, step) => lastValue + step,
                         // decrement: (lastValue, step) => lastValue + step,
                         // step: 1,
-       
-                        // plusElement: _e()
-                        // minusElement: _e()
+                        plusElement: _e("div.", "+"),
+                        minusElement: _e("div.", "-"),
+                        step: 5
                      })
                      .setScaleRange(20, 200)
                      .run(function(){
-                      //  this.element.find('#title').destroy()
+                       this.element.find('#title').destroy()
                      })
                      .on('input', (value) => {
                        console.log('change zoom to' + value)

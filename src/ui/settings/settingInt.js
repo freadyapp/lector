@@ -12,8 +12,9 @@ export class SettingInt extends SettingInline {
         monitorTemplate,
         valueSanitizer= v => parseInt(v),
         size=4,
-        plusElement= pragma=>_e("div.inline-icon", "+"),
-        minusElement
+        plusElement,
+        minusElement,
+        step=1
     } = {}) {
 
         if (settingTemplate) this._content = settingTemplate
@@ -41,7 +42,20 @@ export class SettingInt extends SettingInline {
 
         if (plusElement){
             if (!this.arrows) this.arrows = _e("div.arrows").appendTo(this.element)
-            this.arrows.append(_e(typeof plusElement === 'function' ? plusElement(this) : plusElement))
+            let _plus = _e(typeof plusElement === 'function' ? plusElement(this) : plusElement)
+                    .listenTo('mousedown', () => {
+                        this[setting] += step || 1
+                    })
+            this.arrows.append(_plus)
+        }
+
+        if (minusElement){
+            if (!this.arrows) this.arrows = _e("div.arrows").appendTo(this.element)
+            let _minus = _e(typeof minusElement === 'function' ? minusElement(this) : minusElement)
+                    .listenTo('mousedown', () => {
+                        this[setting] -= step || 1
+                    })
+            this.arrows.append(_minus)
         }
     }    
 
