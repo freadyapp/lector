@@ -196,17 +196,19 @@ export function addSettingsToLector(lector){
                       //  this.triggerEvent('input', this.page-1)
                      }, 'keyup')
 
-  if (lector.paginator) {
-    console.log('[!!!] lector has a paginator')
-  }
+  let pageBar = _e('div.bar#page-bar')
+                    .append(pageSetting)
+
   
   let popupSettings = _p("popup")
-      .append(colorSetting, modeSetting, foveaSetting, pageSetting)
+      .append(colorSetting, modeSetting, foveaSetting)
+
 
   let settingsBar = _p("settings-bar")
+      .addClass('bar')
       .append(wpmSetting)
 
-  lector.settings.append(popupSettings, settingsBar)
+  lector.settings.append(popupSettings, settingsBar, pageBar)
   
   
   // popup settings

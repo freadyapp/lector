@@ -38,6 +38,10 @@ $animation: 0.15s;
     box-sizing: border-box;
 }
 
+.bar {
+    @extend .box-container;
+}
+
 .settings {
 	// @extend .collapsable;
 
@@ -61,7 +65,7 @@ $animation: 0.15s;
     }
 	
     #settings-bar {
-        @extend .box-container;
+        // @extend .box-container;
     }
 
     [data-setting-target="back"] {
@@ -90,6 +94,13 @@ $animation: 0.15s;
         .back-copy {
             margin-bottom: 3px;
         }
+    }
+    
+
+    #page-bar {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
     }
 
 }
