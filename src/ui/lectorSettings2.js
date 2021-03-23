@@ -289,7 +289,28 @@ export function addSettingsToLector(lector){
   //
 
   lector.on('load', function() {
-    
+
+    let fader = _p('fader')
+      .run(idler, function () {
+        this.elements = []
+        this.include = function () {
+          this.elements = this.elements.concat(Array.from(arguments))
+          return this
+        }
+      })
+      .setIdleTime(3000)
+      .include(lector.settings)
+      .onIdle(function () {
+        this.elements.forEach(element => {
+          element.css('opacity 0')
+        })
+        // this.css('opacity 0')
+      })
+      .onActive(function () {
+        this.elements.forEach(element => element.css('opacity 1'))
+      })
+
+    lector.settings.fader = fader
 
     // set range of paginator
     if (lector.paginator){
