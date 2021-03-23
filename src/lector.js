@@ -253,7 +253,6 @@ export const Lector = (l, options=default_options) => {
     if (lector.settings){
       console.log("lector has settings! connecting paginator's value to pagecomp")
       console.log('settings', lector.settings)
-      console.log()
       let pageSetting = lector.settings.pragmaMap.get('page')
       if (pageSetting) {
         lector.paginator.do(function(){

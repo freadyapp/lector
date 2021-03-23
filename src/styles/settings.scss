@@ -95,7 +95,25 @@ $animation: 0.15s;
 }
 
 
+.edible-display {
+   background: #404040; 
+   padding: 5px 10px;
 
+  font-family: 'IBM Plex Mono', monospace;  
+      font-size: 18px;
+
+  border-style: none;
+  outline: none;
+  color: whitesmoke;
+  background: #515151; 
+  border-radius: 2px;
+  text-align: center;
+
+  &:hover {
+    background: #393939;
+  }
+
+}
 
 .setting {
     

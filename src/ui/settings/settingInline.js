@@ -34,13 +34,13 @@ export class SettingInline extends Pragma {
         displayName,
         settingTemplate,
     }={}) {
-        console.log('im the parent setting and i was run')
+        console.log('creating new inline setting', key, settingTemplate)
         parent.adopt(this)
         parent.create(this, key)
 
         this.displayName = displayName || key
 
-        this.as((settingTemplate || inlineSettingTemplate)(this, key))
+        this
             .createEvents('input')
             .on('input', function (input) {
                 this.updateDisplay(input)
@@ -54,6 +54,7 @@ export class SettingInline extends Pragma {
 
             })
 
+        this.as((settingTemplate || inlineSettingTemplate)(this, key))
     }
 
     updateDisplay(html){

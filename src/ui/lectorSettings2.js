@@ -156,6 +156,7 @@ export function addSettingsToLector(lector){
   let wpmSetting = new SettingInt(lector.settings, 'wpm', {
                         displayName: 'Speed'
                       })
+                      .setWpmRange(20, 2000)
                       .on('input', (value) => {
                         actions.changeWpm(value)
                       }).bind("+", function(){
@@ -163,7 +164,6 @@ export function addSettingsToLector(lector){
                       }).bind("-", function() { 
                         this.wpm -= 5
                       })
-  
 
 
   // fovea comp
@@ -227,11 +227,7 @@ export function addSettingsToLector(lector){
       return popupSettings.setHidden(!popupSettings.hidden)  
     }
 
-    if (isClickWithin(e, popupSettings)){
-      popupSettings.setHidden(false)
-    } else {
-      popupSettings.setHidden(true)
-    }
+    popupSettings.setHidden(!isClickWithin(e, popupSettings))
   })
 
   //lector.settings.listenTo('mouseout', () => {
@@ -244,7 +240,15 @@ export function addSettingsToLector(lector){
   //
 
   lector.on('load', function() {
-   
+    
+
+    // set range of paginator
+    if (lector.paginator){
+      let p = lector.paginator
+      pageSetting.setPageRange(p.firstPage, p.lastPage)
+      pageSetting._edible._monitorTemplate = (v) => 
+                    `${v}/${p.lastPage}`
+    }
 
     lector.settings.update({
       color: "#eddd6e",
