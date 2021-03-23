@@ -118,6 +118,16 @@ $animation: 0.15s;
         position: fixed;
         right: 10px;
         top: 20px;
+
+        padding: 8px 5px;
+        .setting {
+            .arrows {
+                height: 80px;
+                justify-content: space-between;
+            }
+
+            height: fit-content;
+        }
     }
 
 }
@@ -229,6 +239,15 @@ $animation: 0.15s;
         padding: 5px;
         justify-content: center;
         align-items: center;
+
+        svg, div {
+            opacity: .7;
+            &:hover {
+                opacity: 1;
+            }
+            cursor: pointer;
+            padding: 2px 0;
+        }
     }
    
 } 

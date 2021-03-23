@@ -222,13 +222,14 @@ export function addSettingsToLector(lector){
                         // increment: (lastValue, step) => lastValue + step,
                         // decrement: (lastValue, step) => lastValue + step,
                         // step: 1,
-                        plusElement: _e("div.", "+"),
-                        minusElement: _e("div.", "-"),
+                        plusElement: icons['zoom-in'],
+                        minusElement: icons['zoom-out'],
                         step: 5
                      })
                      .setScaleRange(20, 200)
                      .run(function(){
-                       this.element.find('#title').destroy()
+                      //  this.element.find('#title').destroy()
+                       this.element.find('#scale-section').destroy()
                      })
                      .on('input', (value) => {
                        console.log('change zoom to' + value)
