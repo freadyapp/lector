@@ -152,6 +152,7 @@ export const Reader = (l, options=default_options) => {
   let w = Word(l)
 
   let lec = new PragmaLector("lector")
+              .createEvents('load')
               .as(l)
               .setValue(0)
               .connectTo(w)
@@ -213,7 +214,13 @@ export const Lector = (l, options=default_options) => {
     util.addStyles(css.full)
   }
 
-  if (!_needWrapper(options)) return Reader(l, options)
+  if (!_needWrapper(options)){
+    let r = Reader(l, options) 
+    pragmaSpace.onDocLoad(() => {
+      r.triggerEvent('load')
+    })
+    return r
+  }
 
   util.log("configuration appears to be a bit more complicated")
   
@@ -240,17 +247,22 @@ export const Lector = (l, options=default_options) => {
     lector = Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
 
+    
     lector.paginator = paginator
 
     if (lector.settings){
       console.log("lector has settings! connecting paginator's value to pagecomp")
-      let pageComp = lector.settings.find('!page')
-      pageComp?.wireTo(lector.paginator)
+      console.log('settings', lector.settings)
+      let pageSetting = lector.settings.pragmaMap.get('page')
+      if (pageSetting) {
+        lector.paginator.do(function(){
+          pageSetting.updateDisplay(this.value)
+        })
+      }
     }
 
-    console.log('paginator', paginator)
-
     paginator.fill()
+    
     // return lector
   }
 
@@ -270,6 +282,7 @@ export const Lector = (l, options=default_options) => {
 
     if (lector.settings){
       console.log("lector has settings! connecting scaler's value to scalercomp")
+      console.log(lector.settings)
       let scaleComp = lector.settings.find('!scale')
       lector.scaler.on('scaleChange', (v) => { scaleComp.value = v })
       //if (scaleComp) scaleComp.wireTo(lector.scaler)
@@ -279,5 +292,9 @@ export const Lector = (l, options=default_options) => {
 
 
   
+  pragmaSpace.onDocLoad(() => {
+    lector.triggerEvent('load')
+  })
+
   return lector
 }

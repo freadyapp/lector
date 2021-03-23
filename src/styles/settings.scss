@@ -3,9 +3,11 @@
 // font-family: 'IBM Plex Mono', monospace;
 // font-family: 'IBM Plex Sans', sans-serif;
 
+$animation: 0.15s;
+
 .collapsable {
 	overflow: hidden;
-	transition: all 0.2s ease-in-out;
+	transition: all $animation ease;
 	// transition: opacity 0.05s eas;
 
 	height: auto;
@@ -15,24 +17,10 @@
 	}
 }   
 
-.settings {
-	@extend .collapsable;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 18px;
-    border-radius: 4px;
-    background-color: #404040;
-    opacity: 0.98;
+.box-container {
 
-    bottom: 10px;
-    left: 10px;
-    // height: fit-content;
-    // min-height: 50px;
-    height: auto;
-    padding: 10px 15px;
-    width: 200px;
-    box-sizing: border-box;
-    color: whitesmoke;
-    position: fixed;
+    background-color: #262626;
+    border-radius: 4px;
 
     display: flex;
 	flex-direction: column;
@@ -40,6 +28,55 @@
 	justify-content: flex-start;
 	align-items: stretch;
 	align-content: stretch;
+
+    height: auto;
+
+    padding: 10px 15px;
+    width: 180px;
+
+    // box-sizing: border-box;
+}
+
+.bar {
+    @extend .box-container;
+    width: fit-content;
+	flex-direction: row;
+	justify-content: space-between;
+    align-items: center;
+}
+
+.settings {
+	// @extend .collapsable;
+
+    z-index: 999999999999999;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 18px;
+        // opacity: 0.98;
+
+    bottom: 10px;
+    left: 10px;
+    // height: fit-content;
+    // min-height: 50px;
+    color: whitesmoke;
+    position: fixed;
+	
+    #popup {
+	    @extend .collapsable;
+        @extend .box-container;
+		position: absolute;
+		bottom: 55px;
+    }
+	
+    #wpm {
+        width: 100px;
+        padding-left: 20px;
+        margin-left: 15px;
+        border-left: 1px solid gray;
+    }
+
+    #settings-bar {
+        // @extend .box-container;
+    }
 
     [data-setting-target="back"] {
         cursor: pointer;
@@ -68,22 +105,59 @@
             margin-bottom: 3px;
         }
     }
+    
+
+    #page-bar {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+    }
 
 }
 
 
+.edible-display {
+
+  background: #39393950; 
+  padding: 1px 5px !important;
+
+  font-family: 'IBM Plex Mono', monospace;  
+  font-size: 18px;
+
+  border-style: none;
+  outline: none;
+  color: whitesmoke;
+  border-radius: 2px;
+  text-align: center;
+
+  &:hover {
+    background: #7b7b7b35;
+  }
+
+}
 
 .setting {
-    @extend .collapsable;
     
     display: flex;
-    flex-direction: column;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     height: 30px;
 	
 	user-select: none;
 	-webkit-user-select: none;
 
+    &:hover{
+        // background-color: rgb(43, 43, 43);
+    }
+
+    &.collapsable {
+        height: 40px;
+    }
+
+    &.inline {
+        height: 30px;
+        width: 100%;    
+    }
 
     &.expanded {
         height: 200px;
@@ -96,7 +170,8 @@
     }
 
 
-    .collapsed-section{
+    .section {
+        width: 100%;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -104,6 +179,10 @@
         align-items: center;
         align-content: stretch;
 		cursor: pointer;
+    }
+    
+    .collapsed-section{
+        @extend .section;
     }
 
     .editor-content {
@@ -133,56 +212,87 @@
     }
 
     .mode-icon {
-        width: 40px;
-        height: 26px;
-        line-height: 26px;
-        margin-right: 10px;
-        text-align: center;
-        box-sizing: border-box;
-        font-size: 16px;
-        border: 2px solid #fff;
-        border-radius: 2px;
-
+        margin-right: 20px;
     }
 
    
 } 
 
-
-
 [data-setting='mode']{
 
-    // [data-setting-target=back] {
-    //     cursor: pointer;
-    //     height: 24px;
-    //     display: flex;
-    //     align-items: center;
-    //     margin-bottom: 38px;
-    // }
-
-    #Underneath {
-        border-top: none;
-        border-left: none;
-        border-right: none;
-    
-    }
-    
-    #Faded {
-        border-left: none;
-        border-right: none;
-        margin-bottom: 0px  !important;
-    
-    }
 
     [data-option='Underneath']{
-        margin: 27px 0  !important;
+        margin: 0px 0px 20px 0  !important;
         display: flex;
         align-items: center;
 
+
     }
-    // .option {
-    //     margin: 28px 0 !important;
-    // }
+
+        
 }
 
 
+.-selector {
+    * {
+        z-index: 99;
+    }
+
+    &::before {
+        content: '';
+        height: 50px;
+        width: 120%;
+        background-color: #515151;
+        position: absolute;
+        z-index: 0 !important;
+        left: 0;
+        margin-top: -11px;
+    }
+
+    &::after {
+        content: '';
+        width: 5px;
+        height: 50px;
+        background-color: #2b6cce;
+        position: absolute;
+        left: 0;
+        margin-top: -11px;
+    }
+}
+
+.-color-selector {
+    @extend .-selector;
+
+    $selector_height: 40px;
+
+    &::before {
+        height: $selector_height;
+    }
+
+    &::after {
+        height: $selector_height;
+    }
+}
+
+.-settings-section-list {
+    .option {
+        transition: all ease 0.2s;
+        align-items: stretch !important;
+
+        &.selected {
+            @extend .-selector;
+        }   
+    }
+}
+.settings > #popup {
+    #mode {
+       @extend .-settings-section-list; 
+    }
+
+    #color {
+        @extend .-settings-section-list;
+        .option.selected {
+            @extend .-color-selector;
+        }
+    }   
+}

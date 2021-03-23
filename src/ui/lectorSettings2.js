@@ -2,6 +2,7 @@ import { _p, util, _e, Pragma } from "pragmajs"
 import { Setting } from "./settings/setting"
 import { SettingList } from "./settings/settingList"
 import { SettingInt } from "./settings/settingInt"
+import { SettingInline } from "./settings/settingInline"
 import { SettingSlider } from "./settings/settingSlider"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
@@ -14,6 +15,8 @@ import icons from './icons.json'
 import { isClickWithin} from "../helpers/index"
 import { Settings } from "./settings/settings"
 import Mousetrap from "mousetrap"
+
+
 
 
 
@@ -82,30 +85,28 @@ export function addSettingsToLector(lector){
   // color comp
 
   function createColorBlob(color){
-    let colorThingy  = _e('div.color-blob')
+    let colorThingy  = _e(`div.color-blob.`)
                   .css(`background-color ${color}`)
                   .setId(`${color}`)
                   .html("   ")
 
-    let blob = _e('div#color')
+    let blob = _e('div#color.')
                 .append(colorThingy)
                 .html()
 
-    
-                  console.log("BLOOOOOOOOOb",blob)
-    
     return blob
     
   }
 
   let colorOptionTemplate = pragma => `
-      ${createColorBlob(pragma.getData('option'))} ${pragma.getData('description')}
+      ${createColorBlob(pragma.getData('option'))} <span> ${pragma.getData('description')} </span>
   `.trim()
 
   let colorSetting = new SettingList(lector.settings, 'color', { 
     displayName: "Color",
     options: colorsHumanFriendly,
-    contentTemplate: colorOptionTemplate
+    contentTemplate: colorOptionTemplate,
+    displayTemplate: (el, val) => el.html(createColorBlob(val))
   }).on('select', onNewSelection)
     .on('select', (pragma) => {
     console.log('color is ', pragma.option)
@@ -115,36 +116,58 @@ export function addSettingsToLector(lector){
   
   // mode comp
 
-  function createModeIcons(mode){
-    let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
+  function createModeIcon(mode, location=""){
+    let icon = `${mode}-icon`
 
-    let pointer = _e(`div#qwer`).append(modeThingy).html()
+    return `<div class="mode-icon${location ? "-" + location : ''}" id="${mode}">${icons[icon]}</div>`
+    
 
-    return pointer
+    // let modeThingy = _e('div.mode-icon').setId(`${mode}`).html('W')
 
-  }
+
+    // let pointer = _e(`div#qwer`).append(modeThingy).html()
+
+    // return pointer
+
+
+  } 
 
   let modeOptionTemplate = pragma => `
-    ${createModeIcons(pragma.getData('option'))} ${pragma.getData('option')}
+    ${createModeIcon(pragma.getData('option'))} <span> ${pragma.getData('option')} </span>
   `.trim()
 
   let modeSetting = new SettingList(lector.settings, 'mode', {
     displayName: "Mode",
     options: modesHumanFriendly,
-    contentTemplate: modeOptionTemplate
+    contentTemplate: modeOptionTemplate,
+    displayTemplate: (element, value) => {
+      element.html(createModeIcon(value, 'menu'))
+    }
   }).on('select', onNewSelection)
     .on('select', function(optionPragma){
         // this.updateDisplay(optionPragma.getData('option'))
         actions.changeMode(optionPragma.getData('option'))
         console.log('MOOOOOOODE')
         console.log(optionPragma.getData('option'))
+        //this.setData({mode: optionPragma.getData('option')})
+
+        
+
       })
 
   
   // wpm comp
   let wpmSetting = new SettingInt(lector.settings, 'wpm', {
-                        displayName: 'Speed'
+                        displayName: 'Speed',
+                        // settingTemplate
                       })
+                      .run(function(){
+                        this.element
+                          .find('#title')
+                          .html(icons['speed-icon'])
+                          .addClass('inline-icon-2')
+                      })
+                      .setWpmRange(20, 2000)
                       .on('input', (value) => {
                         actions.changeWpm(value)
                       }).bind("+", function(){
@@ -152,12 +175,14 @@ export function addSettingsToLector(lector){
                       }).bind("-", function() { 
                         this.wpm -= 5
                       })
-  
 
 
   // fovea comp
   let foveaSetting = new SettingSlider(lector.settings, 'fovea', {
                         displayName: "Fovea",
+                        displayTemplate: (el, v) => {
+                          el.html(`${v}<span class='meta'>°</span>`)
+                        },
                         min: 2, max: 10 
                       })
                       .on('input', (value) => {
@@ -169,18 +194,95 @@ export function addSettingsToLector(lector){
                       })
 
   
+  let pageSetting = new SettingInt(lector.settings, 'page', {
+                        displayName: 'Page'
+                     })
+                     .run(function(){
+                       this.element.find('#title').destroy()
+                       this.element.append(_e("div#meta.flex.meta").html("/420"))
+                     })
+                     .on('input', (value) => {
+                       console.log('change page to' + value)
+                       actions.changePage(value)
+                     }).bind("shift+down", function(){
+                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
+                       this.setPage(this.page+1)
+                      //  this.triggerEvent('input', this.page+1)
+                     }, 'keyup').bind("shift+up", function(){
+                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
+                       this.setPage(this.page-1)
+                      //  this.triggerEvent('input', this.page-1)
+                     }, 'keyup')
+
+  let pageBar = _e('div.bar#page-bar')
+                    .append(pageSetting)
+
+  
+  let popupSettings = _p("popup")
+      .append(colorSetting, modeSetting, foveaSetting)
+
+
+  let settingsButton = _e('div.inline-icon.clickable#settings-icon').html(icons['settings-icon-white'])
+  let settingsBar = _p("settings-bar")
+      .addClass('bar')
+      .append(
+        settingsButton,
+        wpmSetting
+      )
+
+  lector.settings.append(popupSettings, settingsBar, pageBar)
+  
+  
+  // popup settings
+  popupSettings.createWire('hidden')
+              .on('hiddenChange', function(v) {
+                console.log('hidden change', v)
+                if (v){
+                  this.element.hide()
+                } else {
+                  this.element.show()
+                }
+              })
+  
+  popupSettings.setHidden(true)
+  document.addEventListener('mousedown', (e) => {
+    if (isClickWithin(e, settingsButton)){
+      // toggle popupSettings
+      return popupSettings.setHidden(!popupSettings.hidden)  
+    }
+
+    popupSettings.setHidden(!isClickWithin(e, popupSettings))
+  })
+
+  //lector.settings.listenTo('mouseout', () => {
+    //popupSettings.element.hide()
+  //})
+
   // when the document is loaded, 
   // update to the default settings, and
   // trigger the settings load event
   //
-  pragmaSpace.onDocLoad(function() {
+
+  lector.on('load', function() {
+    
+
+    // set range of paginator
+    if (lector.paginator){
+      let p = lector.paginator
+      pageSetting.setPageRange(p.firstPage, p.lastPage)
+      pageSetting._edible._setSize(p.lastPage.toString().length)
+      pageSetting.element.find('#meta').html(`/${p.lastPage}`)
+      // pageSetting._edible._monitorTemplate = (v) => 
+                    // `${v}/${p.lastPage}`
+
+    }
+
     lector.settings.update({
       color: "#eddd6e",
       mode: "HotBox",
       wpm: 235,
-      fovea: 8
+      fovea: 8,
+      page: 1
     })
-
-    lector.settings.triggerEvent('load')
   })
 }

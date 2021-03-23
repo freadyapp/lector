@@ -1,3 +1,33 @@
 body {
     background-color: #161616;
 }
+
+.flex {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   
+}
+.inline-icon {
+    @extend .flex;
+    width: 22px;
+    svg {
+        width: 22px;
+    }
+}
+
+.inline-icon-2 {
+    @extend .inline-icon;
+    width: 25px;
+    svg {
+        width: 25px;
+    }
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.meta {
+    opacity: .5;
+}
