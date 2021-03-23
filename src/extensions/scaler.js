@@ -3,10 +3,11 @@ const MAX_SCALE = 120
 const MIN_SCALE = 50
 
 export class Scaler extends Pragma {
-    constructor(target){
+    constructor(target, duration=70){
         super()
         this.target = target
-        this.target.css(`transition transform .07s ease; transform-origin top`)
+        this._duration = duration
+        this.target.css(`transition transform ${this._duration}ms ease; transform-origin top`)
 
         this.createWire("scale")
         this.scale = 100
@@ -41,6 +42,14 @@ export class Scaler extends Pragma {
     
     _scaleTo(to){
         this.target.css(`transform scale(${to/100})`)
+        this.currentPromise = new Promise(resolve => {
+            setTimeout(() => {
+                resolve()
+                this.currentPromise = null
+            }, this._duration+25)
+        })
+
+        return this.currentPromise
     }
 }
 

@@ -4,8 +4,22 @@ export default class PragmaLector extends Pragma {
 
   constructor(){
     super(arguments)
+
+    this.createEvent('load')
+    this.on('load', () => this._loaded = true)
+    
   }
 
+  whenLoad(){
+    return new Promise((resolve, reject) => {
+      if (this._loaded){
+        resolve(this)
+      } else {
+        this.on('load', () => resolve(this))
+      }
+    })
+
+  }
   get lector(){
     return this
   }
@@ -77,12 +91,21 @@ export default class PragmaLector extends Pragma {
     this.currentParent.value += n
     this.currentWord.summon()
   }
+  
+  resetMark(){
+    this.whenLoad().then(() => {
+      this.currentWord.summon()
+    })
+    // this.on('load')
+    
+    // if (this.currentWord && !this.currentWord.hasKids) this.currentWord.summon(true)
+  }
 
   goToNext(){ this.summonTo(+1) }
   goToPre(){ this.summonTo(-1) }
 
   pause(){
-    this.w.pause()
+    return this.w.pause()
   }
 
   setFont(font){

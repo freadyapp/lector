@@ -3,10 +3,28 @@ import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
 import { addSettingsToLector } from "./ui/lectorSettings2"
+import anime from "animejs"
 
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
+
+
+function connectToLectorSettings(lector, wire){
+  return new Promise((resolve, reject) => {
+
+      lector.element.onRender(() => {
+        if (!lector.settings) return reject('no settings present')
+        let setting = lector.settings.pragmaMap.get(wire)
+        if (setting) {
+          console.log(`@@@@ connected to ${wire} setting @@@@`)
+          return resolve(setting)
+        } 
+        
+        reject('could not find setting')
+    })
+  })
+}
 
 
 // TODO add more default options
@@ -128,8 +146,7 @@ export const Word = (element, i, options={ shallow: false }) => {
     if (i && thisw.length === 0) {
       w.addClass('word-element')
       
-      w
-        .listenTo("click", function(){
+      w.listenTo("click", function(){
           this.summon()
         })
         .listenTo("mouseover", function() { hoverCluster(this) })
@@ -152,7 +169,7 @@ export const Reader = (l, options=default_options) => {
   let w = Word(l)
 
   let lec = new PragmaLector("lector")
-              .createEvents('load')
+              // .createEvents('load')
               .as(l)
               .setValue(0)
               .connectTo(w)
@@ -250,16 +267,22 @@ export const Lector = (l, options=default_options) => {
     
     lector.paginator = paginator
 
-    if (lector.settings){
-      console.log("lector has settings! connecting paginator's value to pagecomp")
-      console.log('settings', lector.settings)
-      let pageSetting = lector.settings.pragmaMap.get('page')
-      if (pageSetting) {
-        lector.paginator.do(function(){
-          pageSetting.updateDisplay(this.value)
-        })
-      }
-    }
+    connectToLectorSettings(lector, 'page').then(settingPragma => {
+      lector.paginator.do(function() {
+        settingPragma.updateDisplay(this.value)
+      })
+    }).catch()
+
+    //if (lector.settings){
+      //console.log("lector has settings! connecting paginator's value to pagecomp")
+      //console.log('settings', lector.settings)
+      //let pageSetting = lector.settings.pragmaMap.get('page')
+      //if (pageSetting) {
+        //lector.paginator.do(function(){
+          //pageSetting.updateDisplay(this.value)
+        //})
+      //}
+    //}
 
     paginator.fill()
     
@@ -273,21 +296,39 @@ export const Lector = (l, options=default_options) => {
     
     // _scaler.setTarget(lector.element)
     
-    _scaler.scaleUp()
+    // _scaler.scaleUp()
     // _scaler.bind("mod+=", function() { _scaler.scaleUp();  return false;})
     // _scaler.bind("mod+-", function() { _scaler.scaleDown();  return false;})
     
     lector.adopt(_scaler)
     lector.scaler = _scaler
 
-    if (lector.settings){
-      console.log("lector has settings! connecting scaler's value to scalercomp")
-      console.log(lector.settings)
-      let scaleComp = lector.settings.find('!scale')
-      lector.scaler.on('scaleChange', (v) => { scaleComp.value = v })
-      //if (scaleComp) scaleComp.wireTo(lector.scaler)
-    }  
+    connectToLectorSettings(lector, 'scale').then(settingPragma => {
+      lector.scaler.on('scaleChange', (v) => {
+        console.log(lector.scaler, lector.scaler.currentPromise)
+        
 
+        if (lector.scaler.currentPromise){
+          anime({
+            targets: lector.mark.element,
+            opacity: 0,
+            duration: 40
+          })  
+          
+          lector.scaler.currentPromise.then(() => {
+            anime({
+              targets: lector.mark.element,
+              opacity: 1,
+              duration: 150,
+              easing: 'easeInOutSine'
+            })
+
+            lector.resetMark()
+          })
+        }
+        settingPragma.setScale(v)
+      })
+    })
   }
 
 

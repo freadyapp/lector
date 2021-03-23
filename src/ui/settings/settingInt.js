@@ -11,7 +11,9 @@ export class SettingInt extends SettingInline {
         settingTemplate,
         monitorTemplate,
         valueSanitizer= v => parseInt(v),
-        size=4
+        size=4,
+        plusElement= pragma=>_e("div.inline-icon", "+"),
+        minusElement
     } = {}) {
 
         if (settingTemplate) this._content = settingTemplate
@@ -37,6 +39,10 @@ export class SettingInt extends SettingInline {
         this.element.setId(setting)
                     .addClass('setting', 'setting-int', 'section')
 
+        if (plusElement){
+            if (!this.arrows) this.arrows = _e("div.arrows").appendTo(this.element)
+            this.arrows.append(_e(typeof plusElement === 'function' ? plusElement(this) : plusElement))
+        }
     }    
 
     _content(wire){

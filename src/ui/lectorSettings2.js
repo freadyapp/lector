@@ -205,19 +205,42 @@ export function addSettingsToLector(lector){
                        console.log('change page to' + value)
                        actions.changePage(value)
                      }).bind("shift+down", function(){
-                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
                        this.setPage(this.page+1)
-                      //  this.triggerEvent('input', this.page+1)
                      }, 'keyup').bind("shift+up", function(){
-                      //  console.log('this dowwwwwwwwwwwwwwwwwwn')
                        this.setPage(this.page-1)
-                      //  this.triggerEvent('input', this.page-1)
                      }, 'keyup')
 
   let pageBar = _e('div.bar#page-bar')
                     .append(pageSetting)
 
   
+  
+  let zoomSetting = new SettingInt(lector.settings, 'scale', {
+                        displayName: 'Zoom',
+
+                        // increment: (lastValue, step) => lastValue + step,
+                        // decrement: (lastValue, step) => lastValue + step,
+                        // step: 1,
+       
+                        // plusElement: _e()
+                        // minusElement: _e()
+                     })
+                     .setScaleRange(20, 200)
+                     .run(function(){
+                      //  this.element.find('#title').destroy()
+                     })
+                     .on('input', (value) => {
+                       console.log('change zoom to' + value)
+                       actions.changeScale(value)
+                     }).bind("ctrl+=", function(){
+                       this.setScale(this.scale+5)
+                     }).bind("ctrl+-", function(){
+                       this.setScale(this.scale-5)
+                     })
+
+  let zoomBar = _e('div.bar#zoom-bar')
+                    .append(zoomSetting)
+ 
   let popupSettings = _p("popup")
       .append(colorSetting, modeSetting, foveaSetting)
 
@@ -230,7 +253,7 @@ export function addSettingsToLector(lector){
         wpmSetting
       )
 
-  lector.settings.append(popupSettings, settingsBar, pageBar)
+  lector.settings.append(popupSettings, settingsBar, pageBar, zoomBar)
   
   
   // popup settings
@@ -282,7 +305,8 @@ export function addSettingsToLector(lector){
       mode: "HotBox",
       wpm: 235,
       fovea: 8,
-      page: 1
+      page: 1,
+      scale: 100
     })
   })
 }
