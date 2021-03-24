@@ -69,6 +69,17 @@ body {
         border-radius: 50px;
         top: 50%;
         margin-top: -25px;
+        cursor: pointer;
+
+        .next-icon {
+            text-align: center;
+            /* margin: auto 0; */
+            /* margin-top: 50%; */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%) rotate(180deg);
+        }
 
     }
 
@@ -102,4 +113,8 @@ body {
     }
 
     
+}
+
+.displayN {
+    display: none !important;
 }
