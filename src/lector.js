@@ -234,6 +234,7 @@ function _streamer(sf){
 export const Lector = (l, options=default_options) => {
   if (options.defaultStyles){
     util.addStyles(css.main)
+    util.addStyles(css.slider)
     util.addStyles(css.settings)
   }
 

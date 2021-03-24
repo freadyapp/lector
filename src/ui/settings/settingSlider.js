@@ -3,8 +3,6 @@ import { Setting } from "./setting"
 import { slider, input, withLabel, idler } from "../../extensions/index"
 import css from "../../styles/styles.json"
 
-util.addStyles(css.slider) // add styles for the slider
-
 const list = [1, 2, 3, 4, 5]
 
 let defaultContent = (pragma) => `
