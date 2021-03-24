@@ -14,15 +14,15 @@ export class popUpOb extends popUp{
         let spaceBoat = _e('div.boat')
                         .html(`
                         <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
-                        ${icons['spacebar-3d']}
+                        <div class="spacebar-icon">${icons['spacebar-3d']}</div>
                         `)
                         .appendTo(this.popUpContent)
             slides.push(spaceBoat)
 
         let speedBoat = _e('div.boat')
                         .html(`
-                        <h1 class="boat-title">Adjust the speed, by clicking or through your keyboard</h1>
-                        ${icons['speedBoat']}
+                        <h1 class="boat-title">Adjust the speed, through the menu or your keyboard</h1>
+                        <div class="speed-icon">${icons['speedBoat']}</div>
                         `)
                         .appendTo(this.popUpContent)
                         .addClass('displayN')
@@ -30,20 +30,15 @@ export class popUpOb extends popUp{
 
         let clickBoat = _e('div.boat')
                         .html(`
-                        <h1 class="boat-title">Adjust the speed, by clicking or through your keyboard</h1>
-                        ${icons['clickBoat']}
+                        <h1 class="boat-title">Place the pointer by clicking on words</h1>
+                        <div class="click-icon">${icons['clickBoat']}</div>
                         `)
                         .appendTo(this.popUpContent)
                         .addClass('displayN')
             slides.push(clickBoat)
 
         this.popUp.adopt(...slides)
-                  .run(function(){
-                        console.log('CHILLLLDREEEEEN')
-                        console.log(this.children)
-                    })
-
-        this.popUp.value = 0
+                  .value = 0
 
         this.nextBtn.listenTo('click',()=>{
                             this.popUp.value++
