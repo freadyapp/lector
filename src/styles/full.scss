@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap');
+
+// font-family: 'IBM Plex Mono', monospace;
+// font-family: 'IBM Plex Sans', sans-serif;
+
 body {
     background-color: #161616;
 }
@@ -46,11 +51,11 @@ body {
 
 .popUp{
     width: 400px;
-    height: 500px;
+    height: 350px;
     background: #161616;
     border-radius: 4px;
     position: absolute;
-    top: 20%;
+    top: 30%;
     left: 50%;
     margin-left: -200px;
     padding: 10px;
@@ -66,4 +71,35 @@ body {
         margin-top: -25px;
 
     }
+
+    .popUpContent {
+        width:100%;
+        height:100%;
+        box-sizing: border-box;        
+
+        .boat {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: space-around;
+            align-items: center;
+            align-content: stretch;
+            text-align: center;
+
+            
+    
+            &-title {
+                font-family: 'IBM Plex Sans', sans-serif;
+                color: whitesmoke;
+                margin: 0;
+                font-weight: 400;
+
+    
+            }
+        }
+    }
+
+    
 }
