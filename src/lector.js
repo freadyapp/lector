@@ -4,10 +4,18 @@ import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
 import { addSettingsToLector } from "./ui/lectorSettings2"
 import anime from "animejs"
+import { popUpOb } from "./onboarding/popUpOb"
+
 
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
+
+
+function addOnboardingToLector(lector){
+  let _popUp = new popUpOb()
+  lector._popUp
+}
 
 
 function connectToLectorSettings(lector, wire){
@@ -29,6 +37,7 @@ function connectToLectorSettings(lector, wire){
 
 // TODO add more default options
 const default_options = {
+  onboarding: false,
   wfy: true,
   pragmatizeOnCreate: true,
   experimental: false,
@@ -177,6 +186,7 @@ export const Reader = (l, options=default_options) => {
   lec.mark = Mark(lec)
   if (options.settings) addSettingsToLector(lec) 
   if (options.legacySettings) lec.settings = LectorSettings(lec) 
+  if (options.onboarding) addOnboardingToLector(lec)
   // if (options.settings) lec.settings = LectorSettings(lec) 
 
 

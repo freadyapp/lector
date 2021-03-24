@@ -38,6 +38,7 @@ function fetchContent(index){
 //}
 
 let lectorSettings = {
+   onboarding: true,
    wfy: true,
    loop: false,
    autostart: false,
