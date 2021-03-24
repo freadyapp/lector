@@ -42,10 +42,14 @@ export class popUpOb extends popUp{
                   .value = 0
 
         this.nextBtn.listenTo('click',()=>{
-                            (this.popUp.value == 2)? this.popUp.value = 0 : this.popUp.value++
-                            this.popUp.children[this.popUp.value].toggleClass('displayN')
-                            this.popUp.children[this.popUp._lv].toggleClass('displayN')                            
-                        })        
+            if (this.popUp.value == 2) {
+                this.popUp.value = 0
+                this.nextBtn.html(`<div class="exit-icon">${icons['exit-icon']}</div>`)
+                            .listenTo('click', ()=>{this.background.toggleClass('displayN'),this.popUp.toggleClass('displayN')})
+            } else {this.popUp.value++}
+            this.popUp.children[this.popUp.value].toggleClass('displayN')
+            this.popUp.children[this.popUp._lv].toggleClass('displayN')                            
+        })        
         
         this.backBtn.listenTo('click', ()=>{
             (this.popUp.value == 0)? this.popUp.value = 2 : this.popUp.value--

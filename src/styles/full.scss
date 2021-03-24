@@ -63,9 +63,9 @@ body {
 
     .next-btn {
         position: absolute;
-        right: -60px;
-        width: 50px;
-        height: 50px;
+        right: -50px;
+        width: 40px;
+        height: 40px;
         background: #161616;
         border-radius: 50px;
         top: 50%;
@@ -82,24 +82,33 @@ body {
             transform: translate(-50%,-50%) rotate(180deg);
 
             > svg {
-                width: 12px;
+                width: 10px;
                 height: auto;
             }
         }
 
+        .exit-icon {
+            @extend .next-icon;
+            transform: translate(-50%,-50%);
+            top: 55%;
+            left: 50%;
+
+            > svg {
+                width: 15px;
+                height: auto;
+            }
+        }
     }
 
     .back-btn {
         @extend .next-btn;
-        left: -60px;
+        left: -50px;
         
         .back-icon {
             @extend .next-icon;
             transform: translate(-50%,-50%);
             top: 56%;
-            left: 46%;
-
-            
+            left: 47%;
         }
     }
 
