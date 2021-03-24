@@ -42,7 +42,7 @@ export class popUpOb extends popUp{
                   .value = 0
 
         this.nextBtn.listenTo('click',()=>{
-            if (this.popUp.value == 2) {
+            if (this.popUp.value == 2) {        //If you see all the slides, close onboarding and start trippping
                 this.popUp.value = 0
                 this.nextBtn.html(`<div class="exit-icon">${icons['exit-icon']}</div>`)
                             .listenTo('click', ()=>{this.background.toggleClass('displayN'),this.popUp.toggleClass('displayN')})
