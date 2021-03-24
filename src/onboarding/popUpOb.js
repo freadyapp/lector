@@ -9,6 +9,7 @@ export class popUpOb extends popUp{
         this.addContent()
     }
 
+
     addContent() {
         let slides = []
         let spaceBoat = _e('div.boat')
@@ -41,11 +42,16 @@ export class popUpOb extends popUp{
                   .value = 0
 
         this.nextBtn.listenTo('click',()=>{
-                            this.popUp.value++
+                            (this.popUp.value == 2)? this.popUp.value = 0 : this.popUp.value++
                             this.popUp.children[this.popUp.value].toggleClass('displayN')
                             this.popUp.children[this.popUp._lv].toggleClass('displayN')                            
-                        })            
-
+                        })        
+        
+        this.backBtn.listenTo('click', ()=>{
+            (this.popUp.value == 0)? this.popUp.value = 2 : this.popUp.value--
+            this.popUp.children[this.popUp.value].toggleClass('displayN')
+            this.popUp.children[this.popUp._lv].toggleClass('displayN') 
+        })
 
 
     }

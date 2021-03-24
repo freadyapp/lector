@@ -10,6 +10,7 @@ export class popUp extends Pragma{
         this.popUp
         this.popUpContent
         this.nextBtn
+        this.backBtn
     }
 
     render(){
@@ -21,8 +22,11 @@ export class popUp extends Pragma{
                     
 
         this.nextBtn = _e('div.next-btn')
-                      .html(`<div class="next-icon">${icons['back-icon']}</div>`)
-                      
+                      .html(`<div class="next-icon">${icons['back-icon']}</div>`) 
+                      .appendTo(this.popUp)
+
+        this.backBtn = _e('div.back-btn')
+                      .html(`<div class="back-icon">${icons['back-icon']}</div>`) 
                       .appendTo(this.popUp)
 
         this.popUpContent = _e('div.popUpContent').appendTo(this.popUp)
