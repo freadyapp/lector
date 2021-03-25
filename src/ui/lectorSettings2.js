@@ -6,7 +6,7 @@ import { SettingInline } from "./settings/settingInline"
 import { SettingSlider } from "./settings/settingSlider"
 import { select, monitor, slider, input, withLabel, idler } from "../extensions/index"
 
-import { colors, fonts, modes, colorsHumanFriendly, modesHumanFriendly } from "../config/marker.config"
+import { colors, fonts, modes, colorsHumanFriendly, modesHumanFriendly, defaultVals } from "../config/marker.config"
 import { mode_ify } from "../config/modes.js"
 import shc from "../config/shortcuts.config"
 
@@ -85,6 +85,7 @@ export function addSettingsToLector(lector){
   // color comp
 
   function createColorBlob(color){
+    if (color == undefined) return 
     let colorThingy  = _e(`div.color-blob.`)
                   .css(`background-color ${color}`)
                   .setId(`${color}`)
@@ -312,13 +313,6 @@ export function addSettingsToLector(lector){
 
     }
 
-    lector.settings.update({
-      color: "#eddd6e",
-      mode: "HotBox",
-      wpm: 235,
-      fovea: 8,
-      page: 1,
-      scale: 100
-    })
+    lector.settings.update(defaultVals)
   })
 }

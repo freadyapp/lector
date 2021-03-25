@@ -332,17 +332,15 @@ export const Lector = (l, options=default_options) => {
               duration: 150,
               easing: 'easeInOutSine'
             })
-
             lector.resetMark()
           })
+
         }
         settingPragma.setScale(v)
       })
     })
   }
 
-
-  
   pragmaSpace.onDocLoad(() => {
     lector.triggerEvent('load')
   })

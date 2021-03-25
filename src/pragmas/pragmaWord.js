@@ -4,8 +4,8 @@ import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } fr
 
 
 // TODO global solution for this
-pragmaSpace.console = PragmaConsole
-PragmaConsole.intercept()
+// pragmaSpace.console = PragmaConsole
+// PragmaConsole.intercept()
 
 
 export default class PragmaWord extends Pragma {
@@ -162,12 +162,11 @@ export default class PragmaWord extends Pragma {
           // this.mark = "MARK V5 " + this.text() + this.key
           // console.log(this.mark)
           // console.log(this.text())
-          util.time(this.text)
-         
+          console.time(this.text)
           function launchMark(){
             let time = startingToRead ? 500 : null
             this.mark.guide(this, time).then(() => {
-              util.timeEnd(this.text)
+              console.timeEnd(this.text)
               this.parent.value = this.index + 1
               resolve(` read [ ${this.text} ] `)
             }).catch((e) => {

@@ -17,8 +17,8 @@ function getG(key){
 
 // setG({'lector.onboarding.show?': false})
 
-// pragmaSpace.dev = true
-// lector.dev()
+pragmaSpace.dev = true
+lector.dev()
 lector.globalify()
 
 function fetchContent(index){
@@ -117,6 +117,7 @@ let lectorSettings = {
           // console.log('fetched', p)
           // return onFetch(p)
 
+          console.log('activaating')
           if (p.active) {
             p.self_activate() 
           }

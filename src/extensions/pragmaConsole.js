@@ -15,17 +15,17 @@ export class PragmaConsole extends Pragma {
     static intercept() {
         PragmaConsole.oldGlobalConsole = window.console;
 
-        window.console = new Proxy(window.console, {
-            get(target, property) {
-                return function () {
-                    if (PragmaConsole._skip) return null
-                    if (typeof PragmaConsole[property] === 'function')
-                        PragmaConsole[property].bind(target)(...arguments)
-                    else
-                        target[property](...arguments)
-                }
-            }
-        })
+        // window.console = new Proxy(window.console, {
+        //     get(target, property) {
+        //         return function () {
+        //             if (PragmaConsole._skip) return null
+        //             if (typeof PragmaConsole[property] === 'function')
+        //                 PragmaConsole[property].bind(target)(...arguments)
+        //             else
+        //                 target[property](...arguments)
+        //         }
+        //     }
+        // })
     }
 
     static release() {

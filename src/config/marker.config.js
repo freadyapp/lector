@@ -16,8 +16,10 @@ export const modesHumanFriendly = {
 
 export const defaultVals = {
     color: "#eddd6e",
-    font: "Helvetica",
+    // font: "Helvetica",
     mode: "Faded",
     fovea: 4,
-    wpm: 250
+    wpm: 250,
+    page: 1,
+    scale: 100
 }
