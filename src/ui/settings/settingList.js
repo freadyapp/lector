@@ -31,7 +31,7 @@ export class Option extends Pragma {
         let content = typeof template === 'function' ? template : optionDefaultContent
         let wrapper = optionDefaultWrapper
         if (typeof template === `object`){
-            content = template.contentTemplate || optionDefaultTemplate
+            content = template.contentTemplate || optionDefaultContent
             wrapper = template.wrapperTemplate || optionDefaultWrapper
         }
         
@@ -65,7 +65,6 @@ export class SettingList extends Setting {
 
         let options = conf.options ? conf.options : conf
 
-        console.log("configureee", conf)
         if (typeof options === 'object'){
             let newOptions = []
             for (let [option, description] of Object.entries(options)){

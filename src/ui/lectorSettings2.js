@@ -69,9 +69,9 @@ export function addSettingsToLector(lector){
                         .as(settingsComp)
                         .appendTo('body')
                         .on('update', function(key, value, pragma) {
-                          console.log('syncing', this.toObj())
+                          // console.log('syncing', this.toObj())
                         })
-  console.log(`[#] added settings to`, lector)
+  // console.log(`[#] added settings to`, lector)
   
 
   function onNewSelection(optionPragma, lastOptionPragma) {
@@ -109,7 +109,6 @@ export function addSettingsToLector(lector){
     displayTemplate: (el, val) => el.html(createColorBlob(val))
   }).on('select', onNewSelection)
     .on('select', (pragma) => {
-    console.log('color is ', pragma.option)
     actions.changeColor(pragma.option)
   })
 
@@ -145,14 +144,7 @@ export function addSettingsToLector(lector){
     }
   }).on('select', onNewSelection)
     .on('select', function(optionPragma){
-        // this.updateDisplay(optionPragma.getData('option'))
         actions.changeMode(optionPragma.getData('option'))
-        console.log('MOOOOOOODE')
-        console.log(optionPragma.getData('option'))
-        //this.setData({mode: optionPragma.getData('option')})
-
-        
-
       })
 
   
@@ -205,7 +197,6 @@ export function addSettingsToLector(lector){
                        this.element.append(_e("div#meta.flex.meta").html("/420"))
                      })
                      .on('input', (value) => {
-                       console.log('change page to' + value)
                        actions.changePage(value)
                      }).bind("shift+down", function(){
                        this.setPage(this.page+1)
@@ -232,7 +223,6 @@ export function addSettingsToLector(lector){
                        this.element.find('#scale-section').destroy()
                      })
                      .on('input', (value) => {
-                       console.log('change zoom to' + value)
                        actions.changeScale(value)
                      }).bind("ctrl+=", function(){
                        this.setScale(this.scale+5)
@@ -261,7 +251,6 @@ export function addSettingsToLector(lector){
   // popup settings
   popupSettings.createWire('hidden')
               .on('hiddenChange', function(v) {
-                console.log('hidden change', v)
                 if (v){
                   this.element.hide()
                 } else {

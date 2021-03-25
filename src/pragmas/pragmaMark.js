@@ -109,7 +109,7 @@ export default class PragmaMark extends Pragma {
       if (this.currentlyMarking && this.current_anime && this.last_marked) {
         //console.log(this.current_anime.seek(1))
         let temp = this.last_marked
-        console.log('mark was running for', this.runningFor)
+        // console.log('mark was running for', this.runningFor)
         this.runningFor = 0
         //console.table(temp)
         this.current_anime.complete()
@@ -127,7 +127,7 @@ export default class PragmaMark extends Pragma {
   }
 
   moveTo(blueprint, duration, complete = (() => {})) {
-    console.log('moving to', blueprint)
+    // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());

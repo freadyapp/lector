@@ -12,9 +12,9 @@ import * as _ext from "./extensions/index"
 import css from "./styles/styles.json"
 
 
+
 function addOnboardingToLector(lector){
-  let _popUp = new popUpOb()
-  lector._popUp
+  lector._popUp = new popUpOb()
 }
 
 
@@ -25,7 +25,7 @@ function connectToLectorSettings(lector, wire){
         if (!lector.settings) return reject('no settings present')
         let setting = lector.settings.pragmaMap.get(wire)
         if (setting) {
-          console.log(`@@@@ connected to ${wire} setting @@@@`)
+          // console.log(`@@@@ connected to ${wire} setting @@@@`)
           return resolve(setting)
         } 
         
@@ -252,7 +252,8 @@ export const Lector = (l, options=default_options) => {
 
   util.log("configuration appears to be a bit more complicated")
   
-  if (!options.experimental) return console.log('EXPERIMENTAL FEATURES TURNED OFF')
+  if (!options.experimental) return console.warn('EXPERIMENTAL FEATURES TURNED OFF')
+
   let lector
 
   if (options.stream &&
@@ -316,8 +317,6 @@ export const Lector = (l, options=default_options) => {
 
     connectToLectorSettings(lector, 'scale').then(settingPragma => {
       lector.scaler.on('scaleChange', (v) => {
-        console.log(lector.scaler, lector.scaler.currentPromise)
-        
 
         if (lector.scaler.currentPromise){
           anime({

@@ -44,13 +44,12 @@ export class SettingSlider extends Setting {
         })
 
         this.on('input', (value) => {
-            console.log('set input', value)
             this.setData({ 'value': value })
             this.parent.update(this.getData('setting'), value, this)
             this.slider.updateTo(value)
         })
 
-        console.log(this.element.findAll(`[data-setting-target='display']`))
+        // console.log(this.element.findAll(`[data-setting-target='display']`))
 
     }
 }

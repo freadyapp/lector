@@ -35,7 +35,6 @@ export class SettingInline extends Pragma {
         displayTemplate= (el, val) => el.html(val),
         settingTemplate,
     }={}) {
-        console.log('creating new inline setting', key, settingTemplate)
         parent.adopt(this)
         parent.create(this, key)
 

@@ -1,6 +1,24 @@
 // import { Lector } from '../src'
 // import { Word } from "../src/lector"
+//
 
+
+function setG(obj, value){
+  if (typeof obj === 'object'){
+    for (let [key, val] of Object.entries(obj)) setG(key, val)
+    return
+  }
+  return window.localStorage.setItem(obj, JSON.stringify(value))
+}
+
+function getG(key){
+  return JSON.parse(window.localStorage.getItem(key))
+}
+
+// setG({'lector.onboarding.show?': false})
+
+// pragmaSpace.dev = true
+// lector.dev()
 lector.globalify()
 
 function fetchContent(index){
@@ -37,8 +55,9 @@ function fetchContent(index){
   //})
 //}
 
+
 let lectorSettings = {
-   onboarding: true,
+   onboarding: !getG('lector.onboarding.show?'),
    wfy: true,
    loop: false,
    autostart: false,
@@ -75,7 +94,7 @@ let lectorSettings = {
 
       onCreate: (p, index) => {
         p.self_activate = function(){
-          console.log('self activating', p)
+          // console.log('self activating', p)
            if (!p.word) {
              // generate lector for the page
              lector.helpers.wfy(p)
@@ -95,7 +114,7 @@ let lectorSettings = {
 
       onPageActive: (p, index) => {
         p.onFetch(function(){
-          console.log('fetched', p)
+          // console.log('fetched', p)
           // return onFetch(p)
 
           if (p.active) {
@@ -126,10 +145,18 @@ let lectorSettings = {
  }
 }
 
-//pragmaSpace.dev = true
+
+let obj = {
+  test: 'yoing'
+}
+
+// window.localStorage.setItem("test", JSON.stringify(obj))
+// console.log(">>>>>>", JSON.parse(window.localStorage.getItem("test"))['test'])
+
 pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
+setG("lector.onboarding.show?", true)
 
 //console.log(lec.mark.settings)
 //setTimeout(_ => {

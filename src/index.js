@@ -1,4 +1,13 @@
 import { Lector, Word } from "./lector.js"
+import { PragmaConsole } from "./extensions/pragmaConsole"
+
+PragmaConsole.skip()
+
+export { PragmaConsole}
+
+export function dev(){
+  PragmaConsole.unskip()
+}
 
 export * as ui from "./ui/index"
 import * as helpers from "./helpers/index"

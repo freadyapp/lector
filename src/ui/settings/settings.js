@@ -51,7 +51,6 @@ export class Settings extends Pragma {
 
     for (let [setting, value] of Object.entries(hash)){
       if (!pragma){
-        console.log(setting)
         this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value)
       }
       if (this._set(setting, value)){

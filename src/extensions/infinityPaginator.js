@@ -36,9 +36,9 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               // console.log(">>> FILLING WITH", this.value)
               let start = this.value >= conf.headspace ? this.value-conf.headspace : 0
               let pageRange = range(start, this.value+conf.headspace)
-              console.log(pageRange)
+              // console.log(pageRange)
               pageRange = pageRange.filter(v => this.isPageAvailable(v))
-              console.log(pageRange)
+              // console.log(pageRange)
               let pagesRendered = Array.from(this.pages.keys())
 
               let pagesToRender = util.aryDiff(pageRange, pagesRendered)
@@ -49,10 +49,10 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               let pagesToRenderBefore = util.aryDiff(pagesToRender, pagesToRenderAfter)
 
               // console.log(">> ALREADY RENDERED", pagesRendered)
-               console.log(">> DEL", pagesToDelete)
+              //  console.log(">> DEL", pagesToDelete)
                //console.log(">> ADD", pagesToRender) 
-               console.log(">> ADD AFTER", pagesToRenderAfter)
-               console.log(">> ADD BEFORE", pagesToRenderBefore)
+              //  console.log(">> ADD AFTER", pagesToRenderAfter)
+              //  console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
               runAsync(
@@ -78,7 +78,7 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               )
               setTimeout(a => {
                 this.fetching = false
-                console.log(this.pages)
+                // console.log(this.pages)
               }, conf.timeout)
           }
         }, scrollSetup(){

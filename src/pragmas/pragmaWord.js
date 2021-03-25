@@ -1,5 +1,12 @@
 import { Pragma, util } from "pragmajs";
+import { PragmaConsole } from "../extensions/pragmaConsole"
 import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } from "../helpers/index"
+
+
+// TODO global solution for this
+pragmaSpace.console = PragmaConsole
+PragmaConsole.intercept()
+
 
 export default class PragmaWord extends Pragma {
 
@@ -123,7 +130,7 @@ export default class PragmaWord extends Pragma {
           }).then(() => {
             this.currentPromise = null
             resolve("done pausing")
-            console.log("- - - - - PAUSED - - - - - - - -")
+            // console.log("- - - - - PAUSED - - - - - - - -")
           })
         })
         this.currentPromise.cancel("pause")
@@ -155,12 +162,12 @@ export default class PragmaWord extends Pragma {
           // this.mark = "MARK V5 " + this.text() + this.key
           // console.log(this.mark)
           // console.log(this.text())
-          console.time(this.text)
+          util.time(this.text)
          
           function launchMark(){
             let time = startingToRead ? 500 : null
             this.mark.guide(this, time).then(() => {
-              console.timeEnd(this.text)
+              util.timeEnd(this.text)
               this.parent.value = this.index + 1
               resolve(` read [ ${this.text} ] `)
             }).catch((e) => {
@@ -210,7 +217,7 @@ export default class PragmaWord extends Pragma {
 
   summon(silent=false) {
     if (this.hasKids) return false
-    console.log("SUMMONING", this)
+    // console.log("SUMMONING", this)
     return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
       this.mark.mark(this, 50, false)
       if (!silent) this.parent.value = this.index

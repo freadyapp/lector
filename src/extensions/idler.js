@@ -4,12 +4,12 @@ import { Idle } from "../helpers/index"
 function _createIdler(timeout, afk, active) {
     let _idler = new Idle(timeout)
       .onAfk(()=> {
-        console.log('user is afk')
+        // console.log('user is afk')
         if (afk) afk()
         // this.shout()
       })
       .onActive(() => {
-        console.log('user is back')
+        // console.log('user is back')
         if (active) active()
         // this.shutUp()
     })

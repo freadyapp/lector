@@ -54,11 +54,9 @@ export class Setting extends SettingInline {
             displayName, settingTemplate, displayTemplate
         })
 
-        console.log('im the child setting and i was run')
         // super.init(...arguments)
 
          this.element.find('.collapsed-section').listenTo("mousedown", () => {
-             console.log('opening')
              this.open()
          })
         
@@ -76,8 +74,6 @@ export class Setting extends SettingInline {
         })
         
         this.element.findAll('.collapsed-section').forEach(section => {
-            console.log(section)
-            // section.css('opacity 0')
             collapse(section)
         })
 

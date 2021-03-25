@@ -16,13 +16,12 @@ export class EdibleDisplay extends Pragma {
         super()
         this._size = size
         this._monitorTemplate = monitorTemplate
-        console.log('new edible display', pragma, wire)
 
         this.createWire('val')
         
         this.on('valChange', (v, lv) => {
             if (v != lv){
-                console.log('value changed to', v)
+                // console.log('value changed to', v)
                 pragma[wire] = v
             }
             
@@ -31,8 +30,6 @@ export class EdibleDisplay extends Pragma {
 
         this.as(edibleDisplayTemplate(pragma))
         this.adopt(this.element)
-
-        console.log('input event', pragma._events)
 
         this.element.listenTo('focus', function () {
             this.value = ""

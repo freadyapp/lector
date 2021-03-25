@@ -27,7 +27,7 @@ export function isClickWithin(click, el){
     let width = el.rect().width
     let height = el.rect().height
 
-    console.log(click, el.offset())
+    // console.log(click, el.offset())
    
     let _x =  left < click.x && left + width > click.x
     let _y =  top < click.y && top + height > click.y

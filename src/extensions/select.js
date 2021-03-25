@@ -64,17 +64,14 @@ export function select(conf){
 
       onOptionCreate(this, option)
     }
-  }else{
+  } else {
     for (let [ key, val ] of Object.entries(options)){
       const pair = {[key]: val}
       onOptionCreate(this, optionTemplate(key, val), pair)
     }
   }
 
-  // this.onExport(function(pragma) {
-    // pragma.contain(...this.children)
-    this.getOptions = function(){
-      console.log(this.children)
-      return this.children.filter(child => child._isOption)
-    }
+  this.getOptions = function(){
+    return this.children.filter(child => child._isOption)
+  }
 }
