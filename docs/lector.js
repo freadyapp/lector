@@ -19,6 +19,7 @@ function getG(key){
 
 // pragmaSpace.dev = true
 lector.dev()
+console.l
 lector.globalify()
 
 function fetchContent(index){
@@ -147,9 +148,6 @@ let lectorSettings = {
 }
 
 
-let obj = {
-  test: 'yoing'
-}
 
 // window.localStorage.setItem("test", JSON.stringify(obj))
 // console.log(">>>>>>", JSON.parse(window.localStorage.getItem("test"))['test'])
@@ -158,6 +156,12 @@ pragmaSpace.integrateMousetrap(Mousetrap)
 
 let lec = Lector(".article", lectorSettings)
 setG("lector.onboarding.show?", true)
+// lec.settings.on('update', (setting, value) => {
+//   console.log(setting, value)
+// })
+
+
+
 
 //console.log(lec.mark.settings)
 //setTimeout(_ => {

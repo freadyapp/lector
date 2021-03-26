@@ -17087,7 +17087,7 @@
   }
 
   const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
-    if (!bg) return util.throwSoft("could not mode_ify")
+    if (!bg) return console.error("could not mode_ify")
     
     mode = (mode || 'hotbox').toString().toLowerCase();
     let css = grabMode(mode, bg);
@@ -20348,7 +20348,7 @@
                           .as(settingsComp)
                           .appendTo('body')
                           .on('update', function(key, value, pragma) {
-                            // console.log('syncing', this.toObj())
+                            console.log('syncing', this.toObj());
                           });
     // console.log(`[#] added settings to`, lector)
     
@@ -20476,8 +20476,9 @@
                          this.element.find('#title').destroy();
                          this.element.append(j("div#meta.flex.meta").html("/420"));
                        })
-                       .on('input', (value) => {
-                         actions.changePage(value);
+                       .on('input', function(value, skipAction=false){
+                         this.setPage(value);
+                         if (!skipAction) actions.changePage(value);
                        }).bind("shift+down", function(){
                          this.setPage(this.page+1);
                        }, 'keyup').bind("shift+up", function(){
@@ -20652,7 +20653,7 @@
       addContent() {
           let slides = [];
 
-          let spaceBoat = _e('div.boat.')
+          let spaceBoat = j('div.boat.')
                           .html(`
                             <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
                             <div class="spacebar-icon">${icons['spacebar-3d']}</div>
@@ -20661,7 +20662,7 @@
           
               slides.push(spaceBoat);
 
-          let speedBoat = _e('div.boat.')
+          let speedBoat = j('div.boat.')
                           .html(`
                             <h1 class="boat-title">Adjust the speed, through the menu or your keyboard</h1>
                             <div class="speed-icon">${icons['speedBoat']}</div>
@@ -20670,7 +20671,7 @@
 
               slides.push(speedBoat);
 
-          let clickBoat = _e('div.boat.')
+          let clickBoat = j('div.boat.')
                           .html(`
                             <h1 class="boat-title">Place the pointer by clicking on words</h1>
                             <div class="click-icon">${icons['clickBoat']}</div>
@@ -20983,7 +20984,8 @@
 
       connectToLectorSettings(lector, 'page').then(settingPragma => {
         lector.paginator.do(function() {
-          settingPragma.updateDisplay(this.value);
+          settingPragma.triggerEvent('input', this.value, true);
+          // settingPragma.updateDisplay(this.value)
         });
       }).catch();
 

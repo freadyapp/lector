@@ -69,7 +69,7 @@ export function addSettingsToLector(lector){
                         .as(settingsComp)
                         .appendTo('body')
                         .on('update', function(key, value, pragma) {
-                          // console.log('syncing', this.toObj())
+                          console.log('syncing', this.toObj())
                         })
   // console.log(`[#] added settings to`, lector)
   
@@ -197,8 +197,9 @@ export function addSettingsToLector(lector){
                        this.element.find('#title').destroy()
                        this.element.append(_e("div#meta.flex.meta").html("/420"))
                      })
-                     .on('input', (value) => {
-                       actions.changePage(value)
+                     .on('input', function(value, skipAction=false){
+                       this.setPage(value)
+                       if (!skipAction) actions.changePage(value)
                      }).bind("shift+down", function(){
                        this.setPage(this.page+1)
                      }, 'keyup').bind("shift+up", function(){
