@@ -82,7 +82,7 @@ export default class PragmaLector extends Pragma {
   }
 
   read(){
-    util.log("::LECTOR reading", this)
+    console.log("::LECTOR reading", this)
     if (!this.w.hasKids) return console.error('nothing to read')
     this.w.read(true)
   }

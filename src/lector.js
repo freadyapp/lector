@@ -250,7 +250,7 @@ export const Lector = (l, options=default_options) => {
     return r
   }
 
-  util.log("configuration appears to be a bit more complicated")
+  console.log("configuration appears to be a bit more complicated")
   
   if (!options.experimental) return console.warn('EXPERIMENTAL FEATURES TURNED OFF')
 
@@ -261,7 +261,7 @@ export const Lector = (l, options=default_options) => {
       options.paginate.from === 'stream' &&
       options.paginate.as === 'infiniteScroll'){
 
-    util.log('setting up streamer service')
+    console.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
     let paginator = _ext.infinityPaginator(streamer, l, options.paginate.config || {})

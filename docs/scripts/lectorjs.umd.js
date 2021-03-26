@@ -16753,7 +16753,7 @@
     }
 
     read(){
-      O.log("::LECTOR reading", this);
+      console.log("::LECTOR reading", this);
       if (!this.w.hasKids) return console.error('nothing to read')
       this.w.read(true);
     }
@@ -16797,27 +16797,30 @@
       static intercept() {
           PragmaConsole.oldGlobalConsole = window.console;
 
-          // window.console = new Proxy(window.console, {
-          //     get(target, property) {
-          //         return function () {
-          //             if (PragmaConsole._skip) return null
-          //             if (typeof PragmaConsole[property] === 'function')
-          //                 PragmaConsole[property].bind(target)(...arguments)
-          //             else
-          //                 target[property](...arguments)
-          //         }
-          //     }
-          // })
+           window.console = new Proxy(window.console, {
+               get(target, property) {
+                   return function () {
+                       if (PragmaConsole._skip) return null
+                       if (typeof PragmaConsole[property] === 'function')
+                           PragmaConsole[property].bind(target)(...arguments);
+                       else
+                           target[property](...arguments);
+                   }
+               }
+           });
       }
 
       static release() {
           window.console = PragmaConsole.oldGlobalConsole;
       }
 
-      static log(title, ...parameters) {
-
+      static traceLine(){
           const at = `%c⇝ ${stacktrace()[0].trim()}\n`;
           const cssStack = "color: #3D9970; font-size: 10px; font-style: italic; ";
+          return [at, cssStack]
+      }
+
+      static log(title, ...parameters) {
           if (typeof title === 'string' && title[0] == "@") {
               this.group(title);
               title = ["%c" + title, "font-size: 12px; font-style: bold;"];
@@ -16827,21 +16830,10 @@
           }
 
 
-          this.log(at, cssStack, ...parameters.map(p => p));
+          this.log(...PragmaConsole.traceLine(), ...parameters.map(p => p));
           if (title) this.groupEnd();
       }
 
-      static timeEnd() {
-      }
-
-      static debug() {
-          
-      }
-      
-      static error() {
-          
-      }
-      
       // log, warn, assert, clear, context, count, countReset
       // debug, dir, dirxml, group, groupCollapsed, groupEnd,
       // memory, profile, profileEnd, table, timeLog, timeStamp,
@@ -16849,7 +16841,6 @@
   }
 
   // TODO global solution for this
-  // pragmaSpace.console = PragmaConsole
   // PragmaConsole.intercept()
 
 
@@ -17007,9 +16998,9 @@
             // this.mark = "MARK V5 " + this.text() + this.key
             // console.log(this.mark)
             // console.log(this.text())
-            console.time(this.text);
             function launchMark(){
               let time = startingToRead ? 500 : null;
+              console.time(this.text);
               this.mark.guide(this, time).then(() => {
                 console.timeEnd(this.text);
                 this.parent.value = this.index + 1;
@@ -17365,14 +17356,14 @@
             firstPage: conf.first,
             lastPage: conf.last,
             fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ O.throwSoft('no fetch source specified'); },
-            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => O.log('created', p),
+            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => console.log('created', p),
             onFetch: conf.onFetch,
 
             onPageAdd: null,
             onPageRender: null,
-            //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
-            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){O.log('active', page); },
-            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { O.log('inactive', page); },
+            //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ console.log('rendered', page, 'active?', page.active) },
+            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){console.log('active', page); },
+            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { console.log('inactive', page); },
           }))
 
           .run(function(){
@@ -20961,7 +20952,7 @@
       return r
     }
 
-    O.log("configuration appears to be a bit more complicated");
+    console.log("configuration appears to be a bit more complicated");
     
     if (!options.experimental) return console.warn('EXPERIMENTAL FEATURES TURNED OFF')
 
@@ -20972,7 +20963,7 @@
         options.paginate.from === 'stream' &&
         options.paginate.as === 'infiniteScroll'){
 
-      O.log('setting up streamer service');
+      console.log('setting up streamer service');
 
       let streamer = _streamer(options.stream);
       let paginator = infinityPaginator(streamer, l, options.paginate.config || {});
@@ -21059,8 +21050,14 @@
     return lector
   };
 
-  function dev(){
-    // PragmaConsole.unskip()
+  pragmaSpace.console = PragmaConsole;
+  function prod() {
+    PragmaConsole.intercept();
+    PragmaConsole.skip();
+  }
+  function dev() {
+    PragmaConsole.intercept();
+    PragmaConsole.unskip();
   }
 
 
@@ -21086,6 +21083,7 @@
   exports.dev = dev;
   exports.globalify = globalify;
   exports.helpers = helpers;
+  exports.prod = prod;
   exports.ui = index;
 
   Object.defineProperty(exports, '__esModule', { value: true });

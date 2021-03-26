@@ -3,9 +3,14 @@ import { PragmaConsole } from "./extensions/pragmaConsole"
 
 // PragmaConsole.skip()
 export { PragmaConsole}
-
-export function dev(){
-  // PragmaConsole.unskip()
+pragmaSpace.console = PragmaConsole
+export function prod() {
+  PragmaConsole.intercept()
+  PragmaConsole.skip()
+}
+export function dev() {
+  PragmaConsole.intercept()
+  PragmaConsole.unskip()
 }
 
 export * as ui from "./ui/index"

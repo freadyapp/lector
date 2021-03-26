@@ -1,4 +1,5 @@
-import {popUp} from './popUp'
+import { _e } from "pragmajs"
+import { popUp } from './popUp'
 import icons from '../ui/icons.json'
 
 export class popUpOb extends popUp{

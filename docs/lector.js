@@ -17,7 +17,7 @@ function getG(key){
 
 // setG({'lector.onboarding.show?': false})
 
-pragmaSpace.dev = true
+// pragmaSpace.dev = true
 lector.dev()
 lector.globalify()
 

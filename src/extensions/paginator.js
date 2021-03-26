@@ -10,14 +10,14 @@ export function paginator(pageTemplate, conf={}){
           firstPage: conf.first,
           lastPage: conf.last,
           fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified') },
-          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => util.log('created', p),
+          onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => console.log('created', p),
           onFetch: conf.onFetch,
 
           onPageAdd: null,
           onPageRender: null,
-          //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ util.log('rendered', page, 'active?', page.active) },
-          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){util.log('active', page) },
-          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { util.log('inactive', page) },
+          //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ console.log('rendered', page, 'active?', page.active) },
+          onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){console.log('active', page) },
+          onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { console.log('inactive', page) },
         }))
 
         .run(function(){
