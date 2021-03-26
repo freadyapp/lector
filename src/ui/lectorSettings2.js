@@ -194,16 +194,22 @@ export function addSettingsToLector(lector){
                         displayName: 'Page'
                      })
                      .run(function(){
+                       this.createEvent('update')
                        this.element.find('#title').destroy()
                        this.element.append(_e("div#meta.flex.meta").html("/420"))
                      })
-                     .on('input', function(value, skipAction=false){
+                     .on('update', function(value) {
+                        this.setPageSilently(value)
+                        this.triggerEvent('pageChange', value, true)
+                        // this.updateDisplay(value)
+                     })
+                     .on('input', function(value, skip_action){
+                       if (this.page !== value) actions.changePage(value)
                        this.setPage(value)
-                       if (!skipAction) actions.changePage(value)
                      }).bind("shift+down", function(){
-                       this.setPage(this.page+1)
+                       this.triggerEvent('input', this.page+1)
                      }, 'keyup').bind("shift+up", function(){
-                       this.setPage(this.page-1)
+                       this.triggerEvent('input', this.page-1)
                      }, 'keyup')
 
   let pageBar = _e('div.bar#page-bar')

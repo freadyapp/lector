@@ -281,7 +281,7 @@ export const Lector = (l, options=default_options) => {
 
     connectToLectorSettings(lector, 'page').then(settingPragma => {
       lector.paginator.do(function() {
-        settingPragma.triggerEvent('input', this.value, true)
+        settingPragma.triggerEvent('update', this.value)
         // settingPragma.updateDisplay(this.value)
       })
     }).catch()

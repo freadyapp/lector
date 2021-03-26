@@ -46,8 +46,8 @@ export class SettingInline extends Pragma {
             .on('input', function (input) {
                 this.updateDisplay(input)
             })
-            .on(`${key}Change`, (v, lv) => {
-                if (v !== lv) {
+            .on(`${key}Change`, (v, lv, skip=false) => {
+                if (!skip && v !== lv) {
                     this.triggerEvent('input', v, lv)
                     // console.log('color changed to', v)
                     // this.element.find('.display').html(`${v}`)
