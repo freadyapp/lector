@@ -6,7 +6,7 @@ import css from "../../styles/styles.json"
 const list = [1, 2, 3, 4, 5]
 
 let defaultContent = (pragma) => `
-    <div data-setting-target='display'>
+    <div data-setting-target='display' class="slider-display">
         8
     </div>
     <div data-setting-target='slider'> =====|-- </div>
