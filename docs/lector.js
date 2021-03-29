@@ -19,7 +19,6 @@ function getG(key){
 
 // pragmaSpace.dev = true
 lector.dev()
-console.l
 lector.globalify()
 
 function fetchContent(index){

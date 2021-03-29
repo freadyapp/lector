@@ -123,7 +123,6 @@ export const Word = (element, i, options={ shallow: false }) => {
           .as(element)
           .setValue(0)
 
-
     function unhoverCluster(epicenter) { hoverCluster(epicenter, 'remove') }
     function hoverCluster(epicenter, action='add'){
 
@@ -153,6 +152,7 @@ export const Word = (element, i, options={ shallow: false }) => {
 
     let thisw = w.element.findAll('w')
     if (i && thisw.length === 0) {
+      w.setData({ wordAtom: true })
       w.addClass('word-element')
       
       w.listenTo("click", function(){
@@ -183,6 +183,10 @@ export const Reader = (l, options=default_options) => {
               .setValue(0)
               .connectTo(w)
   
+  // console.log(`created lector ${lec}`)
+  // console.log(`created word ${w}`)
+  // console.log(w)
+
   lec.mark = Mark(lec)
   if (options.settings) addSettingsToLector(lec) 
   if (options.legacySettings) lec.settings = LectorSettings(lec) 

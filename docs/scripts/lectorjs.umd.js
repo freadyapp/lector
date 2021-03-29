@@ -16764,8 +16764,12 @@
     }
     
     resetMark(){
+      // TODO CAUSES BUG
       this.whenLoad().then(() => {
-        if (this.currentWord && !this.currentWord.hasKids) this.currentWord.summon();
+        if (this.currentWord && this.currentWord.getData('wordAtom')){
+          console.log("current word is", this.currentWord);
+          this.currentWord.summon();
+        }
       });
     }
 
@@ -20838,7 +20842,6 @@
             .as(element)
             .setValue(0);
 
-
       function unhoverCluster(epicenter) { hoverCluster(epicenter, 'remove'); }
       function hoverCluster(epicenter, action='add'){
 
@@ -20868,6 +20871,7 @@
 
       let thisw = w.element.findAll('w');
       if (i && thisw.length === 0) {
+        w.setData({ wordAtom: true });
         w.addClass('word-element');
         
         w.listenTo("click", function(){
@@ -20898,6 +20902,10 @@
                 .setValue(0)
                 .connectTo(w);
     
+    // console.log(`created lector ${lec}`)
+    // console.log(`created word ${w}`)
+    // console.log(w)
+
     lec.mark = Mark(lec);
     if (options.settings) addSettingsToLector(lec); 
     if (options.legacySettings) lec.settings = lectorSettings(lec); 

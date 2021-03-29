@@ -93,8 +93,12 @@ export default class PragmaLector extends Pragma {
   }
   
   resetMark(){
+    // TODO CAUSES BUG
     this.whenLoad().then(() => {
-      if (this.currentWord && !this.currentWord.hasKids) this.currentWord.summon()
+      if (this.currentWord && this.currentWord.getData('wordAtom')){
+        console.log("current word is", this.currentWord)
+        this.currentWord.summon()
+      }
     })
   }
 
