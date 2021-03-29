@@ -291,7 +291,14 @@ export function addSettingsToLector(lector){
       .run(idler, function () {
         this.elements = []
         this.include = function () {
-          this.elements = this.elements.concat(Array.from(arguments))
+          let newElements = Array.from(arguments)
+
+          newElements.forEach(e => e.listenTo('mouseover', function() {
+            this._hovered = this
+          }).listenTo('mouseout', function() {
+            this._hovered = false
+          }))
+          this.elements = this.elements.concat(newElements)
           return this
         }
       })
@@ -299,9 +306,8 @@ export function addSettingsToLector(lector){
       .include(lector.settings)
       .onIdle(function () {
         this.elements.forEach(element => {
-          element.css('opacity 0')
+          if (!element._hovered) element.css('opacity 0')
         })
-        // this.css('opacity 0')
       })
       .onActive(function () {
         this.elements.forEach(element => element.css('opacity 1'))

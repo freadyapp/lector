@@ -26,8 +26,8 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
 
             this._watching = true
             const conf = {
-              headspace: 10,
-              timeout: 5 
+              headspace: config.headspace || 10,
+              timeout: config.timeout || 5 
             }
 
             this.fill = function(){

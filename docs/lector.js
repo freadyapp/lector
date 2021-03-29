@@ -83,67 +83,69 @@ let lectorSettings = {
 
      config: {
 
-     first: 1,
-     last: 69,
-     
-      onPageAdd: (p, index) => {
-        //p.css("background lightgray")
-        //console.log(p)
-        p.setData({ index: index })
+       first: 1,
+       last: 69,
+       headspace: 4,
+       timeout: 1,
+       
+        onPageAdd: (p, index) => {
+          //p.css("background lightgray")
+          //console.log(p)
+          p.setData({ index: index })
 
-      },
+        },
 
-      onCreate: (p, index) => {
-        p.self_activate = function(){
-          // console.log('self activating', p)
-           if (!p.word) {
-             // generate lector for the page
-             lector.helpers.wfy(p)
-             p.word = Word(p).setKey(index)
-             p.lec.addWord(p.word)
-             // p.word.value = 0
-             // console.log("appended new page with key", p.word.key)
-           }
+        onCreate: (p, index) => {
+          p.self_activate = function(){
+            // console.log('self activating', p)
+             if (!p.word) {
+               // generate lector for the page
+               lector.helpers.wfy(p)
+               p.word = Word(p).setKey(index)
+               p.lec.addWord(p.word)
+               // p.word.value = 0
+               // console.log("appended new page with key", p.word.key)
+             }
 
-           p.css('background whitesmoke')
-        }
-
-        p.addEventListener('click', () => p.self_activate())
-      },
-
-      // onCreate: p => p.html("loading..."),
-
-      onPageActive: (p, index) => {
-        p.onFetch(function(){
-          // console.log('fetched', p)
-          // return onFetch(p)
-
-          console.log('activaating')
-          if (p.active) {
-            p.self_activate() 
+             p.css('background whitesmoke')
           }
 
-          //console.log(p)
-        })
-      },
+          p.addEventListener('click', () => p.self_activate())
+        },
 
-    //onPageInactive: p => {
-      //p.css('background gray')
-      ////if (p.word){ 
-        ////p.lec.removeWord(p.word.key)
-        ////p.word = p.word.destroy()
-      ////}
-    //},
+        // onCreate: p => p.html("loading..."),
 
-    onPageDestroy: p => {
-      if (p.word){
-        //console.log('destroy', p.word.key)
-        p.lec.removeWord(p.word.key)
-        p.word = p.word.destroy()
-        //console.log(p.lec)
+        onPageActive: (p, index) => {
+          p.onFetch(function(){
+            // console.log('fetched', p)
+            // return onFetch(p)
+
+            console.log('activaating')
+            if (p.active) {
+              p.self_activate() 
+            }
+
+            //console.log(p)
+          })
+        },
+
+      //onPageInactive: p => {
+        //p.css('background gray')
+        ////if (p.word){ 
+          ////p.lec.removeWord(p.word.key)
+          ////p.word = p.word.destroy()
+        ////}
+      //},
+
+      onPageDestroy: p => {
+        if (p.word){
+          //console.log('destroy', p.word.key)
+          p.lec.removeWord(p.word.key)
+          p.word = p.word.destroy()
+          //console.log(p.lec)
+        }
       }
     }
-  }
  }
 }
 
