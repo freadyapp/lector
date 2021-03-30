@@ -26,7 +26,7 @@ export class popUpOb extends popUp{
 
         let spaceBoat = _e('div.boat.')
                         .html(`
-                            <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
+                            <h1 class="boat-title">Press space to start & stop the pointer</h1>
                         `)
                         .append(Lottie.name('space').addClass('space-lottie'))
                         .hide()
