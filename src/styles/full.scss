@@ -139,8 +139,8 @@ body {
             
     
             &-title {
-                font-family: 'IBM Plex Mono', monospace;
-                font-size: 27px;
+                font-family: 'IBM Plex Mono', monospace !important;
+                font-size: 27px !important;
                 color: whitesmoke;
                 margin: 0;
                 font-weight: 400;
