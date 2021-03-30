@@ -21,9 +21,14 @@ export class Lottie extends Pragma {
             </lottie-player>
         `
         .setData({ loading: true })
+        .css(`
+            transition all ease 0.3s
+            opacity 0
+        `)
         .listenTo('load', function() {
             console.timeEnd(`load loattie ${name}`)
             this.setData({ loading: false })
+            this.css('opacity 1')
         })
     }
 
