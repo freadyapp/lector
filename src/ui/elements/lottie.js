@@ -2,7 +2,11 @@ import { Pragma, Script, _e, html, _p, util } from "pragmajs"
 Script.load("https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js", "load")
 
 const LOTTIES = {
-    space: "https://assets9.lottiefiles.com/private_files/lf30_thomociq.json"
+    click: "https://assets9.lottiefiles.com/private_files/lf30_thomociq.json", 
+    space: 'https://assets4.lottiefiles.com/private_files/lf30_mohfpxha.json',
+    speed: 'https://assets8.lottiefiles.com/private_files/lf30_7sexuvbq.json'
+    
+
 }
 
 
