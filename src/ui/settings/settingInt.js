@@ -1,5 +1,5 @@
 import { _p, Pragma, _e, util } from "pragmajs"
-import { EdibleDisplay } from "./elements/edibleDisplay"
+import { EdibleDisplay } from "../elements/edibleDisplay"
 import { SettingInline } from "./settingInline"
 
 const list = [ 1, 2, 3, 4, 5]

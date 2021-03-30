@@ -330,3 +330,15 @@ $animation: 0.15s;
         }
     }   
 }
+
+.lottie[data-loading=true] {
+    ::before {
+		// create a loader
+        content: "";
+        position: absolute;
+        width: 25px;
+        height: 25px;
+		
+        background-color: red;
+    }
+}

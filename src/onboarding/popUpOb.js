@@ -1,6 +1,7 @@
 import { _e } from "pragmajs"
 import { popUp } from './popUp'
 import icons from '../ui/icons.json'
+import { Lottie } from "../ui/elements/lottie"
 
 export class popUpOb extends popUp{
     constructor(){
@@ -14,12 +15,17 @@ export class popUpOb extends popUp{
         let slides = []
 
         let spaceBoat = _e('div.boat.')
-                        .html(`
-                            <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
-                            <div class="spacebar-icon">${icons['spacebar-3d']}</div>
-                        `)
+                        // .html(`
+                            // <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
+                            // <div class="spacebar-icon">${icons['spacebar-3d']}</div>
+                        // `)
                         // .hide()
         
+        let lottie = Lottie.name("space")
+
+        console.log('lottie', lottie)
+                lottie.appendTo(spaceBoat)
+
             slides.push(spaceBoat)
 
         let speedBoat = _e('div.boat.')
