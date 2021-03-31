@@ -52,16 +52,17 @@ body {
 
 .popUp{
     width: 400px;
-    height: 350px;
+    height: 390px;
     background: #161616;
     border-radius: 4px;
     position: absolute;
     top: 30%;
     left: 50%;
     margin-left: -200px;
-    padding: 20px;
+    padding: 30px 30px;
     box-sizing: border-box;
-
+    transition: all ease 0.5s;
+    font-family: 'IBM Plex Mono', monospace !important;
     .next-btn {
         position: absolute;
         right: -50px;
@@ -114,14 +115,17 @@ body {
     }
 
     .popUpContent {
-        width:100%;
-        height:100%;
-        box-sizing: border-box;  
-        transition: all ease 0.5s;      
+        width: 100%;
+        display: flex;
+        height: 100%;
+        box-sizing: border-box;
+        transition: all ease .5s;
+        justify-content: center;
+        align-items: center;
 
         .boat {
             width: 100%;
-            height: 100%;
+            height: fit-content;
             display: flex;
             flex-direction: column;
             flex-wrap: nowrap;
@@ -129,15 +133,18 @@ body {
             align-items: center;
             align-content: stretch;
             text-align: center;
+            transition: all ease 0.5s;
 
 
             
     
             &-title {
-                font-family: 'IBM Plex Sans', sans-serif;
+                font-family: 'IBM Plex Mono', monospace !important;
+                font-size: 27px !important;
                 color: whitesmoke;
                 margin: 0;
                 font-weight: 400;
+                margin-top: 30px;
                 -webkit-touch-callout: none; /* iOS Safari */
                 -webkit-user-select: none; /* Safari */
                 -khtml-user-select: none; /* Konqueror HTML */

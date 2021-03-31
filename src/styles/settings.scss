@@ -331,14 +331,29 @@ $animation: 0.15s;
     }   
 }
 
-.lottie[data-loading=true] {
-    ::before {
-		// create a loader
-        content: "";
-        position: absolute;
-        width: 25px;
-        height: 25px;
-		
-        background-color: red;
+.lottie {
+    position: relative;
+    transition: all ease 0,5s;
+
+
+    &[data-loading = "true"] {
+       
+        &::before {
+            // create a loader
+            content: "";
+            position: absolute;
+            margin: auto;
+            width: 25px;
+            left: 50%;
+            height: 25px;
+
+            
+        }
     }
+
+    &.click-lottie {
+        margin-top: -10px;
+        height: 200px;
+    }
+
 }

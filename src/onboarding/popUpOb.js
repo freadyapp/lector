@@ -14,38 +14,37 @@ export class popUpOb extends popUp{
     addContent() {
         let slides = []
 
-        let spaceBoat = _e('div.boat.')
-                        // .html(`
-                            // <h1 class="boat-title">Press the spacebar to start/stop the pointer</h1>
-                            // <div class="spacebar-icon">${icons['spacebar-3d']}</div>
-                        // `)
-                        // .hide()
-        
-        let lottie = Lottie.name("space")
+        let clickBoat = _e('div.boat.')
+                        .html(`
+                            <h1 class="boat-title">Place the pointer by clicking on words</h1>
+                        `)
+                        .append(Lottie.name('click').addClass('click-lottie'))
+                        
 
-        console.log('lottie', lottie)
-                lottie.appendTo(spaceBoat)
+            slides.push(clickBoat)
+
+
+        let spaceBoat = _e('div.boat.')
+                        .html(`
+                            <h1 class="boat-title">Press space to start & stop the pointer</h1>
+                        `)
+                        .append(Lottie.name('space').addClass('space-lottie'))
+                        .hide()
+                        
 
             slides.push(spaceBoat)
 
         let speedBoat = _e('div.boat.')
                         .html(`
-                            <h1 class="boat-title">Adjust the speed, through the menu or your keyboard</h1>
-                            <div class="speed-icon">${icons['speedBoat']}</div>
+                            <h1 class="boat-title">Change speed through the menu or keyboard</h1>
                         `)
+                        .append(Lottie.name('speed').addClass('speed-lottie'))
                         .hide()
 
             slides.push(speedBoat)
+            
 
-        let clickBoat = _e('div.boat.')
-                        .html(`
-                            <h1 class="boat-title">Place the pointer by clicking on words</h1>
-                            <div class="click-icon">${icons['clickBoat']}</div>
-                        `)
-                        .hide()
-
-            slides.push(clickBoat)
-
+        
         
         this.popUpContent.append(...slides)
         this.popUp.adopt(...slides)
