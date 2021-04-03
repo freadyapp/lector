@@ -68,10 +68,14 @@ $animation: 0.15s;
     }
 	
     #wpm {
-        width: 100px;
-        padding-left: 20px;
+        width: 108px;
+        padding-left: 12px;
         margin-left: 15px;
         border-left: 1px solid gray;
+        
+        .edible-display {
+            margin-left: 7px;
+        }
     }
 
     #settings-bar {
