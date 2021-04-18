@@ -20,11 +20,11 @@ const defaultStyles = `
 `
 
 export default class PragmaMark extends Pragma {
-  constructor(parent="body") {
+  constructor() {
     super('marker')
 
     this.element = _e("marker")
-    this.appendTo(parent)
+    this.appendTo('html')
     this.hide()
     this.css(defaultStyles)
 

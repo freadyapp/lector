@@ -30,7 +30,7 @@ function fetchContent(index){
 
       let abc = "abcdefghijklmnopqrstuvwrxyz "
       let len = abc.length
-      let words = 100
+      let words = 1000
 
       while (words > 0){
         txt += abc.charAt(Math.floor(Math.random()*len))
