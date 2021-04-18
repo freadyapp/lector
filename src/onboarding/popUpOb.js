@@ -1,4 +1,4 @@
-import { _e } from "pragmajs"
+import { _e, html } from "pragmajs"
 import { popUp } from './popUp'
 import icons from '../ui/icons.json'
 import { Lottie } from "../ui/elements/lottie"
@@ -14,36 +14,19 @@ export class popUpOb extends popUp{
     addContent() {
         let slides = []
 
-        let clickBoat = _e('div.boat.')
-                        .html(`
-                            <h1 class="boat-title">Place the pointer by clicking on words</h1>
-                        `)
-                        .append(Lottie.name('click').addClass('click-lottie'))
-                        
-
-            slides.push(clickBoat)
-
-
-        let spaceBoat = _e('div.boat.')
-                        .html(`
-                            <h1 class="boat-title">Press space to start & stop the pointer</h1>
-                        `)
-                        .append(Lottie.name('space').addClass('space-lottie'))
-                        .hide()
-                        
-
-            slides.push(spaceBoat)
-
-        let speedBoat = _e('div.boat.')
-                        .html(`
-                            <h1 class="boat-title">Change speed through the menu or keyboard</h1>
-                        `)
-                        .append(Lottie.name('speed').addClass('speed-lottie'))
+        function newBoat(name, title){
+            let boat = _e(`div.boat.`).html(`
+                        <h1 class="boat-title">${title}</h1>
+                    `).append(Lottie.name(name).addClass(`${name}-lottie`))
                         .hide()
 
-            slides.push(speedBoat)
-            
+            slides.push(boat)
+            return boat
+        }
 
+        let clickBoat = newBoat("click", "Place the pointer by clicking on words").show()
+        let spaceBoat = newBoat("space", "Press space to start & stop the pointer")
+        let speedBoat = newBoat("speed", "Change speed through the menu or keyboard")
         
         
         this.popUpContent.append(...slides)

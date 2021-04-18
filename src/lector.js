@@ -46,7 +46,7 @@ const default_options = {
 }
 
 const Mark = (lec) => {
-  let mark = new PragmaMark()
+  let mark = new PragmaMark(lec)
 
   function logger(w){
   }
