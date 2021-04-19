@@ -95,6 +95,9 @@ const Mark = (lec) => {
   let lastScroll = 0
 
   let markedWords = new Set
+
+  let indicator = _e(`div#mark-indicator`)
+  let indicatorAppended = false
   onScrollEnd((s, ds, event) => {
 
     console.time('scrollend')
@@ -156,7 +159,11 @@ const Mark = (lec) => {
       if (obscured) {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
-          _e(`div#mark-indicator`).appendTo('html')[fromTop ? `addClass` : `removeClass`]('upwards')
+          if (!indicatorAppended){
+            indicator.appendTo('html')
+            indicatorAppended = true
+          }
+          indicator[fromTop ? `addClass` : `removeClass`]('upwards')
         } else {
             obscured.surface.addClass('mark-obscurer')
                 [fromTop ? `addClass` : `removeClass`]('from-top')
@@ -164,7 +171,8 @@ const Mark = (lec) => {
         }
                                         
       }else {
-        _e('div#mark-indicator').destroy()
+        indicator.destroy()
+        indicatorAppended = false
         _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
 
