@@ -1,5 +1,5 @@
 import { elementify } from './pragmafy.js'
-import { _e, util } from "pragmajs"
+import { _e, util, _p } from "pragmajs"
 import anime from "animejs"
 
 // function getViewportHeight(){
@@ -66,60 +66,70 @@ export function scrollTo(el, duration=200, threshold=200){
 
 
 
-function _onScroll(cb){
+function _onScroll(cb, throttle=0){
   let last = 0;
   let ticking = false;
   document.addEventListener('scroll', function(e) {
+    // console.log('fire scroll')
     let temp = last
     last = window.scrollY;
     if (!ticking) {
       window.requestAnimationFrame(function() {
-        cb(last, last-temp);
-        ticking = false;
+        cb(last, last-temp, e);
+        setTimeout(() => {
+          ticking = false;
+        }, throttle)
       });
       ticking = true;
     }
-  });
+  }, true);
 }
 
-export function onScroll(cb){
+export function onScroll(cb, throttle){
   if (!globalThis.lectorSpace.scrollChain){
     util.createChains(globalThis.lectorSpace, 'scroll')
-    _onScroll((scroll, ds) => {
-      globalThis.lectorSpace.scrollChain.exec(scroll, ds)
-    })
+    _onScroll((scroll, ds, event) => {
+      globalThis.lectorSpace.scrollChain.exec(scroll, ds, event)
+    }, 0)
   }
   globalThis.lectorSpace.onScroll(cb)
 }
 
-function _onScrollEnd(cb){
+function _onScrollEnd(cb, delta){
 
-  let scrollData = { s: null, ds: null }
-  let t
+  let scrollData = { s: null, ds: null, e: null }
+  var t
 
-  onScroll((s, ds) => {
+  onScroll((s, ds, e) => {
     scrollData = {
-      s: s,
-      ds: ds
+      s,
+      ds,
+      e
     }
 
     if (t) clearTimeout(t)
 
     t = setTimeout(_ => {
-      cb(scrollData.s, scrollData.ds)
-    }, 50)
+      cb(scrollData.s, scrollData.ds, scrollData.e)
+    }, delta)
   })
 }
 
-export function onScrollEnd(cb){
-  if (!globalThis.lectorSpace.scrollEndChain){
-    util.createChains(globalThis.lectorSpace, 'scrollEnd')
+let scroller = _p()
+                  .createEvent('scrollEnd')
+                  .run(function() {
+                    _onScrollEnd((...args) => {
+                      console.log('SCROLL ENDED')
+                      this.triggerEvent('scrollEnd', ...args)
+                    }, 220)
+                  })
 
-      _onScrollEnd((scroll, ds) => {
-        globalThis.lectorSpace.scrollEndChain.exec(scroll, ds)
-      })  
-  }
-  globalThis.lectorSpace.onScrollEnd(cb)
+export function onScrollEnd(cb, delta=50){
+  return scroller.on('scrollEnd', cb)
+  // _onScrollEnd((scroll, ds, e) => {
+    // scroller.triggerEvent('scrollEnd')
+    // globalThis.lectorSpace.scrollEndChain.exec(scroll, ds, e)
+  // }, delta)
 }
 
 //export function onSlowScroll(cb, sensit=10){

@@ -216,9 +216,13 @@ export default class PragmaWord extends Pragma {
   summon(silent=false) {
     if (this.hasKids) return false
     // console.log("SUMMONING", this)
-    return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
-      this.mark.mark(this, 50, false)
-      if (!silent) this.parent.value = this.index
+    return new PinkyPromise(resolve => {
+      this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
+        this.mark.mark(this, 50, false).then(() => {
+          resolve()
+        })
+        if (!silent) this.parent.value = this.index
+      })
     })
   }
 }

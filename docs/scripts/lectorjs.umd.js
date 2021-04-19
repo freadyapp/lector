@@ -1386,60 +1386,70 @@
 
 
 
-  function _onScroll(cb){
+  function _onScroll(cb, throttle=0){
     let last = 0;
     let ticking = false;
     document.addEventListener('scroll', function(e) {
+      // console.log('fire scroll')
       let temp = last;
       last = window.scrollY;
       if (!ticking) {
         window.requestAnimationFrame(function() {
-          cb(last, last-temp);
-          ticking = false;
+          cb(last, last-temp, e);
+          setTimeout(() => {
+            ticking = false;
+          }, throttle);
         });
         ticking = true;
       }
-    });
+    }, true);
   }
 
-  function onScroll(cb){
+  function onScroll(cb, throttle){
     if (!globalThis.lectorSpace.scrollChain){
       O.createChains(globalThis.lectorSpace, 'scroll');
-      _onScroll((scroll, ds) => {
-        globalThis.lectorSpace.scrollChain.exec(scroll, ds);
-      });
+      _onScroll((scroll, ds, event) => {
+        globalThis.lectorSpace.scrollChain.exec(scroll, ds, event);
+      }, 0);
     }
     globalThis.lectorSpace.onScroll(cb);
   }
 
-  function _onScrollEnd(cb){
+  function _onScrollEnd(cb, delta){
 
-    let scrollData = { s: null, ds: null };
-    let t;
+    let scrollData = { s: null, ds: null, e: null };
+    var t;
 
-    onScroll((s, ds) => {
+    onScroll((s, ds, e) => {
       scrollData = {
-        s: s,
-        ds: ds
+        s,
+        ds,
+        e
       };
 
       if (t) clearTimeout(t);
 
       t = setTimeout(_ => {
-        cb(scrollData.s, scrollData.ds);
-      }, 50);
+        cb(scrollData.s, scrollData.ds, scrollData.e);
+      }, delta);
     });
   }
 
-  function onScrollEnd(cb){
-    if (!globalThis.lectorSpace.scrollEndChain){
-      O.createChains(globalThis.lectorSpace, 'scrollEnd');
+  let scroller = J()
+                    .createEvent('scrollEnd')
+                    .run(function() {
+                      _onScrollEnd((...args) => {
+                        console.log('SCROLL ENDED');
+                        this.triggerEvent('scrollEnd', ...args);
+                      }, 220);
+                    });
 
-        _onScrollEnd((scroll, ds) => {
-          globalThis.lectorSpace.scrollEndChain.exec(scroll, ds);
-        });  
-    }
-    globalThis.lectorSpace.onScrollEnd(cb);
+  function onScrollEnd(cb, delta=50){
+    return scroller.on('scrollEnd', cb)
+    // _onScrollEnd((scroll, ds, e) => {
+      // scroller.triggerEvent('scrollEnd')
+      // globalThis.lectorSpace.scrollEndChain.exec(scroll, ds, e)
+    // }, delta)
   }
 
   //export function onSlowScroll(cb, sensit=10){
@@ -16765,12 +16775,17 @@
     
     resetMark(){
       // TODO CAUSES BUG
-      this.whenLoad().then(() => {
-        if (this.currentWord && this.currentWord.getData('wordAtom')){
-          console.log("current word is", this.currentWord);
-          this.currentWord.summon();
-        }
-      });
+      return new Promise((resolve => {
+
+        this.whenLoad().then(() => {
+          if (this.currentWord && this.currentWord.getData('wordAtom')){
+            console.log("current word is", this.currentWord);
+            this.currentWord.summon().then(d => {
+              resolve(d);
+            });
+          }
+        });
+      }))
     }
 
     goToNext(){ this.summonTo(+1); }
@@ -17057,9 +17072,13 @@
     summon(silent=false) {
       if (this.hasKids) return false
       // console.log("SUMMONING", this)
-      return this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
-        this.mark.mark(this, 50, false);
-        if (!silent) this.parent.value = this.index;
+      return new PinkyPromise(resolve => {
+        this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
+          this.mark.mark(this, 50, false).then(() => {
+            resolve();
+          });
+          if (!silent) this.parent.value = this.index;
+        });
       })
     }
   }
@@ -20810,46 +20829,81 @@
       // else we're out of view
 
       scrollingIntoView = true;
-
-      let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
       // TODO  make a class Chain that does this.
       // Chain.add(cb), Chain.do() to execute and shit
       if (lec.isReading){
         lec.pause();
-        cbs.push(() => {
-          lec.read();
-        });
       }
-
-      cbs.push(()=>{
-        //console.warn("suck my diiiiiiiiiick")
-      });
 
       //console.warn("mark is out of screen")
       //console.log('lec reading:', lec.isReading)
 
-      scrollTo(mark).then(() => {
-        cbs.forEach(cb => cb());
-        scrollingIntoView = false;
-      });
+      // scrollTo(mark).then(() => {
+        // cbs.forEach(cb => cb())
+        // scrollingIntoView = false
+      // })
     }
 
     const threshold = 40; // how fast should you scroll to pause the pointer
     let lastScroll = 0;
-    onScroll(s => {
+
+    let markedWords = new Set;
+    onScrollEnd((s, ds, event) => {
+      var visibleY = function (el) {
+        var rect = el.getBoundingClientRect(), top = rect.top, height = rect.height,
+          el = el.parentNode;
+        // Check if bottom of the element is off the page
+        if (rect.bottom < 0) return false
+        // Check its within the document viewport
+        if (top > document.documentElement.clientHeight) return false
+        do {
+          if (!el.getBoundingClientRect) return
+          rect = el.getBoundingClientRect();
+          if (top <= rect.bottom === false) return false
+          // Check if the element is out of view due to a container scrolling
+          if ((top + height) <= rect.top) return false
+          el = el.parentNode;
+        } while (el != document.body)
+        return true
+      };
+
+      for (let w of markedWords) {
+        if (!w) continue
+        console.log(w);
+        w.css(`background transparent`);
+        markedWords.delete(w);
+      }
+      if (!lec.isReading) {
+        if (!visibleY(lec.currentWord?.element)) return lec.mark.hide()
+
+        lec.resetMark().then(() => {
+          lec.mark.show();
+        });
+        // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
+      } 
+    }, 500);
+
+    onScroll((s, ds, event) => {
       usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
       // console.log('user is scrolling', userIsScrolling())
 
       if (userIsScrolling() && lec.isReading){
         let dscroll = Math.abs(lastScroll-s);
         lastScroll = s;
+        console.log(dscroll);
         if (dscroll>threshold){
+
           // console.log('ds=', dscroll)
           // TODO prevent from calling pause to many times
           // on too fast scroll, pause mark
           lec.pause();
         }
+      } else {
+        lec.mark.hide();
+        lec.currentWord?.css('background lime');
+        markedWords.add(lec.currentWord);
       }
+
     });
 
     //mark.listenTo('mouseover', function(){

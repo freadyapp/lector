@@ -10,6 +10,7 @@ import { popUpOb } from "./onboarding/popUpOb"
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
+import { onScrollEnd } from "./helpers/autoScroll"
 
 
 
@@ -84,29 +85,74 @@ const Mark = (lec) => {
     //console.warn("mark is out of screen")
     //console.log('lec reading:', lec.isReading)
 
-    scrollTo(mark).then(() => {
-      cbs.forEach(cb => cb())
-      scrollingIntoView = false
-    })
+    // scrollTo(mark).then(() => {
+      // cbs.forEach(cb => cb())
+      // scrollingIntoView = false
+    // })
   }
 
   const threshold = 40 // how fast should you scroll to pause the pointer
   let lastScroll = 0
-  onScroll(s => {
+
+  let markedWords = new Set
+  onScrollEnd((s, ds, event) => {
+    var visibleY = function (el) {
+      var rect = el.getBoundingClientRect(), top = rect.top, height = rect.height,
+        el = el.parentNode
+      // Check if bottom of the element is off the page
+      if (rect.bottom < 0) return false
+      // Check its within the document viewport
+      if (top > document.documentElement.clientHeight) return false
+      do {
+        if (!el.getBoundingClientRect) return
+        rect = el.getBoundingClientRect()
+        if (top <= rect.bottom === false) return false
+        // Check if the element is out of view due to a container scrolling
+        if ((top + height) <= rect.top) return false
+        el = el.parentNode
+      } while (el != document.body)
+      return true
+    }
+
+    for (let w of markedWords) {
+      if (!w) continue
+      console.log(w)
+      w.css(`background transparent`)
+      markedWords.delete(w)
+    }
+    if (!lec.isReading) {
+      if (!visibleY(lec.currentWord?.element)) return lec.mark.hide()
+
+      lec.resetMark().then(() => {
+        lec.mark.show()
+      })
+      // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
+    } 
+  }, 500)
+
+  onScroll((s, ds, event) => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
     // console.log('user is scrolling', userIsScrolling())
 
     if (userIsScrolling() && lec.isReading){
       let dscroll = Math.abs(lastScroll-s)
       lastScroll = s
+      console.log(dscroll)
       if (dscroll>threshold){
+
         // console.log('ds=', dscroll)
         // TODO prevent from calling pause to many times
         // on too fast scroll, pause mark
         lec.pause()
+      } else {
       }
+    } else {
+      lec.mark.hide()
+      lec.currentWord?.css('background lime')
+      markedWords.add(lec.currentWord)
     }
-  })
+
+  }, 0)
 
   //mark.listenTo('mouseover', function(){
     //console.log(this, 'hover')
