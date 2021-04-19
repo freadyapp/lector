@@ -137,3 +137,75 @@ export function onScrollEnd(cb, delta=50){
     //if (dp<=sensit) cb()
   //})
 //}
+
+function _onScroall(cb, throttle=0){
+  let last = 0;
+  let ticking = false;
+  document.addEventListener('scroll', function(e) {
+    // console.log('fire scroll')
+    let temp = last
+    last = window.scrollY;
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        cb(last, last-temp, e);
+        setTimeout(() => {
+          ticking = false;
+        }, throttle)
+      });
+      ticking = true;
+    }
+  }, true);
+}
+
+ function aonScroll(cb, throttle){
+  if (!globalThis.lectorSpace.scrollChain){
+    util.createChains(globalThis.lectorSpace, 'scroll')
+    _onScroll((scroll, ds, event) => {
+      globalThis.lectorSpace.scrollChain.exec(scroll, ds, event)
+    }, 0)
+  }
+  globalThis.lectorSpace.onScroll(cb)
+}
+
+export const _scroller = _p()
+                    .createWires('scrollData', 'scrollTarget')
+                    .createEvents('scrollStart', 'scroll', 'scrollEnd')
+                    .define(
+                      function test(will){
+                        console.log('pleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeease work first try holy shit')
+                      }
+                    )
+                    .run(function() {
+                      let last = 0
+                      let ticking = false
+
+                      document.addEventListener('scroll', (e) => {
+                        // let temp = last
+                        // console.log(e.target)
+                        this.scrollTarget = e.target === document ? window.scrollY : _e(e.target).scrollTop;
+                        if (!ticking) {
+                          window.requestAnimationFrame(() => {
+                            this.setScrollData([last, e])
+                            this.triggerEvent('scroll', last, e)
+                            // setTimeout(() => {
+                              ticking = false;
+                            // }, throttle)
+                          });
+                          ticking = true;
+                        }
+                      }, true)
+
+                      // this.test()
+                    })
+                    .on('scrollTargetChange', function(old, n) {
+                      if (old !== n) console.log('new fukcing target')
+                    })
+                    .on('scrollDataChange', function(s, ls) {
+                      let ds = ls ? s[0] - ls[0] : undefined
+                      console.log('aaaaaaaaaaaaaaaaaaaa', s, ls, ds)
+                      this.triggerEvent('scroll', s[0], ds, s[1])
+                    }).on('scroll', function(s, ds, event) {
+                      console.log('scroll', s, ds, event)
+                    })
+                    
+

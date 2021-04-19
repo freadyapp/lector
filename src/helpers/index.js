@@ -1,4 +1,4 @@
-export { isOnScreen, isMostlyInScreen, scrollTo, onScroll } from "./autoScroll.js"
+export { isOnScreen, isMostlyInScreen, scrollTo, onScroll, _scroller } from "./autoScroll.js"
 export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWordHelper"
 import { _e } from "pragmajs"
 
@@ -85,7 +85,7 @@ export function fadeTo(el, value, ms = 500) {
     })
 }
 export function visibleY(el) {
-    if (!el || !el.getBoundingClientRect) return false
+    if (!el) return false
     var rect = el.getBoundingClientRect(),
     top = rect.top,
     height = rect.height,

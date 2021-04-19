@@ -50,6 +50,7 @@ const Mark = (lec) => {
   let mark = new PragmaMark(lec)
 
   function logger(w){
+    // console.log('mark:', w)
   }
 
   // auto scroll feature
@@ -57,13 +58,15 @@ const Mark = (lec) => {
   let scrollingIntoView = false
   let usersLastScroll = 0
 
-  function userIsScrolling(){
-    return usersLastScroll - Date.now() > -10
+  function userIsScrolling(threshold=50){
+    return usersLastScroll - Date.now() > -threshold
   }
 
-  function autoScroll(w){
+  function autoScroll(){
     //return
-    if (userIsScrolling() || isOnScreen(mark.element) || scrollingIntoView) return false
+    console.log('autoscrolllllllllllllllllllllllllllllllllll')
+    console.log('is user scrolling', userIsScrolling())
+    if (userIsScrolling() || isOnScreen(lec.currentWord) || scrollingIntoView) return false
     // else we're out of view
 
     scrollingIntoView = true
@@ -82,13 +85,13 @@ const Mark = (lec) => {
       //console.warn("suck my diiiiiiiiiick")
     })
 
-    //console.warn("mark is out of screen")
-    //console.log('lec reading:', lec.isReading)
+    console.warn("mark is out of screen")
+    console.log('lec reading:', lec.isReading)
 
-    // scrollTo(mark).then(() => {
-      // cbs.forEach(cb => cb())
-      // scrollingIntoView = false
-    // })
+    scrollTo(mark).then(() => {
+      cbs.forEach(cb => cb())
+      scrollingIntoView = false
+    })
   }
 
   const threshold = 40 // how fast should you scroll to pause the pointer
@@ -101,9 +104,10 @@ const Mark = (lec) => {
                       lec.currentWord.summon()
                     })
   let indicatorAppended = false
-  onScrollEnd((s, ds, event) => {
 
+  onScrollEnd((s, ds, event) => {
     console.time('scrollend')
+
     for (let w of markedWords) {
       if (!w) continue
       console.log(w)
@@ -135,10 +139,11 @@ const Mark = (lec) => {
 
     if (!lec.isReading) {
       let currentWord = lec.currentWord
+
       // let obscured = isWordObscured(currentWord)
 
-      let obscured = findObscurer(currentWord)
-      console.log('surface is', findObscurer(currentWord))
+      let obscured = currentWord ? findObscurer(currentWord) : false
+      // console.log('surface is', findObscurer(currentWord))
       // console.log('obscured by', obscured, obscured.firstVisibleParent)
       // console.log('is visible', visibleY(currentWord.element))
       if (obscured) {
@@ -155,7 +160,7 @@ const Mark = (lec) => {
                 [!fromTop ? `addClass` : `removeClass`]('from-bottom')
         }
                                         
-      }else {
+      } else {
         indicator.destroy()
         indicatorAppended = false
         _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
@@ -168,7 +173,7 @@ const Mark = (lec) => {
       console.timeEnd('scrollend')
       // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
     } 
-  }, 500)
+  }, 150)
 
   onScroll((s, ds, event) => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
