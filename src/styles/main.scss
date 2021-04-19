@@ -427,10 +427,10 @@
 
 .mark-obscurer {
   background-color: #262626;
-  &.obscures-mark-from-top {
+  &.from-top {
     border-top: 10px blue solid;
   }
-  &.obscures-mark-from-bottom {
+  &.from-bottom {
     border-bottom: 10px blue solid;
   }
 }
@@ -443,12 +443,10 @@
   left: 0;
   z-index: 999999;
 
+  // downards
+  bottom: 0;
+
   &.upwards {
     top:0;
   }
-
-  &.downards {
-    bottom: 0;
-  }
-
 }

@@ -133,7 +133,7 @@ const Mark = (lec) => {
 
     function findObscurer(p) {
       let surface = firstVisibleParent(p)
-      if (surface === p) return {}
+      if (surface === p) return null
 
       var bottomOf = (word) => word.element.top + word.element.height
       var topOf = (word) => word.element.top
@@ -141,7 +141,7 @@ const Mark = (lec) => {
                 // !visibleY(word.parent.element) ? isWordObscured(word.parent) :
       return {
         surface,
-        from: (topOf(p) <= topOf(surface) ? _top : _bottom)
+        from: (topOf(p) <= ( surface.isPragmaWord ? topOf(surface) : window.scrollY) ? _top : _bottom)
       }
     }
 
@@ -155,12 +155,17 @@ const Mark = (lec) => {
       // console.log('is visible', visibleY(currentWord.element))
       if (obscured) {
         let fromTop = obscured.from === _top
-        _e(`div#mark-indicator.${fromTop ? 'upwards' : 'downwards'}`).appendTo(obscured?.surface?.isPragmaLector ? _e('html'):
-                                          obscured.surface.addClass('mark-obscurer', fromTop ? 
-                                                                              'obscures-mark-from-top' : 'obscures-mark-from-bottom'))
+        if (obscured.surface.isPragmaLector) {
+          _e(`div#mark-indicator`).appendTo('html')[fromTop ? `addClass` : `removeClass`]('upwards')
+        } else {
+            obscured.surface.addClass('mark-obscurer')
+                [fromTop ? `addClass` : `removeClass`]('from-top')
+                [!fromTop ? `addClass` : `removeClass`]('from-bottom')
+        }
+                                        
       }else {
         _e('div#mark-indicator').destroy()
-        _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer','obscures-mark-from-top', 'obscures-mark-from-bottom'))
+        _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
 
       
