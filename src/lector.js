@@ -97,6 +97,9 @@ const Mark = (lec) => {
   let markedWords = new Set
 
   let indicator = _e(`div#mark-indicator`)
+                    .listenTo('click', () => {
+                      lec.currentWord.summon()
+                    })
   let indicatorAppended = false
   onScrollEnd((s, ds, event) => {
 
@@ -109,30 +112,12 @@ const Mark = (lec) => {
     }
 
     function firstVisibleParent(e){
-      console.log('visble?', e)
       if (!e || !e.parent || visibleY(e.element)) return e
       return firstVisibleParent(e.parent)
     }
 
     let _top = 1
     let _bottom = -1
-    function isWordObscured(word) {
-
-      if (!word && visibleY(word.element)) return false
-
-      var bottomOf = (word) => word.element.top + word.element.height
-      var topOf = (word) => word.element.top
-      let parent = word.parent
-
-      return parent ?
-                // !visibleY(word.parent.element) ? isWordObscured(word.parent) :
-                  (topOf(word) < topOf(parent) ? {
-                    parent, obscuredFromTop, firstVisibleParent: firstVisibleParent(word)
-                  } : (bottomOf(word) > bottomOf(parent)) ? {
-                    parent, obscuredFromBottom, firstVisibleParent: firstVisibleParent(word)
-                  } : false) 
-            : false
-    }
 
     function findObscurer(p) {
       let surface = firstVisibleParent(p)
@@ -174,18 +159,6 @@ const Mark = (lec) => {
         indicator.destroy()
         indicatorAppended = false
         _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
-      }
-
-      
-      if (false && currentWord && !visibleY(currentWord.element)){
-        console.log('current word is not visible')
-        if (currentWord.element.top < currentWord.parent.element.top) {
-          console.log(currentWord.parent.parent)
-          // currentWord.parent.addClass('mark-')
-        }
-        console.log(currentWord.parent)
-        // lec.currentWord.parent.css('background red')
-        return lec.mark.hide()
       }
 
       lec.resetMark().then(() => {

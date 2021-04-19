@@ -479,11 +479,11 @@
 #mark-indicator {
   @extend .fade-onload;
   background: #2b6cce;
-  width: 50vw;
+  width: 80vw;
   height: 10px;
+  cursor: pointer;
 
-  left: 50%;
-  margin-left: -25vw;
+  left: 10vw;
   position: fixed;
   z-index: 999999;
 

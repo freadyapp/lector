@@ -61,6 +61,12 @@ export default class PragmaLector extends Pragma {
   }
 
   removeWord(key){
+    let word = this.w.get(key)
+    console.log('removing', key, word)
+    // console.log(word, this)
+    if (word.currentWord === this.currentWord) {
+      alert('removed current word')
+    }
     this.w.remove(key)
   }
 

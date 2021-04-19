@@ -18,6 +18,7 @@ export function paginator(pageTemplate, conf={}){
           //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ console.log('rendered', page, 'active?', page.active) },
           onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){console.log('active', page) },
           onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { console.log('inactive', page) },
+          onPageDestroy: conf.onPageDestroy
         }))
 
         .run(function(){
@@ -114,6 +115,7 @@ export function paginator(pageTemplate, conf={}){
               toDestroy.destroy()
             }
 
+            console.log('REMOV')
             if (this.onPageDestroy){
               let r = this.onPageDestroy(toDestroy, val)
               if (r instanceof Promise) return r.then(destroy)
