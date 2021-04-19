@@ -5,6 +5,7 @@ export default class PragmaLector extends Pragma {
   constructor(){
     super(arguments)
 
+    this.isPragmaLector = true
     this.createEvent('load')
     this.on('load', () => this._loaded = true)
     

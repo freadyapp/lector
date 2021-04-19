@@ -424,3 +424,31 @@
     background-color: rgba(184, 184, 184, 0.043);
   }
 }
+
+.mark-obscurer {
+  background-color: #262626;
+  &.obscures-mark-from-top {
+    border-top: 10px blue solid;
+  }
+  &.obscures-mark-from-bottom {
+    border-bottom: 10px blue solid;
+  }
+}
+
+#mark-indicator {
+  background: red;
+  width: 100vw;
+  height: 50px;
+  position: fixed;
+  left: 0;
+  z-index: 999999;
+
+  &.upwards {
+    top:0;
+  }
+
+  &.downards {
+    bottom: 0;
+  }
+
+}

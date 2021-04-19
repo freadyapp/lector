@@ -1,5 +1,5 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
-import { range, wfy, isOnScreen, scrollTo, onScroll } from "./helpers/index"
+import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
 import { addSettingsToLector } from "./ui/lectorSettings2"
@@ -96,36 +96,90 @@ const Mark = (lec) => {
 
   let markedWords = new Set
   onScrollEnd((s, ds, event) => {
-    var visibleY = function (el) {
-      var rect = el.getBoundingClientRect(), top = rect.top, height = rect.height,
-        el = el.parentNode
-      // Check if bottom of the element is off the page
-      if (rect.bottom < 0) return false
-      // Check its within the document viewport
-      if (top > document.documentElement.clientHeight) return false
-      do {
-        if (!el.getBoundingClientRect) return
-        rect = el.getBoundingClientRect()
-        if (top <= rect.bottom === false) return false
-        // Check if the element is out of view due to a container scrolling
-        if ((top + height) <= rect.top) return false
-        el = el.parentNode
-      } while (el != document.body)
-      return true
-    }
 
+    console.time('scrollend')
     for (let w of markedWords) {
       if (!w) continue
       console.log(w)
       w.css(`background transparent`)
       markedWords.delete(w)
     }
+
+    function firstVisibleParent(e){
+      console.log('visble?', e)
+      if (!e || !e.parent || visibleY(e.element)) return e
+      return firstVisibleParent(e.parent)
+    }
+
+    let _top = 1
+    let _bottom = -1
+    function isWordObscured(word) {
+
+      if (!word && visibleY(word.element)) return false
+
+      var bottomOf = (word) => word.element.top + word.element.height
+      var topOf = (word) => word.element.top
+      let parent = word.parent
+
+      return parent ?
+                // !visibleY(word.parent.element) ? isWordObscured(word.parent) :
+                  (topOf(word) < topOf(parent) ? {
+                    parent, obscuredFromTop, firstVisibleParent: firstVisibleParent(word)
+                  } : (bottomOf(word) > bottomOf(parent)) ? {
+                    parent, obscuredFromBottom, firstVisibleParent: firstVisibleParent(word)
+                  } : false) 
+            : false
+    }
+
+    function findObscurer(p) {
+      let surface = firstVisibleParent(p)
+      if (surface === p) return {}
+
+      var bottomOf = (word) => word.element.top + word.element.height
+      var topOf = (word) => word.element.top
+
+                // !visibleY(word.parent.element) ? isWordObscured(word.parent) :
+      return {
+        surface,
+        from: (topOf(p) <= topOf(surface) ? _top : _bottom)
+      }
+    }
+
     if (!lec.isReading) {
-      if (!visibleY(lec.currentWord?.element)) return lec.mark.hide()
+      let currentWord = lec.currentWord
+      // let obscured = isWordObscured(currentWord)
+
+      let obscured = findObscurer(currentWord)
+      console.log('surface is', findObscurer(currentWord))
+      // console.log('obscured by', obscured, obscured.firstVisibleParent)
+      // console.log('is visible', visibleY(currentWord.element))
+      if (obscured) {
+        let fromTop = obscured.from === _top
+        _e(`div#mark-indicator.${fromTop ? 'upwards' : 'downwards'}`).appendTo(obscured?.surface?.isPragmaLector ? _e('html'):
+                                          obscured.surface.addClass('mark-obscurer', fromTop ? 
+                                                                              'obscures-mark-from-top' : 'obscures-mark-from-bottom'))
+      }else {
+        _e('div#mark-indicator').destroy()
+        _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer','obscures-mark-from-top', 'obscures-mark-from-bottom'))
+      }
+
+      
+      if (false && currentWord && !visibleY(currentWord.element)){
+        console.log('current word is not visible')
+        if (currentWord.element.top < currentWord.parent.element.top) {
+          console.log(currentWord.parent.parent)
+          // currentWord.parent.addClass('mark-')
+        }
+        console.log(currentWord.parent)
+        // lec.currentWord.parent.css('background red')
+        return lec.mark.hide()
+      }
 
       lec.resetMark().then(() => {
         lec.mark.show()
       })
+
+      console.timeEnd('scrollend')
       // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
     } 
   }, 500)

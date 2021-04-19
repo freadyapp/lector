@@ -11,11 +11,12 @@ export default class PragmaWord extends Pragma {
 
   constructor(k){
       super(k)
+      this.isPragmaWord = true
       this.do(function(){
         if (this.hasKids && this.parent){
           // if (this.childMap.has(this.value)){
           // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
-          
+         
           this.parent.value = this.key 
           // + excess
           // if (excess){
