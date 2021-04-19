@@ -1361,6 +1361,8 @@
   }
 
   function scrollTo(el, duration=200, threshold=200){
+    console.log('SCROLLING TO ', el);
+    return _scroller.scrollTo(el, duration, threshold)
     // behavior
     // closer, will scroll little bit downwards or upwards
     // until the element is in view for more than the threshold
@@ -1369,95 +1371,49 @@
     //el = jqueryfy(el)
     //
 
-    el = elementify(el);
-    return new Promise((resolve, reject) => {
-      const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-      const top = el.offset().top - threshold;
-      anime({
-        targets: body,
-        scrollTop: top,
-        duration: duration,
-        easing: 'easeInOutSine',
-      }).finished.then(() => {
-        setTimeout(resolve, 20);
-      });
-    })
+    // el = elementify(el)
+    // return new Promise((resolve, reject) => {
+    //   const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+    //   const top = el.offset().top - threshold
+    //   anime({
+    //     targets: body,
+    //     scrollTop: top,
+    //     duration: duration,
+    //     easing: 'easeInOutSine',
+    //   }).finished.then(() => {
+    //     setTimeout(resolve, 20)
+    //   })
+    // })
   }
 
-
-
-  function _onScroll(cb, throttle=0){
-    let last = 0;
-    let ticking = false;
-    document.addEventListener('scroll', function(e) {
-      // console.log('fire scroll')
-      let temp = last;
-      last = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(function() {
-          cb(last, last-temp, e);
-          setTimeout(() => {
-            ticking = false;
-          }, throttle);
-        });
-        ticking = true;
-      }
-    }, true);
+  function onScroll(cb) {
+    return _scroller.on('userScroll', cb)
   }
-
-  function onScroll(cb, throttle){
-    if (!globalThis.lectorSpace.scrollChain){
-      O.createChains(globalThis.lectorSpace, 'scroll');
-      _onScroll((scroll, ds, event) => {
-        globalThis.lectorSpace.scrollChain.exec(scroll, ds, event);
-      }, 0);
-    }
-    globalThis.lectorSpace.onScroll(cb);
-  }
-
-  function _onScrollEnd(cb, delta){
-
-    let scrollData = { s: null, ds: null, e: null };
-    var t;
-
-    onScroll((s, ds, e) => {
-      scrollData = {
-        s,
-        ds,
-        e
-      };
-
-      if (t) clearTimeout(t);
-
-      t = setTimeout(_ => {
-        cb(scrollData.s, scrollData.ds, scrollData.e);
-      }, delta);
-    });
-  }
-
-  let scroller = J()
-                    .createEvent('scrollEnd')
-                    .run(function() {
-                      _onScrollEnd((...args) => {
-                        console.log('SCROLL ENDED');
-                        this.triggerEvent('scrollEnd', ...args);
-                      }, 220);
-                    });
-
   function onScrollEnd(cb, delta=50){
-    return scroller.on('scrollEnd', cb)
-    // _onScrollEnd((scroll, ds, e) => {
-      // scroller.triggerEvent('scrollEnd')
-      // globalThis.lectorSpace.scrollEndChain.exec(scroll, ds, e)
-    // }, delta)
+    return _scroller.on('userScrollEnd', cb)
   }
 
   const _scroller = J()
-                      .createWires('scrollData', 'scrollTarget')
-                      .createEvents('scrollStart', 'scroll', 'scrollEnd')
+                      .createWires('scrollData', 'scrollTarget', 'scrolling')
+                      .createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget')
                       .define(
-                        function test(will){
-                          console.log('pleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeease work first try holy shit');
+                        function scrollTo(el, duration, threshold) {
+                          this._selfScrolling = true;
+                          return new Promise((resolve, reject) => {
+                              const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+                              const top = j(el).offset().top - threshold;
+                              anime({
+                                targets: body,
+                                scrollTop: top,
+                                duration: duration,
+                                easing: 'easeInOutSine',
+                              }).finished.then(() => {
+                                setTimeout(() => {
+                                  this._selfScrolling = false;
+                                  resolve();
+                                }, 20);
+                              });
+                            })
                         }
                       )
                       .run(function() {
@@ -1467,7 +1423,8 @@
                         document.addEventListener('scroll', (e) => {
                           // let temp = last
                           // console.log(e.target)
-                          this.scrollTarget = e.target === document ? window.scrollY : j(e.target).scrollTop;
+                          this.setScrollTarget(e.target);
+                          last = e.target === document ? window.scrollY : j(e.target).scrollTop;
                           if (!ticking) {
                             window.requestAnimationFrame(() => {
                               this.setScrollData([last, e]);
@@ -1479,18 +1436,44 @@
                             ticking = true;
                           }
                         }, true);
-
                         // this.test()
                       })
                       .on('scrollTargetChange', function(old, n) {
-                        if (old !== n) console.log('new fukcing target');
+                        if (old !== n) this.triggerEvent('newScrollTarget'); 
                       })
                       .on('scrollDataChange', function(s, ls) {
                         let ds = ls ? s[0] - ls[0] : undefined;
-                        console.log('aaaaaaaaaaaaaaaaaaaa', s, ls, ds);
+                        // console.log('aaaaaaaaaaaaaaaaaaaa', s, ls, ds)
                         this.triggerEvent('scroll', s[0], ds, s[1]);
                       }).on('scroll', function(s, ds, event) {
-                        console.log('scroll', s, ds, event);
+                        if (!this.scrolling) {
+                          this.triggerEvent('scrollStart', s, ds, event);
+                          this.scrolling = true;
+
+                          this.onNext('scrollEnd', () => {
+                            this.scrolling = false;
+                          });
+                        }
+
+                      }).on('scroll', function(s, ds, event) {
+
+                          if (!this._selfScrolling){
+                              this.triggerEvent('userScroll');
+                              if (this._userScrollEndTimeout) clearTimeout(this._userScrollEndTimeout);
+                              this._userScrollEndTimeout = setTimeout(_ => {
+                                this.triggerEvent('userScrollEnd', s, ds, event);
+                              }, 150);
+                          }
+
+                          if (this._scrollEndTimeout) clearTimeout(this._scrollEndTimeout);
+                          this._scrollEndTimeout = setTimeout(_ => {
+                            this.triggerEvent('scrollEnd', s, ds, event);
+                          }, 50);
+
+                      }).on('scrollEnd', () => {
+                        // console.log('SCROLL JAS ENDED')
+                      }).on('scrollStart', () => {
+                        // console.log('STATRT SCROLl')
                       });
 
   const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'eo', 'ep', 'eu', 'id', 'is', 'my', 'ne', 'od', 'oo', 'ot', 'sy', 'ur', 'ur', 'zo', 'pto', 'pyl', 'acr', 'aer', 'agr', 'ana', 'ant', 'apo', 'aut', 'bar', 'bio', 'cac', 'cat', 'cen', 'cen', 'con', 'cub', 'cyn', 'dec', 'dek', 'dem', 'dia', 'dox', 'eco', 'ego', 'eme', 'eos', 'epi', 'erg', 'eso', 'eth', 'eur', 'exo', 'geo', 'gen', 'hem', 'hal', 'hen', 'hex', 'hod', 'hol', 'hor', 'hor', 'hyo', 'hyp', 'ide', 'idi', 'iso', 'kil', 'lei', 'lep', 'lip', 'log', 'meg', 'mei', 'men', 'mer', 'mes', 'mim', 'mis', 'mit', 'mne', 'mon', 'myx', 'nes', 'nom', 'oct', 'oed', 'oen', 'omm', 'ont', 'opt', 'pan', 'pam', 'par', 'ped', 'pin', 'pis', 'pol', 'por', 'pro', 'rhe', 'sei', 'sit', 'syn', 'syl', 'sym', 'tax', 'the', 'the', 'tom', 'ton', 'top', 'tox', 'tri', 'ulo', 'uro', 'uro', 'xen', 'xer', 'zon', 'zyg', 'psil', 'prot', 'pros', 'amph', 'anem', 'anti', 'anth', 'arct', 'astr', 'athl', 'auto', 'basi', 'bibl', 'briz', 'brom', 'brom', 'call', 'carp', 'carp', 'cata', 'chir', 'cine', 'cirr', 'clad', 'clav', 'coel', 'copr', 'cosm', 'crep', 'cris', 'crit', 'cten', 'cyan', 'cycl', 'cyst', 'deca', 'deka', 'delt', 'derm', 'dexi', 'dino', 'dipl', 'ecto', 'endo', 'engy', 'eoso', 'etho', 'ethi', 'ethm', 'ethn', 'etym', 'fant', 'glia', 'gram', 'gymn', 'haem', 'hapl', 'heli', 'hemi', 'hept', 'herp', 'heur', 'hipp', 'home', 'horm', 'hyal', 'hydr', 'hygr', 'hypn', 'icos', 'kine', 'lamp', 'leps', 'leuc', 'leuk', 'lith', 'metr', 'meta', 'micr', 'myri', 'myth', 'narc', 'naut', 'necr', 'nect', 'nema', 'neur', 'noth', 'noto', 'oeco', 'ogdo', 'olig', 'onom', 'ophi', 'orch', 'orth', 'pach', 'paed', 'pale', 'path', 'patr', 'pect', 'pent', 'pept', 'peri', 'petr', 'phae', 'phag', 'pher', 'phil', 'phob', 'phon', 'phor', 'phos', 'phot', 'phyl', 'phys', 'plac', 'plas', 'plec', 'plut', 'pneu', 'poie', 'pole', 'poli', 'poli', 'poly', 'raph', 'rhag', 'rhig', 'rhin', 'rhiz', 'rhod', 'sarc', 'scel', 'scop', 'sema', 'siph', 'soma', 'soph', 'stea', 'steg', 'sten', 'stig', 'stom', 'styl', 'tach', 'tars', 'taur', 'tele', 'tele', 'temn', 'tetr', 'than', 'thus', 'ther', 'thym', 'thyr', 'trag', 'trit', 'trop', 'xiph', 'proct', 'ptych', 'amphi', 'arche', 'archi', 'arche', 'arist', 'arthr', 'bathy', 'batho', 'blenn', 'blast', 'botan', 'brady', 'bront', 'calli', 'calyp', 'cardi', 'centr', 'ceram', 'cerat', 'chlor', 'chore', 'chrom', 'chron', 'chrys', 'clast', 'clist', 'cochl', 'corac', 'cotyl', 'crani', 'cross', 'crypt', 'dendr', 'dodec', 'dynam', 'ennea', 'gastr', 'graph', 'heter', 'homal', 'hyper', 'klept', 'lekan', 'macro', 'melan', 'meter', 'morph', 'nephr', 'nomad', 'odont', 'organ', 'osteo', 'palae', 'palin', 'peran', 'phleg', 'phloe', 'phren', 'phryn', 'phyll', 'plagi', 'platy', 'plesi', 'pleth', 'pleur', 'pogon', 'polem', 'potam', 'rhabd', 'rhomb', 'scaph', 'schem', 'schis', 'scler', 'scoli', 'scept', 'scyph', 'selen', 'solen', 'sperm', 'sphen', 'spher', 'stern', 'stich', 'stoch', 'taeni', 'techn', 'therm', 'thyre', 'traum', 'trema', 'trich', 'troch', 'troph', 'xanth', 'psych', 'archae', 'brachi', 'brachy', 'bronch', 'cathar', 'cephal', 'chelon', 'cleist', 'cosmet', 'cylind', 'dactyl', 'deuter', 'dogmat', 'erythr', 'galact', 'hendec', 'ichthy', 'mening', 'myrmec', 'omphal', 'opisth', 'opoter', 'ornith', 'ostrac', 'persic', 'phalar', 'phaner', 'phragm', 'plinth', 'prasin', 'presby', 'rhynch', 'scalen', 'strept', 'stroph', 'thalam', 'theori', 'trachy', 'trapez', 'tympan', 'aesthet', 'anthrop', 'branchi', 'cleithr', 'epistem', 'parthen', 'phalang', 'pharmac', 'porphyr', 'sacchar', 'sphinct', 'stalact', 'stalagm', 'thalass', 'oesophag', 'ophthalm', 'physalid', 'pentecost', 'treiskaidek'];
@@ -16952,7 +16935,7 @@
         });
     }
     destroy(){
-      this.childMap = null;
+      // this.childMap = null
       return null
     }
 
@@ -20892,9 +20875,7 @@
 
     function autoScroll(){
       //return
-      console.log('autoscrolllllllllllllllllllllllllllllllllll');
-      console.log('is user scrolling', userIsScrolling());
-      if (userIsScrolling() || isOnScreen(lec.currentWord) || scrollingIntoView) return false
+      if (isOnScreen(lec.currentWord) || scrollingIntoView) return false
       // else we're out of view
 
       scrollingIntoView = true;
@@ -20916,7 +20897,7 @@
       console.warn("mark is out of screen");
       console.log('lec reading:', lec.isReading);
 
-      scrollTo(mark).then(() => {
+      scrollTo(lec.currentWord).then(() => {
         cbs.forEach(cb => cb());
         scrollingIntoView = false;
       });
@@ -20992,9 +20973,9 @@
           j('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
         }
 
-        lec.resetMark().then(() => {
-          lec.mark.show();
-        });
+        // lec.resetMark().then(() => {
+          // lec.mark.show()
+        // })
 
         console.timeEnd('scrollend');
         // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))

@@ -33,7 +33,7 @@ export default class PragmaWord extends Pragma {
       })
   }
   destroy(){
-    this.childMap = null
+    // this.childMap = null
     return null
   }
 

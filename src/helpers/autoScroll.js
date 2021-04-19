@@ -1,5 +1,5 @@
 import { elementify } from './pragmafy.js'
-import { _e, util, _p } from "pragmajs"
+import { _e, util, _p, _thread } from "pragmajs"
 import anime from "animejs"
 
 // function getViewportHeight(){
@@ -41,6 +41,8 @@ export function isOnScreen(el, threshold=100){
 }
 
 export function scrollTo(el, duration=200, threshold=200){
+  console.log('SCROLLING TO ', el)
+  return _scroller.scrollTo(el, duration, threshold)
   // behavior
   // closer, will scroll little bit downwards or upwards
   // until the element is in view for more than the threshold
@@ -49,130 +51,57 @@ export function scrollTo(el, duration=200, threshold=200){
   //el = jqueryfy(el)
   //
 
-  el = elementify(el)
-  return new Promise((resolve, reject) => {
-    const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    const top = el.offset().top - threshold
-    anime({
-      targets: body,
-      scrollTop: top,
-      duration: duration,
-      easing: 'easeInOutSine',
-    }).finished.then(() => {
-      setTimeout(resolve, 20)
-    })
-  })
+  // el = elementify(el)
+  // return new Promise((resolve, reject) => {
+  //   const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+  //   const top = el.offset().top - threshold
+  //   anime({
+  //     targets: body,
+  //     scrollTop: top,
+  //     duration: duration,
+  //     easing: 'easeInOutSine',
+  //   }).finished.then(() => {
+  //     setTimeout(resolve, 20)
+  //   })
+  // })
 }
 
-
-
-function _onScroll(cb, throttle=0){
-  let last = 0;
-  let ticking = false;
-  document.addEventListener('scroll', function(e) {
-    // console.log('fire scroll')
-    let temp = last
-    last = window.scrollY;
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        cb(last, last-temp, e);
-        setTimeout(() => {
-          ticking = false;
-        }, throttle)
-      });
-      ticking = true;
-    }
-  }, true);
+export function onGlobalScroll(cb) {
+  return _scroller.on('scroll', cb)
 }
 
-export function onScroll(cb, throttle){
-  if (!globalThis.lectorSpace.scrollChain){
-    util.createChains(globalThis.lectorSpace, 'scroll')
-    _onScroll((scroll, ds, event) => {
-      globalThis.lectorSpace.scrollChain.exec(scroll, ds, event)
-    }, 0)
-  }
-  globalThis.lectorSpace.onScroll(cb)
+export function onScroll(cb) {
+  return _scroller.on('userScroll', cb)
 }
 
-function _onScrollEnd(cb, delta){
-
-  let scrollData = { s: null, ds: null, e: null }
-  var t
-
-  onScroll((s, ds, e) => {
-    scrollData = {
-      s,
-      ds,
-      e
-    }
-
-    if (t) clearTimeout(t)
-
-    t = setTimeout(_ => {
-      cb(scrollData.s, scrollData.ds, scrollData.e)
-    }, delta)
-  })
+export function onGlobalScrollEnd(cb, delta=50){
+  return _scroller.on('scrollEnd', cb)
 }
-
-let scroller = _p()
-                  .createEvent('scrollEnd')
-                  .run(function() {
-                    _onScrollEnd((...args) => {
-                      console.log('SCROLL ENDED')
-                      this.triggerEvent('scrollEnd', ...args)
-                    }, 220)
-                  })
-
 export function onScrollEnd(cb, delta=50){
-  return scroller.on('scrollEnd', cb)
-  // _onScrollEnd((scroll, ds, e) => {
-    // scroller.triggerEvent('scrollEnd')
-    // globalThis.lectorSpace.scrollEndChain.exec(scroll, ds, e)
-  // }, delta)
-}
-
-//export function onSlowScroll(cb, sensit=10){
-  //onScroll((_, dp) => {
-    //if (dp<=sensit) cb()
-  //})
-//}
-
-function _onScroall(cb, throttle=0){
-  let last = 0;
-  let ticking = false;
-  document.addEventListener('scroll', function(e) {
-    // console.log('fire scroll')
-    let temp = last
-    last = window.scrollY;
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        cb(last, last-temp, e);
-        setTimeout(() => {
-          ticking = false;
-        }, throttle)
-      });
-      ticking = true;
-    }
-  }, true);
-}
-
- function aonScroll(cb, throttle){
-  if (!globalThis.lectorSpace.scrollChain){
-    util.createChains(globalThis.lectorSpace, 'scroll')
-    _onScroll((scroll, ds, event) => {
-      globalThis.lectorSpace.scrollChain.exec(scroll, ds, event)
-    }, 0)
-  }
-  globalThis.lectorSpace.onScroll(cb)
+  return _scroller.on('userScrollEnd', cb)
 }
 
 export const _scroller = _p()
-                    .createWires('scrollData', 'scrollTarget')
-                    .createEvents('scrollStart', 'scroll', 'scrollEnd')
+                    .createWires('scrollData', 'scrollTarget', 'scrolling')
+                    .createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget')
                     .define(
-                      function test(will){
-                        console.log('pleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeease work first try holy shit')
+                      function scrollTo(el, duration, threshold) {
+                        this._selfScrolling = true
+                        return new Promise((resolve, reject) => {
+                            const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
+                            const top = _e(el).offset().top - threshold
+                            anime({
+                              targets: body,
+                              scrollTop: top,
+                              duration: duration,
+                              easing: 'easeInOutSine',
+                            }).finished.then(() => {
+                              setTimeout(() => {
+                                this._selfScrolling = false
+                                resolve()
+                              }, 20)
+                            })
+                          })
                       }
                     )
                     .run(function() {
@@ -182,7 +111,8 @@ export const _scroller = _p()
                       document.addEventListener('scroll', (e) => {
                         // let temp = last
                         // console.log(e.target)
-                        this.scrollTarget = e.target === document ? window.scrollY : _e(e.target).scrollTop;
+                        this.setScrollTarget(e.target)
+                        last = e.target === document ? window.scrollY : _e(e.target).scrollTop;
                         if (!ticking) {
                           window.requestAnimationFrame(() => {
                             this.setScrollData([last, e])
@@ -194,18 +124,45 @@ export const _scroller = _p()
                           ticking = true;
                         }
                       }, true)
-
                       // this.test()
                     })
                     .on('scrollTargetChange', function(old, n) {
-                      if (old !== n) console.log('new fukcing target')
+                      if (old !== n) this.triggerEvent('newScrollTarget') 
                     })
                     .on('scrollDataChange', function(s, ls) {
                       let ds = ls ? s[0] - ls[0] : undefined
-                      console.log('aaaaaaaaaaaaaaaaaaaa', s, ls, ds)
+                      // console.log('aaaaaaaaaaaaaaaaaaaa', s, ls, ds)
                       this.triggerEvent('scroll', s[0], ds, s[1])
                     }).on('scroll', function(s, ds, event) {
-                      console.log('scroll', s, ds, event)
+                      if (!this.scrolling) {
+                        this.triggerEvent('scrollStart', s, ds, event)
+                        this.scrolling = true
+
+                        this.onNext('scrollEnd', () => {
+                          this.scrolling = false
+                        })
+                      }
+
+                    }).on('scroll', function(s, ds, event) {
+
+                        if (!this._selfScrolling){
+                            this.triggerEvent('userScroll')
+                            if (this._userScrollEndTimeout) clearTimeout(this._userScrollEndTimeout)
+                            this._userScrollEndTimeout = setTimeout(_ => {
+                              this.triggerEvent('userScrollEnd', s, ds, event)
+                            }, 150)
+                        }
+
+                        if (this._scrollEndTimeout) clearTimeout(this._scrollEndTimeout)
+                        this._scrollEndTimeout = setTimeout(_ => {
+                          this.triggerEvent('scrollEnd', s, ds, event)
+                        }, 50)
+
+                    }).on('scrollEnd', () => {
+                      // console.log('SCROLL JAS ENDED')
+                    }).on('scrollStart', () => {
+                      // console.log('STATRT SCROLl')
                     })
+
                     
 

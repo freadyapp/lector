@@ -64,9 +64,7 @@ const Mark = (lec) => {
 
   function autoScroll(){
     //return
-    console.log('autoscrolllllllllllllllllllllllllllllllllll')
-    console.log('is user scrolling', userIsScrolling())
-    if (userIsScrolling() || isOnScreen(lec.currentWord) || scrollingIntoView) return false
+    if (isOnScreen(lec.currentWord) || scrollingIntoView) return false
     // else we're out of view
 
     scrollingIntoView = true
@@ -88,7 +86,7 @@ const Mark = (lec) => {
     console.warn("mark is out of screen")
     console.log('lec reading:', lec.isReading)
 
-    scrollTo(mark).then(() => {
+    scrollTo(lec.currentWord).then(() => {
       cbs.forEach(cb => cb())
       scrollingIntoView = false
     })
@@ -166,9 +164,9 @@ const Mark = (lec) => {
         _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
 
-      lec.resetMark().then(() => {
-        lec.mark.show()
-      })
+      // lec.resetMark().then(() => {
+        // lec.mark.show()
+      // })
 
       console.timeEnd('scrollend')
       // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
