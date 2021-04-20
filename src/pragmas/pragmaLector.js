@@ -90,7 +90,12 @@ export default class PragmaLector extends Pragma {
   read(){
     console.log("::LECTOR reading", this)
     if (!this.w.hasKids) return console.error('nothing to read')
-    this.w.read(true)
+    
+    return new Promise(async (resolve, reject) => {
+      if (this.currentWord) await this.currentWord.summon()
+      this.w.read(true)
+      resolve() // started to read
+    })
   }
 
   summonTo(n){

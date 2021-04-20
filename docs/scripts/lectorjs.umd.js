@@ -1392,28 +1392,58 @@
   function onScrollEnd(cb, delta=50){
     return _scroller.on('userScrollEnd', cb)
   }
-
   const _scroller = J()
                       .createWires('scrollData', 'scrollTarget', 'scrolling')
                       .createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget')
                       .define(
+
                         function scrollTo(el, duration, threshold) {
-                          this._selfScrolling = true;
-                          return new Promise((resolve, reject) => {
-                              const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-                              const top = j(el).offset().top - threshold;
-                              anime({
-                                targets: body,
-                                scrollTop: top,
-                                duration: duration,
-                                easing: 'easeInOutSine',
-                              }).finished.then(() => {
-                                setTimeout(() => {
-                                  this._selfScrolling = false;
-                                  resolve();
-                                }, 20);
-                              });
-                            })
+                          j(el).scrollIntoView({
+                            block: 'center',
+                            behavior: 'smooth',
+                            inline: 'center'
+                          });
+                          return new Promise((r, re) => {
+                            this.onNext('scrollEnd', () => {
+                              setTimeout(() => {
+                                r();
+                              }, 10);
+                            });
+                          })
+                          // if (!el) return new Promise(r => r())
+                          // if (!el) return new Promise(r => r())
+                          // this._selfScrolling = true
+                          // // console.log('scrolling to', el)
+                          // // console.log('scroll parent', getScrollParent(el))
+                          // // console.log('scroll parent parent', getScrollParent(getScrollParent(el).parentNode))
+                          // // let node = el
+                          // // while (node && node !== document) {
+                          //   // node = getScrollParent(node)
+                          //   // console.log(node)
+
+                          //   // node = node.parentNode
+                          // // }
+
+                          // // if (el !== document) 
+                          // let parent = el === document.body ? bodyScroll : getScrollParent(el)
+                          // if (!parent) return new Promise(r => r())
+                          // return new Promise((resolve, reject) => {
+                          //   const top = _e(el).offset().top - threshold
+                          //   anime({
+                          //     targets: parent,
+                          //     scrollTop: top,
+                          //     duration: duration,
+                          //     easing: 'easeInOutSine',
+                          //   }).finished.then(async () => {
+                          //     await this.scrollTo(parent.parentNode, duration, threshold)
+
+                          //     setTimeout(() => {
+                          //       this._selfScrolling = false
+                          //       resolve()
+                          //     }, 20)
+
+                          //   })
+                          // })
                         }
                       )
                       .run(function() {
@@ -16811,7 +16841,12 @@
     read(){
       console.log("::LECTOR reading", this);
       if (!this.w.hasKids) return console.error('nothing to read')
-      this.w.read(true);
+      
+      return new Promise(async (resolve, reject) => {
+        if (this.currentWord) await this.currentWord.summon();
+        this.w.read(true);
+        resolve(); // started to read
+      })
     }
 
     summonTo(n){
@@ -20875,7 +20910,7 @@
 
     function autoScroll(){
       //return
-      if (isOnScreen(lec.currentWord) || scrollingIntoView) return false
+      if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
       // else we're out of view
 
       scrollingIntoView = true;
@@ -20898,8 +20933,10 @@
       console.log('lec reading:', lec.isReading);
 
       scrollTo(lec.currentWord).then(() => {
+        // setTimeout(() => {
         cbs.forEach(cb => cb());
         scrollingIntoView = false;
+        // }, 1000)
       });
     }
 

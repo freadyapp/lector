@@ -64,7 +64,7 @@ const Mark = (lec) => {
 
   function autoScroll(){
     //return
-    if (isOnScreen(lec.currentWord) || scrollingIntoView) return false
+    if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
     // else we're out of view
 
     scrollingIntoView = true
@@ -87,8 +87,10 @@ const Mark = (lec) => {
     console.log('lec reading:', lec.isReading)
 
     scrollTo(lec.currentWord).then(() => {
+      // setTimeout(() => {
       cbs.forEach(cb => cb())
       scrollingIntoView = false
+      // }, 1000)
     })
   }
 
