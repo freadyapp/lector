@@ -242,6 +242,10 @@ export const Word = (element, i, options={ shallow: false }) => {
     }
 
     let thisw = w.element.findAll('w')
+    // thisw.forEach(w => {
+      // console.log(w.parentNode, w)
+      // console.log(w.parentNode == w)
+    // })
     if (i && thisw.length === 0) {
       w.setData({ wordAtom: true })
       w.addClass('word-element')
@@ -263,9 +267,9 @@ export const Word = (element, i, options={ shallow: false }) => {
   return w
 }
 
-export const Reader = (l, options=default_options) => {
+export const Reader = async (l, options=default_options) => {
   l = _e(l)
-  if (options.wfy) wfy(l)
+  if (options.wfy) await wfy(l)
   let w = Word(l)
 
   let lec = new PragmaLector("lector")
@@ -326,7 +330,7 @@ function _streamer(sf){
 
 }
 
-export const Lector = (l, options=default_options) => {
+export const Lector = async (l, options=default_options) => {
   if (options.defaultStyles){
     util.addStyles(css.main)
     util.addStyles(css.slider)
@@ -338,7 +342,7 @@ export const Lector = (l, options=default_options) => {
   }
 
   if (!_needWrapper(options)){
-    let r = Reader(l, options) 
+    let r = await Reader(l, options) 
     pragmaSpace.onDocLoad(() => {
       r.triggerEvent('load')
     })
@@ -368,7 +372,7 @@ export const Lector = (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    lector = Reader(_e(l).parentElement, options)
+    lector = await Reader(_e(l).parentElement, options)
                   .adopt(paginator, streamer)
 
     
