@@ -372,10 +372,12 @@ export const Lector = async (l, options=default_options) => {
     // console.log(l)
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
-    lector = await Reader(_e(l).parentElement, options)
+    console.log('crating reader...')
+    lector = (await Reader(_e(l).parentElement, options))
                   .adopt(paginator, streamer)
 
     
+    console.log('lector is', lector)
     lector.paginator = paginator
 
     connectToLectorSettings(lector, 'page').then(settingPragma => {

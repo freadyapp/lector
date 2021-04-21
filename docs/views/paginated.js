@@ -54,11 +54,11 @@ function fetchContent(index){
     //}, Math.random()*1000)
   //})
 //}
-
+// alert('a')
 
 let lectorSettings = {
    onboarding: !getG('lector.onboarding.show?'),
-   wfy: true,
+   wfy: false,
    loop: false,
    autostart: false,
 

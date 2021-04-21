@@ -21313,10 +21313,12 @@
       // console.log(l)
       // console.log(_e(l).parentElement)
       // let options = util.objDiff({ skip: true })
-      lector = await Reader(j(l).parentElement, options)
+      console.log('crating reader...');
+      lector = (await Reader(j(l).parentElement, options))
                     .adopt(paginator, streamer);
 
       
+      console.log('lector is', lector);
       lector.paginator = paginator;
 
       connectToLectorSettings(lector, 'page').then(settingPragma => {
