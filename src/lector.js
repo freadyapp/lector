@@ -48,6 +48,34 @@ const default_options = {
 
 const Mark = (lec) => {
   let mark = new PragmaMark(lec)
+                  .define(
+                    function correctBlueprint(current, last) {
+                      if (!last) return current
+                      console.log('correcting', current, last)
+
+                      // if the current top is slightly different than the last
+                      // return the last top
+                      // if current.top + last.height/2 < last.top
+                        // and current.center = current.top + current.height/2 
+                        // and current.center < last.top
+                        // and current.center > last.height + last.top
+                      
+                      let currentCenter = current.top + current.height/2
+                      console.log(last.top, last.height, last.top + last.height)
+                      console.log(currentCenter, (currentCenter >= last.top) && (currentCenter <= last.height + last.top))
+                      console.log(last.height, current.height)
+                      if ( last.height/2 < current.height 
+                         && currentCenter >= last.top
+                         && currentCenter <= last.height + last.top) {
+                           current.height = last.height
+                           current.top = last.top
+                         }
+                      // if (this.lastMark) {
+                        // console.log(this.lastMark, this.currentlyMarking)
+                      // }
+                      return current
+                    }
+                  )
 
   function logger(w){
     // console.log('mark:', w)

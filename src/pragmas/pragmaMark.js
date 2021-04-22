@@ -41,6 +41,9 @@ export default class PragmaMark extends Pragma {
     this.setWpm(defaultVals.wpm)
     this.setFovea(defaultVals.fovea)
 
+
+    this.createEvents('changeLine')
+    this.createWire('lastMark')
     //this.idle = new Idle(8000)
       //.onAfk(()=> {
         //util.log('user is afk')
@@ -126,13 +129,26 @@ export default class PragmaMark extends Pragma {
     })
   }
 
+  _correctBlueprint(current, last) {
+    console.time('correcting blueprint')
+    let corrected = this.correctBlueprint(current, last)
+    console.timeEnd('correcting blueprint')
+    return corrected
+  }
+
+  correctBlueprint(current, last) {
+    return current
+  }
+
   moveTo(blueprint, duration, complete = (() => {})) {
     // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
+      blueprint = this._correctBlueprint(blueprint, this.lastMark)
       this.currentlyMarking = blueprint
+      
       this.current_anime = anime({
         targets: this.element,
         left: blueprint.left,
@@ -142,6 +158,7 @@ export default class PragmaMark extends Pragma {
         easing: blueprint.ease || 'easeInOutExpo',
         duration: duration,
         complete: (anim) => {
+          this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
           complete()
           resolve()

@@ -17324,6 +17324,9 @@
       this.setWpm(defaultVals.wpm);
       this.setFovea(defaultVals.fovea);
 
+
+      this.createEvents('changeLine');
+      this.createWire('lastMark');
       //this.idle = new Idle(8000)
         //.onAfk(()=> {
           //util.log('user is afk')
@@ -17409,13 +17412,26 @@
       })
     }
 
+    _correctBlueprint(current, last) {
+      console.time('correcting blueprint');
+      let corrected = this.correctBlueprint(current, last);
+      console.timeEnd('correcting blueprint');
+      return corrected
+    }
+
+    correctBlueprint(current, last) {
+      return current
+    }
+
     moveTo(blueprint, duration, complete = (() => {})) {
       // console.log('moving to', blueprint)
       this.show();
       //this.shutUp() // clear any ui elements that direct attention to mark
       if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
       return new Promise((resolve, reject) => {
+        blueprint = this._correctBlueprint(blueprint, this.lastMark);
         this.currentlyMarking = blueprint;
+        
         this.current_anime = anime({
           targets: this.element,
           left: blueprint.left,
@@ -17425,6 +17441,7 @@
           easing: blueprint.ease || 'easeInOutExpo',
           duration: duration,
           complete: (anim) => {
+            this.lastMark = this.currentlyMarking;
             this.currentlyMarking = null;
             complete();
             resolve();
@@ -20955,7 +20972,35 @@
   };
 
   const Mark = (lec) => {
-    let mark = new PragmaMark(lec);
+    let mark = new PragmaMark(lec)
+                    .define(
+                      function correctBlueprint(current, last) {
+                        if (!last) return current
+                        console.log('correcting', current, last);
+
+                        // if the current top is slightly different than the last
+                        // return the last top
+                        // if current.top + last.height/2 < last.top
+                          // and current.center = current.top + current.height/2 
+                          // and current.center < last.top
+                          // and current.center > last.height + last.top
+                        
+                        let currentCenter = current.top + current.height/2;
+                        console.log(last.top, last.height, last.top + last.height);
+                        console.log(currentCenter, (currentCenter >= last.top) && (currentCenter <= last.height + last.top));
+                        console.log(last.height, current.height);
+                        if ( last.height/2 < current.height 
+                           && currentCenter >= last.top
+                           && currentCenter <= last.height + last.top) {
+                             current.height = last.height;
+                             current.top = last.top;
+                           }
+                        // if (this.lastMark) {
+                          // console.log(this.lastMark, this.currentlyMarking)
+                        // }
+                        return current
+                      }
+                    );
 
     function logger(w){
       // console.log('mark:', w)
