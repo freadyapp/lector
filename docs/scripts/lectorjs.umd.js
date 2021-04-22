@@ -16596,7 +16596,7 @@
   }
 
   // const wregex = /(\w+)/gm
-  const wregex = /[^\s] +/gm;
+  const wregex = /([^\s]+)/gm;
   const obsKey = O.rk(5);
   const obs = {
     "<": `;;#${obsKey}0;`,

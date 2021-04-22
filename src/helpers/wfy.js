@@ -12,7 +12,7 @@ export function escapeHtml(unsafe) {
 }
 
 // const wregex = /(\w+)/gm
-const wregex = /[^\s] +/gm
+const wregex = /([^\s]+)/gm
 const obsKey = util.rk(5)
 const obs = {
   "<": `;;#${obsKey}0;`,
