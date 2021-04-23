@@ -408,6 +408,9 @@
   cursor: pointer;
   transition: all .05s ease;
   border-radius: 1px;
+  border-bottom: 1px solid transparent;
+  margin-bottom: -1px;
+
   &.hover-0{
     background-color: #2b6cce37;
     outline: 2px solid #2b6cce37;
@@ -425,8 +428,22 @@
   }
 
   &.mark-is-here {
-    background: pink;
+    // &::before {
+    //   content: " ";
+    //   background-color: #2b6cce;
+    //   width: 5px;
+    //   height: 5px;
+    //   position: sticky;
+    //   top: -25px;
+    //   left: 25px;
+    //   display: inline-block;
+    //   border-radius: 50%;
+    // }
+    // background: pink;
+    border-bottom: 1px solid #2b6cce;
+    background-color: #2b6cce19;
   }
+
 }
 
 .fade-onload {
