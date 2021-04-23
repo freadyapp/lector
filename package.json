@@ -1,6 +1,6 @@
 {
     "name": "lectorjs",
-    "version": "0.7.1",
+    "version": "0.8.0-a",
     "description": "Read like you're on aderall",
     "license": "MIT",
     "repository": {
@@ -60,7 +60,7 @@
         "animejs": "^3.2.1",
         "compromise": "^13.7.0",
         "mousetrap": "^1.6.5",
-        "pragmajs": "^0.8.1"
+        "pragmajs": "^0.8.3"
     },
     "jest": {
         "setupFiles": [

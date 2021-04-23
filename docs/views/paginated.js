@@ -30,7 +30,7 @@ function fetchContent(index){
 
       let abc = "abcdefghijklmnopqrstuvwrxyz "
       let len = abc.length
-      let words = 100
+      let words = 1000
 
       while (words > 0){
         txt += abc.charAt(Math.floor(Math.random()*len))
@@ -54,11 +54,11 @@ function fetchContent(index){
     //}, Math.random()*1000)
   //})
 //}
-
+// alert('a')
 
 let lectorSettings = {
-   onboarding: true || !getG('lector.onboarding.show?'),
-   wfy: true,
+   onboarding: !getG('lector.onboarding.show?'),
+   wfy: false,
    loop: false,
    autostart: false,
 

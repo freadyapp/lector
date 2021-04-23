@@ -5,6 +5,7 @@ export default class PragmaLector extends Pragma {
   constructor(){
     super(arguments)
 
+    this.isPragmaLector = true
     this.createEvent('load')
     this.on('load', () => this._loaded = true)
     
@@ -60,6 +61,11 @@ export default class PragmaLector extends Pragma {
   }
 
   removeWord(key){
+    let word = this.w.get(key)
+    console.log('removing', key, word)
+    // console.log(word, this)
+    if (word?.currentWord === this.currentWord) {
+    }
     this.w.remove(key)
   }
 
@@ -82,24 +88,36 @@ export default class PragmaLector extends Pragma {
   }
 
   read(){
-    console.log("::LECTOR reading", this)
+    // console.log("::LECTOR reading", this)
     if (!this.w.hasKids) return console.error('nothing to read')
-    this.w.read(true)
+    
+    return new Promise(async (resolve, reject) => {
+      // if (this.currentWord) await this.currentWord.summon()
+      await this.summonToCurrentWord()
+      this.w.read(true)
+      resolve() // started to read
+    })
   }
 
-  summonTo(n){
-    this.currentParent.value += n
-    this.currentWord.summon()
+  summonToCurrentWord() { return this.summonTo() }
+  async summonTo(n=0){
+    await this.resetMark()
+    if (n !== 0) this.currentParent.value += n
+    return this.currentWord ? this.currentWord.summon() : new Promise(r => r())
   }
   
   resetMark(){
     // TODO CAUSES BUG
-    this.whenLoad().then(() => {
-      if (this.currentWord && this.currentWord.getData('wordAtom')){
-        console.log("current word is", this.currentWord)
-        this.currentWord.summon()
-      }
-    })
+    return new Promise((resolve => {
+      this.whenLoad().then(() => {
+        if (this.currentWord && this.currentWord.getData('wordAtom')){
+          console.log("current word is", this.currentWord)
+          this.currentWord.summon().then(d => {
+            resolve(d)
+          })
+        }
+      })
+    }))
   }
 
   goToNext(){ this.summonTo(+1) }

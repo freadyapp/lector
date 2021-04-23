@@ -28,6 +28,8 @@ body {
 	font-size: 1.1em;
 	line-height: 1.7em;
   min-height: 500px;
+  max-height: 520px;
+  overflow-y: scroll;
 }
 
 
