@@ -423,6 +423,10 @@
   &.hover-3 {
     background-color: rgba(184, 184, 184, 0.043);
   }
+
+  &.mark-is-here {
+    background: pink;
+  }
 }
 
 .fade-onload {

@@ -88,25 +88,27 @@ export default class PragmaLector extends Pragma {
   }
 
   read(){
-    console.log("::LECTOR reading", this)
+    // console.log("::LECTOR reading", this)
     if (!this.w.hasKids) return console.error('nothing to read')
     
     return new Promise(async (resolve, reject) => {
-      if (this.currentWord) await this.currentWord.summon()
+      // if (this.currentWord) await this.currentWord.summon()
+      await this.summonToCurrentWord()
       this.w.read(true)
       resolve() // started to read
     })
   }
 
-  summonTo(n){
-    this.currentParent.value += n
-    this.currentWord.summon()
+  summonToCurrentWord() { return this.summonTo() }
+  async summonTo(n=0){
+    await this.resetMark()
+    if (n !== 0) this.currentParent.value += n
+    return this.currentWord ? this.currentWord.summon() : new Promise(r => r())
   }
   
   resetMark(){
     // TODO CAUSES BUG
     return new Promise((resolve => {
-
       this.whenLoad().then(() => {
         if (this.currentWord && this.currentWord.getData('wordAtom')){
           console.log("current word is", this.currentWord)

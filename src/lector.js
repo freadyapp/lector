@@ -1,11 +1,10 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
-import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll } from "./helpers/index"
+import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll, firstVisibleParent } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
 import { LectorSettings } from "./ui/index"
 import { addSettingsToLector } from "./ui/lectorSettings2"
 import anime from "animejs"
 import { popUpOb } from "./onboarding/popUpOb"
-
 
 import * as _ext from "./extensions/index"
 
@@ -51,28 +50,17 @@ const Mark = (lec) => {
                   .define(
                     function correctBlueprint(current, last) {
                       if (!last) return current
-                      console.log('correcting', current, last)
 
-                      // if the current top is slightly different than the last
-                      // return the last top
-                      // if current.top + last.height/2 < last.top
-                        // and current.center = current.top + current.height/2 
-                        // and current.center < last.top
-                        // and current.center > last.height + last.top
-                      
                       let currentCenter = current.top + current.height/2
-                      console.log(last.top, last.height, last.top + last.height)
-                      console.log(currentCenter, (currentCenter >= last.top) && (currentCenter <= last.height + last.top))
-                      console.log(last.height, current.height)
+
                       if ( last.height/2 < current.height 
-                         && currentCenter >= last.top
-                         && currentCenter <= last.height + last.top) {
-                           current.height = last.height
-                           current.top = last.top
-                         }
-                      // if (this.lastMark) {
-                        // console.log(this.lastMark, this.currentlyMarking)
-                      // }
+                            && currentCenter >= last.top
+                            && currentCenter <= last.height + last.top ) {
+
+                        current.height = last.height
+                        current.top = last.top
+                      }
+
                       return current
                     }
                   )
@@ -91,6 +79,7 @@ const Mark = (lec) => {
   }
 
   function autoScroll(){
+    // convert to a pragma
     //return
     if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
     // else we're out of view
@@ -122,8 +111,7 @@ const Mark = (lec) => {
     })
   }
 
-  const threshold = 40 // how fast should you scroll to pause the pointer
-  let lastScroll = 0
+
 
   let markedWords = new Set
 
@@ -131,34 +119,60 @@ const Mark = (lec) => {
                     .listenTo('click', () => {
                       lec.currentWord.summon()
                     })
+
   let indicatorAppended = false
 
-  onScrollEnd((s, ds, event) => {
-    console.time('scrollend')
+  let markDetective = _p()
+        .define(
+          function unminimizeMark() {
+              // reset marked words
+              for (let w of markedWords) {
+                if (!w) continue
+                console.log(w)
+                // w.css(`background transparent`)
+                w.removeClass('mark-is-here')
+                markedWords.delete(w)
+              }
 
-    for (let w of markedWords) {
-      if (!w) continue
-      console.log(w)
-      w.css(`background transparent`)
-      markedWords.delete(w)
-    }
+              lec.resetMark().then(() => {
+                lec.mark.show()
+                this.minimized = false
+              })
+          },
 
-    function firstVisibleParent(e){
-      if (!e || !e.parent || visibleY(e.element)) return e
-      return firstVisibleParent(e.parent)
-    }
+          function minimizeMark() {
+            lec.mark.hide()
+            lec.currentWord?.addClass('mark-is-here')
+            markedWords.add(lec.currentWord)
+            this.minimized = true
+          }
 
+        ).run(function() {
+
+          this.minimized = true
+          lec.on('load', () => {
+            lec.mark.on('mark', () => {
+            if (!this.minimized) return
+            this.unminimizeMark()
+            })
+          })
+
+        })
+
+  onScrollEnd(() => {
+    indicateMarkIfHidden()
+  }, 150)
+
+  function indicateMarkIfHidden() {
+    console.time('indicating mark')
     let _top = 1
     let _bottom = -1
-
     function findObscurer(p) {
       let surface = firstVisibleParent(p)
       if (surface === p) return null
 
-      var bottomOf = (word) => word.element.top + word.element.height
       var topOf = (word) => word.element.top
 
-                // !visibleY(word.parent.element) ? isWordObscured(word.parent) :
       return {
         surface,
         from: (topOf(p) <= ( surface.isPragmaWord ? topOf(surface) : window.scrollY) ? _top : _bottom)
@@ -167,13 +181,7 @@ const Mark = (lec) => {
 
     if (!lec.isReading) {
       let currentWord = lec.currentWord
-
-      // let obscured = isWordObscured(currentWord)
-
       let obscured = currentWord ? findObscurer(currentWord) : false
-      // console.log('surface is', findObscurer(currentWord))
-      // console.log('obscured by', obscured, obscured.firstVisibleParent)
-      // console.log('is visible', visibleY(currentWord.element))
       if (obscured) {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
@@ -181,48 +189,39 @@ const Mark = (lec) => {
             indicator.appendTo('html')
             indicatorAppended = true
           }
+
           indicator[fromTop ? `addClass` : `removeClass`]('upwards')
+
         } else {
             obscured.surface.addClass('mark-obscurer')
                 [fromTop ? `addClass` : `removeClass`]('from-top')
                 [!fromTop ? `addClass` : `removeClass`]('from-bottom')
         }
-                                        
       } else {
         indicator.destroy()
         indicatorAppended = false
-        _e('body').findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
+        _e('body').findAll('.mark-obscurer')
+          .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
-
-      // lec.resetMark().then(() => {
-        // lec.mark.show()
-      // })
-
-      console.timeEnd('scrollend')
-      // console.log('is visible', window.scrollY - trueTop(lec.currentWord.element))
+      console.timeEnd('indicating mark')
     } 
-  }, 150)
-
+  }
+  
+  const threshold = 40 // how fast should you scroll to pause the pointer
+  let lastScroll = 0
+  
   onScroll((s, ds, event) => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
     // console.log('user is scrolling', userIsScrolling())
 
     if (userIsScrolling() && lec.isReading){
-      let dscroll = Math.abs(lastScroll-s)
+      let dscroll = Math.abs(ds)
       lastScroll = s
-      console.log(dscroll)
       if (dscroll>threshold){
-
-        // console.log('ds=', dscroll)
-        // TODO prevent from calling pause to many times
-        // on too fast scroll, pause mark
         lec.pause()
-      } else {
       }
     } else {
-      lec.mark.hide()
-      lec.currentWord?.css('background lime')
-      markedWords.add(lec.currentWord)
+      markDetective.minimizeMark()
     }
 
   }, 0)

@@ -190,7 +190,7 @@ export const _scroller = _p()
                     }).on('scroll', function(s, ds, event) {
 
                         if (!this._selfScrolling){
-                            this.triggerEvent('userScroll')
+                            this.triggerEvent('userScroll', s, ds, event)
                             if (this._userScrollEndTimeout) clearTimeout(this._userScrollEndTimeout)
                             this._userScrollEndTimeout = setTimeout(_ => {
                               this.triggerEvent('userScrollEnd', s, ds, event)

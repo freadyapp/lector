@@ -84,6 +84,7 @@ export function fadeTo(el, value, ms = 500) {
         }, ms)
     })
 }
+
 export function visibleY(el) {
     if (!el) return false
     var rect = el.getBoundingClientRect(),
@@ -106,3 +107,11 @@ export function visibleY(el) {
     return true
 }
 
+export function firstVisibleParent(e) {
+    if (!e || !e.parent || visibleY(e.element)) return e
+    return firstVisibleParent(e.parent)
+}
+
+// export function setClassIf(e, className, condition) {
+    // e[condition ? `addClass` : `removeClass`](className)
+// }

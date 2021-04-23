@@ -42,7 +42,7 @@ export default class PragmaMark extends Pragma {
     this.setFovea(defaultVals.fovea)
 
 
-    this.createEvents('changeLine')
+    this.createEvents('changeLine', 'mark')
     this.createWire('lastMark')
     //this.idle = new Idle(8000)
       //.onAfk(()=> {
@@ -144,10 +144,12 @@ export default class PragmaMark extends Pragma {
     // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
+
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
       blueprint = this._correctBlueprint(blueprint, this.lastMark)
       this.currentlyMarking = blueprint
+      this.triggerEvent('mark', blueprint)
       
       this.current_anime = anime({
         targets: this.element,
