@@ -47,8 +47,8 @@ const default_options = {
 
 const Mark = (lec) => {
   let mark = new PragmaMark(lec)
-                  .define(
-                    function correctBlueprint(current, last) {
+                  .define({
+                    correctBlueprint(current, last) {
                       if (!last) return current
 
                       let currentCenter = current.top + current.height/2
@@ -63,7 +63,7 @@ const Mark = (lec) => {
 
                       return current
                     }
-                  )
+                  })
 
   function logger(w){
     // console.log('mark:', w)
@@ -123,31 +123,31 @@ const Mark = (lec) => {
   let indicatorAppended = false
 
   let markDetective = _p()
-        .define(
-          function unminimizeMark() {
-              // reset marked words
-              for (let w of markedWords) {
-                if (!w) continue
-                console.log(w)
-                // w.css(`background transparent`)
-                w.removeClass('mark-is-here')
-                markedWords.delete(w)
-              }
+        .define({
+          unminimizeMark() {
+            // reset marked words
+            for (let w of markedWords) {
+              if (!w) continue
+              console.log(w)
+              // w.css(`background transparent`)
+              w.removeClass('mark-is-here')
+              markedWords.delete(w)
+            }
 
-              lec.resetMark().then(() => {
-                lec.mark.show()
-                this.minimized = false
-              })
+            lec.resetMark().then(() => {
+              lec.mark.show()
+              this.minimized = false
+            })
           },
 
-          function minimizeMark() {
+          minimizeMark() {
             lec.mark.hide()
             lec.currentWord?.addClass('mark-is-here')
             markedWords.add(lec.currentWord)
             this.minimized = true
           }
 
-        ).run(function() {
+        }).run(function() {
 
           this.minimized = true
           lec.on('load', () => {
@@ -209,7 +209,7 @@ const Mark = (lec) => {
   
   const threshold = 40 // how fast should you scroll to pause the pointer
   let lastScroll = 0
-  
+
   onScroll((s, ds, event) => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
     // console.log('user is scrolling', userIsScrolling())

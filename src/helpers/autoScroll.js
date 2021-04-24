@@ -97,9 +97,9 @@ const bodyScroll = window.document.scrollingElement || window.document.body || w
 export const _scroller = _p()
                     .createWires('scrollData', 'scrollTarget', 'scrolling')
                     .createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget')
-                    .define(
+                    .define({
 
-                      function scrollTo(el, duration, threshold) {
+                      scrollTo(el, duration, threshold) {
                         _e(el).scrollIntoView({
                           block: 'center',
                           behavior: 'smooth',
@@ -147,7 +147,7 @@ export const _scroller = _p()
                         //   })
                         // })
                       }
-                    )
+                    })
                     .run(function() {
                       let last = 0
                       let ticking = false
