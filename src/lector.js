@@ -37,7 +37,7 @@ function connectToLectorSettings(lector, wire){
 const default_options = {
   onboarding: false,
   wfy: true,
-  pragmatizeOnCreate: true,
+  pragmatizeOnCreate: false,
   experimental: false,
   settings: false,
   defaultsStyles: true,
@@ -356,15 +356,35 @@ function _streamer(sf){
 
 }
 
+
+
 export const Lector = async (l, options=default_options) => {
+  // if (options.defaultStyles) styles += [css.main, css.slider, css.settings]
+  // if (options.fullStyles) styles += [css.full]
+
+  // if (l.isShadowPragma === true) {
+  //   if (l.injectStyles) l.injectStyles(...styles)
+  //   l = l.shadow
+  // } else {
+  //   for (let style of styles) util.addStyles(style)
+  // }
+
+  const injectStyles = options.styleInjector ? (...styles) => {
+    for (let style of styles) options.styleInjector(style, css[style])
+  } : (...styles) => {
+    for (let style of styles) util.addStyles(css[style], style)
+  }
+
   if (options.defaultStyles){
-    util.addStyles(css.main)
-    util.addStyles(css.slider)
-    util.addStyles(css.settings)
+    injectStyles('main', 'slider', 'settings')
+    // util.addStyles(css.main)
+    // util.addStyles(css.slider)
+    // util.addStyles(css.settings)
   }
 
   if (options.fullStyles){
-    util.addStyles(css.full)
+    injectStyles('full')
+    // util.addStyles(css.full)
   }
 
   if (!_needWrapper(options)){

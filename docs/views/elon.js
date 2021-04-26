@@ -56,6 +56,8 @@ function fetchContent(index){
 //}
 
 
+let shadow = _shadow().as(".article")
+
 let lectorSettings = {
    onboarding: !getG('lector.onboarding.show?'),
    wfy: true,
@@ -65,12 +67,17 @@ let lectorSettings = {
    fullStyles: true,
    defaultStyles: true,
 
+   styleInjector: (style, name) => {
+      shadow.injectStyle(name, style)
+   },
+
    scaler: true,
-   pragmatizeOnCreate: true,
+  //  pragmatizeOnCreate: true,
    experimental: true,
   
   //  legacySettings: true,
    settings: true,
+  //  shadow: 
   //  stream: fetchContent,
     // function with index as param that
     // returns the content for the page
@@ -84,7 +91,7 @@ let lectorSettings = {
 
 pragmaSpace.integrateMousetrap(Mousetrap)
 
-let lec = Lector(".article", lectorSettings)
+let lec = Lector(shadow.shadow, lectorSettings)
 setG("lector.onboarding.show?", true)
 // lec.settings.on('update', (setting, value) => {
 //   console.log(setting, value)

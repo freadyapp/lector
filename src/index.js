@@ -4,10 +4,12 @@ import { PragmaConsole } from "./extensions/pragmaConsole"
 // PragmaConsole.skip()
 export { PragmaConsole }
 pragmaSpace.console = PragmaConsole
+
 export function prod() {
   PragmaConsole.intercept()
   PragmaConsole.skip()
 }
+
 export function dev() {
   PragmaConsole.intercept()
   PragmaConsole.unskip()
@@ -30,7 +32,7 @@ export function globalify(){
     _p: _p,
     util: util,
     lecUtil: helpers,
-    _thread: _thread
+    _shadow: helpers._shadow
   }
 
   for (let [key, val] of Object.entries(attrs)){

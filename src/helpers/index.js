@@ -1,5 +1,7 @@
 export { isOnScreen, isMostlyInScreen, scrollTo, onScroll, _scroller } from "./autoScroll.js"
 export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWordHelper"
+export { _shadow, ShadowPragma } from "./shadowPragma"
+
 import { _e } from "pragmajs"
 
 import PinkyPromise from "./pinkyPromise"
@@ -111,6 +113,7 @@ export function firstVisibleParent(e) {
     if (!e || !e.parent || visibleY(e.element)) return e
     return firstVisibleParent(e.parent)
 }
+
 
 // export function setClassIf(e, className, condition) {
     // e[condition ? `addClass` : `removeClass`](className)
