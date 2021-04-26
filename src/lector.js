@@ -12,11 +12,9 @@ import css from "./styles/styles.json"
 import { onScrollEnd } from "./helpers/autoScroll"
 
 
-
 function addOnboardingToLector(lector){
   lector._popUp = new popUpOb()
 }
-
 
 function connectToLectorSettings(lector, wire){
   return new Promise((resolve, reject) => {
@@ -42,7 +40,7 @@ const default_options = {
   pragmatizeOnCreate: true,
   experimental: false,
   settings: false,
-  defaultsStyles: true
+  defaultsStyles: true,
 }
 
 const Mark = (lec) => {
@@ -63,7 +61,7 @@ const Mark = (lec) => {
 
                       return current
                     }
-                  })
+                  }).appendTo(lec.element)
 
   function logger(w){
     // console.log('mark:', w)
@@ -186,7 +184,8 @@ const Mark = (lec) => {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
           if (!indicatorAppended){
-            indicator.appendTo('html')
+            // indicator.appendTo('html')
+            indicator.appendTo(lec)
             indicatorAppended = true
           }
 
@@ -200,7 +199,7 @@ const Mark = (lec) => {
       } else {
         indicator.destroy()
         indicatorAppended = false
-        _e('body').findAll('.mark-obscurer')
+        lec.element.findAll('.mark-obscurer')
           .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
       console.timeEnd('indicating mark')

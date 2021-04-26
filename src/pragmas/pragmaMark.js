@@ -1,5 +1,5 @@
 // mark is responsible for marking words in the screen
-// import $ from "jquery"
+
 import { Pragma, _e, util } from "pragmajs"
 import PragmaWord from "./pragmaWord"
 import anime from "animejs"
@@ -24,7 +24,7 @@ export default class PragmaMark extends Pragma {
     super('marker')
 
     this.element = _e("marker")
-    this.appendTo('html')
+
     this.hide()
     this.css(defaultStyles)
 

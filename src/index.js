@@ -2,7 +2,7 @@ import { Lector, Word } from "./lector.js"
 import { PragmaConsole } from "./extensions/pragmaConsole"
 
 // PragmaConsole.skip()
-export { PragmaConsole}
+export { PragmaConsole }
 pragmaSpace.console = PragmaConsole
 export function prod() {
   PragmaConsole.intercept()
