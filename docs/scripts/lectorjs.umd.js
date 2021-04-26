@@ -20589,7 +20589,7 @@
     
     lector.settings = new Settings()
                           .as(settingsComp)
-                          .appendTo('body')
+                          .appendTo(lector)
                           .on('update', function(key, value, pragma) {
                             console.log('syncing', this.toObj());
                           });
