@@ -61,7 +61,10 @@ const Mark = (lec) => {
 
                       return current
                     }
-                  }).appendTo(lec.element)
+                  })
+                  .run(function() {
+                    lec.appendToRoot(this.element)
+                  })
 
   function logger(w){
     // console.log('mark:', w)
@@ -303,7 +306,9 @@ export const Reader = async (l, options=default_options) => {
               .as(l)
               .setValue(0)
               .connectTo(w)
-  
+
+
+  console.log('lector root is', lec.root)
   // console.log(`created lector ${lec}`)
   // console.log(`created word ${w}`)
   // console.log(w)
@@ -419,6 +424,7 @@ export const Lector = async (l, options=default_options) => {
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
     console.log('crating reader...')
+    
     lector = (await Reader(_e(l).parentElement, options))
                   .adopt(paginator, streamer)
 

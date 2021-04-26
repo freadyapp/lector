@@ -1,4 +1,4 @@
-import { Pragma, util } from "pragmajs";
+import { Pragma, util, _e } from "pragmajs";
 
 export default class PragmaLector extends Pragma {
 
@@ -21,6 +21,17 @@ export default class PragmaLector extends Pragma {
     })
 
   }
+
+  appendToRoot(...elements) {
+    for (let e of elements) this.root.appendChild(e)
+    return this
+  }
+
+  get root() {
+    let root = this.element.getRootNode()
+    return root === document ? document.body :  root
+  }
+
   get lector(){
     return this
   }

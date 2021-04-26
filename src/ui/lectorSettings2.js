@@ -67,10 +67,14 @@ export function addSettingsToLector(lector){
   
   lector.settings = new Settings()
                         .as(settingsComp)
-                        .appendTo(lector)
                         .on('update', function(key, value, pragma) {
                           console.log('syncing', this.toObj())
                         })
+                        .run(function() {
+                          lector.appendToRoot(this.element)
+                        })
+  
+
   // console.log(`[#] added settings to`, lector)
   
 
@@ -89,7 +93,7 @@ export function addSettingsToLector(lector){
     let colorThingy  = _e(`div.color-blob.`)
                   .css(`background-color ${color}`)
                   .setId(`${color}`)
-                  .html("   ")
+                  .html(" ")
 
     let blob = _e('div#color.')
                 .append(colorThingy)

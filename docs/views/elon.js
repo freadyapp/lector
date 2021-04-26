@@ -76,7 +76,7 @@ let lectorSettings = {
    experimental: true,
   
   //  legacySettings: true,
-   settings: true,
+   settings: true
   //  shadow: 
   //  stream: fetchContent,
     // function with index as param that

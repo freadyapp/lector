@@ -140,14 +140,15 @@ export default class PragmaMark extends Pragma {
     return current
   }
 
-  moveTo(blueprint, duration, complete = (() => {})) {
+  moveTo(blueprint, duration, complete = (() => {}), correctBlueprint=true) {
     // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
 
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
-      blueprint = this._correctBlueprint(blueprint, this.lastMark)
+      if (correctBlueprint) blueprint = this._correctBlueprint(blueprint, this.lastMark)
+
       this.currentlyMarking = blueprint
       this.triggerEvent('mark', blueprint)
       
