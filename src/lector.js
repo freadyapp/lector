@@ -65,21 +65,16 @@ const Mark = (lec) => {
                   .run(function() {
                     lec.appendToRoot(this.element)
                   })
-
-  function logger(w){
-    // console.log('mark:', w)
-  }
+    .on('changeLine', autoScroll)
 
   // auto scroll feature
   // TODO put somewhere else
   let scrollingIntoView = false
   let usersLastScroll = 0
 
-  function userIsScrolling(threshold=50){
-    return usersLastScroll - Date.now() > -threshold
-  }
 
   function autoScroll(){
+    console.log('auto scrolling')
     // convert to a pragma
     //return
     if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
@@ -209,7 +204,7 @@ const Mark = (lec) => {
     } 
   }
   
-  const threshold = 40 // how fast should you scroll to pause the pointer
+  const threshold = 20 // how fast should you scroll to pause the pointer
   let lastScroll = 0
 
   onScroll((s, ds, event) => {
@@ -232,7 +227,7 @@ const Mark = (lec) => {
     //console.log(this, 'hover')
   //})
 
-  mark.do(logger, autoScroll)
+  // mark.do()
   return mark
 }
 
