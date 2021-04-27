@@ -1500,11 +1500,12 @@
                             this.triggerEvent('scrollEnd', s, ds, event);
                           }, 50);
 
-                      }).on('scrollEnd', () => {
-                        // console.log('SCROLL JAS ENDED')
-                      }).on('scrollStart', () => {
-                        // console.log('STATRT SCROLl')
                       });
+                      // .on('scrollEnd', () => {
+                      //   // console.log('SCROLL JAS ENDED')
+                      // }).on('scrollStart', () => {
+                      //   // console.log('STATRT SCROLl')
+                      // })
 
   const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'eo', 'ep', 'eu', 'id', 'is', 'my', 'ne', 'od', 'oo', 'ot', 'sy', 'ur', 'ur', 'zo', 'pto', 'pyl', 'acr', 'aer', 'agr', 'ana', 'ant', 'apo', 'aut', 'bar', 'bio', 'cac', 'cat', 'cen', 'cen', 'con', 'cub', 'cyn', 'dec', 'dek', 'dem', 'dia', 'dox', 'eco', 'ego', 'eme', 'eos', 'epi', 'erg', 'eso', 'eth', 'eur', 'exo', 'geo', 'gen', 'hem', 'hal', 'hen', 'hex', 'hod', 'hol', 'hor', 'hor', 'hyo', 'hyp', 'ide', 'idi', 'iso', 'kil', 'lei', 'lep', 'lip', 'log', 'meg', 'mei', 'men', 'mer', 'mes', 'mim', 'mis', 'mit', 'mne', 'mon', 'myx', 'nes', 'nom', 'oct', 'oed', 'oen', 'omm', 'ont', 'opt', 'pan', 'pam', 'par', 'ped', 'pin', 'pis', 'pol', 'por', 'pro', 'rhe', 'sei', 'sit', 'syn', 'syl', 'sym', 'tax', 'the', 'the', 'tom', 'ton', 'top', 'tox', 'tri', 'ulo', 'uro', 'uro', 'xen', 'xer', 'zon', 'zyg', 'psil', 'prot', 'pros', 'amph', 'anem', 'anti', 'anth', 'arct', 'astr', 'athl', 'auto', 'basi', 'bibl', 'briz', 'brom', 'brom', 'call', 'carp', 'carp', 'cata', 'chir', 'cine', 'cirr', 'clad', 'clav', 'coel', 'copr', 'cosm', 'crep', 'cris', 'crit', 'cten', 'cyan', 'cycl', 'cyst', 'deca', 'deka', 'delt', 'derm', 'dexi', 'dino', 'dipl', 'ecto', 'endo', 'engy', 'eoso', 'etho', 'ethi', 'ethm', 'ethn', 'etym', 'fant', 'glia', 'gram', 'gymn', 'haem', 'hapl', 'heli', 'hemi', 'hept', 'herp', 'heur', 'hipp', 'home', 'horm', 'hyal', 'hydr', 'hygr', 'hypn', 'icos', 'kine', 'lamp', 'leps', 'leuc', 'leuk', 'lith', 'metr', 'meta', 'micr', 'myri', 'myth', 'narc', 'naut', 'necr', 'nect', 'nema', 'neur', 'noth', 'noto', 'oeco', 'ogdo', 'olig', 'onom', 'ophi', 'orch', 'orth', 'pach', 'paed', 'pale', 'path', 'patr', 'pect', 'pent', 'pept', 'peri', 'petr', 'phae', 'phag', 'pher', 'phil', 'phob', 'phon', 'phor', 'phos', 'phot', 'phyl', 'phys', 'plac', 'plas', 'plec', 'plut', 'pneu', 'poie', 'pole', 'poli', 'poli', 'poly', 'raph', 'rhag', 'rhig', 'rhin', 'rhiz', 'rhod', 'sarc', 'scel', 'scop', 'sema', 'siph', 'soma', 'soph', 'stea', 'steg', 'sten', 'stig', 'stom', 'styl', 'tach', 'tars', 'taur', 'tele', 'tele', 'temn', 'tetr', 'than', 'thus', 'ther', 'thym', 'thyr', 'trag', 'trit', 'trop', 'xiph', 'proct', 'ptych', 'amphi', 'arche', 'archi', 'arche', 'arist', 'arthr', 'bathy', 'batho', 'blenn', 'blast', 'botan', 'brady', 'bront', 'calli', 'calyp', 'cardi', 'centr', 'ceram', 'cerat', 'chlor', 'chore', 'chrom', 'chron', 'chrys', 'clast', 'clist', 'cochl', 'corac', 'cotyl', 'crani', 'cross', 'crypt', 'dendr', 'dodec', 'dynam', 'ennea', 'gastr', 'graph', 'heter', 'homal', 'hyper', 'klept', 'lekan', 'macro', 'melan', 'meter', 'morph', 'nephr', 'nomad', 'odont', 'organ', 'osteo', 'palae', 'palin', 'peran', 'phleg', 'phloe', 'phren', 'phryn', 'phyll', 'plagi', 'platy', 'plesi', 'pleth', 'pleur', 'pogon', 'polem', 'potam', 'rhabd', 'rhomb', 'scaph', 'schem', 'schis', 'scler', 'scoli', 'scept', 'scyph', 'selen', 'solen', 'sperm', 'sphen', 'spher', 'stern', 'stich', 'stoch', 'taeni', 'techn', 'therm', 'thyre', 'traum', 'trema', 'trich', 'troch', 'troph', 'xanth', 'psych', 'archae', 'brachi', 'brachy', 'bronch', 'cathar', 'cephal', 'chelon', 'cleist', 'cosmet', 'cylind', 'dactyl', 'deuter', 'dogmat', 'erythr', 'galact', 'hendec', 'ichthy', 'mening', 'myrmec', 'omphal', 'opisth', 'opoter', 'ornith', 'ostrac', 'persic', 'phalar', 'phaner', 'phragm', 'plinth', 'prasin', 'presby', 'rhynch', 'scalen', 'strept', 'stroph', 'thalam', 'theori', 'trachy', 'trapez', 'tympan', 'aesthet', 'anthrop', 'branchi', 'cleithr', 'epistem', 'parthen', 'phalang', 'pharmac', 'porphyr', 'sacchar', 'sphinct', 'stalact', 'stalagm', 'thalass', 'oesophag', 'ophthalm', 'physalid', 'pentecost', 'treiskaidek'];
 
@@ -16623,89 +16624,16 @@
     }
   }
 
-  let parser = new DOMParser();
-
-  function escapeHtml(unsafe) {
-    return unsafe
-      // .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-    // .replace(/"/g, "&quot;")
-    // .replace(/'/g, "&#039;");
-  }
-
-  // const wregex = /(\w+)/gm
-  const wregex = /([^\s]+)/gm;
-  const obsKey = O.rk(5);
-  const obs = {
-    "<": `;;#${obsKey}0;`,
-    ">": `;;#${obsKey}1;`
-  };
-
-  let obsegex = {};
-  for (let [key, value] of Object.entries(obs)) {
-    obsegex[key] = new RegExp(value, "gm");
-  }
-
-  const esc = (str) => str.replace(/</g, obs["<"])
-    .replace(/>/g, obs[">"]);
-
-  const unesc = (str) => {
-    const r = (key) => obsegex[key];
-    return str.replaceAll(r("<"), "<")
-      .replaceAll(r(">"), ">")
-  };
-
-  function wegex(str) {
-    // return str
-    return str.replaceAll(wregex, (match, re, i) => esc(`<w>`) + escapeHtml(re) + esc("</w>"))
-  }
-
-  function wfyInner(desc) {
-    if (desc == undefined) return desc
-    if (desc.tagName == "CODE" || desc.tagName == "PRE") return desc
-    if (desc.tagName == undefined) {
-      // if text, wfy it and return node
-      desc.textContent = wegex(desc.textContent);
-      return desc
+  // First a simple implementation of recursive descent,
+  // visit all nodes in the DOM and process it with a callback:
+  function walkDOM(node, callback) {
+    if (node.nodeName != 'SCRIPT'
+      && node.nodeName != 'STYLE') { // ignore javascript
+      callback(node);
+      for (var i = 0; i < node.childNodes.length; i++) {
+        walkDOM(node.childNodes[i], callback);
+      }
     }
-    let og = desc;
-    let childMap = new Map();
-    desc = og.cloneNode(true);
-
-    let childTag = (key) => `{{{{@L3C:${key}:}}}}`;
-
-    desc.childNodes.forEach((element, i) => {
-      let key = i.toString();
-      childMap.set(key, element.cloneNode(true));
-      element.replaceWith(childTag(key));
-    });
-
-
-    let txt = desc.innerHTML;
-    const regex = /\{{4}@L3C:(.+?(?=\:)).+?(?=\}{4})\}{4}/gm;
-
-    function replaceElement(match, key) {
-      let child = childMap.get(key);
-      let inner = wfyInner(child);
-
-      // console.log(inner.innerHTML)
-      // inner.innerHTML = inner.textContent.replaceAll(wregex, (match, re) => `<w>${re}</w>`)
-      // console.log(inner.innerHTML)
-      let outer = inner.outerHTML;
-      if (outer) return outer
-      return parser.parseFromString(unesc(inner.textContent), "text/html").documentElement.innerHTML
-    }
-
-    const parse = txt.replaceAll(regex, replaceElement);
-    // console.log(parser.parseFromString(parse, "text/html").documentElement.innerHTML)
-    og.innerHTML = parse;
-    // og.innerHTML = parser.parseFromString((parse), "text/html").documentElement.innerHTML
-    return og
-  }
-
-  function wfyElement(element) {
-    return wfyInner(element)
   }
 
   function wfy(element) {
@@ -16713,11 +16641,48 @@
     return new Promise(resolve => {
       // setTimeout(() => {
       console.time('wfying...');
-      wfyElement(element);
+      // wfyElement(element)
+      var textNodes = [];
+      walkDOM(element, function (n) {
+        if (n.nodeType == 3) {
+          textNodes.push(n);
+        }
+      });
+      // simple utility functions to avoid a lot of typing:
+      function insertBefore(new_element, element) {
+        if (new_element === null) return
+        element.parentNode.insertBefore(new_element, element);
+      }
+      function removeElement(element) {
+        element.parentNode.removeChild(element);
+      }
+      function makeW(txt) {
+        if (txt.length === 0) return null
+        var s = document.createElement('w');
+        s.appendChild(makeText(txt));
+        return s;
+      }
+      function makeText(txt) { return document.createTextNode(txt) }
+
+      for (var i = 0; i < textNodes.length; i++) {
+        var n = textNodes[i];
+        var txt = n.nodeValue;
+        var words = txt.split(' ');
+
+        // Insert span surrounded words:
+        insertBefore(makeW(words[0]), n);
+        for (var j = 1; j < words.length; j++) {
+          insertBefore(makeText(' '), n); // join the words with spaces
+          insertBefore(makeW(words[j]), n);
+        }
+
+        // Now remove the original text node:
+        removeElement(n);
+      }
+
       element.removeClass('wfying');
       resolve();
       console.timeEnd('wfying...');
-      // }, 200)
     })
   }
 
@@ -21073,11 +21038,6 @@
     // auto scroll feature
     // TODO put somewhere else
     let scrollingIntoView = false;
-    let usersLastScroll = 0;
-
-    function userIsScrolling(threshold=50){
-      return usersLastScroll - Date.now() > -threshold
-    }
 
     function autoScroll(){
       // convert to a pragma
@@ -21086,30 +21046,21 @@
       // else we're out of view
 
       scrollingIntoView = true;
-
-      let cbs = []; // these will be the callbacks that are gonna run when the scroll is done
       // TODO  make a class Chain that does this.
       // Chain.add(cb), Chain.do() to execute and shit
       if (lec.isReading){
         lec.pause();
-        cbs.push(() => {
-          lec.read();
-        });
       }
-
-      cbs.push(()=>{
-        //console.warn("suck my diiiiiiiiiick")
-      });
 
       console.warn("mark is out of screen");
       console.log('lec reading:', lec.isReading);
 
-      scrollTo(lec.currentWord).then(() => {
-        // setTimeout(() => {
-        cbs.forEach(cb => cb());
-        scrollingIntoView = false;
-        // }, 1000)
-      });
+      // scrollTo(lec.currentWord).then(() => {
+      //   // setTimeout(() => {
+      //   cbs.forEach(cb => cb())
+      //   scrollingIntoView = false
+      //   // }, 1000)
+      // })
     }
 
 
@@ -21212,10 +21163,9 @@
     const threshold = 40; // how fast should you scroll to pause the pointer
 
     onScroll((s, ds, event) => {
-      usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll;
       // console.log('user is scrolling', userIsScrolling())
 
-      if (userIsScrolling() && lec.isReading){
+      if (lec.isReading){
         let dscroll = Math.abs(ds);
         if (dscroll>threshold){
           lec.pause();

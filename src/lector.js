@@ -104,12 +104,12 @@ const Mark = (lec) => {
     console.warn("mark is out of screen")
     console.log('lec reading:', lec.isReading)
 
-    scrollTo(lec.currentWord).then(() => {
-      // setTimeout(() => {
-      cbs.forEach(cb => cb())
-      scrollingIntoView = false
-      // }, 1000)
-    })
+    // scrollTo(lec.currentWord).then(() => {
+    //   // setTimeout(() => {
+    //   cbs.forEach(cb => cb())
+    //   scrollingIntoView = false
+    //   // }, 1000)
+    // })
   }
 
 
@@ -216,7 +216,7 @@ const Mark = (lec) => {
     usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
     // console.log('user is scrolling', userIsScrolling())
 
-    if (userIsScrolling() && lec.isReading){
+    if (lec.isReading){
       let dscroll = Math.abs(ds)
       lastScroll = s
       if (dscroll>threshold){
@@ -226,7 +226,7 @@ const Mark = (lec) => {
       markDetective.minimizeMark()
     }
 
-  }, 0)
+  })
 
   //mark.listenTo('mouseover', function(){
     //console.log(this, 'hover')

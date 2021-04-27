@@ -1,88 +1,15 @@
 import { _e, util } from 'pragmajs'
 
-let parser = new DOMParser()
-
-export function escapeHtml(unsafe) {
-  return unsafe
-    // .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-  // .replace(/"/g, "&quot;")
-  // .replace(/'/g, "&#039;");
-}
-
-// const wregex = /(\w+)/gm
-const wregex = /([^\s]+)/gm
-const obsKey = util.rk(5)
-const obs = {
-  "<": `;;#${obsKey}0;`,
-  ">": `;;#${obsKey}1;`
-}
-
-let obsegex = {}
-for (let [key, value] of Object.entries(obs)) {
-  obsegex[key] = new RegExp(value, "gm")
-}
-
-const esc = (str) => str.replace(/</g, obs["<"])
-  .replace(/>/g, obs[">"])
-
-const unesc = (str) => {
-  const r = (key) => obsegex[key]
-  return str.replaceAll(r("<"), "<")
-    .replaceAll(r(">"), ">")
-}
-
-function wegex(str) {
-  // return str
-  return str.replaceAll(wregex, (match, re, i) => esc(`<w>`) + escapeHtml(re) + esc("</w>"))
-}
-
-function wfyInner(desc) {
-  if (desc == undefined) return desc
-  if (desc.tagName == "CODE" || desc.tagName == "PRE") return desc
-  if (desc.tagName == undefined) {
-    // if text, wfy it and return node
-    desc.textContent = wegex(desc.textContent)
-    return desc
+// First a simple implementation of recursive descent,
+// visit all nodes in the DOM and process it with a callback:
+function walkDOM(node, callback) {
+  if (node.nodeName != 'SCRIPT'
+    && node.nodeName != 'STYLE') { // ignore javascript
+    callback(node);
+    for (var i = 0; i < node.childNodes.length; i++) {
+      walkDOM(node.childNodes[i], callback);
+    }
   }
-  let og = desc
-  let childMap = new Map()
-  desc = og.cloneNode(true)
-
-  let childTag = (key) => `{{{{@L3C:${key}:}}}}`
-
-  desc.childNodes.forEach((element, i) => {
-    let key = i.toString()
-    childMap.set(key, element.cloneNode(true))
-    element.replaceWith(childTag(key))
-  })
-
-
-  let txt = desc.innerHTML
-  const regex = /\{{4}@L3C:(.+?(?=\:)).+?(?=\}{4})\}{4}/gm
-
-  function replaceElement(match, key) {
-    let child = childMap.get(key)
-    let inner = wfyInner(child)
-
-    // console.log(inner.innerHTML)
-    // inner.innerHTML = inner.textContent.replaceAll(wregex, (match, re) => `<w>${re}</w>`)
-    // console.log(inner.innerHTML)
-    let outer = inner.outerHTML
-    if (outer) return outer
-    return parser.parseFromString(unesc(inner.textContent), "text/html").documentElement.innerHTML
-  }
-
-  const parse = txt.replaceAll(regex, replaceElement)
-  // console.log(parser.parseFromString(parse, "text/html").documentElement.innerHTML)
-  og.innerHTML = parse
-  // og.innerHTML = parser.parseFromString((parse), "text/html").documentElement.innerHTML
-  return og
-}
-
-export function wfyElement(element) {
-  return wfyInner(element)
 }
 
 export function wfy(element) {
@@ -90,10 +17,47 @@ export function wfy(element) {
   return new Promise(resolve => {
     // setTimeout(() => {
     console.time('wfying...')
-    wfyElement(element)
+    // wfyElement(element)
+    var textNodes = [];
+    walkDOM(element, function (n) {
+      if (n.nodeType == 3) {
+        textNodes.push(n);
+      }
+    })
+    // simple utility functions to avoid a lot of typing:
+    function insertBefore(new_element, element) {
+      if (new_element === null) return
+      element.parentNode.insertBefore(new_element, element);
+    }
+    function removeElement(element) {
+      element.parentNode.removeChild(element);
+    }
+    function makeW(txt) {
+      if (txt.length === 0) return null
+      var s = document.createElement('w');
+      s.appendChild(makeText(txt));
+      return s;
+    }
+    function makeText(txt) { return document.createTextNode(txt) }
+
+    for (var i = 0; i < textNodes.length; i++) {
+      var n = textNodes[i];
+      var txt = n.nodeValue;
+      var words = txt.split(' ');
+
+      // Insert span surrounded words:
+      insertBefore(makeW(words[0]), n);
+      for (var j = 1; j < words.length; j++) {
+        insertBefore(makeText(' '), n); // join the words with spaces
+        insertBefore(makeW(words[j]), n);
+      }
+
+      // Now remove the original text node:
+      removeElement(n);
+    }
+
     element.removeClass('wfying')
     resolve()
     console.timeEnd('wfying...')
-    // }, 200)
   })
 }

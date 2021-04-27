@@ -202,11 +202,12 @@ export const _scroller = _p()
                           this.triggerEvent('scrollEnd', s, ds, event)
                         }, 50)
 
-                    }).on('scrollEnd', () => {
-                      // console.log('SCROLL JAS ENDED')
-                    }).on('scrollStart', () => {
-                      // console.log('STATRT SCROLl')
                     })
+                    // .on('scrollEnd', () => {
+                    //   // console.log('SCROLL JAS ENDED')
+                    // }).on('scrollStart', () => {
+                    //   // console.log('STATRT SCROLl')
+                    // })
 
                     
 
