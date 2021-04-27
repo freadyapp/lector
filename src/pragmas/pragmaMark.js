@@ -155,12 +155,11 @@ export default class PragmaMark extends Pragma {
     return new Promise((resolve, reject) => {
       if (correctBlueprint) blueprint = this._correctBlueprint(blueprint, this.lastMark)
       
-      this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
           // trigger line change if there is one
       
 
       this.currentlyMarking = blueprint
-      this.triggerEvent('mark', blueprint)
+      this.triggerEvent('beforeMark', blueprint)
       
       this.current_anime = anime({
         targets: this.element,
@@ -171,6 +170,8 @@ export default class PragmaMark extends Pragma {
         easing: blueprint.ease || 'easeInOutExpo',
         duration: duration,
         complete: (anim) => {
+          this.triggerEvent('mark', blueprint)
+          this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
           this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
           complete()

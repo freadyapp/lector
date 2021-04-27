@@ -1,4 +1,4 @@
-import { Pragma, util, _e } from "pragmajs";
+import { Pragma, util, _e, _p } from "pragmajs";
 
 export default class PragmaLector extends Pragma {
 
@@ -6,9 +6,14 @@ export default class PragmaLector extends Pragma {
     super(arguments)
 
     this.isPragmaLector = true
-    this.createEvent('load')
+    this.createEvents('load', 'beforeRead', 'read', 'pause')
     this.on('load', () => this._loaded = true)
     
+
+    this.async = _p().define({
+      async beforeRead() {
+      },
+    })
   }
 
   whenLoad(){
@@ -60,6 +65,7 @@ export default class PragmaLector extends Pragma {
   get currentWord(){
     return this.w.currentWord
   }
+
   get currentParent(){
     return this.currentWord.parent
   }
@@ -98,19 +104,28 @@ export default class PragmaLector extends Pragma {
     return this.read()
   }
 
-  read(){
+  async read(){
     // console.log("::LECTOR reading", this)
+    // if (this._startingToRead) return new Promise(r=>r())
+
+    // this._startingToRead = true
     if (!this.w.hasKids) return console.error('nothing to read')
     
+    await this.async.beforeRead()
     return new Promise(async (resolve, reject) => {
       // if (this.currentWord) await this.currentWord.summon()
       await this.summonToCurrentWord()
       this.w.read(true)
+      this.triggerEvent('read')
       resolve() // started to read
+      // this._startingToRead = false
     })
   }
 
-  summonToCurrentWord() { return this.summonTo() }
+  summonToCurrentWord() {
+    return this.resetMark()
+  }
+
   async summonTo(n=0){
     await this.resetMark()
     if (n !== 0) this.currentParent.value += n
@@ -120,10 +135,13 @@ export default class PragmaLector extends Pragma {
   resetMark(){
     // TODO CAUSES BUG
     return new Promise((resolve => {
+      if (this._resettingMark) return resolve()
+      this._resettingMark = true
       this.whenLoad().then(() => {
         if (this.currentWord && this.currentWord.getData('wordAtom')){
-          console.log("current word is", this.currentWord)
+          // console.log("current word is", this.currentWord)
           this.currentWord.summon().then(d => {
+            this._resettingMark = false
             resolve(d)
           })
         }
@@ -135,6 +153,7 @@ export default class PragmaLector extends Pragma {
   goToPre(){ this.summonTo(-1) }
 
   pause(){
+    this.triggerEvent('pause')
     return this.w.pause()
   }
 

@@ -9,7 +9,8 @@ import { popUpOb } from "./onboarding/popUpOb"
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
-import { onScrollEnd } from "./helpers/autoScroll"
+import { onScrollEnd, _scroller } from "./helpers/autoScroll"
+import * as config from "./config/lector.config"
 
 
 function addOnboardingToLector(lector){
@@ -47,14 +48,17 @@ const Mark = (lec) => {
   let autoScroller = _p()
                     .define({
                       scrollIfNeeded() {
-                        console.log('checking if should auto scroll...')
-                        console.log(isOnScreen(lec.currentWord.element))
-                        if (this.isAutoScrolling || isOnScreen(lec.currentWord.element)) return false
+                        return new Promise(resolve => {
+                          console.log('checking if should auto scroll...')
+                          if (this.isAutoScrolling || isOnScreen(lec.currentWord?.element,
+                                            config.scrollingThresholdToScroll)) return resolve(false)
 
-                        // perform auto scroll
-                        this.isAutoScrolling = true
-                        this.autoScroll().then(() => {
-                          this.isAutoScrolling = false
+                          // perform auto scroll
+                          this.isAutoScrolling = true
+                          this.autoScroll().then(() => {
+                            this.isAutoScrolling = false
+                            resolve(true)
+                          })
                         })
                       }, 
                       autoScroll() {
@@ -62,7 +66,11 @@ const Mark = (lec) => {
                         return scrollTo(lec.currentWord) 
                       }
                     })
+
   let mark = new PragmaMark(lec)
+                  .run(function() {
+                    this.autoScroller = autoScroller
+                  })
                   .define({
                     correctBlueprint(current, last) {
                       if (!last) return current
@@ -82,50 +90,23 @@ const Mark = (lec) => {
                   })
                   .run(function() {
                     lec.appendToRoot(this.element)
+                    lec.async.define({
+                      beforeRead() {
+                        return new Promise(async resolve => {
+                          console.log('before read.... scrolling if needed')
+                          await autoScroller.scrollIfNeeded()
+                          console.log('before read.... wait 300 ms')
+                          resolve()
+                        })
+                      }
+                    })
+                    // lec.on('beforeRead', () => {
+                      // autoScroller.scrollIfNeeded()
+                    // })
                   })
-                  .on('changeLine', () => { autoScroller.scrollIfNeeded() })
-
-  // auto scroll feature
-  // TODO put somewhere else
-  let scrollingIntoView = false
-  let usersLastScroll = 0
-
-
-
-  // function autoScroll(){
-  //   console.log('auto scrolling')
-  //   // convert to a pragma
-  //   //return
-  //   if (scrollingIntoView || isOnScreen(lec.currentWord.element)) return false
-  //   // else we're out of view
-
-  //   scrollingIntoView = true
-
-  //   let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
-  //   // TODO  make a class Chain that does this.
-  //   // Chain.add(cb), Chain.do() to execute and shit
-  //   if (lec.isReading){
-  //     lec.pause()
-  //     cbs.push(() => {
-  //       lec.read()
-  //     })
-  //   }
-
-  //   cbs.push(()=>{
-  //     //console.warn("suck my diiiiiiiiiick")
-  //   })
-
-  //   console.warn("mark is out of screen")
-  //   console.log('lec reading:', lec.isReading)
-
-  //   scrollTo(lec.currentWord).then(() => {
-  //     // setTimeout(() => {
-  //     cbs.forEach(cb => cb())
-  //     scrollingIntoView = false
-  //     // }, 1000)
-  //   })
-  // }
-
+                  .on('changeLine', () => {
+                    autoScroller.scrollIfNeeded()
+                  })
 
 
   let markedWords = new Set
@@ -167,8 +148,8 @@ const Mark = (lec) => {
           this.minimized = true
           lec.on('load', () => {
             lec.mark.on('mark', () => {
-            if (!this.minimized) return
-            this.unminimizeMark()
+              if (!this.minimized) return
+              this.unminimizeMark()
             })
           })
 
@@ -222,31 +203,38 @@ const Mark = (lec) => {
       console.timeEnd('indicating mark')
     } 
   }
-  
-  const threshold = 20 // how fast should you scroll to pause the pointer
-  let lastScroll = 0
 
-  onScroll((s, ds, event) => {
-    usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
-    // console.log('user is scrolling', userIsScrolling())
+  // markKeeper will pause and minimize mark if for some reason it goes out of screen
+  // it also minimizes mark and highlights the current word via the markDetective
+  let markKeeper = _p()
+    .define({
+      saveMark() {
+        // pauses lector, and will disables mark-saving until next user scroll
+        if (this._savedMark) return
 
-    if (lec.isReading){
-      let dscroll = Math.abs(ds)
-      lastScroll = s
-      if (dscroll>threshold){
+        this._savedMark = true
+        _scroller.onNext('scrollEnd', () => {
+          this._savedMark = false
+        })
+
         lec.pause()
       }
-    } else {
-      markDetective.minimizeMark()
-    }
+    })
+    .run(function() {
+      onScroll((s, ds, event) => {
+        // console.log('user is scrolling', userIsScrolling())
+        console.log(Math.abs(ds), config)
+        if (lec.isReading){
+          if (Math.abs(ds)>config.scrollingThresholdToPauseMark 
+              || !visibleY(lec.mark.element)){
 
+            this.saveMark()
+          }
+        } else {
+          markDetective.minimizeMark()
+        }
+      })
   })
-
-  //mark.listenTo('mouseover', function(){
-    //console.log(this, 'hover')
-  //})
-
-  // mark.do()
   return mark
 }
 

@@ -100,6 +100,7 @@ export const _scroller = _p()
                     .define({
 
                       scrollTo(el, duration, threshold) {
+                        this._selfScrolling = true
                         _e(el).scrollIntoView({
                           block: 'center',
                           behavior: 'smooth',
@@ -108,6 +109,7 @@ export const _scroller = _p()
                         return new Promise((r, re) => {
                           this.onNext('scrollEnd', () => {
                             setTimeout(() => {
+                              this._selfScrolling = false
                               r()
                             }, 10)
                           })
@@ -160,7 +162,7 @@ export const _scroller = _p()
                         if (!ticking) {
                           window.requestAnimationFrame(() => {
                             this.setScrollData([last, e])
-                            this.triggerEvent('scroll', last, e)
+                            // this.triggerEvent('scroll', last, e)
                             // setTimeout(() => {
                               ticking = false;
                             // }, throttle)
