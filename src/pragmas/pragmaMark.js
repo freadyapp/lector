@@ -146,10 +146,6 @@ export default class PragmaMark extends Pragma {
     return corrected
   }
 
-  correctBlueprint(current, last) {
-    return current
-  }
-
   moveTo(blueprint, duration, complete = (() => {}), correctBlueprint=true) {
     // console.log('moving to', blueprint)
     this.show()

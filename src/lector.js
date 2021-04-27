@@ -44,6 +44,24 @@ const default_options = {
 }
 
 const Mark = (lec) => {
+  let autoScroller = _p()
+                    .define({
+                      scrollIfNeeded() {
+                        console.log('checking if should auto scroll...')
+                        console.log(isOnScreen(lec.currentWord.element))
+                        if (this.isAutoScrolling || isOnScreen(lec.currentWord.element)) return false
+
+                        // perform auto scroll
+                        this.isAutoScrolling = true
+                        this.autoScroll().then(() => {
+                          this.isAutoScrolling = false
+                        })
+                      }, 
+                      autoScroll() {
+                        console.log('auto scrolling')
+                        return scrollTo(lec.currentWord) 
+                      }
+                    })
   let mark = new PragmaMark(lec)
                   .define({
                     correctBlueprint(current, last) {
@@ -65,7 +83,7 @@ const Mark = (lec) => {
                   .run(function() {
                     lec.appendToRoot(this.element)
                   })
-    .on('changeLine', autoScroll)
+                  .on('changeLine', () => { autoScroller.scrollIfNeeded() })
 
   // auto scroll feature
   // TODO put somewhere else
@@ -73,39 +91,40 @@ const Mark = (lec) => {
   let usersLastScroll = 0
 
 
-  function autoScroll(){
-    console.log('auto scrolling')
-    // convert to a pragma
-    //return
-    if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
-    // else we're out of view
 
-    scrollingIntoView = true
+  // function autoScroll(){
+  //   console.log('auto scrolling')
+  //   // convert to a pragma
+  //   //return
+  //   if (scrollingIntoView || isOnScreen(lec.currentWord.element)) return false
+  //   // else we're out of view
 
-    let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
-    // TODO  make a class Chain that does this.
-    // Chain.add(cb), Chain.do() to execute and shit
-    if (lec.isReading){
-      lec.pause()
-      cbs.push(() => {
-        lec.read()
-      })
-    }
+  //   scrollingIntoView = true
 
-    cbs.push(()=>{
-      //console.warn("suck my diiiiiiiiiick")
-    })
+  //   let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
+  //   // TODO  make a class Chain that does this.
+  //   // Chain.add(cb), Chain.do() to execute and shit
+  //   if (lec.isReading){
+  //     lec.pause()
+  //     cbs.push(() => {
+  //       lec.read()
+  //     })
+  //   }
 
-    console.warn("mark is out of screen")
-    console.log('lec reading:', lec.isReading)
+  //   cbs.push(()=>{
+  //     //console.warn("suck my diiiiiiiiiick")
+  //   })
 
-    // scrollTo(lec.currentWord).then(() => {
-    //   // setTimeout(() => {
-    //   cbs.forEach(cb => cb())
-    //   scrollingIntoView = false
-    //   // }, 1000)
-    // })
-  }
+  //   console.warn("mark is out of screen")
+  //   console.log('lec reading:', lec.isReading)
+
+  //   scrollTo(lec.currentWord).then(() => {
+  //     // setTimeout(() => {
+  //     cbs.forEach(cb => cb())
+  //     scrollingIntoView = false
+  //     // }, 1000)
+  //   })
+  // }
 
 
 

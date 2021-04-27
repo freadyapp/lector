@@ -87,7 +87,7 @@ export function fadeTo(el, value, ms = 500) {
     })
 }
 
-export function visibleY(el) {
+export function visibleY(el, threshold=0) {
     if (!el) return false
     var rect = el.getBoundingClientRect(),
     top = rect.top,
@@ -99,12 +99,12 @@ export function visibleY(el) {
     // Check its within the document viewport
     if (top > document.documentElement.clientHeight) return false
     do {
-    if (!el.getBoundingClientRect) return
-    rect = el.getBoundingClientRect()
-    if (top <= rect.bottom === false) return false
-    // Check if the element is out of view due to a container scrolling
-    if ((top + height) <= rect.top) return false
-    el = el.parentNode
+        if (!el.getBoundingClientRect) return
+        rect = el.getBoundingClientRect()
+        if (top <= rect.bottom === false) return false
+        // Check if the element is out of view due to a container scrolling
+        if ((top + height) <= rect.top) return false
+        el = el.parentNode
     } while (el != document.body)
     return true
 }

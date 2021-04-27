@@ -16774,7 +16774,7 @@
       })
   }
 
-  function visibleY(el) {
+  function visibleY(el, threshold=0) {
       if (!el) return false
       var rect = el.getBoundingClientRect(),
       top = rect.top,
@@ -16786,12 +16786,12 @@
       // Check its within the document viewport
       if (top > document.documentElement.clientHeight) return false
       do {
-      if (!el.getBoundingClientRect) return
-      rect = el.getBoundingClientRect();
-      if (top <= rect.bottom === false) return false
-      // Check if the element is out of view due to a container scrolling
-      if ((top + height) <= rect.top) return false
-      el = el.parentNode;
+          if (!el.getBoundingClientRect) return
+          rect = el.getBoundingClientRect();
+          if (top <= rect.bottom === false) return false
+          // Check if the element is out of view due to a container scrolling
+          if ((top + height) <= rect.top) return false
+          el = el.parentNode;
       } while (el != document.body)
       return true
   }
@@ -17458,10 +17458,6 @@
       let corrected = this.correctBlueprint(current, last);
       console.timeEnd('correcting blueprint');
       return corrected
-    }
-
-    correctBlueprint(current, last) {
-      return current
     }
 
     moveTo(blueprint, duration, complete = (() => {}), correctBlueprint=true) {
@@ -21023,6 +21019,24 @@
   };
 
   const Mark = (lec) => {
+    let autoScroller = J()
+                      .define({
+                        scrollIfNeeded() {
+                          console.log('checking if should auto scroll...');
+                          console.log(isOnScreen(lec.currentWord.element));
+                          if (this.isAutoScrolling || isOnScreen(lec.currentWord.element)) return false
+
+                          // perform auto scroll
+                          this.isAutoScrolling = true;
+                          this.autoScroll().then(() => {
+                            this.isAutoScrolling = false;
+                          });
+                        }, 
+                        autoScroll() {
+                          console.log('auto scrolling');
+                          return scrollTo(lec.currentWord) 
+                        }
+                      });
     let mark = new PragmaMark(lec)
                     .define({
                       correctBlueprint(current, last) {
@@ -21044,37 +21058,43 @@
                     .run(function() {
                       lec.appendToRoot(this.element);
                     })
-      .on('changeLine', autoScroll);
-
-    // auto scroll feature
-    // TODO put somewhere else
-    let scrollingIntoView = false;
+                    .on('changeLine', () => { autoScroller.scrollIfNeeded(); });
 
 
-    function autoScroll(){
-      console.log('auto scrolling');
-      // convert to a pragma
-      //return
-      if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
-      // else we're out of view
 
-      scrollingIntoView = true;
-      // TODO  make a class Chain that does this.
-      // Chain.add(cb), Chain.do() to execute and shit
-      if (lec.isReading){
-        lec.pause();
-      }
+    // function autoScroll(){
+    //   console.log('auto scrolling')
+    //   // convert to a pragma
+    //   //return
+    //   if (scrollingIntoView || isOnScreen(lec.currentWord.element)) return false
+    //   // else we're out of view
 
-      console.warn("mark is out of screen");
-      console.log('lec reading:', lec.isReading);
+    //   scrollingIntoView = true
 
-      // scrollTo(lec.currentWord).then(() => {
-      //   // setTimeout(() => {
-      //   cbs.forEach(cb => cb())
-      //   scrollingIntoView = false
-      //   // }, 1000)
-      // })
-    }
+    //   let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
+    //   // TODO  make a class Chain that does this.
+    //   // Chain.add(cb), Chain.do() to execute and shit
+    //   if (lec.isReading){
+    //     lec.pause()
+    //     cbs.push(() => {
+    //       lec.read()
+    //     })
+    //   }
+
+    //   cbs.push(()=>{
+    //     //console.warn("suck my diiiiiiiiiick")
+    //   })
+
+    //   console.warn("mark is out of screen")
+    //   console.log('lec reading:', lec.isReading)
+
+    //   scrollTo(lec.currentWord).then(() => {
+    //     // setTimeout(() => {
+    //     cbs.forEach(cb => cb())
+    //     scrollingIntoView = false
+    //     // }, 1000)
+    //   })
+    // }
 
 
 
