@@ -1361,7 +1361,6 @@
   }
 
   function scrollTo(el, duration=200, threshold=200){
-    console.log('SCROLLING TO ', el);
     return _scroller.scrollTo(el, duration, threshold)
     // behavior
     // closer, will scroll little bit downwards or upwards
@@ -21059,6 +21058,7 @@
                         scrollIfNeeded() {
                           return new Promise(resolve => {
                             console.log('checking if should auto scroll...');
+                            console.log(this.isAutoScrolling, isOnScreen(lec.currentWord?.element, scrollingThresholdToScroll));
                             if (this.isAutoScrolling || isOnScreen(lec.currentWord?.element,
                                               scrollingThresholdToScroll)) return resolve(false)
 

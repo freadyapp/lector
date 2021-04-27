@@ -41,7 +41,6 @@ export function isOnScreen(el, threshold=100){
 }
 
 export function scrollTo(el, duration=200, threshold=200){
-  console.log('SCROLLING TO ', el)
   return _scroller.scrollTo(el, duration, threshold)
   // behavior
   // closer, will scroll little bit downwards or upwards
