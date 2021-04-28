@@ -1388,6 +1388,10 @@
   function onScroll(cb) {
     return _scroller.on('userScroll', cb)
   }
+
+  function onGlobalScrollEnd(cb, delta=50){
+    return _scroller.on('scrollEnd', cb)
+  }
   function onScrollEnd(cb, delta=50){
     return _scroller.on('userScrollEnd', cb)
   }
@@ -20435,7 +20439,7 @@
 
           });
 
-    onScrollEnd(() => {
+    onGlobalScrollEnd(() => {
       indicateMarkIfHidden();
     }, 150);
 

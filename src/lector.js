@@ -1,14 +1,14 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll, firstVisibleParent } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
-import { addSettingsToLector } from "./ui/lectorSettings2"
+import { addSettingsToLector } from "./ui/lectorSettings"
 import anime from "animejs"
 import { popUpOb } from "./onboarding/popUpOb"
 
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
-import { onScrollEnd, _scroller } from "./helpers/autoScroll"
+import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
 import * as config from "./config/lector.config"
 
 
@@ -155,7 +155,7 @@ const Mark = (lec) => {
 
         })
 
-  onScrollEnd(() => {
+  onGlobalScrollEnd(() => {
     indicateMarkIfHidden()
   }, 150)
 
