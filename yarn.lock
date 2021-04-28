@@ -4905,10 +4905,10 @@ postcss@^8.2.8:
     nanoid "^3.1.20"
     source-map "^0.6.1"
 
-pragmajs@^0.8.4:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/pragmajs/-/pragmajs-0.8.4.tgz#9d2e1823af7d1b992794eeeee43661e16a707742"
-  integrity sha512-fcnFcOssMnWL7i8VhetJUkuRp536iUxwMLasVS+bcKUCZaBY+0HufhI2odgei3LvLy34TMu1U65/DxSIbgqj/w==
+pragmajs@^0.8.6:
+  version "0.8.6"
+  resolved "https://registry.npmjs.org/pragmajs/-/pragmajs-0.8.6.tgz"
+  integrity sha512-sa/q0ytPu8YRn8SiskMAJzgJfaWL9rApMnpa91ZORBFxxop1fh+WHZfR5vSpXBVi4BZEokp6yfsRh26kD+//jA==
 
 prelude-ls@^1.2.1:
   version "1.2.1"

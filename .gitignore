@@ -1,6 +1,7 @@
 .watch.py
 .icona/
 dist/
+docs/scripts/lectorjs.umd.js
 
 # Logs
 logs

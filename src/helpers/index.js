@@ -40,9 +40,7 @@ export function isClickWithin(click, el){
 export function collapse(element){
     const ms = 30
     
-    element.css(`
-        opacity 0
-    `)
+    element.css('opacity 0')
 
 
     element.addClass(`collapsed`)
@@ -64,7 +62,7 @@ export function expand(element){
     })
 
     element.removeClass(`collapsed`)
-    element.setData({ 'collapsed': true })
+    element.setData({ 'collapsed': false })
 }
 
 

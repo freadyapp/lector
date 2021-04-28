@@ -1,7 +1,6 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll, firstVisibleParent } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
-import { LectorSettings } from "./ui/index"
 import { addSettingsToLector } from "./ui/lectorSettings2"
 import anime from "animejs"
 import { popUpOb } from "./onboarding/popUpOb"
@@ -318,7 +317,7 @@ export const Reader = async (l, options=default_options) => {
 
   lec.mark = Mark(lec)
   if (options.settings) addSettingsToLector(lec) 
-  if (options.legacySettings) lec.settings = LectorSettings(lec) 
+  // if (options.legacySettings) lec.settings = LectorSettings(lec) 
   if (options.onboarding) addOnboardingToLector(lec)
   // if (options.settings) lec.settings = LectorSettings(lec) 
 

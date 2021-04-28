@@ -63,6 +63,7 @@ $animation: 0.15s;
     #popup {
 	    @extend .collapsable;
         @extend .box-container;
+        display: block;
 		position: absolute;
 		bottom: 55px;
     }

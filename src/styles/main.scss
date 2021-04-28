@@ -22,299 +22,299 @@
   bottom: 20px;
 }
 
-.lector-settings {
-  @extend .fixed-bottom-box;
-  //@extend .glass-block;
-  .pop-up-settings {
-    background-color: #262626;
-    border-radius: 5px;
-    left: -10px;
-    transition: all .2s;
-    padding: 20px 5px 11px 5px;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
-    margin-left: 10px;
-    font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-    width: 200px;
-    margin-bottom: 10px;
-  }
+// .lector-settings {
+//   @extend .fixed-bottom-box;
+//   //@extend .glass-block;
+//   .pop-up-settings {
+//     background-color: #262626;
+//     border-radius: 5px;
+//     left: -10px;
+//     transition: all .2s;
+//     padding: 20px 5px 11px 5px;  // 7px bottom cause the fovea icon is a bit more horizonatal so it's an illusion, trippying balls here
+//     margin-left: 10px;
+//     font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
+//     width: 200px;
+//     margin-bottom: 10px;
+//   }
 
-  .pragma-input-element{
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    justify-content: center;
-  }
-  .section {
-    margin: 20px 0;
+//   .pragma-input-element{
+//     display: flex;
+//     flex-direction: column;
+//     width: fit-content;
+//     justify-content: center;
+//   }
+//   .section {
+//     margin: 20px 0;
     
 
-    &:hover > .pragma-label {
-      opacity: 1;
-      //  visibility: visible;
-    }
+//     &:hover > .pragma-label {
+//       opacity: 1;
+//       //  visibility: visible;
+//     }
 
-    .pragma-label{
-      opacity: 0;
-      transition: all .2s ease;
-      position: absolute;
-      // left: 10px;
-      left: 25%;
-      margin-top: -55px;
-      font-size: 12px;
-      color: whitesmoke;
-      .option-title{
-        color: rgba(199, 199, 199, 0.92);
-      }
-    }
-  }
+//     .pragma-label{
+//       opacity: 0;
+//       transition: all .2s ease;
+//       position: absolute;
+//       // left: 10px;
+//       left: 25%;
+//       margin-top: -55px;
+//       font-size: 12px;
+//       color: whitesmoke;
+//       .option-title{
+//         color: rgba(199, 199, 199, 0.92);
+//       }
+//     }
+//   }
 
-  .selector {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: stretch;
-    width: fit-content;
-    border-radius: 4px;
-    overflow: hidden;
+//   .selector {
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: nowrap;
+//     justify-content: center;
+//     align-items: center;
+//     align-content: stretch;
+//     width: fit-content;
+//     border-radius: 4px;
+//     overflow: hidden;
 
-     &-mode {
-      @extend .selector;
-      padding: 0;
-      color: #262626;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      justify-content: center;
-      align-items: center;
-      align-content: center;
-      left: -7%;
-    top: -70px;
-    }
+//      &-mode {
+//       @extend .selector;
+//       padding: 0;
+//       color: #262626;
+//       display: flex;
+//       flex-direction: row;
+//       flex-wrap: nowrap;
+//       justify-content: center;
+//       align-items: center;
+//       align-content: center;
+//       left: -7%;
+//     top: -70px;
+//     }
 
-    &-fovea {
-      @extend .selector;
-      width: 130px; 
-      height: 45px;
-      left: -9%;
-    top: -70px;
-    z-index: 45678;
-    margin-right: 9px;
-    }
+//     &-fovea {
+//       @extend .selector;
+//       width: 130px; 
+//       height: 45px;
+//       left: -9%;
+//     top: -70px;
+//     z-index: 45678;
+//     margin-right: 9px;
+//     }
 
-  }
+//   }
   
 
-  .setting {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    align-items: center;
-    align-content: stretch;
+//   .setting {
+//     width: 100%;
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: nowrap;
+//     justify-content: space-around;
+//     align-items: center;
+//     align-content: stretch;
 
-    .setting-icon { //THE COLOR ICON width is set in the colorIcon pragma because it's kinda thiccc, like yo ma
-      width: 35px;
-      height: 35px;
-    }
+//     .setting-icon { //THE COLOR ICON width is set in the colorIcon pragma because it's kinda thiccc, like yo ma
+//       width: 35px;
+//       height: 35px;
+//     }
 
-    &-wpm {
-      @extend .setting;
-      border-radius: 5px;
-      left: -10px;
-      transition: all .2s;
-      margin-left: 20px;
-      font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
-      width: 125px;
-      position: relative;
+//     &-wpm {
+//       @extend .setting;
+//       border-radius: 5px;
+//       left: -10px;
+//       transition: all .2s;
+//       margin-left: 20px;
+//       font-family: 'Poppins', 'Inter', 'Arial Narrow', Arial, sans-serif;
+//       width: 125px;
+//       position: relative;
 
-      .speed-adjust{ // Speed Adjust arrows wrapper
-        width: 10px;
+//       .speed-adjust{ // Speed Adjust arrows wrapper
+//         width: 10px;
 
-        .adjusticon {
-          width: 10px;
-          height: 20px;
-        }
-      }
+//         .adjusticon {
+//           width: 10px;
+//           height: 20px;
+//         }
+//       }
 
-      &::before {
-        content: "";
-        position: absolute;
-        height: 30px;
-        width: 1px;
-        background-color: #6F6F6F;
-        left: -10px;
-      }
-    }
-  }
+//       &::before {
+//         content: "";
+//         position: absolute;
+//         height: 30px;
+//         width: 1px;
+//         background-color: #6F6F6F;
+//         left: -10px;
+//       }
+//     }
+//   }
 
-  .settings-bar {                 
-    background-color: #262626;
+//   .settings-bar {                 
+//     background-color: #262626;
 
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    align-items: center;
-    align-content: stretch;
-    margin-left: 10px;
-    padding: 5px 0 5px 10px;
-    border-radius: 5px;
-    width: 200px;
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: nowrap;
+//     justify-content: space-around;
+//     align-items: center;
+//     align-content: stretch;
+//     margin-left: 10px;
+//     padding: 5px 0 5px 10px;
+//     border-radius: 5px;
+//     width: 200px;
 
-    &-icon {
-        width: 25px;
-        height: 25px;
-        position: relative;
-        cursor: pointer;
-      }
-  }
+//     &-icon {
+//         width: 25px;
+//         height: 25px;
+//         position: relative;
+//         cursor: pointer;
+//       }
+//   }
 
 
-  .wpm-icon {
-    color: #fff;
-    opacity: 65%;
-    font-size: 28px;
-    line-height: 45px;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+//   .wpm-icon {
+//     color: #fff;
+//     opacity: 65%;
+//     font-size: 28px;
+//     line-height: 45px;
+//     -webkit-touch-callout: none; /* iOS Safari */
+//     -webkit-user-select: none; /* Safari */
+//      -khtml-user-select: none; /* Konqueror HTML */
+//        -moz-user-select: none; /* Old versions of Firefox */
+//         -ms-user-select: none; /* Internet Explorer/Edge */
+//             user-select: none; /* Non-prefixed version, currently
+//                                   supported by Chrome, Edge, Opera and Firefox */
 
-    &:hover {
-      opacity: 100%;
-      transition: all ease 0.1s;
-    }
-  }
+//     &:hover {
+//       opacity: 100%;
+//       transition: all ease 0.1s;
+//     }
+//   }
 
-  .color-indicator {
-    width: 25px;
-    height: 25px;
-    background-color: rgb(168, 241, 154);
-    border-radius: 50%;
-  }
+//   .color-indicator {
+//     width: 25px;
+//     height: 25px;
+//     background-color: rgb(168, 241, 154);
+//     border-radius: 50%;
+//   }
 
-  .mode-indicator {
-    mix-blend-mode: normal !important;
-    width: 35px;
-    height: 25px;
-  }
+//   .mode-indicator {
+//     mix-blend-mode: normal !important;
+//     width: 35px;
+//     height: 25px;
+//   }
 
-  .modeOption {
-    width: 45px;
-    height: 25px;
-    padding: 10px 1px;
+//   .modeOption {
+//     width: 45px;
+//     height: 25px;
+//     padding: 10px 1px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent !important;
-    &.inactive {
-      background-color: transparent !important;
-      opacity: .5 !important;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background-color: transparent !important;
+//     &.inactive {
+//       background-color: transparent !important;
+//       opacity: .5 !important;
 
-    }
-    &.active {
+//     }
+//     &.active {
     
-      opacity: 1 !important;
-      //background-color: #6F6F6F !important;
+//       opacity: 1 !important;
+//       //background-color: #6F6F6F !important;
 
-      &::before {
-        content: none;
-      }
+//       &::before {
+//         content: none;
+//       }
 
-    }
+//     }
 
-    .mini-pointer {
-      height: 70%;
-      width: 70%;
-    }
+//     .mini-pointer {
+//       height: 70%;
+//       width: 70%;
+//     }
 
-  }
+//   }
 
-  .color-option {
-    width: 22px;
-    height: 22px;
-    border-radius: 25px;
-    margin: 5px 6px; 
+//   .color-option {
+//     width: 22px;
+//     height: 22px;
+//     border-radius: 25px;
+//     margin: 5px 6px; 
     
 
-  }
+//   }
 
-  .displayN {
-    display: none;
-  }
+//   .displayN {
+//     display: none;
+//   }
 
-  #underneath {
-    margin: 0 !important;
-    position: relative;
+//   #underneath {
+//     margin: 0 !important;
+//     position: relative;
     
-  }
+//   }
 
-  #hotbox {
-  }
+//   #hotbox {
+//   }
 
-  #faded {
-  }
+//   #faded {
+//   }
 
   
-  #font {
+//   #font {
     
-  }
+//   }
   
-  #color {
+//   #color {
     
-  }
+//   }
 
-  #mode {
-    margin: 35px 0;
-    position: relative;
+//   #mode {
+//     margin: 35px 0;
+//     position: relative;
 
-    &::before {
-      width: 70%;
-      height: 1px;
-      background-color: #6F6F6F;
-      content: "";
-      position: absolute;
-      top: -14px;
-    }
+//     &::before {
+//       width: 70%;
+//       height: 1px;
+//       background-color: #6F6F6F;
+//       content: "";
+//       position: absolute;
+//       top: -14px;
+//     }
 
 
-    &::after {
-      width: 70%;
-      height: 1px;
-      background-color: #6F6F6F;
-      content: "";
-      position: absolute;
-      bottom: -22px;
-    }
+//     &::after {
+//       width: 70%;
+//       height: 1px;
+//       background-color: #6F6F6F;
+//       content: "";
+//       position: absolute;
+//       bottom: -22px;
+//     }
 
-  }
+//   }
 
-  #fovea {
-    // margin-top: 15px;
-    height: fit-content;
-    .pragma-label{
-      margin-top: -25px;
-    }
-  }
+//   #fovea {
+//     // margin-top: 15px;
+//     height: fit-content;
+//     .pragma-label{
+//       margin-top: -25px;
+//     }
+//   }
   
-  #wpm {
-    .pragma-label {
-      position: relative;
-      left: 0;
-      margin: 0;
-      opacity: 1;
-      font-size: 18px;
-    }
-  }
+//   #wpm {
+//     .pragma-label {
+//       position: relative;
+//       left: 0;
+//       margin: 0;
+//       opacity: 1;
+//       font-size: 18px;
+//     }
+//   }
   
   
-}
+// }
 
 .lector-mini-settings{
   @extend .glass-block;

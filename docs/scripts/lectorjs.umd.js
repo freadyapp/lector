@@ -4,7 +4,7 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.lector = {}));
 }(this, (function (exports) { 'use strict';
 
-  function e(t,e=null,n=["rerun the code 10 times"],i=null,r=!1){if(!M()&&!r)return null;console.error(`%c 🧯 pragma.js  %c \n\n      encountered a soft error 🔫 %c \n\n      \n${i?`Triggered by: [${i.key} ${i}]`:""}\n      \n${t} %c\n\n      \n${null!=e?`Potential ${e}: \n\t${n.join("\n\t")}`:""}\n      `,"font-size:15px","font-size: 12px;","color:whitesmoke","color:white");}function n(){if(!M())return null;console.log(...arguments);}function i$1(){if(!M())return null;console.log("%c 🌴 [pragma] \n\n      ","font-size:12px; color:#86D787;",...arguments,"\n");}class r{constructor(t){this.self=t,this.actions=new Map,this.delete=this.destroy;}addWithKey(t,e=null){return e=e||this.actions.size,this.actions.set(e,t),e}add(...t){let e=[];for(let n of t)e.push(this.addWithKey(n));return e.length>1?e:e[0]}forAction(t){for(let[e,n]of this.actions)t(e,n);}exec(...t){this.execAs(this.self,...t);}destroy(...t){t.forEach((t=>this.actions.delete(t)));}execAs(t,...e){this.forAction(((n,i)=>{let r=null;if(r="function"==typeof i.bind?i.bind(t)(...e):i(...e),"function"==typeof r){r({key:n,action:i,replaceWith:t=>{},selfDestruct:()=>{this.destroy(n);}});}}));}}function s(){return Math.random().toString(36).substring(3,6)+Math.random().toString(36).substring(5,8)}function o(){return a(8)}function a(t=7){return t<5?s():(s()+a(t-5)).substring(0,t)}function l(t){return a(t)}function h(t,e){for(let[n,i]of Object.entries(e))t[n]=i;return t}const c=t=>t.replace(/([-_]\w)/g,(t=>t[1].toUpperCase()));function u(t,e){let n=`${t}Chain`,i=`on${t.capitalize()}`;return e[n]=new r(e),e[i]=function(t,i){e[n].addWithKey(t,i);},{chainName:n,eventName:i}}function f(t,...e){for(let n of e)u(n,t);}function d(t,e){let n=u(t,e),i=`is${t.capitalize()}ed`;e[n.chainName].add((()=>{e[i]=!0;})),e[n.eventName]=function(t){if(e[i])return t(e);e[n.chainName].add(t);};}function p(t,...e){for(let n of e)d(n,t);}String.prototype.capitalize=function(){return this.charAt(0).toUpperCase()+this.slice(1)};const g=t=>t.toString().replace(/[^a-z0-9]/gi,"-").toLowerCase();globalThis.pragmaSpace||(globalThis.pragmaSpace={}),p(globalThis.pragmaSpace,"docLoad");const m=globalThis.pragmaSpace.onDocLoad;function y(){globalThis.pragmaSpace.isDocLoaded||(i$1("📰 document is loaded."),globalThis.pragmaSpace.docLoadChain.exec());}"complete"===document.readyState?y():(document.addEventListener("readystatechange",(()=>{"complete"===document.readyState&&y();})),document.addEventListener("turbolinks:load",(()=>{i$1("🚀 TURBOLINKS loaded"),y();})));var v=/[#.]/g;function x(t,e="div"){var n=t||"",i={tag:e},r=0;let s,o,a;for(;r<n.length;)v.lastIndex=r,a=v.exec(n),s=n.slice(r,a?a.index:n.length),s&&(o?"#"===o?i.id=s:i.class?i.class.push(s):i.class=[s]:i.tag=s,r+=s.length),a&&(o=a[0],r++);return i}function b(t,n,i){if(!Array.isArray(t))return e(`Could not ${i} class [${t}] -> [${n}]`);for(let e of t){let t=e.split(" ");t.length>1?b(t,n,i):n.classList[i](e);}}function _(t,e){b(t,e,"add");}function $(t,e){b(t,e,"remove");}function C(t,e){b(t,e,"toggle");}function E(t){t=t.trim();try{let e=document.querySelector(t);if(e)return e}catch{}let e=x(t),n=document.createElement(e.tag||"div");return e.id&&(n.id=e.id),e.class&&_(e.class,n),n}function T(t){return document.createRange().createContextualFragment(t)}function w(t){return t instanceof Element?t:"string"==typeof t?"<"===t[0]?T(t):E(t):e(`Could not find/create element from [${t}]`)}const A={html:(t,e)=>{e.innerHTML=t;},pcss:(t,e)=>{for(let[n,i]of S.cssToDict(t))e.style[c(n)]=i;}},S={cssToDict:t=>{t=t.replace(/\n/g,";").replace(/:/g," ");let n=new Map;for(let e of t.split(";")){if(e.replace(/\s/g,"").length<2)continue;e=e.trim().split(" ");let t=e[0];e.shift(),n.set(t.trim(),e.join(" ").trim());}let i=[];for(const[t,e]of n.entries())CSS.supports(t,e)||i.push(`${t.trim()}: ${e.trim()}`);return i.length>0&&e("CSS syntax error","typos",i),n},css:t=>{let e="";for(let[n,i]of S.cssToDict(t))e+=`${n}:${i};`;return e},html:t=>t};function M(){return globalThis.pragmaSpace.dev}globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.dev=globalThis.pragmaSpace.dev||"undefined"!=typeof process&&process.env&&"development"===process.env.NODE_ENV;var O=Object.freeze({__proto__:null,_deving:M,throwSoft:e,log:n,suc:i$1,whenDOM:m,parseQuery:x,addClassAryTo:_,removeClassAryFrom:$,toggleClassAryOf:C,selectOrCreateDOM:E,elementFrom:w,toHTMLAttr:g,fragmentFromString:T,fillSVG:function(t,e){k(t).findAll("path").forEach((t=>{const n=t.attr("fill");"none"!=n&&"transparent"!=n&&t.attr("fill",e);}));},generateRandomKey:l,objDiff:h,aryDiff:function(t,e){return t.filter((t=>e.indexOf(t)<0))},_extend:function(t,e){Object.setPrototypeOf(t,h(Object.getPrototypeOf(t),e));},overwrite:function(t,e,n){let i=t[e];t[`_${e}`]=i.bind(t),t[e]=n;},createEventChains:p,createChains:f,snake2camel:c,mimic:function(t,e,n){for(let i of n||Object.keys(e)){let n=Object.getOwnPropertyDescriptor(e,i);if(!n)break;Object.defineProperty(t,i,n);}},bench:function(t,e){console.time(e),t(),console.timeEnd(e);},addStyles:function(t,e="injected-pragma-style"){k(`style#${e}-${s()}`,t).appendTo("head");},rk:a,rk5:s,rk8:o,parse:S,apply:A,createTemplate:t=>(new q).run((function(){f(this,"config"),this.config=function(t){return this.configChain.exec(t),this},this.onConfig(((t={})=>{["events","chains","exports","persistentExports"].forEach((e=>{t[e]&&(this[`_${e}`]=t[e],delete t[e]);})),this._events&&p(this,...this._events),this._chains&&f(this,...this._chains);for(let[e,n]of Object.entries(t))this[e]=n,this.export(e);this._exports&&this.export(...this._exports);})),this.export("exports","config","exportChain","configChain","onConfig");}),(function(){"object"==typeof t&&this.config(t);}))});function j(t){if(null==t||null==t)return e(`Could not find a DOM element for ${t}`);if(t.element)return j(t.element);return w(t)}function k(t,e){let n=j(t);var i,r;return n.constructor===DocumentFragment&&(i=n,(r=document.createElement("template")).appendChild(i.cloneNode(!0)),n=r.firstChild),n instanceof Element&&(n.init(),n._render()),"string"==typeof e&&n.html(e),n}const L={init:function(){this.isPragmaElement=!0,p(this,"docLoad","render"),m((()=>this.docLoadChain.exec(this)));},_render:function(){this.renderChain.exec(this);},appendTo:function(t){return this.onDocLoad((()=>{this._parentElement=j(t),this._parentElement.appendChild(this),this._render();})),this},prependTo:function(t){return this.onDocLoad((()=>{this._parentElement=j(t),this._parentElement.prepend(this),this._render();})),this},append:function(...t){return this.onRender((()=>{for(let e of t){let t=j(e);this.appendChild(t);}})),this},destroy:function(){this.onRender((()=>{this.parentElement&&this.parentElement.removeChild(this);}));},css:function(t){return this.onRender((()=>{A.pcss(t,this);})),this},setText:function(t){return t?(this.onRender((()=>{this.textContent=t;})),this):this.text},html:function(t){return t?(this.onRender((()=>{A.html(t,this);})),this):this.innerHTML},setId:function(t){return this.id=t,this},setData:function(t){for(let[e,n]of Object.entries(t))this.dataset[e]=n;return this},getData:function(t){return this.dataset[t]},addClass:function(...t){return _(t,this),this},removeClass:function(...t){return $(t,this),this},toggleClass:function(...t){return C(t,this),this},listenTo:function(...t){return this.onRender((()=>{this.addEventListener(...t);})),this},attr:function(t,e){if("string"==typeof t){if(void 0===e)return this.getAttribute(t);const n=t;(t={})[n]=e;}for(let[e,n]of Object.entries(t))this.setAttribute(e,n);return this},find:function(){return k(this.query(...arguments))},findAll:function(t){return Array.from(this.queryAll(t)).map((t=>k(t)))},query:function(){return this.querySelector(...arguments)},queryAll:function(t){return this.querySelectorAll(t)},hide:function(){return this.style.display="none",this},show:function(){return this.style.display="",this},deepQueryAll:function(t){let e=Array.from(this.queryAll(t));for(let n of this.children)e=e.concat(n.deepQueryAll(t));return e},deepFindAll:function(t){return this.deepQueryAll(t).map((t=>k(t)))},rect:function(){return "function"==typeof this.getBoundingClientRect?this.getBoundingClientRect():{}},offset:function(t){if(t){["width","height","left","right","top","bottom"].forEach((e=>{e in t&&(this.style[e]=t[e]+"px");}));}var e=this.rect();return {top:e.top+window.scrollY,left:e.left+window.scrollX}},x:function(t){return this.left+this.width/2-t/2}},D={top:function(){return this.offset().top},left:function(){return this.offset().left},width:function(){return this.rect().width},height:function(){return this.rect().height},text:function(){return this.textContent},classArray:function(){return Array.from(this.classList)},childrenArray:function(){return Array.from(this.children)}};for(let[t,e]of Object.entries(L))Element.prototype[t]=e;for(let[t,e]of Object.entries(D))Object.defineProperty(Element.prototype,t,{get:e,configurable:!0});class P{constructor(t){this._childMap=new Map,this.key="string"==typeof t?t:o(),this.containsKey=this.childMap.has;}set childMap(t){for(let[e,n]of t)n instanceof P&&this.add(n);}get childMap(){return this._childMap}get kidsum(){return this.childMap.size}get hasKids(){return this.kidsum>0}get shape(){return this.shapePrefix()}get master(){return null==this.parent||null==this.parent.parent?this.parent:this.parent.master}get children(){return Array.from(this.childMap.values())}get depthKey(){return this.parent?this.parent.depthKey+"<~<"+this.key:this.key}get allChildren(){if(!this.hasKids)return null;let t=this.children;for(let e of t){let n=e.allChildren;n&&(t=t.concat(n));}return t}get(t){return this.childMap.get(t)}find(t){if(this.childMap.has(t))return this.childMap.get(t);for(let e of this.childMap.values()){let n;try{n=e.find(t);}catch{}if(n)return n}}adopt(...t){for(let e of t)this.add(e);return this}add(t,n=!1){return t?!n&&this.childMap.has(t.key)?(t.key=`${t.key}<${s()}`,this.add(t)):(t.parent=this,void this.childMap.set(t.key,t)):e(`Could not add [${t}] to [${this.id}]`)}delete(t){return this.remove(t)}remove(t){this.childMap.get(t)&&this.childMap.delete(t);}shapePrefix(t=""){let e=`${t}| ${this.type} - ${this.key} \n`;if(this.hasKids){t+="| ";for(let n of this.children)e+=n.shapePrefix(t);}return e}}const R={parent:(t,e)=>{t.parent=e;},value:(t,e)=>{t.value=e;},key:(t,e)=>{t.key=e;},class:(t,e)=>{t._class=e;},element:(t,n)=>{if(!(n instanceof Element))return e(`Could not add ${n} as the element of [${t}]`);t.element=n;},children:(t,e)=>{if(e.constructor==Array)return t.buildAry(e);t.build(e);},childTemplate:(t,e)=>{}};function z(t,e){return {val:t,set:e}}function N(t,e){return t=e.min?Math.max(e.min,t):t,t=e.max?Math.min(e.max,t):t}function K(t,n){return function(t){return t&&null!=t.min&&null!=t.max}(n)?(null==t&&(t=n.min),t=(t=t>n.max?n.min:t)<n.min?n.max:t):e(`Could not loop value, since range (${JSON.stringify(n)}) is unbounded`)}class q extends P{constructor(t,e){super(),p(this,"export"),this.actionChain=new r,this._events=new Map,"object"==typeof t?function(t,e){let n=new Map;for(let[i,r]of Object.entries(t))R.hasOwnProperty(i)?R[i](e,r):n.set(i,r);e.element&&e.element.whenInDOM((t=>{for(let[i,r]of n)if(i=i.toLowerCase(),i.includes("on")){let n=i.split("on")[1].trim();t.listenTo(n,(()=>{e.action(r);}));}}));}(t,this):this.key=t,this.element||this.as();}listenTo(t,e){return this.element.listenTo(t,e.bind(this)),this}_addToEventChain(t,...e){let n=this._events.get(t);if(n){let i=n.add(...e);return this._events.set(t,n),i}return null}createEvent(t,...e){let n=new r(this);return this._events.set(t,n),e.length>0&&this.on(t,e),this}createEvents(...t){return t.forEach((t=>{this.createEvent(t);})),this}triggerEvents(t,...e){return t.forEach((t=>{this.triggerEvent(t,...e);})),this}triggerEvent(e,...n){return this._events.has(e)?(this._events.get(e).execAs(this,...n),this):O.throwSoft(`pragma doesnt have ${event} - cannot .triggerEvent("${event}")]`,this)}_on(e,...n){let i=this._addToEventChain(e,...n);return null===i?O.throwSoft(`pragma doesnt have ${e} - cannot .on("${e}")`,this):i}on(){return this._on(...arguments),this}_onNext(t,e){this._on(t,(function(){return e(...arguments),t=>{t.selfDestruct();}}));}onNext(){return this._onNext(...arguments),this}createWires(...t){return t.forEach((t=>this.createWire(t))),this}createWire(t){let e={change:`${t}Change`,set:`${t}Set`};return this.createEvents(e.change,e.set),Object.defineProperty(this,t,{set:n=>{let i=function(t,e,n){if(n)return z(K(t,n),!0);if(e){let n=N(t,e);return z(n,n===t)}return z(t,!0)}(n,this[`_${t}Range`],this[`_${t}Loop`]);const r=this[`_${t}`];i.set&&i.val!==r&&(this[`_${t}`]=i.val,this.triggerEvent(e.change,i.val,r)),this.triggerEvent(e.set,n,r);},get:()=>this[`_${t}`]}),this[`set${t.capitalize()}`]=e=>(this[`${t}`]=e,this),this[`set${t.capitalize()}Silently`]=e=>(this[`_${t}`]=e,this),this[`set${t.capitalize()}Loop`]=(e,n)=>(this[`_${t}Loop`]={min:e,max:n},this),this[`set${t.capitalize()}Range`]=(e,n)=>(this[`_${t}Range`]={min:e,max:n},this),this}get _e(){return this.element}setElement(t,e=!0){return this.elementDOM=t,e&&this.element.id&&(this.id=this.element.id),this}get element(){return this.elementDOM}set element(t){this.setElement(t);}setRange(t=null,e=null){return this.range=this.range||{},this.range.min=null===t?this.range.min:t,this.range.max=null===e?this.range.max:e,this}breakLoop(){return this._loopVal=!1,this}setLoop(t,e){return this.setRange(t,e),this._loopVal=!0,this}get dv(){return this.v-this._lv}get value(){return this.v}setValue(t){return this.value=t,this}set value(t){let e=function(t,e,n){if(!e)return z(t,!0);if(n)return z(K(t,e),!0);let i=N(t,e);return z(i,i==t)}(t,this.range,this._loopVal);e.set&&(this._lv=this.v,this.v=e.val,this.exec());}exec(){return this.actionChain.execAs(this,...arguments),this}setKey(t){return this.key=t,this}set key(t){this._KEY=null==t?l():t;}get key(){return this._KEY}set id(t){this.element&&(this.element.id=this.id);}get id(){return g(this.key)}buildAry(t){for(let e of t)this.add(new q(e,this));return this}build(...t){return this.buildAry(t)}as(t=null,e){return t=t||`div#${this.id}.pragma`,this.setElement(k(t,e),!1),this}addExport(t){this.exports=this.exports||new Set,this.exports.add(t);}export(...t){for(let e of t)this.addExport(e);}import(...e){let n=new r;for(let i of e)"function"==typeof i&&(i=i()),i.exports&&O.mimic(this,i,i.exports),i.exportChain&&n.add((t=>{i.exportChain.exec(this);}));return n.exec(),this}from(e){return e.exports&&O.mimic(this,e,e.exports),e.exportChain&&e.exportChain.exec(this),this}wireTo(t){let e=this;return t.do((function(){e.value=this.value;})),this}do(){return this.actionChain.add(...arguments),this}extend(e,n){return O.overwrite(this,e,n),this}define({...t}){for(let[e,n]of Object.entries(t)){if(!e)return console.error("could not define, no name passed",n);this[e]=n;}return this}run(...t){let n=t[0];return "function"==typeof n?this._runAry(t):"object"==typeof n?this._runAry(Object.values(n)):e(`Could not run [${t}] as [${this}]`),this}_runAry(t){for(let e of t)this.runAs(e);}runAs(t){return t.bind(this)()}containAry(t,n="append"){for(let i of t)super.add(i),i.isRendered?e(`[${i}] is already appended`):this.element[n](i);return this}contain(...t){return this.containAry(t)}containFirst(...t){return this.containAry(t.reverse(),"prepend")}pragmatize(){return this.element.appendTo(this.parent&&this.parent.element||"body"),this}pragmatizeAt(t){return this.element.appendTo(t),this}addListeners(t){for(let[e,n]of Object.entries(t))this.on(e).do(n);return this}}const W=["html","css","addClass","removeClass","toggleClass","setId","append","prepend","appendTo","prependTo","setData"];for(let t of W)q.prototype[t]=function(){return this.element[t](...arguments),this};const F=["getData"];for(let t of F)q.prototype[t]=function(){return this.element[t](...arguments)};const I=["offset","text","top","left","width","height","x","classArray"];for(let t of I)Object.defineProperty(q.prototype,t,{get:function(){return this.element[t]}});globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.integrateMousetrap=function(t){"function"==typeof t&&(q.prototype.bind=function(e,n,i){let r=this;return t.bind(e,(function(){return r.runAs(n)}),i),this},globalThis.pragmaSpace.mousetrapIntegration=!0,i$1("Mousetrap configuration detected! Extended Pragmas to support .bind() method!"));};try{globalThis.pragmaSpace.integrateMousetrap(Mousetrap);}catch(t){n("Tried to integrate extensions, but failed. To disable,\n  this attempt: globalThis.pragmaSpace.integrate3rdParties = false");}class V extends q{static load(t,e=o()){return console.time(`${e} load`),new Promise((n=>{k(`script#${e}-loader crossorigin`).appendTo("head").listenTo("load",(function(){n(),console.timeEnd(`${e} load`);})).attr("src",t);}))}}const H=(t,e)=>new q(t,e),J=H;function X(t,...e){return k(e.reduce(((e,n,i)=>`${e}${n}${t[i+1]}`),t[0]).trim())}
+  function e(t,e=null,n=["rerun the code 10 times"],i=null,r=!1){if(!M()&&!r)return null;console.error(`%c 🧯 pragma.js  %c \n\n      encountered a soft error 🔫 %c \n\n      \n${i?`Triggered by: [${i.key} ${i}]`:""}\n      \n${t} %c\n\n      \n${null!=e?`Potential ${e}: \n\t${n.join("\n\t")}`:""}\n      `,"font-size:15px","font-size: 12px;","color:whitesmoke","color:white");}function n(){if(!M())return null;console.log(...arguments);}function i$1(){if(!M())return null;console.log("%c 🌴 [pragma] \n\n      ","font-size:12px; color:#86D787;",...arguments,"\n");}class r{constructor(t){this.self=t,this.actions=new Map,this.delete=this.destroy;}addWithKey(t,e=null){return e=e||this.actions.size,this.actions.set(e,t),e}add(...t){let e=[];for(let n of t)e.push(this.addWithKey(n));return e.length>1?e:e[0]}forAction(t){for(let[e,n]of this.actions)t(e,n);}exec(...t){this.execAs(this.self,...t);}destroy(...t){t.forEach((t=>this.actions.delete(t)));}execAs(t,...e){this.forAction(((n,i)=>{let r=null;if(r="function"==typeof i.bind?i.bind(t)(...e):i(...e),"function"==typeof r){r({key:n,action:i,replaceWith:t=>{},selfDestruct:()=>{this.destroy(n);}});}}));}}function s(){return Math.random().toString(36).substring(3,6)+Math.random().toString(36).substring(5,8)}function o(){return a(8)}function a(t=7){return t<5?s():(s()+a(t-5)).substring(0,t)}function l(t){return a(t)}function h(t,e){for(let[n,i]of Object.entries(e))t[n]=i;return t}const c=t=>t.replace(/([-_]\w)/g,(t=>t[1].toUpperCase()));function u(t,e){let n=`${t}Chain`,i=`on${t.capitalize()}`;return e[n]=new r(e),e[i]=function(t,i){e[n].addWithKey(t,i);},{chainName:n,eventName:i}}function f(t,...e){for(let n of e)u(n,t);}function d(t,e){let n=u(t,e),i=`is${t.capitalize()}ed`;e[n.chainName].add((()=>{e[i]=!0;})),e[n.eventName]=function(t){if(e[i])return t(e);e[n.chainName].add(t);};}function p(t,...e){for(let n of e)d(n,t);}String.prototype.capitalize=function(){return this.charAt(0).toUpperCase()+this.slice(1)};const g=t=>t.toString().replace(/[^a-z0-9]/gi,"-").toLowerCase();globalThis.pragmaSpace||(globalThis.pragmaSpace={}),p(globalThis.pragmaSpace,"docLoad");const m=globalThis.pragmaSpace.onDocLoad;function y(){globalThis.pragmaSpace.isDocLoaded||(i$1("📰 document is loaded."),globalThis.pragmaSpace.docLoadChain.exec());}"complete"===document.readyState?y():(document.addEventListener("readystatechange",(()=>{"complete"===document.readyState&&y();})),document.addEventListener("turbolinks:load",(()=>{i$1("🚀 TURBOLINKS loaded"),y();})));var v=/[#.]/g;function x(t,e="div"){var n=t||"",i={tag:e},r=0;let s,o,a;for(;r<n.length;)v.lastIndex=r,a=v.exec(n),s=n.slice(r,a?a.index:n.length),s&&(o?"#"===o?i.id=s:i.class?i.class.push(s):i.class=[s]:i.tag=s,r+=s.length),a&&(o=a[0],r++);return i}function b(t,n,i){if(!Array.isArray(t))return e(`Could not ${i} class [${t}] -> [${n}]`);for(let e of t){let t=e.split(" ");t.length>1?b(t,n,i):n.classList[i](e);}}function $(t,e){b(t,e,"add");}function _(t,e){b(t,e,"remove");}function C(t,e){b(t,e,"toggle");}function E(t){t=t.trim();try{let e=document.querySelector(t);if(e)return e}catch{}let e=x(t),n=document.createElement(e.tag||"div");return e.id&&(n.id=e.id),e.class&&$(e.class,n),n}function T(t){return document.createRange().createContextualFragment(t)}function w(t){return t instanceof Element?t:"string"==typeof t?"<"===t[0]?T(t):E(t):e(`Could not find/create element from [${t}]`)}const A={html:(t,e)=>{e.innerHTML=t;},pcss:(t,e)=>{for(let[n,i]of S.cssToDict(t))e.style[c(n)]=i;}},S={cssToDict:t=>{t=t.replace(/\n/g,";").replace(/:/g," ");let n=new Map;for(let e of t.split(";")){if(e.replace(/\s/g,"").length<2)continue;e=e.trim().split(" ");let t=e[0];e.shift(),n.set(t.trim(),e.join(" ").trim());}let i=[];for(const[t,e]of n.entries())CSS.supports(t,e)||i.push(`${t.trim()}: ${e.trim()}`);return i.length>0&&e("CSS syntax error","typos",i),n},css:t=>{let e="";for(let[n,i]of S.cssToDict(t))e+=`${n}:${i};`;return e},html:t=>t};function M(){return globalThis.pragmaSpace.dev}globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.dev=globalThis.pragmaSpace.dev||"undefined"!=typeof process&&process.env&&"development"===process.env.NODE_ENV;var O=Object.freeze({__proto__:null,_deving:M,throwSoft:e,log:n,suc:i$1,whenDOM:m,parseQuery:x,addClassAryTo:$,removeClassAryFrom:_,toggleClassAryOf:C,selectOrCreateDOM:E,elementFrom:w,toHTMLAttr:g,fragmentFromString:T,fillSVG:function(t,e){k(t).findAll("path").forEach((t=>{const n=t.attr("fill");"none"!=n&&"transparent"!=n&&t.attr("fill",e);}));},generateRandomKey:l,objDiff:h,aryDiff:function(t,e){return t.filter((t=>e.indexOf(t)<0))},_extend:function(t,e){Object.setPrototypeOf(t,h(Object.getPrototypeOf(t),e));},overwrite:function(t,e,n){let i=t[e];t[`_${e}`]=i.bind(t),t[e]=n;},createEventChains:p,createChains:f,snake2camel:c,mimic:function(t,e,n){for(let i of n||Object.keys(e)){let n=Object.getOwnPropertyDescriptor(e,i);if(!n)break;Object.defineProperty(t,i,n);}},bench:function(t,e){console.time(e),t(),console.timeEnd(e);},addStyles:function(t,e="injected-pragma-style"){k(`style#${e}-${s()}`,t).appendTo("head");},rk:a,rk5:s,rk8:o,parse:S,apply:A,createTemplate:t=>(new q).run((function(){f(this,"config"),this.config=function(t){return this.configChain.exec(t),this},this.onConfig(((t={})=>{["events","chains","exports","persistentExports"].forEach((e=>{t[e]&&(this[`_${e}`]=t[e],delete t[e]);})),this._events&&p(this,...this._events),this._chains&&f(this,...this._chains);for(let[e,n]of Object.entries(t))this[e]=n,this.export(e);this._exports&&this.export(...this._exports);})),this.export("exports","config","exportChain","configChain","onConfig");}),(function(){"object"==typeof t&&this.config(t);}))});function j(t){if(null==t||null==t)return e(`Could not find a DOM element for ${t}`);if(t.element)return j(t.element);return w(t)}function k(t,n){let i=j(t);return i?(i.constructor===DocumentFragment&&(r=i,(s=document.createElement("template")).appendChild(r.cloneNode(!0)),i=s.firstChild),i instanceof Element&&(i.init(),i._render()),"string"==typeof n&&i.html(n),i):e(`${t} could not be found/created`);var r,s;}const L={init:function(){this.isPragmaElement=!0,p(this,"docLoad","render"),m((()=>this.docLoadChain.exec(this)));},_render:function(){this.renderChain.exec(this);},appendTo:function(t){return this.onDocLoad((()=>{this._parentElement=j(t),this._parentElement.appendChild(this),this._render();})),this},prependTo:function(t){return this.onDocLoad((()=>{this._parentElement=j(t),this._parentElement.prepend(this),this._render();})),this},append:function(...t){return this.onRender((()=>{for(let e of t){let t=j(e);this.appendChild(t);}})),this},destroy:function(){this.onRender((()=>{this.parentElement&&this.parentElement.removeChild(this);}));},css:function(t){return this.onRender((()=>{A.pcss(t,this);})),this},setText:function(t){return t?(this.onRender((()=>{this.textContent=t;})),this):this.text},html:function(t){return null==t?this.innerHTML:(this.onRender((()=>{A.html(t,this);})),this)},setId:function(t){return this.id=t,this},setData:function(t){for(let[e,n]of Object.entries(t))this.dataset[e]=n;return this},getData:function(t){return this.dataset[t]},addClass:function(...t){return $(t,this),this},removeClass:function(...t){return _(t,this),this},toggleClass:function(...t){return C(t,this),this},listenTo:function(...t){return this.onRender((()=>{this.addEventListener(...t);})),this},attr:function(t,e){if("string"==typeof t){if(void 0===e)return this.getAttribute(t);const n=t;(t={})[n]=e;}for(let[e,n]of Object.entries(t))this.setAttribute(e,n);return this},find:function(){return k(this.query(...arguments))},define:function(t){this.setData(t);for(let[e,n]of Object.entries(t))this[e]=this.id?`#${this.id}>${n}`:n;return this},findAll:function(t){return Array.from(this.queryAll(t)).map((t=>k(t)))},query:function(){return this.querySelector(...arguments)},queryAll:function(t){return this.querySelectorAll(t)},hide:function(){return this.style.display="none",this},show:function(){return this.style.display="",this},deepQueryAll:function(t){let e=Array.from(this.queryAll(t));for(let n of this.children)e=e.concat(n.deepQueryAll(t));return e},deepFindAll:function(t){return this.deepQueryAll(t).map((t=>k(t)))},rect:function(){return "function"==typeof this.getBoundingClientRect?this.getBoundingClientRect():{}},offset:function(t){if(t){["width","height","left","right","top","bottom"].forEach((e=>{e in t&&(this.style[e]=t[e]+"px");}));}var e=this.rect();return {top:e.top+window.scrollY,left:e.left+window.scrollX}},x:function(t){return this.left+this.width/2-t/2}},D={top:function(){return this.offset().top},left:function(){return this.offset().left},width:function(){return this.rect().width},height:function(){return this.rect().height},text:function(){return this.textContent},classArray:function(){return Array.from(this.classList)},childrenArray:function(){return Array.from(this.children)}};for(let[t,e]of Object.entries(L))Element.prototype[t]=e;for(let[t,e]of Object.entries(D))Object.defineProperty(Element.prototype,t,{get:e,configurable:!0});class P{constructor(t){this._childMap=new Map,this.key="string"==typeof t?t:o(),this.containsKey=this.childMap.has;}set childMap(t){for(let[e,n]of t)n instanceof P&&this.add(n);}get childMap(){return this._childMap}get kidsum(){return this.childMap.size}get hasKids(){return this.kidsum>0}get shape(){return this.shapePrefix()}get master(){return null==this.parent||null==this.parent.parent?this.parent:this.parent.master}get children(){return Array.from(this.childMap.values())}get depthKey(){return this.parent?this.parent.depthKey+"<~<"+this.key:this.key}get allChildren(){if(!this.hasKids)return null;let t=this.children;for(let e of t){let n=e.allChildren;n&&(t=t.concat(n));}return t}get(t){return this.childMap.get(t)}find(t){if(this.childMap.has(t))return this.childMap.get(t);for(let e of this.childMap.values()){let n;try{n=e.find(t);}catch{}if(n)return n}}adopt(...t){for(let e of t)this.add(e);return this}add(t,n=!1){return t?!n&&this.childMap.has(t.key)?(t.key=`${t.key}<${s()}`,this.add(t)):(t.parent=this,void this.childMap.set(t.key,t)):e(`Could not add [${t}] to [${this.id}]`)}delete(t){return this.remove(t)}remove(t){this.childMap.get(t)&&this.childMap.delete(t);}shapePrefix(t=""){let e=`${t}| ${this.type} - ${this.key} \n`;if(this.hasKids){t+="| ";for(let n of this.children)e+=n.shapePrefix(t);}return e}}const R={parent:(t,e)=>{t.parent=e;},value:(t,e)=>{t.value=e;},key:(t,e)=>{t.key=e;},class:(t,e)=>{t._class=e;},element:(t,n)=>{if(!(n instanceof Element))return e(`Could not add ${n} as the element of [${t}]`);t.element=n;},children:(t,e)=>{if(e.constructor==Array)return t.buildAry(e);t.build(e);},childTemplate:(t,e)=>{}};function z(t,e){return {val:t,set:e}}function N(t,e){return t=e.min?Math.max(e.min,t):t,t=e.max?Math.min(e.max,t):t}function K(t,n){return function(t){return t&&null!=t.min&&null!=t.max}(n)?(null==t&&(t=n.min),t=(t=t>n.max?n.min:t)<n.min?n.max:t):e(`Could not loop value, since range (${JSON.stringify(n)}) is unbounded`)}class q extends P{constructor(t,e){super(),p(this,"export"),this.actionChain=new r,this._events=new Map,"object"==typeof t?function(t,e){let n=new Map;for(let[i,r]of Object.entries(t))R.hasOwnProperty(i)?R[i](e,r):n.set(i,r);e.element&&e.element.whenInDOM((t=>{for(let[i,r]of n)if(i=i.toLowerCase(),i.includes("on")){let n=i.split("on")[1].trim();t.listenTo(n,(()=>{e.action(r);}));}}));}(t,this):this.key=t,this.element||this.as();}listenTo(t,e){return this.element.listenTo(t,e.bind(this)),this}_addToEventChain(t,...e){let n=this._events.get(t);if(n){let i=n.add(...e);return this._events.set(t,n),i}return null}createEvent(t,...e){let n=new r(this);return this._events.set(t,n),e.length>0&&this.on(t,e),this}createEvents(...t){return t.forEach((t=>{this.createEvent(t);})),this}triggerEvents(t,...e){return t.forEach((t=>{this.triggerEvent(t,...e);})),this}triggerEvent(e,...n){return this._events.has(e)?(this._events.get(e).execAs(this,...n),this):O.throwSoft(`pragma doesnt have ${event} - cannot .triggerEvent("${event}")]`,this)}_on(e,...n){let i=this._addToEventChain(e,...n);return null===i?O.throwSoft(`pragma doesnt have ${e} - cannot .on("${e}")`,this):i}on(){return this._on(...arguments),this}_onNext(t,e){this._on(t,(function(){return e(...arguments),t=>{t.selfDestruct();}}));}onNext(){return this._onNext(...arguments),this}createWires(...t){return t.forEach((t=>this.createWire(t))),this}createWire(t){let e={change:`${t}Change`,set:`${t}Set`};return this.createEvents(e.change,e.set),Object.defineProperty(this,t,{set:n=>{let i=function(t,e,n){if(n)return z(K(t,n),!0);if(e){let n=N(t,e);return z(n,n===t)}return z(t,!0)}(n,this[`_${t}Range`],this[`_${t}Loop`]);const r=this[`_${t}`];i.set&&i.val!==r&&(this[`_${t}`]=i.val,this.triggerEvent(e.change,i.val,r)),this.triggerEvent(e.set,n,r);},get:()=>this[`_${t}`]}),this[`set${t.capitalize()}`]=e=>(this[`${t}`]=e,this),this[`set${t.capitalize()}Silently`]=e=>(this[`_${t}`]=e,this),this[`set${t.capitalize()}Loop`]=(e,n)=>(this[`_${t}Loop`]={min:e,max:n},this),this[`set${t.capitalize()}Range`]=(e,n)=>(this[`_${t}Range`]={min:e,max:n},this),this}get _e(){return this.element}setElement(t,e=!0){return this.elementDOM=t,e&&this.element.id&&(this.id=this.element.id),this}get element(){return this.elementDOM}set element(t){this.setElement(t);}setRange(t=null,e=null){return this.range=this.range||{},this.range.min=null===t?this.range.min:t,this.range.max=null===e?this.range.max:e,this}breakLoop(){return this._loopVal=!1,this}setLoop(t,e){return this.setRange(t,e),this._loopVal=!0,this}get dv(){return this.v-this._lv}get value(){return this.v}setValue(t){return this.value=t,this}set value(t){let e=function(t,e,n){if(!e)return z(t,!0);if(n)return z(K(t,e),!0);let i=N(t,e);return z(i,i==t)}(t,this.range,this._loopVal);e.set&&(this._lv=this.v,this.v=e.val,this.exec());}exec(){return this.actionChain.execAs(this,...arguments),this}setKey(t){return this.key=t,this}set key(t){this._KEY=null==t?l():t;}get key(){return this._KEY}set id(t){this.element&&(this.element.id=this.id);}get id(){return g(this.key)}buildAry(t){for(let e of t)this.add(new q(e,this));return this}build(...t){return this.buildAry(t)}as(t=null,e){return t=t||`div#${this.id}.pragma`,this.setElement(k(t,e),!1),this}addExport(t){this.exports=this.exports||new Set,this.exports.add(t);}export(...t){for(let e of t)this.addExport(e);}import(...e){let n=new r;for(let i of e)"function"==typeof i&&(i=i()),i.exports&&O.mimic(this,i,i.exports),i.exportChain&&n.add((t=>{i.exportChain.exec(this);}));return n.exec(),this}from(e){return e.exports&&O.mimic(this,e,e.exports),e.exportChain&&e.exportChain.exec(this),this}wireTo(t){let e=this;return t.do((function(){e.value=this.value;})),this}do(){return this.actionChain.add(...arguments),this}extend(e,n){return O.overwrite(this,e,n),this}define({...t}){for(let[e,n]of Object.entries(t)){if(!e)return console.error("could not define, no name passed",n);"function"==typeof n?this[e]=n:"string"==typeof n?this[e]=this.element.find(n):console.error("could not define",e);}return this}run(...t){let n=t[0];return "function"==typeof n?this._runAry(t):"object"==typeof n?this._runAry(Object.values(n)):e(`Could not run [${t}] as [${this}]`),this}_runAry(t){for(let e of t)this.runAs(e);}runAs(t){return t.bind(this)()}containAry(t,n="append"){for(let i of t)super.add(i),i.isRendered?e(`[${i}] is already appended`):this.element[n](i);return this}contain(...t){return this.containAry(t)}containFirst(...t){return this.containAry(t.reverse(),"prepend")}pragmatize(){return this.element.appendTo(this.parent&&this.parent.element||"body"),this}pragmatizeAt(t){return this.element.appendTo(t),this}addListeners(t){for(let[e,n]of Object.entries(t))this.on(e).do(n);return this}}const W=["html","css","addClass","removeClass","toggleClass","setId","append","prepend","appendTo","prependTo","setData"];for(let t of W)q.prototype[t]=function(){return this.element[t](...arguments),this};const F=["getData"];for(let t of F)q.prototype[t]=function(){return this.element[t](...arguments)};const I=["offset","text","top","left","width","height","x","classArray"];for(let t of I)Object.defineProperty(q.prototype,t,{get:function(){return this.element[t]}});globalThis.pragmaSpace||(globalThis.pragmaSpace={}),globalThis.pragmaSpace.integrateMousetrap=function(t){"function"==typeof t&&(q.prototype.bind=function(e,n,i){let r=this;return t.bind(e,(function(){return r.runAs(n)}),i),this},globalThis.pragmaSpace.mousetrapIntegration=!0,i$1("Mousetrap configuration detected! Extended Pragmas to support .bind() method!"));};try{globalThis.pragmaSpace.integrateMousetrap(Mousetrap);}catch(t){n("Tried to integrate extensions, but failed. To disable,\n  this attempt: globalThis.pragmaSpace.integrate3rdParties = false");}class V extends q{static load(t,e=o()){return console.time(`${e} load`),new Promise((n=>{k(`script#${e}-loader crossorigin`).appendTo("head").listenTo("load",(function(){n(),console.timeEnd(`${e} load`);})).attr("src",t);}))}}const H=(t,e)=>new q(t,e),J=H;function X(t,...e){return k(e.reduce(((e,n,i)=>`${e}${n}${t[i+1]}`),t[0]).trim())}
 
   function elementify(el){
     // pipeline to vanillafy pragma objects to html elements
@@ -10083,7 +10083,7 @@
   };
   var _methods = methods$5;
 
-  var defaults$1 = {
+  var defaults = {
     // light
     whitespace: true,
     unicode: true,
@@ -10130,7 +10130,7 @@
     } // set defaults
 
 
-    options = Object.assign({}, defaults$1, options); // clear the cache
+    options = Object.assign({}, defaults, options); // clear the cache
 
     this.uncache();
     var termList = this.termList(); // lowercase things
@@ -16729,9 +16729,7 @@
 
   function collapse(element){
       
-      element.css(`
-        opacity 0
-    `);
+      element.css('opacity 0');
 
 
       element.addClass(`collapsed`);
@@ -16752,7 +16750,7 @@
       });
 
       element.removeClass(`collapsed`);
-      element.setData({ 'collapsed': true });
+      element.setData({ 'collapsed': false });
   }
 
 
@@ -17285,7 +17283,7 @@
                mix-blend-mode darken;`;
 
 
-  const modes$1 = {
+  const modes = {
     'hotbox': bg => `background ${bg}`,
 
     'underneath': bg => ` background transparent
@@ -17301,7 +17299,7 @@
   };
 
   function grabMode(mode, bg) {
-    return reset + modes$1[mode](bg)
+    return reset + modes[mode](bg)
   }
 
   const mode_ify = (mark, mode=mark._mode, bg=mark._color) => {
@@ -17319,10 +17317,6 @@
       "#edd1b0": 'Floor', 
       "#96adfc": 'Water'
   };
-
-  const colors = Object.keys(colorsHumanFriendly);
-  const fonts = ["Helvetica", "Open Sans", "Space Mono"];
-  const modes = ["HotBox", "Underneath", "Faded"];
   const modesHumanFriendly = {
       "HotBox": "marker is a block",
       "Underneath": "marker is slim and underneat the words",
@@ -17596,707 +17590,6 @@
     }
   }
 
-  function paginator(pageTemplate, conf={}){
-    return new q()
-          .from(O.createTemplate({
-            // make this nicer
-            // defaultSet: pageTemplate,
-            pageTemplate: pageTemplate,
-            firstPage: conf.first,
-            lastPage: conf.last,
-            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ O.throwSoft('no fetch source specified'); },
-            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => console.log('created', p),
-            onFetch: conf.onFetch,
-
-            onPageAdd: null,
-            onPageRender: null,
-            //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ console.log('rendered', page, 'active?', page.active) },
-            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){console.log('active', page); },
-            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { console.log('inactive', page); },
-            onPageDestroy: conf.onPageDestroy
-          }))
-
-          .run(function(){
-
-            let _ptemp = k(this.pageTemplate).hide();
-            this.pageTemplate = _ptemp.cloneNode(false);
-
-            this._clonePage = function() {
-              let page = k(this.pageTemplate.cloneNode(false)).show();
-              //if (this._lastAddedPage){
-                ////page.style.height = this._lastAddedPage.height
-                //page.css(`height ${this._lastAddedPage.height}px`)
-                //console.log('>>>>>>>>>>>>>>>>>>>>', this._lastAddedPage.height)
-              //}
-              this.adopt(page);
-              page.lec = this.parent;
-              O.createEventChains(page, 'fetch');
-              return page
-            };
-
-            this.isPageAvailable = v => {
-              return (!this.firstPage || v >= this.firstPage)
-                                        && (!this.lastPage || v <= this.lastPage)
-                      };
-
-            this.create = function(val=this.value, action='append'){
-              // console.log('creating', val, action)
-              let cloned = this._clonePage();
-
-              new Promise( resolve => {
-
-                this.onCreate(cloned, val);
-
-                let f = this.fetch(val);
-
-                let onFetch = conf.onFetch ||
-                          function(page, fetched){
-                            page.html(fetched);
-                            resolve(page);
-                          };
-
-                          // on fetch in config or the default one
-                //
-                const onFetchAndResolve = (resolved) => {
-                  let page = this.pages.get(val);
-                  if (page){
-                    onFetch(page, resolved);
-                    resolve(page);
-                  }
-                };
-
-                if (f instanceof Promise){
-                  f.then(resolved => {
-                    onFetchAndResolve(resolved);
-                  });
-                } else {
-                    onFetchAndResolve(f);
-                }
-
-                //if (f instanceof Promise){
-                  //f.then(resolved => {
-                    //this.pages.get(val)
-                    //onFetch(cloned, resolved)
-                    //resolve(val)
-                  //})
-                //} else {
-                  //onFetch(cloned, f)
-                  //resolve(val)
-                //}
-
-              }).then( page => {
-                //let page = this.pages.get(index)
-                //if (!page) return console.log('eeeeeeeeeee')
-                page.fetchChain.exec();
-                if (this.onPageRender) this.onPageRender(page, val);
-                //this._lastAddedPage = page
-              });
-
-              cloned[`${action}To`](this.parent.element);
-              this.addPage(cloned, val);
-            };
-
-            this.pages = new Map();
-
-            this.destroy = function(val){
-              //console.log('>> destroy', val)
-
-              let toDestroy = this.pages.get(val);
-
-              let destroy = _ => {
-                toDestroy = this.pages.get(val);
-                //toDestroy.destroy()
-                this.delPage(val);
-                toDestroy.destroy();
-              };
-
-              console.log('REMOV');
-              if (this.onPageDestroy){
-                let r = this.onPageDestroy(toDestroy, val);
-                if (r instanceof Promise) return r.then(destroy)
-              }
-
-              destroy();
-            };
-
-            this.addPage = function(page, key){
-              key = key === null ? this.pages.size : key;
-              if (this.onPageAdd) this.onPageAdd(page, key);
-              this.pages.set(key, page);
-            };
-
-            this.delPage = function(key){
-              return this.pages.delete(key)
-            };
-
-            this.activate = function(...pages){
-              pages.forEach(pageIndex => {
-                let page = this.pages.get(pageIndex);
-                if (!page) return
-                page.active = true;
-                this.onPageActive(page, pageIndex);  
-              });
-            };
-
-            this.inactivate = function(...pages){
-              pages.forEach(pageIndex => {
-                let page = this.pages.get(pageIndex);
-                if (!page) return
-                page.active = false;
-                this.onPageInactive(page, pageIndex);
-              });
-            };
-            
-        
-            this.export(
-              "pageTemplate",
-              "_clonePage",
-              "create",
-              'destroy',
-              "pages",
-              "addPage",
-              "delPage",
-              'activate',
-              'firstPage',
-              'lastPage',
-              'isPageAvailable',
-              'inactivate');
-          })
-  }
-
-  function infinityPaginator(streamer, pageTemplate, config={}){
-    let inf = J("infinity paginator")
-          .from(
-            paginator(pageTemplate, O.objDiff(
-              {
-                streamer: streamer,
-                fetch: streamer.fetch,
-                // on page render
-                // on page active
-
-                // on page inactive,
-                // on page add,
-                // on create,
-                // on fetch
-              }, config)
-            )
-          )
-          .setValue(0)
-          .run({
-            initialConfig(){
-
-              this._watching = true;
-              const conf = {
-                headspace: config.headspace || 10,
-                timeout: config.timeout || 5 
-              };
-
-              this.fill = function(){
-
-                this.fetching = true;
-                // console.log(">>> FILLING WITH", this.value)
-                let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
-                let pageRange = range(start, this.value+conf.headspace);
-                // console.log(pageRange)
-                pageRange = pageRange.filter(v => this.isPageAvailable(v));
-                // console.log(pageRange)
-                let pagesRendered = Array.from(this.pages.keys());
-
-                let pagesToRender = O.aryDiff(pageRange, pagesRendered);
-                let pagesToDelete = O.aryDiff(pagesRendered, pageRange);
-
-
-                let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
-                let pagesToRenderBefore = O.aryDiff(pagesToRender, pagesToRenderAfter);
-
-                // console.log(">> ALREADY RENDERED", pagesRendered)
-                //  console.log(">> DEL", pagesToDelete)
-                 //console.log(">> ADD", pagesToRender) 
-                //  console.log(">> ADD AFTER", pagesToRenderAfter)
-                //  console.log(">> ADD BEFORE", pagesToRenderBefore)
-
-                // pararellize?
-                // runAsync(
-                  // _ => {
-                    for (let pageIndex of pagesToRenderAfter){
-                      this.create(pageIndex, 'append');
-                    }  
-                  // },
-                  // _ => {
-                    // pararellize?
-                    for (let pageIndex of pagesToRenderBefore.reverse()){
-                      this.create(pageIndex, 'prepend');
-                    }
-                  // },
-                  // _ => {
-                    // pararellize?
-                    for (let pageIndex of pagesToDelete){
-                      //this.inactivate(pageIndex)
-                      //this.pages.get(pageIndex).css("background:red")
-                      this.destroy(pageIndex);
-                    }
-                  // }
-                // )
-
-                setTimeout(a => {
-                  this.fetching = false;
-                  // console.log(this.pages)
-                }, conf.timeout);
-            };
-          }, scrollSetup(){
-            // this.goTo()
-            this.goTo = function (val, speed) {
-              `add-${this.value}`;
-              let paginator = this;
-
-              if (this.value != val) this.value = val;
-              let page = this.pages.get(val);
-
-              page.onRender(function () {
-                paginator._watching = false;
-                scrollTo(page, speed || 20).then(() => {
-                  paginator._watching = true;
-                });
-              });
-            };
-
-            this.export('goTo');
-          },
-          findActivePages(){
-
-            function findCandidates(pages, scroll){
-              let bestIndex = null;
-              let best = 999999999999;
-              const middle = scroll + window.innerHeight/2;
-              // console.log(pages)
-              for (let [pageIndex, page] of pages){
-                let pageMiddle = page.top + page.height/2;
-                let closeness = Math.abs(pageMiddle - middle);
-                // console.log(page, pageIndex, closeness)
-                if (closeness <= best){
-                  best = closeness;
-                  bestIndex = pageIndex;
-                }
-              }
-
-              return bestIndex
-            }
-            
-            this.findActivePage = function(s, dp){
-              // dp is the rate of change of scroll
-              
-              // console.log(canditates)
-              //if (this.fetching) return
-              //
-              return new PinkyPromise(resolve => {
-                resolve(findCandidates(this.pages, s));
-                //let canditates
-                //util.bench(_ => canditates = findCandidates(this.pages, s))
-                ////resolve(canditates)
-                //setTimeout(_ => resolve(canditates), 5)
-              })
-            };
-
-            let searching = false;
-            let owe = false;
-            const doOnScroll= (pos, dp) => {
-              if (this.fetching || !this._watching) return 
-              if (searching) return owe = { pos: pos, dp: dp }
-
-              searching = true;
-              this.findActivePage(pos, dp).then(active => {
-                // console.log("ACTIVE>>", active, this.pages.get(active))
-                this.value = active;
-                searching = false;
-                if (owe){
-                  // console.log('owe', owe)
-                  doOnScroll(owe.pos, owe.dp);
-                  owe = null;
-                }
-              });
-            };
-
-            onScrollEnd((pos, dp) => {
-              doOnScroll(pos, dp);
-            });
-            
-            // optimization for fast scroll
-            onScroll((pos, dp) => {
-              if (Math.abs(dp) > 40){
-                if (pos < 350) doOnScroll(pos, dp);
-              }
-            });
-            
-            //onScroll((pos, dp) => {
-              //if (pos < 300){
-                //doOnScroll(pos, dp)
-              //}
-            //})
-
-          }
-        })
-        .do(function(){
-          if (this.dv === 0) return
-          this.activate(this.value);
-          let preVal = this.value-(this.dv||1);
-          this.inactivate(preVal);
-
-          this.fill();
-        });
-
-    return inf
-  }
-
-  const defaults = {
-    onOptionCreate: function(self, option){
-      
-      self.contain(option);
-    },
-    optionTemplate: function(option){
-        return J(option)
-                .html(option)
-                .addClass('pragma-click')
-                .listenTo('click', function(){
-                  this.parent.value = this.key;
-                })
-    }
-  };  
-
-
-  //  const select = (conf) => _p()
-  //     //.from(util.createTemplate())
-  //     .run(function(){
-  //       // this._options = []
-        
-  //       let options = conf.options
-  //       if (!options) return util.throwSoft('need to define options when creating a select template')
-
-  //       let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate
-  //       let optionTemplate = conf.optionTemplate || defaults.optionTemplate 
-
-  //       if (options.constructor === Array){
-  //         for (let el of options){
-  //           onOptionCreate(this, optionTemplate(el))
-  //         }
-  //       }else{
-  //         for (let [ key, val ] of Object.entries(options)){
-  //           const pair = {[key]: val}
-  //           onOptionCreate(this, optionTemplate(key, val), pair)
-  //         }
-  //       }
-
-  //       this.onExport(function(pragma) {
-  //         pragma.contain(...this.children)
-  //         pragma.getOptions = function(){
-  //           console.log(pragma.children)
-  //           return pragma.children.filter(child => child._isOption)
-  //         }
-  //       })
-  //       this.export('elementDOM', 'actionChain', 'exportChain', 'exports', '_options')
-  //     })
-
-  function select(conf){
-    // this._options = []
-    
-    let options = conf.options;
-    if (!options) return O.throwSoft('need to define options when creating a select template')
-
-    let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate;
-    let optionTemplate = conf.optionTemplate || defaults.optionTemplate; 
-
-    if (options.constructor === Array){
-      for (let el of options){
-        let option = optionTemplate(el);
-        option._isOption = true;
-
-        onOptionCreate(this, option);
-      }
-    } else {
-      for (let [ key, val ] of Object.entries(options)){
-        const pair = {[key]: val};
-        onOptionCreate(this, optionTemplate(key, val), pair);
-      }
-    }
-
-    this.getOptions = function(){
-      return this.children.filter(child => child._isOption)
-    };
-  }
-
-  var full = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);body{background-color:#161616}.flex,.inline-icon,.inline-icon-2{display:flex;justify-content:center;align-items:center}.inline-icon,.inline-icon-2{width:22px}.inline-icon svg,.inline-icon-2 svg{width:22px}.inline-icon-2{width:25px}.inline-icon-2 svg{width:25px}.clickable{cursor:pointer}.meta{opacity:.5}.blurred-bg{width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:9999999999999999999;background:rgba(255,255,255,0.15);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}.popUp{width:400px;height:390px;background:#161616;border-radius:4px;position:absolute;top:30%;left:50%;margin-left:-200px;padding:30px 30px;box-sizing:border-box;transition:all ease .5s;font-family:'IBM Plex Mono',monospace !important}.popUp .next-btn,.popUp .back-btn{position:absolute;right:-50px;width:40px;height:40px;background:#161616;border-radius:50px;top:50%;margin-top:-25px;cursor:pointer}.popUp .next-btn .next-icon,.popUp .back-btn .next-icon,.popUp .back-btn .back-icon,.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{text-align:center;position:absolute;top:46%;left:52%;transform:translate(-50%,-50%) rotate(180deg)}.popUp .next-btn .next-icon>svg,.popUp .back-btn .next-btn .back-icon>svg,.popUp .back-btn .next-icon>svg,.popUp .back-btn .back-icon>svg,.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:10px;height:auto}.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{transform:translate(-50%,-50%);top:55%;left:50%}.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:15px;height:auto}.popUp .back-btn{left:-50px}.popUp .back-btn .back-icon{transform:translate(-50%,-50%);top:56%;left:47%}.popUp .popUpContent{width:100%;display:flex;height:100%;box-sizing:border-box;transition:all ease .5s;justify-content:center;align-items:center}.popUp .popUpContent .boat{width:100%;height:fit-content;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;text-align:center;transition:all ease .5s}.popUp .popUpContent .boat-title{font-family:'IBM Plex Mono',monospace !important;font-size:27px !important;color:whitesmoke;margin:0;font-weight:400;margin-top:30px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.popUp .popUpContent .boat .spacebar-icon>svg{width:230px}.popUp .popUpContent .boat .speed-icon>svg{width:315px}.popUp .popUpContent .boat .click-icon>svg{width:315px}.displayN{display:none !important}.fadein-onload,.popUp .popUpContent .boat{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fadein-onload from,.popUp .popUpContent .boat from{opacity:0}.fadein-onload to,.popUp .popUpContent .boat to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}";
-  var slider$1 = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}.slider-display{text-align:center;padding-bottom:20px}";
-  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings,.lector-settings{position:fixed;bottom:20px}.lector-settings .pop-up-settings{background-color:#262626;border-radius:5px;left:-10px;transition:all .2s;padding:20px 5px 11px 5px;margin-left:10px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:200px;margin-bottom:10px}.lector-settings .pragma-input-element{display:flex;flex-direction:column;width:fit-content;justify-content:center}.lector-settings .section{margin:20px 0}.lector-settings .section:hover>.pragma-label{opacity:1}.lector-settings .section .pragma-label{opacity:0;transition:all .2s ease;position:absolute;left:25%;margin-top:-55px;font-size:12px;color:whitesmoke}.lector-settings .section .pragma-label .option-title{color:rgba(199,199,199,0.92)}.lector-settings .selector,.lector-settings .selector-fovea,.lector-settings .selector-mode{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:stretch;width:fit-content;border-radius:4px;overflow:hidden}.lector-settings .selector-mode{padding:0;color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center;left:-7%;top:-70px}.lector-settings .selector-fovea{width:130px;height:45px;left:-9%;top:-70px;z-index:45678;margin-right:9px}.lector-settings .setting,.lector-settings .setting-wpm{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch}.lector-settings .setting .setting-icon,.lector-settings .setting-wpm .setting-icon{width:35px;height:35px}.lector-settings .setting-wpm{border-radius:5px;left:-10px;transition:all .2s;margin-left:20px;font-family:'Poppins','Inter','Arial Narrow',Arial,sans-serif;width:125px;position:relative}.lector-settings .setting-wpm .speed-adjust{width:10px}.lector-settings .setting-wpm .speed-adjust .adjusticon{width:10px;height:20px}.lector-settings .setting-wpm::before{content:\"\";position:absolute;height:30px;width:1px;background-color:#6F6F6F;left:-10px}.lector-settings .settings-bar{background-color:#262626;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;margin-left:10px;padding:5px 0 5px 10px;border-radius:5px;width:200px}.lector-settings .settings-bar-icon{width:25px;height:25px;position:relative;cursor:pointer}.lector-settings .wpm-icon{color:#fff;opacity:65%;font-size:28px;line-height:45px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.lector-settings .wpm-icon:hover{opacity:100%;transition:all ease .1s}.lector-settings .color-indicator{width:25px;height:25px;background-color:#a8f19a;border-radius:50%}.lector-settings .mode-indicator{mix-blend-mode:normal !important;width:35px;height:25px}.lector-settings .modeOption{width:45px;height:25px;padding:10px 1px;display:flex;align-items:center;justify-content:center;background-color:transparent !important}.lector-settings .modeOption.inactive{background-color:transparent !important;opacity:.5 !important}.lector-settings .modeOption.active{opacity:1 !important}.lector-settings .modeOption.active::before{content:none}.lector-settings .modeOption .mini-pointer{height:70%;width:70%}.lector-settings .color-option{width:22px;height:22px;border-radius:25px;margin:5px 6px}.lector-settings .displayN{display:none}.lector-settings #underneath{margin:0 !important;position:relative}.lector-settings #mode{margin:35px 0;position:relative}.lector-settings #mode::before{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;top:-14px}.lector-settings #mode::after{width:70%;height:1px;background-color:#6F6F6F;content:\"\";position:absolute;bottom:-22px}.lector-settings #fovea{height:fit-content}.lector-settings #fovea .pragma-label{margin-top:-25px}.lector-settings #wpm .pragma-label{position:relative;left:0;margin:0;opacity:1;font-size:18px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px;border-bottom:1px solid transparent;margin-bottom:-1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}.word-element.mark-is-here{border-bottom:1px solid #2b6cce;background-color:#2b6cce19}.fade-onload,#mark-indicator{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fade-onload from,#mark-indicator from{opacity:0}.fade-onload to,#mark-indicator to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.mark-obscurer{background-color:#262626}#mark-indicator{background:#2b6cce;width:10vw;height:10px;cursor:pointer;left:45vw;position:fixed;z-index:999999;-webkit-box-shadow:5px 5px 30px 5px #2b6cce;box-shadow:5px 5px 30px 5px #2b6cce;bottom:0}#mark-indicator.upwards{top:0}";
-  var settings = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);.collapsable,.settings #popup{overflow:hidden;transition:all .15s ease;height:auto;flex:1}.collapsable.collapsed,.settings #popup.collapsed{flex:0}.box-container,.settings #popup,.bar{background-color:#262626;border-radius:4px;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;height:auto;padding:10px 15px;width:158px}.bar{width:fit-content;flex-direction:row;justify-content:space-between;align-items:center}.settings{z-index:999999999999999;font-family:'IBM Plex Sans',sans-serif;font-size:18px;bottom:10px;left:10px;color:whitesmoke;position:fixed}.settings #popup{position:absolute;bottom:55px}.settings #wpm{width:100px;padding-left:20px;margin-left:15px;border-left:1px solid gray}.settings [data-setting-target=back]{cursor:pointer;height:24px;display:flex;align-items:center;margin-bottom:27px}.settings [data-setting-target=back]::after{content:'';height:2px;width:120%;background-color:#6f6f66;position:absolute;top:40px;left:0}.settings [data-setting-target=back] .back-icon{margin-right:10px;margin-right:18px;margin-left:7px}.settings [data-setting-target=back] .back-copy{margin-bottom:3px}.settings #page-bar{position:fixed;right:10px;bottom:10px}.settings #zoom-bar{position:fixed;right:10px;top:20px;padding:8px 5px}.settings #zoom-bar .setting{height:fit-content}.settings #zoom-bar .setting .arrows{height:80px;justify-content:space-between}.edible-display{background:#39393950;padding:1px 5px !important;font-family:'IBM Plex Mono',monospace;font-size:18px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;text-align:center}.edible-display:hover{background:#7b7b7b35}.setting{display:flex;flex-wrap:nowrap;justify-content:flex-start;height:30px;user-select:none;-webkit-user-select:none}.setting.collapsable,.settings #popup.setting{height:40px}.setting.inline{height:30px;width:100%}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .section,.setting .collapsed-section{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{display:flex;margin:15px 0;cursor:pointer;opacity:70%}.setting .editor-content .option.selected{opacity:100%}.setting .color-blob{width:22px;height:22px;border-radius:30px;margin-right:10px}.setting .color-blob.selected{border:10px solid red}.setting .mode-icon{margin-right:20px}.setting .arrows{display:flex;flex-direction:column;padding:5px;justify-content:center;align-items:center}.setting .arrows svg,.setting .arrows div{opacity:.7;cursor:pointer;padding:2px 0}.setting .arrows svg:hover,.setting .arrows div:hover{opacity:1}[data-setting='mode'] [data-option='Underneath']{margin:0 0 20px 0 !important;display:flex;align-items:center}.-selector *,.-settings-section-list .option.selected *,.settings>#popup #color .option.selected *,.settings>#popup #mode .option.selected *,.-color-selector *{z-index:99}.-selector::before,.-settings-section-list .option.selected::before,.settings>#popup #color .option.selected::before,.settings>#popup #mode .option.selected::before,.-color-selector::before{content:'';height:50px;width:120%;background-color:#515151;position:absolute;z-index:0 !important;left:0;margin-top:-11px}.-selector::after,.-settings-section-list .option.selected::after,.settings>#popup #color .option.selected::after,.settings>#popup #mode .option.selected::after,.-color-selector::after{content:'';width:5px;height:50px;background-color:#2b6cce;position:absolute;left:0;margin-top:-11px}.-color-selector::before,.settings>#popup #color .option.selected::before{height:40px}.-color-selector::after,.settings>#popup #color .option.selected::after{height:40px}.-settings-section-list .option,.settings>#popup #color .option,.settings>#popup #mode .option{transition:all ease .2s;align-items:stretch !important}.lottie{position:relative;transition:all ease 0,5s}.lottie[data-loading=true]::before{content:\"\";position:absolute;margin:auto;width:25px;left:50%;height:25px}.lottie.click-lottie{margin-top:-10px;height:200px}";
-  var css = {
-  	full: full,
-  	slider: slider$1,
-  	main: main,
-  	settings: settings
-  };
-
-  O.addStyles(css.slider);
-  function slider(conf={}){
-    
-    
-    this._n = function(){ 
-      let range = this.range || { min: 1, max: 100};
-      return 100/(range.max||100-range.min||1)
-    };
-
-
-    this.do(function(){
-      this.updateTo(this.value);
-    });
-    
-    this.updateTo = function(value){
-      this.element.setData({ value: value});
-      this._setBarTo(value*this._n());
-    };
-
-    this._setBarTo = wp => {
-      this._bar.css(`width ${wp}%`);
-      this._thumb.offset();
-    };
-
-    this._clipValue = perc => {
-      let v = Math.round(perc/this._n());
-      if (this._lv !== v) {
-        this.value = v;
-      }
-      //console.log(this.value)
-    };
-    
-    this._input = k('div.').addClass('pragma-slider-bg');
-    this._bar = k('div.')
-      .addClass('pragma-slider-bar');
-    
-    this._thumb = k('div.pragma-slider-thumb');
-    this._bar.append(this._thumb);
-
-    this._input.append(this._bar);
-    
-
-    let onDown = function(){
-      this._clicked = true;
-    };
-
-    this._input.listenTo('mousedown', onDown);
-    this._thumb.listenTo('mousedown', onDown);
-    
-    document.addEventListener('mouseup', ()=> {
-      this._input._clicked = false;
-    });      
-    
-    let ticking = false;
-
-    document.addEventListener("mousemove", yx => {
-      if (this._input._clicked && !ticking) {
-        window.requestAnimationFrame(() => {
-          ticking = false;
-          let w = yx.pageX-this._input.offset().left;
-          let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100);
-          this._clipValue(wp);
-        });
-        ticking = true;
-      }
-    });
-
-    this.adopt(this._input);
-    this.append(this._input);
-    this.element.addClass('pragma-slider');
-  }
-
-  function input(conf = {}) {
-      // return new Pragma()
-          // .from(util.createTemplate(conf))
-          // .run({
-              // makeChains(){
-                  O.createChains(this, 'userInput');
-              // },
-              // makeInput () {
-                  this.input = k(`<input type='text'></input>`)
-                      .addClass('pragma-input-text');
-
-                  this.setValue = function(v){
-                      let newVal = this.valueSanitizer ? this.valueSanitizer(v) : v;
-                      if (newVal === this._lv) return 
-
-                      this.value = newVal;
-
-                      if (this.value != newVal){
-                          this.updateFront();
-                      }
-                      return this
-                  };
-
-                  this.input.listenTo('focus', function(){
-                      this.parent._listenToEsc = document.addEventListener('keydown', k => {
-                          if (k.key === 'Enter'){
-                              this.blur();
-                          }
-                      });
-                  });
-                  
-                  this.input.listenTo('focusout', function(){
-                      this.parent.setValue(this.value);
-                      this.parent.userInputChain.exec(this.parent.value);
-                      document.removeEventListener('keydown', this.parent._listenToEsc);
-                  });
-
-
-                  // this.onExport(pragma => {
-                      // pragma.adopt(this.input)
-                      this.adopt(this.input);
-                      this.append(this.input);
-                  // })
-              // },
-          
-              this.setMonitorTemplate = function(n){
-                  this._monitorTemplate = n;
-                  return this
-              };
-              // extend(){
-                  this.updateFront = function(val=this.value){
-                      this.input.value = this._monitorTemplate ? this._monitorTemplate(val) : val;
-                      this.input.placeholder = val;
-                  };
-              // }
-          // })
-          this.do(function(){
-              this.updateFront(this.value);
-          });
-
-          // .run(function(){
-              this.setInputAttrs = function(attrs){
-                  for (let [key, val] of Object.entries(attrs)){
-                      this.input.attr(key, val);
-                  }
-                  return this
-              };
-
-              this.setValueSanitizer = function(cb){
-                  this.valueSanitizer = cb;
-                  return this
-              };
-          //   })
-  }
-
-  function withLabel(conf = {}) {
-      this.setLabel = function(html){
-          this._label.html(html);
-          return this
-      };
-      
-      this._label = k('div.pragma-label', conf.label);
-      this.append(this._label);    
-  }
-
-  function _createIdler(timeout, afk, active) {
-      let _idler = new Idle(timeout)
-        .onAfk(()=> {
-          // console.log('user is afk')
-          if (afk) afk();
-          // this.shout()
-        })
-        .onActive(() => {
-          // console.log('user is back')
-          if (active) active();
-          // this.shutUp()
-      });
-      return _idler
-  }
-
-  function idler(){
-      O.createChains(this, 'idle', 'active');
-
-      this.setIdleTime = function(time=5000){
-          this._idler = _createIdler(time, () => {
-              this.idleChain.exec();
-          }, () => {
-              this.activeChain.exec();
-          });
-          return this
-      };
-      
-      this.extend('onIdle', function(){
-          this._onIdle(...arguments);
-          return this
-      });
-
-      this.extend('onActive', function(){
-          this._onActive(...arguments);
-          return this
-      });
-  }
-
-  class Scaler extends q {
-      constructor(target, duration=70){
-          super();
-          this.target = target;
-          this._duration = duration;
-          this.target.css(`transition transform ${this._duration}ms ease; transform-origin top`);
-
-          this.createWire("scale");
-          this.scale = 100;
-
-          this.on('scaleChange', function(v, lv){
-              if (v == lv) return false
-              this.value = this.scale;
-              this._scaleTo(this.scale);
-          });
-      }
-      
-      setTarget(n) { this.target = n; return this }
-      
-      set scaleStep(n){
-          this._scaleStep = n;
-      }
-
-      get scaleStep(){
-          return this._scaleStep || 5
-      }
-
-      scaleUp(){
-          this.scale+= this.scaleStep;
-      }
-      
-      scaleDown(){
-          this.scale-= this.scaleStep;
-      }
-      scaleTo(to){
-          this.scale = to;
-      }
-      
-      _scaleTo(to){
-          this.target.css(`transform scale(${to/100})`);
-          this.currentPromise = new Promise(resolve => {
-              setTimeout(() => {
-                  resolve();
-                  this.currentPromise = null;
-              }, this._duration+25);
-          });
-
-          return this.currentPromise
-      }
-  }
-
-  //scaler(element){
-      //this.target = element
-
-      //this
-  //}
-
-  var shc = {
-    wpmPlus: ['+', '='],
-    wpmMinus: ['-'],
-
-    pageNext: ']',
-    pagePre: '[',
-
-    scaleUp: 'mod+=',
-    scaleDown: 'mod+-'
-  };
-
   var clickBoat = "<svg width=\"365\" height=\"143\" viewBox=\"0 0 365 143\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<line x1=\"4.32031\" y1=\"13.5\" x2=\"131.017\" y2=\"13.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"147.859\" y1=\"13.5\" x2=\"274.556\" y2=\"13.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"291.398\" y1=\"13.5\" x2=\"361.5\" y2=\"13.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"3.5\" y1=\"97.5\" x2=\"185.972\" y2=\"97.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"207.734\" y1=\"97.5\" x2=\"361.498\" y2=\"97.5\" stroke=\"#2B6CCE\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"3.5\" y1=\"139.5\" x2=\"236.826\" y2=\"139.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"4.32031\" y1=\"55.5\" x2=\"140.86\" y2=\"55.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<line x1=\"158.523\" y1=\"55.5\" x2=\"361.501\" y2=\"55.5\" stroke=\"#6F6F6F\" stroke-width=\"7\" stroke-linecap=\"round\"/>\n<rect x=\"31.168\" width=\"99.2472\" height=\"26\" rx=\"5\" fill=\"#A6F29A\"/>\n<path d=\"M319.32 130.43C318.449 129.183 317.578 127.001 315.836 124.194C314.965 122.635 312.352 119.517 311.481 118.27C310.9 117.022 310.9 116.399 311.191 115.152C311.481 113.281 313.223 111.722 315.256 111.722C316.707 111.722 318.159 112.969 319.32 113.904C319.901 114.528 320.772 115.775 321.353 116.399C321.933 117.022 321.933 117.334 322.514 117.958C323.095 118.893 323.385 119.517 323.095 118.27C322.804 116.711 322.514 114.216 321.933 111.722C321.643 109.851 321.353 109.539 321.062 108.292C320.772 106.733 320.482 105.797 320.191 104.238C319.901 103.303 319.611 100.808 319.32 99.5608C319.03 98.0017 319.03 95.1953 320.191 93.9481C321.062 93.0126 322.804 92.7008 323.966 93.3244C325.417 94.2599 326.289 96.4426 326.579 97.3781C327.16 98.9371 327.74 101.12 328.031 103.614C328.611 106.733 329.482 111.41 329.482 112.345C329.482 111.098 329.192 108.915 329.482 107.668C329.773 106.733 330.353 105.485 331.515 105.173C332.386 104.862 333.257 104.862 334.128 104.862C334.999 105.173 335.87 105.797 336.45 106.421C337.612 108.292 337.612 112.345 337.612 112.033C337.902 110.786 337.902 108.292 338.483 107.044C338.773 106.421 339.935 105.797 340.515 105.485C341.386 105.173 342.548 105.173 343.419 105.485C343.999 105.485 345.161 106.421 345.451 107.044C346.032 107.98 346.322 111.098 346.612 112.345C346.612 112.657 346.903 111.098 347.483 110.162C348.645 108.292 352.71 107.668 353 112.033C353 114.216 353 113.904 353 115.463C353 117.022 353 117.958 353 119.205C353 120.452 352.71 123.259 352.419 124.506C352.129 125.441 351.258 127.624 350.387 128.871C350.387 128.871 347.193 132.613 346.903 134.484C346.612 136.355 346.612 136.355 346.612 137.602C346.612 138.85 346.903 140.409 346.903 140.409C346.903 140.409 344.58 140.72 343.419 140.409C342.257 140.097 340.806 137.914 340.515 136.979C339.935 136.043 339.064 136.043 338.483 136.979C337.902 138.226 336.45 140.409 335.289 140.409C333.257 140.72 329.192 140.409 326.289 140.409C326.289 140.409 326.869 137.29 325.708 136.043C324.837 135.108 323.385 133.549 322.514 132.613L319.32 130.43Z\" fill=\"white\"/>\n<path d=\"M319.32 130.43C318.449 129.183 317.578 127.001 315.836 124.194C314.965 122.635 312.352 119.517 311.481 118.27C310.9 117.022 310.9 116.399 311.191 115.152C311.481 113.281 313.223 111.722 315.256 111.722C316.707 111.722 318.159 112.969 319.32 113.904C319.901 114.528 320.772 115.775 321.353 116.399C321.933 117.022 321.933 117.334 322.514 117.958C323.095 118.893 323.385 119.517 323.095 118.27C322.804 116.711 322.514 114.216 321.933 111.722C321.643 109.851 321.353 109.539 321.062 108.292C320.772 106.733 320.482 105.797 320.191 104.238C319.901 103.303 319.611 100.808 319.32 99.5608C319.03 98.0017 319.03 95.1953 320.191 93.9481C321.062 93.0126 322.804 92.7008 323.966 93.3244C325.417 94.2599 326.289 96.4426 326.579 97.3781C327.16 98.9371 327.74 101.12 328.031 103.614C328.611 106.733 329.482 111.41 329.482 112.345C329.482 111.098 329.192 108.915 329.482 107.668C329.773 106.733 330.353 105.485 331.515 105.173C332.386 104.862 333.257 104.862 334.128 104.862C334.999 105.173 335.87 105.797 336.45 106.421C337.612 108.292 337.612 112.345 337.612 112.033C337.902 110.786 337.902 108.292 338.483 107.044C338.773 106.421 339.935 105.797 340.515 105.485C341.386 105.173 342.548 105.173 343.419 105.485C343.999 105.485 345.161 106.421 345.451 107.044C346.032 107.98 346.322 111.098 346.612 112.345C346.612 112.657 346.903 111.098 347.483 110.162C348.645 108.292 352.71 107.668 353 112.033C353 114.216 353 113.904 353 115.463C353 117.022 353 117.958 353 119.205C353 120.452 352.71 123.259 352.419 124.506C352.129 125.441 351.258 127.624 350.387 128.871C350.387 128.871 347.193 132.613 346.903 134.484C346.612 136.355 346.612 136.355 346.612 137.602C346.612 138.85 346.903 140.409 346.903 140.409C346.903 140.409 344.58 140.72 343.419 140.409C342.257 140.097 340.806 137.914 340.515 136.979C339.935 136.043 339.064 136.043 338.483 136.979C337.902 138.226 336.45 140.409 335.289 140.409C333.257 140.72 329.192 140.409 326.289 140.409C326.289 140.409 326.869 137.29 325.708 136.043C324.837 135.108 323.385 133.549 322.514 132.613L319.32 130.43Z\" stroke=\"black\" stroke-width=\"4.50615\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n<path d=\"M343.418 131.367V120.766\" stroke=\"black\" stroke-width=\"4.50615\" stroke-linecap=\"round\"/>\n<path d=\"M337.615 131.367L337.324 120.766\" stroke=\"black\" stroke-width=\"4.50615\" stroke-linecap=\"round\"/>\n<path d=\"M331.805 120.766V131.367\" stroke=\"black\" stroke-width=\"4.50615\" stroke-linecap=\"round\"/>\n</svg>\n";
   var increase = "<svg width=\"17\" height=\"9\" viewBox=\"0 0 17 9\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M8.5 0L17 7.89474L15.81 9L8.5 2.21053L1.19 9L0 7.89474L8.5 0Z\" fill=\"white\"/>\n</svg>";
   var decrease = "<svg width=\"17\" height=\"9\" viewBox=\"0 0 17 9\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M8.5 9L2.13343e-07 1.10526L1.19 -1.40286e-06L8.5 6.78947L15.81 -1.24738e-07L17 1.10526L8.5 9Z\" fill=\"white\"/>\n</svg>\n";
@@ -18322,636 +17615,6 @@
   	"fovea-icon": "<svg width=\"28\" height=\"28\" viewBox=\"0 0 28 28\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M26.249 14L19.249 21L18.0117 19.7628L23.7745 14L18.0117 8.23725L19.249 7L26.249 14Z\" fill=\"#909090\"/>\n<path d=\"M14 19.25C13.8851 19.2502 13.7713 19.2276 13.6651 19.1836C13.559 19.1396 13.4625 19.075 13.3814 18.9937L9.00641 14.6187C8.92512 14.5374 8.86064 14.441 8.81664 14.3349C8.77265 14.2287 8.75 14.1149 8.75 14C8.75 13.8851 8.77265 13.7714 8.81664 13.6652C8.86064 13.5591 8.92512 13.4626 9.00641 13.3814L13.3814 9.00641C13.4626 8.92512 13.5591 8.86064 13.6652 8.81664C13.7713 8.77265 13.8851 8.75 14 8.75C14.1149 8.75 14.2287 8.77265 14.3349 8.81664C14.441 8.86064 14.5374 8.92512 14.6187 9.00641L18.9937 13.3814C19.0749 13.4626 19.1394 13.5591 19.1834 13.6652C19.2274 13.7714 19.2501 13.8851 19.2501 14C19.2501 14.1149 19.2274 14.2287 19.1834 14.3349C19.1394 14.441 19.0749 14.5374 18.9937 14.6187L14.6187 18.9937C14.5375 19.075 14.4411 19.1396 14.3349 19.1836C14.2288 19.2276 14.115 19.2502 14 19.25ZM10.8624 14L14 17.1377L17.1377 14L14 10.8624L10.8624 14Z\" fill=\"#909090\"/>\n<path d=\"M1.75 14L8.75 7L9.98725 8.23725L4.2245 14L9.98725 19.7628L8.75 21L1.75 14Z\" fill=\"#909090\"/>\n</svg>",
   	"settings-icon-white": "<svg width=\"28\" height=\"24\" viewBox=\"0 0 28 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M27.0474 3.86392H23.0869C22.6039 1.64217 20.672 0 18.3536 0C16.0353 0 14.1033 1.64217 13.6203 3.86392H0V5.79588H13.6203C14.1033 8.01763 16.0353 9.65979 18.3536 9.65979C20.672 9.65979 22.6039 8.01763 23.0869 5.79588H27.0474V3.86392ZM18.3536 7.72784C16.7114 7.72784 15.4557 6.47206 15.4557 4.8299C15.4557 3.18773 16.7114 1.93196 18.3536 1.93196C19.9958 1.93196 21.2516 3.18773 21.2516 4.8299C21.2516 6.47206 19.9958 7.72784 18.3536 7.72784Z\" fill=\"white\"/>\n<path d=\"M0 19.3193H3.96052C4.44351 21.5411 6.37547 23.1832 8.69382 23.1832C11.0122 23.1832 12.9441 21.5411 13.4271 19.3193H27.0474V17.3874H13.4271C12.9441 15.1656 11.0122 13.5234 8.69382 13.5234C6.37547 13.5234 4.44351 15.1656 3.96052 17.3874H0V19.3193ZM8.69382 15.4554C10.336 15.4554 11.5918 16.7112 11.5918 18.3533C11.5918 19.9955 10.336 21.2513 8.69382 21.2513C7.05165 21.2513 5.79588 19.9955 5.79588 18.3533C5.79588 16.7112 7.05165 15.4554 8.69382 15.4554Z\" fill=\"white\"/>\n</svg>\n"
   };
-
-  function activate(self, key){
-    self.find(key).addClass('active')
-                  .removeClass('inactive');
-  }
-
-  function deactivate(self, key){
-    self.find(key).removeClass('active')
-                  .addClass('inactive');
-  }
-
-  function activeSelectTpl(conf){
-    select.bind(this)(O.objDiff({
-      onOptionCreate: (self, el) => {
-        self.contain(el);
-        el.addClass('option');
-        deactivate(self, el.key);
-      }
-    }, conf));
-
-    this.addClass('active-select-template')
-    .do(function(){
-      if (this.value === this._lv) return
-      activate(this, this.value);
-      if (this._lv) deactivate(this, this._lv);
-    });
-  }
-
-  // const activeSelectTpl = (conf={}) => _p()
-  //   .from(select(util.objDiff({
-  //     onOptionCreate: (self, el) => {
-  //       self.contain(el)
-  //       el.addClass('option')
-  //       deactivate(self, el.key)
-  //     }
-  //   }, conf)))
-  //   .addClass('active-select-template')
-  //   .do(function(){
-  //     if (this.value === this._lv) return
-  //     activate(this, this.value)
-  //     if (this._lv) deactivate(this, this._lv)
-  //   })
-
-  function lectorSettings(lector){
-
-
-    // let icons = new IconBuilder()
-    // icons.default.fill = "white"
-
-    //const tippyOption = {
-                          //theme: 'lector-settings',
-                          //arrow: false,
-                          //hideOnClick: false
-                        //}
-    //
-    // let foveaComp = Slider.value("markerfovea", 1, 10)
-    //     .bind(">", (comp) => { comp.value+=1 }, 'keyup')
-    //     .bind("<", (comp) => { comp.value-=1 }, 'keyup')
-    //     .html.class("slider")
-
-    const actions = {
-      changeColor(hex=this.value){
-        modeComp.update(hex);
-        foveaComp.update(hex);
-        k('body').findAll('[data-lector-marker-color]').forEach(e => {
-          e.css(`${e.getData("lectorMarkerColor")} ${hex}`);
-        });
-        lector.mark.setColor(hex);
-      },
-
-      changeFovea(fovea=this.value){
-        lector.mark.setFovea(fovea);
-      },
-
-      changeWpm(wpm=this.value){
-        lector.mark.setWpm(wpm); 
-      },
-
-      changeFont(font=this.value){
-        lector.setFont(font);
-      },
-
-      changeMode(mode=this.value){
-        lector.mark.setMode(mode);
-        k('body').findAll('[data-lector-marker-mode]').forEach(e => {
-          mode_ify(e, mode, lector.mark._color);
-          // e.css(`${e.getData("lectorMarkerColor")} ${hex}`)
-        });
-      },
-
-      changePage(page=this.value){
-        if (lector.paginator) lector.paginator.goTo(page); 
-      },
-
-      changeScale(scale=this.value){
-        if (lector.scaler) lector.scaler.scaleTo(scale);
-      }
-    };
-
-    let settings = J("settingsWrapper")
-                    .addClass("items-center", 'lector-settings')
-
-                    .run(function(){
-                      this.value = {};
-
-                      this._setVal = function(edit){
-                        this.value = O.objDiff(this.value, edit);
-                      };
-
-                      this.set = function(edit){
-                       this._setting = true; 
-                        for (let [key, val] of Object.entries(edit)){
-                          let child = this.find('!'+key);
-                          if (child) child.value = val;
-                        }
-                       this._setting = false;
-                      };
-                      
-                      this.get = function(key){
-                        return this.value[key] 
-                      };
-                    });
-                    //.do(function(){
-                      //console.log('set value', this.value)
-                    //})
-
-             
-    function popUpEditor(){
-      this.setPopupEditor = function(popup){
-        this._popupEditor = popup;
-        this._popupEditor.addClass(`displayN`);
-        return this
-      };
-
-      this.element.listenTo('click', click =>{
-        this._popped = click;
-        this._popupEditor.removeClass(`displayN`);
-      });
-
-      this.element.onRender(() => {
-        let self = this;
-        document.addEventListener('click', function _onClick(click){
-          //console.log(click, self._popped)
-          if (self._popped === click){
-            // if click event was used to pop the menu, skip
-            return null
-          }
-          if (!isClickWithin(click, self._popupEditor)){
-            self._popupEditor.addClass(`displayN`);      
-          }
-        });
-      });
-    }
-
-
-    let modeIcon = J().as(k(icons['mode-icon']))
-                    .addClass(`setting-icon`);
-
-    J('monitor')
-                      .as(k('div.'))
-                      .addClass('mode-indicator')
-                      .setData({ 'lectorMarkerMode': 'true' });
-
-
-    let setMode = J('!mode')
-                    .run(function(){
-                      activeSelectTpl.bind(this)({
-                      options: modes,
-                      optionTemplate: option => J(option)
-                          .addClass(`modeOption`)
-                          .listenTo('click', function(){
-                            this.parent.value = this.key;
-                          })
-                          .run(function(){
-                            this._miniPointer = k('div.mini-pointer#');
-                            this.append(this._miniPointer);
-                            this.update = function(bg){
-                              mode_ify(this._miniPointer, option, bg);
-                              this._miniPointer.css('mix-blend-mode normal');  
-                            };
-                          })
-                    });
-                  })
-                    .run(function(){
-                      this.update = bg => {
-                        //console.log('my options', this.getOptions())
-                        this.getOptions().forEach(option => option.update(bg));
-                        //console.log(this.children)
-                      };
-                    })
-                    // .run(lecLabel)
-                    // .setLabelName('Pointer mode')
-                    .addClass('selector-mode')
-                    .do(actions.changeMode);
-
-    let modeComp = J().contain(modeIcon, setMode)
-                      .addClass(`setting`)
-                      .css(`position relative`)
-                      .run(function() {
-                        this.update = setMode.update;
-                      });
-
-    let foveaIcon = J().as(k(icons['fovea-icon']))
-                    .addClass(`setting-icon`);
-    J('monitor')
-                      .as(k('div.'))
-                      .addClass(`color-indicator`)
-                      .setData({ 'lectorMarkerColor': 'background' });                
-
-    let setFovea = J("!fovea")
-                  .addClass( 'selector-fovea' )
-                  .run(slider) // label
-                  .setRange(2, 10)
-                  .setValue(5)
-                  .css(``)
-                  .do(actions.changeFovea)
-                  .run(function(){
-                    this.update = (bg) => {
-                      this._bar.css(``);
-                    };
-                  });
-            
-    let foveaComp = J().contain(foveaIcon, setFovea)
-                  .addClass(`setting`)
-                  .css(`position relative`)
-                  .run(function () {
-                    this.update = setFovea.update;
-                  });
-
-
-      
-    let setColor = J('!color')
-                    .run(
-                      function(){
-                        activeSelectTpl.bind(this)({
-                        options: colors,
-                        optionTemplate: option => {
-                          return J(option)
-                                  .css(`background-color ${option} `)
-                                  .addClass(`color-option`)
-                                  .listenTo('click', function(){
-                                    this.parent.value = this.key;
-                                  })
-                        }
-                      });
-                    })
-                    .addClass(`selector`)
-                    
-                    //.run(lecLabel)
-                    //.setLabelName('Pointer Color')
-                    //.setLabelTemplate(v => colorsHumanFriendly[v])
-                    .do(actions.changeColor);
-
-
-
-
-    let colorIcon = J()
-                    .as(k(icons['color-icon']))
-                    .css('width 25px; height 25px;')
-                    .addClass(`setting-icon`);
-
-    J('monitor')
-                      .as(k('div.'))
-                      .addClass(`color-indicator`)
-                      .setData({ 'lectorMarkerColor': 'background' });
-
-    let colorsComp = J().contain(colorIcon, setColor)
-                    .addClass(`setting`)
-                    .css(`position relative`);
-
-                    // .run(popUpEditor)
-                    //   .setPopupEditor(setColor)
-
-    
-    
-    let popUpSettings = J("popupsettings")
-                      .contain(
-                        //fontComp.setId('font'), 
-                        colorsComp.setId('color'), 
-                        modeComp.setId('mode'),
-                        foveaComp.setId('fovea'),)
-                      .addClass('pop-up-settings')
-                      .run(function(){
-                        this.show = function(){
-                          this.hidden = false;
-                          this.element.show();
-                        };
-                        this.hide = function(){
-                          this.hidden = true;
-                          this.element.hide();
-                        };
-                        this.toggle = function(){
-                          this.hidden ? this.show() : this.hide();
-                        };
-              
-                        this.show();
-                      })
-                      .bind("h", function() { this.toggle(); });
-
-
-
-    // let fontIcon = _p().as(_e(icons['fovea-icon']))
-
-    // let fontMonitor = _p('monitor')
-    //                   .addClass('font-indicator')
-
-    // let setFont = _p('!font')
-    //                 .run(function(){
-    //                   console.log(this.key)
-    //                 })
-    //                 .from(activeSelectTpl({
-    //                   options: fonts,
-    //                   optionTemplate: option => _p(option)
-    //                             .html("Aa")
-    //                             .css(`font-family ${option}`)
-    //                             .on('click').do(function(){
-    //                               this.parent.value = this.key
-    //                             })
-    //                 }))
-    //                 .css(`flex-direction row`)
-    //                 .addClass('section', `selector`)
-    //                 .do(actions.changeFont)
-                  
-    // let fontComp = _p()
-    //                 .contain(fontIcon, fontMonitor, setFont)
-    //                 .run(popUpEditor)
-    //                   .setPopupEditor(setFont)
-    
-    let wpmIcon = J().as(k(icons['speed-icon']))
-                  .css('width 25px; height 25px;')
-                  .addClass(`setting-icon`);
-
-    let wpmIncreaseIcon = J().as(k(icons['increase']))
-                        .addClass(`setting-wpm-adjusticon`)
-                        .listenTo('click', _ => {
-                          setWpm.value += 10;
-                        });
-
-    let wpmDecreaseIcon = J().as(k(icons[`decrease`]))
-                          .addClass(`setting-wpm-adjusticon`)
-                          .listenTo('click', _ => {
-                            setWpm.value -= 10;
-                          });
-
-    let wpmAdjust = J('wpmAdjustPragma').contain(wpmIncreaseIcon,wpmDecreaseIcon)
-                    .addClass(`speed-adjust`);
-
-    let setWpm = J("!wpm")
-                    .run(input, withLabel)
-                    .addClass('settings-input')
-                    .setInputAttrs({
-                      maxlength: 4,
-                      size: 4
-                    })
-                    .setValueSanitizer(
-                      v => parseInt(v)
-                    )
-                    .setId('wpm')
-                    .setRange(40, 4200)
-                    .setValue(250)
-                    .bind(shc.wpmPlus, function(){ this.value+=10; })
-                    .bind(shc.wpmMinus, function(){ this.value-=10; })
-                    .do(actions.changeWpm);
-      
-    let wpmComp = J().contain(wpmIcon, setWpm, wpmAdjust)
-                  .addClass(`setting-wpm`)
-                  .run(function () {
-                    this.update = setWpm.update;
-                  });
-
-
-    let settingsIcon = J().as(k(icons['settings-icon-white']))
-                      .addClass(`settings-bar-icon`)
-                      .run(popUpEditor)
-                      .setPopupEditor(popUpSettings);
-
-                      
-
-
-    let settingsBarComp = J().contain(settingsIcon, wpmComp)
-                          .addClass(`settings-bar`);
-                          
-    
-    let pageComp = J("!page")
-                    .run(input, withLabel)
-                    .setInputAttrs({
-                      maxlength: 4,
-                      size: 4
-                    })
-                    .addClass('settings-input', 'section')
-                    .setValueSanitizer(
-                      v => parseInt(v)
-                    )
-                    .setLabel('page')
-                    .run(function(){
-                      O.createChains(this, 'userEdit');
-
-                      this.editValue = function(val){
-                        this.value = val;  
-                        this.userEditChain.exec(this.value);
-                      };
-
-                      this.onUserEdit(actions.changePage);
-                    })
-                    // .do(actions.changePage
-                    .run(function(){
-                      this.onUserInput(val => {
-                        // console.log(val)
-                        this.editValue(val);
-                      });
-                    })
-                    .setValue(1)
-                    .bind(shc.pageNext, function(){
-                      this.editValue(this.value+1);
-                    }, 'keyup')
-                    .bind(shc.pagePre, function(){
-                      this.editValue(this.value-1);
-                    }, 'keyup');
-                    
-                    //.do(actions.changePage)
-
-    //const comps = [colorsComp, fontComp, foveaComp, modeComp]
-
-    //comps.forEach(comp => {
-      //comp.do(function(){
-        //console.log(this.key, this.value)
-      //})
-    //})
-
-    let scaleComp = J("!scale")
-                    .run(input, withLabel)
-                    .setInputAttrs({
-                      maxlength: 3,
-                      size: 4
-                    })
-                    .addClass('settings-input', 'section')
-                    .setValueSanitizer(
-                      v => parseInt(v)
-                    )
-                    .setLabel('scale')
-                    .run(function(){
-                      this.createEvent('userEdit');
-
-                      this.createWire('scale')
-                          .setScaleRange(40, 200)
-                          .setScale(100);
-                      
-
-                      this.editScale = function(val){
-                        this.setScale(val);
-                      };
-                      
-                      this.on('scaleChange', (v) => {
-                        this.value = this.scale;
-                        this.triggerEvent('userEdit');
-                      });
-                      
-                      //this.editValue = function(val){
-                        //console.log('editing value')
-                        //this.value = val
-                        //if (this.value != this._lv) 
-                      //}
-
-                      this.on('userEdit', actions.changeScale);
-                    })
-                    // .do(actions.changePage
-                    .run(function(){
-                       this.onUserInput(val => {
-                         //console.log(val)
-                         this.editScale(val);
-                       });
-                    })
-                    .setValue(100)
-                    .bind(shc.scaleUp, function(){
-                      this.editScale(this.value+5);
-                      return false
-                    })
-                    .bind(shc.scaleDown, function(){
-                      this.editScale(this.value-5);
-                      return false
-                    });                  
-
-                      
-    let miniSettings = J('mini-settings')
-      .addClass('lector-mini-settings')
-      .contain(scaleComp, pageComp)
-      .pragmatize();
-    
-    
-  // 
-  // pageComp
-    settings.contain(popUpSettings, settingsBarComp);
-    settings.adopt(miniSettings);
-    
-    const listenTo_ = p => p.key && p.key.indexOf('!') === 0;
-
-     let fader = J('fader')
-       .run(idler, function(){
-         this.elements = [];
-         this.include =function(){
-           this.elements = this.elements.concat(Array.from(arguments));
-           return this
-         };
-       })
-       .setIdleTime(3000) // TODO CHANGE BACK TO 3000
-       .include(settings, miniSettings)
-       .onIdle(function(){
-         this.elements.forEach(element => {
-           element.css('opacity 0');
-         });
-         // this.css('opacity 0')
-       })
-       .onActive(function(){
-         this.elements.forEach(element => element.css('opacity 1'));
-       });
-    
-     settings.fader = fader;
-
-    settings.allChildren.forEach(child => {
-      if (listenTo_(child)){
-        child.do(_ => settings._setVal({[child.key.substring(1)]: child.value}));
-      }
-    });
-    
-    settings.do(function(){
-      if (!this._setting){
-        console.log('syncing',this.value);
-      }
-    });
-
-    //setTimeout(() => {
-      //// simulate websocket event
-      settings.set({
-        // 'color': colors[1],
-        'font': fonts[1],
-        // 'mode': modes[2],
-        'fovea': 4,
-        // 'wpm': 420
-      });
-     
-    //}, 1200)
-    
-    return settings.pragmatize()
-  }
-
-  //let testPragma = _p()
-                    //.createWire("yoing")
-                    //.on('yoingChange', function(v){
-                      //settings.update(this.key, v)
-                    //})
-
-  class Settings extends q {
-    constructor(){
-      super();
-      this.init();
-    }
-
-    init() {
-      this.settingsMap = new Map();
-      this.pragmaMap = new Map();
-
-      this.createEvents("update", 'load');
-    }
-
-
-    _set(key, value){
-      if (value !== this.settingsMap.get(key)) return this.settingsMap.set(key, value)
-      return false 
-    }
-
-    create(pragma, wireName){
-      const settingName=wireName;
-      const event = pragma._events.get(`${wireName}Change`); 
-      this.pragmaMap.set(wireName, pragma);
-
-      if (!event){
-        let ogValue = pragma[wireName];
-        // Object.defineProperty(pragma, wireName, { writable: true })
-        pragma.createWire(wireName);
-        pragma[wireName] = ogValue;
-      }
-
-      this.adopt(pragma);
-      pragma.on(`${wireName}Change`, value => {
-        this.update(settingName, value, pragma);
-      });
-    }
-
-    update(hash, value, pragma){
-
-      if (value) {
-        hash = { [hash]: value };
-      }
-
-      for (let [setting, value] of Object.entries(hash)){
-        if (!pragma){
-          this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value);
-        }
-        if (this._set(setting, value)){
-          this.triggerEvent("update", setting, value, pragma);
-        } 
-      }   
-    }
-    
-    get(...keys){
-      if (keys.length==0) keys = Array.from(this.pragmaMap.keys());
-      return keys.reduce((prev, key) => {
-
-        if (typeof prev === "string"){
-          prev = { [prev]: this.settingsMap.get(prev) };
-        } else {
-          prev[key] = this.settingsMap.get(key);
-        }
-
-        return prev
-      })
-    }
-
-    toObj(){
-      let obj = new Map();
-      for (let [key, value] of this.pragmaMap) {
-        obj.set(key, value[key]);
-      }
-      return obj
-    }
-
-    toJSON(){
-      return JSON.stringify(this.toObj())
-    }
-  }
 
   let editor = setting => 
       k(`
@@ -19435,6 +18098,535 @@
       }
   }
 
+  function paginator(pageTemplate, conf={}){
+    return new q()
+          .from(O.createTemplate({
+            // make this nicer
+            // defaultSet: pageTemplate,
+            pageTemplate: pageTemplate,
+            firstPage: conf.first,
+            lastPage: conf.last,
+            fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ O.throwSoft('no fetch source specified'); },
+            onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => console.log('created', p),
+            onFetch: conf.onFetch,
+
+            onPageAdd: null,
+            onPageRender: null,
+            //typeof conf.onPageRender === 'function' ? conf.onPageRender : function(page, i){ console.log('rendered', page, 'active?', page.active) },
+            onPageActive: typeof conf.onPageActive === 'function' ? conf.onPageActive: function(page, i){console.log('active', page); },
+            onPageInactive: typeof conf.onPageInactive === 'function' ? conf.onPageInactive : function(page, i) { console.log('inactive', page); },
+            onPageDestroy: conf.onPageDestroy
+          }))
+
+          .run(function(){
+
+            let _ptemp = k(this.pageTemplate).hide();
+            this.pageTemplate = _ptemp.cloneNode(false);
+
+            this._clonePage = function() {
+              let page = k(this.pageTemplate.cloneNode(false)).show();
+              //if (this._lastAddedPage){
+                ////page.style.height = this._lastAddedPage.height
+                //page.css(`height ${this._lastAddedPage.height}px`)
+                //console.log('>>>>>>>>>>>>>>>>>>>>', this._lastAddedPage.height)
+              //}
+              this.adopt(page);
+              page.lec = this.parent;
+              O.createEventChains(page, 'fetch');
+              return page
+            };
+
+            this.isPageAvailable = v => {
+              return (!this.firstPage || v >= this.firstPage)
+                                        && (!this.lastPage || v <= this.lastPage)
+                      };
+
+            this.create = function(val=this.value, action='append'){
+              // console.log('creating', val, action)
+              let cloned = this._clonePage();
+
+              new Promise( resolve => {
+
+                this.onCreate(cloned, val);
+
+                let f = this.fetch(val);
+
+                let onFetch = conf.onFetch ||
+                          function(page, fetched){
+                            page.html(fetched);
+                            resolve(page);
+                          };
+
+                          // on fetch in config or the default one
+                //
+                const onFetchAndResolve = (resolved) => {
+                  let page = this.pages.get(val);
+                  if (page){
+                    onFetch(page, resolved);
+                    resolve(page);
+                  }
+                };
+
+                if (f instanceof Promise){
+                  f.then(resolved => {
+                    onFetchAndResolve(resolved);
+                  });
+                } else {
+                    onFetchAndResolve(f);
+                }
+
+                //if (f instanceof Promise){
+                  //f.then(resolved => {
+                    //this.pages.get(val)
+                    //onFetch(cloned, resolved)
+                    //resolve(val)
+                  //})
+                //} else {
+                  //onFetch(cloned, f)
+                  //resolve(val)
+                //}
+
+              }).then( page => {
+                //let page = this.pages.get(index)
+                //if (!page) return console.log('eeeeeeeeeee')
+                page.fetchChain.exec();
+                if (this.onPageRender) this.onPageRender(page, val);
+                //this._lastAddedPage = page
+              });
+
+              cloned[`${action}To`](this.parent.element);
+              this.addPage(cloned, val);
+            };
+
+            this.pages = new Map();
+
+            this.destroy = function(val){
+              //console.log('>> destroy', val)
+
+              let toDestroy = this.pages.get(val);
+
+              let destroy = _ => {
+                toDestroy = this.pages.get(val);
+                //toDestroy.destroy()
+                this.delPage(val);
+                toDestroy.destroy();
+              };
+
+              console.log('REMOV');
+              if (this.onPageDestroy){
+                let r = this.onPageDestroy(toDestroy, val);
+                if (r instanceof Promise) return r.then(destroy)
+              }
+
+              destroy();
+            };
+
+            this.addPage = function(page, key){
+              key = key === null ? this.pages.size : key;
+              if (this.onPageAdd) this.onPageAdd(page, key);
+              this.pages.set(key, page);
+            };
+
+            this.delPage = function(key){
+              return this.pages.delete(key)
+            };
+
+            this.activate = function(...pages){
+              pages.forEach(pageIndex => {
+                let page = this.pages.get(pageIndex);
+                if (!page) return
+                page.active = true;
+                this.onPageActive(page, pageIndex);  
+              });
+            };
+
+            this.inactivate = function(...pages){
+              pages.forEach(pageIndex => {
+                let page = this.pages.get(pageIndex);
+                if (!page) return
+                page.active = false;
+                this.onPageInactive(page, pageIndex);
+              });
+            };
+            
+        
+            this.export(
+              "pageTemplate",
+              "_clonePage",
+              "create",
+              'destroy',
+              "pages",
+              "addPage",
+              "delPage",
+              'activate',
+              'firstPage',
+              'lastPage',
+              'isPageAvailable',
+              'inactivate');
+          })
+  }
+
+  function infinityPaginator(streamer, pageTemplate, config={}){
+    let inf = J("infinity paginator")
+          .from(
+            paginator(pageTemplate, O.objDiff(
+              {
+                streamer: streamer,
+                fetch: streamer.fetch,
+                // on page render
+                // on page active
+
+                // on page inactive,
+                // on page add,
+                // on create,
+                // on fetch
+              }, config)
+            )
+          )
+          .setValue(0)
+          .run({
+            initialConfig(){
+
+              this._watching = true;
+              const conf = {
+                headspace: config.headspace || 10,
+                timeout: config.timeout || 5 
+              };
+
+              this.fill = function(){
+
+                this.fetching = true;
+                // console.log(">>> FILLING WITH", this.value)
+                let start = this.value >= conf.headspace ? this.value-conf.headspace : 0;
+                let pageRange = range(start, this.value+conf.headspace);
+                // console.log(pageRange)
+                pageRange = pageRange.filter(v => this.isPageAvailable(v));
+                // console.log(pageRange)
+                let pagesRendered = Array.from(this.pages.keys());
+
+                let pagesToRender = O.aryDiff(pageRange, pagesRendered);
+                let pagesToDelete = O.aryDiff(pagesRendered, pageRange);
+
+
+                let pagesToRenderAfter = pagesToRender.filter(i => i>this.value);
+                let pagesToRenderBefore = O.aryDiff(pagesToRender, pagesToRenderAfter);
+
+                // console.log(">> ALREADY RENDERED", pagesRendered)
+                //  console.log(">> DEL", pagesToDelete)
+                 //console.log(">> ADD", pagesToRender) 
+                //  console.log(">> ADD AFTER", pagesToRenderAfter)
+                //  console.log(">> ADD BEFORE", pagesToRenderBefore)
+
+                // pararellize?
+                // runAsync(
+                  // _ => {
+                    for (let pageIndex of pagesToRenderAfter){
+                      this.create(pageIndex, 'append');
+                    }  
+                  // },
+                  // _ => {
+                    // pararellize?
+                    for (let pageIndex of pagesToRenderBefore.reverse()){
+                      this.create(pageIndex, 'prepend');
+                    }
+                  // },
+                  // _ => {
+                    // pararellize?
+                    for (let pageIndex of pagesToDelete){
+                      //this.inactivate(pageIndex)
+                      //this.pages.get(pageIndex).css("background:red")
+                      this.destroy(pageIndex);
+                    }
+                  // }
+                // )
+
+                setTimeout(a => {
+                  this.fetching = false;
+                  // console.log(this.pages)
+                }, conf.timeout);
+            };
+          }, scrollSetup(){
+            // this.goTo()
+            this.goTo = function (val, speed) {
+              `add-${this.value}`;
+              let paginator = this;
+
+              if (this.value != val) this.value = val;
+              let page = this.pages.get(val);
+
+              page.onRender(function () {
+                paginator._watching = false;
+                scrollTo(page, speed || 20).then(() => {
+                  paginator._watching = true;
+                });
+              });
+            };
+
+            this.export('goTo');
+          },
+          findActivePages(){
+
+            function findCandidates(pages, scroll){
+              let bestIndex = null;
+              let best = 999999999999;
+              const middle = scroll + window.innerHeight/2;
+              // console.log(pages)
+              for (let [pageIndex, page] of pages){
+                let pageMiddle = page.top + page.height/2;
+                let closeness = Math.abs(pageMiddle - middle);
+                // console.log(page, pageIndex, closeness)
+                if (closeness <= best){
+                  best = closeness;
+                  bestIndex = pageIndex;
+                }
+              }
+
+              return bestIndex
+            }
+            
+            this.findActivePage = function(s, dp){
+              // dp is the rate of change of scroll
+              
+              // console.log(canditates)
+              //if (this.fetching) return
+              //
+              return new PinkyPromise(resolve => {
+                resolve(findCandidates(this.pages, s));
+                //let canditates
+                //util.bench(_ => canditates = findCandidates(this.pages, s))
+                ////resolve(canditates)
+                //setTimeout(_ => resolve(canditates), 5)
+              })
+            };
+
+            let searching = false;
+            let owe = false;
+            const doOnScroll= (pos, dp) => {
+              if (this.fetching || !this._watching) return 
+              if (searching) return owe = { pos: pos, dp: dp }
+
+              searching = true;
+              this.findActivePage(pos, dp).then(active => {
+                // console.log("ACTIVE>>", active, this.pages.get(active))
+                this.value = active;
+                searching = false;
+                if (owe){
+                  // console.log('owe', owe)
+                  doOnScroll(owe.pos, owe.dp);
+                  owe = null;
+                }
+              });
+            };
+
+            onScrollEnd((pos, dp) => {
+              doOnScroll(pos, dp);
+            });
+            
+            // optimization for fast scroll
+            onScroll((pos, dp) => {
+              if (Math.abs(dp) > 40){
+                if (pos < 350) doOnScroll(pos, dp);
+              }
+            });
+            
+            //onScroll((pos, dp) => {
+              //if (pos < 300){
+                //doOnScroll(pos, dp)
+              //}
+            //})
+
+          }
+        })
+        .do(function(){
+          if (this.dv === 0) return
+          this.activate(this.value);
+          let preVal = this.value-(this.dv||1);
+          this.inactivate(preVal);
+
+          this.fill();
+        });
+
+    return inf
+  }
+
+  var full = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);body{background-color:#161616}.flex,.inline-icon,.inline-icon-2{display:flex;justify-content:center;align-items:center}.inline-icon,.inline-icon-2{width:22px}.inline-icon svg,.inline-icon-2 svg{width:22px}.inline-icon-2{width:25px}.inline-icon-2 svg{width:25px}.clickable{cursor:pointer}.meta{opacity:.5}.blurred-bg{width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:9999999999999999999;background:rgba(255,255,255,0.15);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}.popUp{width:400px;height:390px;background:#161616;border-radius:4px;position:absolute;top:30%;left:50%;margin-left:-200px;padding:30px 30px;box-sizing:border-box;transition:all ease .5s;font-family:'IBM Plex Mono',monospace !important}.popUp .next-btn,.popUp .back-btn{position:absolute;right:-50px;width:40px;height:40px;background:#161616;border-radius:50px;top:50%;margin-top:-25px;cursor:pointer}.popUp .next-btn .next-icon,.popUp .back-btn .next-icon,.popUp .back-btn .back-icon,.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{text-align:center;position:absolute;top:46%;left:52%;transform:translate(-50%,-50%) rotate(180deg)}.popUp .next-btn .next-icon>svg,.popUp .back-btn .next-btn .back-icon>svg,.popUp .back-btn .next-icon>svg,.popUp .back-btn .back-icon>svg,.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:10px;height:auto}.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{transform:translate(-50%,-50%);top:55%;left:50%}.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:15px;height:auto}.popUp .back-btn{left:-50px}.popUp .back-btn .back-icon{transform:translate(-50%,-50%);top:56%;left:47%}.popUp .popUpContent{width:100%;display:flex;height:100%;box-sizing:border-box;transition:all ease .5s;justify-content:center;align-items:center}.popUp .popUpContent .boat{width:100%;height:fit-content;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;text-align:center;transition:all ease .5s}.popUp .popUpContent .boat-title{font-family:'IBM Plex Mono',monospace !important;font-size:27px !important;color:whitesmoke;margin:0;font-weight:400;margin-top:30px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.popUp .popUpContent .boat .spacebar-icon>svg{width:230px}.popUp .popUpContent .boat .speed-icon>svg{width:315px}.popUp .popUpContent .boat .click-icon>svg{width:315px}.displayN{display:none !important}.fadein-onload,.popUp .popUpContent .boat{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fadein-onload from,.popUp .popUpContent .boat from{opacity:0}.fadein-onload to,.popUp .popUpContent .boat to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}";
+  var slider$1 = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}.slider-display{text-align:center;padding-bottom:20px}";
+  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings{position:fixed;bottom:20px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px;border-bottom:1px solid transparent;margin-bottom:-1px}.word-element.hover-0{background-color:#2b6cce37;outline:2px solid #2b6cce37;border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}.word-element.mark-is-here{border-bottom:1px solid #2b6cce;background-color:#2b6cce19}.fade-onload,#mark-indicator{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fade-onload from,#mark-indicator from{opacity:0}.fade-onload to,#mark-indicator to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.mark-obscurer{background-color:#262626}#mark-indicator{background:#2b6cce;width:10vw;height:10px;cursor:pointer;left:45vw;position:fixed;z-index:999999;-webkit-box-shadow:5px 5px 30px 5px #2b6cce;box-shadow:5px 5px 30px 5px #2b6cce;bottom:0}#mark-indicator.upwards{top:0}";
+  var settings = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);.collapsable,.settings #popup{overflow:hidden;transition:all .15s ease;height:auto;flex:1}.collapsable.collapsed,.settings #popup.collapsed{flex:0}.box-container,.settings #popup,.bar{background-color:#262626;border-radius:4px;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;height:auto;padding:10px 15px;width:158px}.bar{width:fit-content;flex-direction:row;justify-content:space-between;align-items:center}.settings{z-index:999999999999999;font-family:'IBM Plex Sans',sans-serif;font-size:18px;bottom:10px;left:10px;color:whitesmoke;position:fixed}.settings #popup{display:block;position:absolute;bottom:55px}.settings #wpm{width:100px;padding-left:20px;margin-left:15px;border-left:1px solid gray}.settings [data-setting-target=back]{cursor:pointer;height:24px;display:flex;align-items:center;margin-bottom:27px}.settings [data-setting-target=back]::after{content:'';height:2px;width:120%;background-color:#6f6f66;position:absolute;top:40px;left:0}.settings [data-setting-target=back] .back-icon{margin-right:10px;margin-right:18px;margin-left:7px}.settings [data-setting-target=back] .back-copy{margin-bottom:3px}.settings #page-bar{position:fixed;right:10px;bottom:10px}.settings #zoom-bar{position:fixed;right:10px;top:20px;padding:8px 5px}.settings #zoom-bar .setting{height:fit-content}.settings #zoom-bar .setting .arrows{height:80px;justify-content:space-between}.edible-display{background:#39393950;padding:1px 5px !important;font-family:'IBM Plex Mono',monospace;font-size:18px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;text-align:center}.edible-display:hover{background:#7b7b7b35}.setting{display:flex;flex-wrap:nowrap;justify-content:flex-start;height:30px;user-select:none;-webkit-user-select:none}.setting.collapsable,.settings #popup.setting{height:40px}.setting.inline{height:30px;width:100%}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .section,.setting .collapsed-section{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{display:flex;margin:15px 0;cursor:pointer;opacity:70%}.setting .editor-content .option.selected{opacity:100%}.setting .color-blob{width:22px;height:22px;border-radius:30px;margin-right:10px}.setting .color-blob.selected{border:10px solid red}.setting .mode-icon{margin-right:20px}.setting .arrows{display:flex;flex-direction:column;padding:5px;justify-content:center;align-items:center}.setting .arrows svg,.setting .arrows div{opacity:.7;cursor:pointer;padding:2px 0}.setting .arrows svg:hover,.setting .arrows div:hover{opacity:1}[data-setting='mode'] [data-option='Underneath']{margin:0 0 20px 0 !important;display:flex;align-items:center}.-selector *,.-settings-section-list .option.selected *,.settings>#popup #color .option.selected *,.settings>#popup #mode .option.selected *,.-color-selector *{z-index:99}.-selector::before,.-settings-section-list .option.selected::before,.settings>#popup #color .option.selected::before,.settings>#popup #mode .option.selected::before,.-color-selector::before{content:'';height:50px;width:120%;background-color:#515151;position:absolute;z-index:0 !important;left:0;margin-top:-11px}.-selector::after,.-settings-section-list .option.selected::after,.settings>#popup #color .option.selected::after,.settings>#popup #mode .option.selected::after,.-color-selector::after{content:'';width:5px;height:50px;background-color:#2b6cce;position:absolute;left:0;margin-top:-11px}.-color-selector::before,.settings>#popup #color .option.selected::before{height:40px}.-color-selector::after,.settings>#popup #color .option.selected::after{height:40px}.-settings-section-list .option,.settings>#popup #color .option,.settings>#popup #mode .option{transition:all ease .2s;align-items:stretch !important}.lottie{position:relative;transition:all ease 0,5s}.lottie[data-loading=true]::before{content:\"\";position:absolute;margin:auto;width:25px;left:50%;height:25px}.lottie.click-lottie{margin-top:-10px;height:200px}";
+  var css = {
+  	full: full,
+  	slider: slider$1,
+  	main: main,
+  	settings: settings
+  };
+
+  O.addStyles(css.slider);
+  function slider(conf={}){
+    
+    
+    this._n = function(){ 
+      let range = this.range || { min: 1, max: 100};
+      return 100/(range.max||100-range.min||1)
+    };
+
+
+    this.do(function(){
+      this.updateTo(this.value);
+    });
+    
+    this.updateTo = function(value){
+      this.element.setData({ value: value});
+      this._setBarTo(value*this._n());
+    };
+
+    this._setBarTo = wp => {
+      this._bar.css(`width ${wp}%`);
+      this._thumb.offset();
+    };
+
+    this._clipValue = perc => {
+      let v = Math.round(perc/this._n());
+      if (this._lv !== v) {
+        this.value = v;
+      }
+      //console.log(this.value)
+    };
+    
+    this._input = k('div.').addClass('pragma-slider-bg');
+    this._bar = k('div.')
+      .addClass('pragma-slider-bar');
+    
+    this._thumb = k('div.pragma-slider-thumb');
+    this._bar.append(this._thumb);
+
+    this._input.append(this._bar);
+    
+
+    let onDown = function(){
+      this._clicked = true;
+    };
+
+    this._input.listenTo('mousedown', onDown);
+    this._thumb.listenTo('mousedown', onDown);
+    
+    document.addEventListener('mouseup', ()=> {
+      this._input._clicked = false;
+    });      
+    
+    let ticking = false;
+
+    document.addEventListener("mousemove", yx => {
+      if (this._input._clicked && !ticking) {
+        window.requestAnimationFrame(() => {
+          ticking = false;
+          let w = yx.pageX-this._input.offset().left;
+          let wp = Math.round(Math.min(w/this._input.rect().width, 1)*100);
+          this._clipValue(wp);
+        });
+        ticking = true;
+      }
+    });
+
+    this.adopt(this._input);
+    this.append(this._input);
+    this.element.addClass('pragma-slider');
+  }
+
+  function _createIdler(timeout, afk, active) {
+      let _idler = new Idle(timeout)
+        .onAfk(()=> {
+          // console.log('user is afk')
+          if (afk) afk();
+          // this.shout()
+        })
+        .onActive(() => {
+          // console.log('user is back')
+          if (active) active();
+          // this.shutUp()
+      });
+      return _idler
+  }
+
+  function idler(){
+      O.createChains(this, 'idle', 'active');
+
+      this.setIdleTime = function(time=5000){
+          this._idler = _createIdler(time, () => {
+              this.idleChain.exec();
+          }, () => {
+              this.activeChain.exec();
+          });
+          return this
+      };
+      
+      this.extend('onIdle', function(){
+          this._onIdle(...arguments);
+          return this
+      });
+
+      this.extend('onActive', function(){
+          this._onActive(...arguments);
+          return this
+      });
+  }
+
+  class Scaler extends q {
+      constructor(target, duration=70){
+          super();
+          this.target = target;
+          this._duration = duration;
+          this.target.css(`transition transform ${this._duration}ms ease; transform-origin top`);
+
+          this.createWire("scale");
+          this.scale = 100;
+
+          this.on('scaleChange', function(v, lv){
+              if (v == lv) return false
+              this.value = this.scale;
+              this._scaleTo(this.scale);
+          });
+      }
+      
+      setTarget(n) { this.target = n; return this }
+      
+      set scaleStep(n){
+          this._scaleStep = n;
+      }
+
+      get scaleStep(){
+          return this._scaleStep || 5
+      }
+
+      scaleUp(){
+          this.scale+= this.scaleStep;
+      }
+      
+      scaleDown(){
+          this.scale-= this.scaleStep;
+      }
+      scaleTo(to){
+          this.scale = to;
+      }
+      
+      _scaleTo(to){
+          this.target.css(`transform scale(${to/100})`);
+          this.currentPromise = new Promise(resolve => {
+              setTimeout(() => {
+                  resolve();
+                  this.currentPromise = null;
+              }, this._duration+25);
+          });
+
+          return this.currentPromise
+      }
+  }
+
+  //scaler(element){
+      //this.target = element
+
+      //this
+  //}
+
   let defaultContent = (pragma) => `
     <div data-setting-target='display' class="slider-display">
         8
@@ -19482,6 +18674,92 @@
           // console.log(this.element.findAll(`[data-setting-target='display']`))
 
       }
+  }
+
+  //let testPragma = _p()
+                    //.createWire("yoing")
+                    //.on('yoingChange', function(v){
+                      //settings.update(this.key, v)
+                    //})
+
+  class Settings extends q {
+    constructor(){
+      super();
+      this.init();
+    }
+
+    init() {
+      this.settingsMap = new Map();
+      this.pragmaMap = new Map();
+
+      this.createEvents("update", 'load');
+    }
+
+
+    _set(key, value){
+      if (value !== this.settingsMap.get(key)) return this.settingsMap.set(key, value)
+      return false 
+    }
+
+    create(pragma, wireName){
+      const settingName=wireName;
+      const event = pragma._events.get(`${wireName}Change`); 
+      this.pragmaMap.set(wireName, pragma);
+
+      if (!event){
+        let ogValue = pragma[wireName];
+        // Object.defineProperty(pragma, wireName, { writable: true })
+        pragma.createWire(wireName);
+        pragma[wireName] = ogValue;
+      }
+
+      this.adopt(pragma);
+      pragma.on(`${wireName}Change`, value => {
+        this.update(settingName, value, pragma);
+      });
+    }
+
+    update(hash, value, pragma){
+
+      if (value) {
+        hash = { [hash]: value };
+      }
+
+      for (let [setting, value] of Object.entries(hash)){
+        if (!pragma){
+          this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value);
+        }
+        if (this._set(setting, value)){
+          this.triggerEvent("update", setting, value, pragma);
+        } 
+      }   
+    }
+    
+    get(...keys){
+      if (keys.length==0) keys = Array.from(this.pragmaMap.keys());
+      return keys.reduce((prev, key) => {
+
+        if (typeof prev === "string"){
+          prev = { [prev]: this.settingsMap.get(prev) };
+        } else {
+          prev[key] = this.settingsMap.get(key);
+        }
+
+        return prev
+      })
+    }
+
+    toObj(){
+      let obj = new Map();
+      for (let [key, value] of this.pragmaMap) {
+        obj.set(key, value[key]);
+      }
+      return obj
+    }
+
+    toJSON(){
+      return JSON.stringify(this.toObj())
+    }
   }
 
   function createCommonjsModule(fn) {
@@ -20865,13 +20143,6 @@
     });
   }
 
-  var index = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    LectorSettings: lectorSettings,
-    Settings: Settings,
-    addSettingsToLector: addSettingsToLector
-  });
-
   class popUp extends q{ 
 
       constructor(){
@@ -21326,7 +20597,7 @@
 
     lec.mark = Mark(lec);
     if (options.settings) addSettingsToLector(lec); 
-    if (options.legacySettings) lec.settings = lectorSettings(lec); 
+    // if (options.legacySettings) lec.settings = LectorSettings(lec) 
     if (options.onboarding) addOnboardingToLector(lec);
     // if (options.settings) lec.settings = LectorSettings(lec) 
 
@@ -21512,6 +20783,12 @@
 
     return lector
   };
+
+  var index = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Settings: Settings,
+    addSettingsToLector: addSettingsToLector
+  });
 
   pragmaSpace.console = PragmaConsole;
 
