@@ -18,11 +18,7 @@ let editor = setting =>
     `.trim())
 
 export class SettingEditor extends Pragma {
-    constructor(){
-        super()
-        this.init(...arguments)
-    }
-
+    
     init(setting){
         this.setting = setting
         this.as(editor(setting))

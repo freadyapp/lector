@@ -1,10 +1,5 @@
 import { Pragma, util } from "pragmajs";
-import { PragmaConsole } from "../extensions/pragmaConsole"
 import { charsMsAt, crush, generateDifficultyIndex, wordValue, PinkyPromise } from "../helpers/index"
-
-
-// TODO global solution for this
-// PragmaConsole.intercept()
 
 
 export default class PragmaWord extends Pragma {

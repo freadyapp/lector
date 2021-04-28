@@ -20,12 +20,6 @@ let makeOptionElement = function(content, wrapper){
 }
 
 export class Option extends Pragma {
-    constructor(){
-        super()
-        this.createWire('optionTemplate')
-        this.init(...arguments)
-        
-    }
     
     static fromTemplate (template, option){
         let content = typeof template === 'function' ? template : optionDefaultContent
@@ -40,6 +34,7 @@ export class Option extends Pragma {
     }
 
     init(option, contentTemplate, wrapperTemplate){
+        this.createWire('optionTemplate')
         this.option = option
         this._contentTemplate = contentTemplate
         this._wrapperTemplate = wrapperTemplate
@@ -83,7 +78,7 @@ export class SettingList extends Setting {
         
         this.on('input', value => {
             let pragma = this.find(value)
-            if (!pragma) return util.throwSoft(`couldnt find option for ${value}`)
+            if (!pragma) return console.error(`couldnt find option for ${value}`)
             this.currentOption = pragma
         })
 

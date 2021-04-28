@@ -52,7 +52,7 @@ export function select(conf){
   // this._options = []
   
   let options = conf.options
-  if (!options) return util.throwSoft('need to define options when creating a select template')
+  if (!options) return console.error('need to define options when creating a select template')
 
   let onOptionCreate = conf.onOptionCreate || defaults.onOptionCreate
   let optionTemplate = conf.optionTemplate || defaults.optionTemplate 

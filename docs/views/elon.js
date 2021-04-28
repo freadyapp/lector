@@ -18,7 +18,7 @@ function getG(key){
 // setG({'lector.onboarding.show?': false})
 
 // pragmaSpace.dev = true
-lector.dev()
+lector.prod()
 lector.globalify()
 
 function fetchContent(index){

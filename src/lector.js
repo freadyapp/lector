@@ -10,6 +10,7 @@ import * as _ext from "./extensions/index"
 import css from "./styles/styles.json"
 import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
 import * as config from "./config/lector.config"
+import { prod, dev } from "./index"
 import icons from '../src/ui/icons.json'
 
 
@@ -42,6 +43,7 @@ const default_options = {
   experimental: false,
   settings: false,
   defaultsStyles: true,
+  debug: false
 }
 
 const Mark = (lec) => {
@@ -302,6 +304,7 @@ export const Word = (element, i, options={ shallow: false }) => {
 
 export const Reader = async (l, options=default_options) => {
   l = _e(l)
+
   if (options.wfy) await wfy(l)
   let w = Word(l)
 
@@ -368,6 +371,12 @@ function _streamer(sf){
 
 
 export const Lector = async (l, options=default_options) => {
+  options.debug ? dev() : prod()
+  
+  // if (options.debug) { dev()
+  // } else {
+    // prod()
+  // }
   // if (options.defaultStyles) styles += [css.main, css.slider, css.settings]
   // if (options.fullStyles) styles += [css.full]
 
