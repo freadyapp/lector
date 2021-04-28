@@ -6,7 +6,7 @@
 
 
 
-### [ 🚀 Demo ](https://robo-monk.github.io/lector)
+### [ 🚀 Demo ](https://freadyapp.github.io/lector)
 
 
 Lector produces a reading enviroment, and summons a pointer that will help you read more efficient. It's sole purpose is to transfer a piece of text

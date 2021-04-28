@@ -11,6 +11,8 @@ import css from "./styles/styles.json"
 import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
 import * as config from "./config/lector.config"
 import { prod, dev } from "./index"
+import icons from '../src/ui/icons.json'
+
 
 function addOnboardingToLector(lector){
   lector._popUp = new popUpOb()
@@ -116,6 +118,7 @@ const Mark = (lec) => {
                     .listenTo('click', () => {
                       lec.currentWord.summon()
                     })
+                    .html(`${icons['arrow-down']}`)
 
   let indicatorAppended = false
 
