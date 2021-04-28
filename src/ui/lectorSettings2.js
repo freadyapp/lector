@@ -302,7 +302,7 @@ export function addSettingsToLector(lector){
           return this
         }
       })
-      .setIdleTime(3000)
+      .setIdleTime(300000)
       .include(lector.settings)
       .onIdle(function () {
         this.elements.forEach(element => {
