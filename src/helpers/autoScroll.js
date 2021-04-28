@@ -41,7 +41,6 @@ export function isOnScreen(el, threshold=100){
 }
 
 export function scrollTo(el, duration=200, threshold=200){
-  console.log('SCROLLING TO ', el)
   return _scroller.scrollTo(el, duration, threshold)
   // behavior
   // closer, will scroll little bit downwards or upwards
@@ -97,9 +96,10 @@ const bodyScroll = window.document.scrollingElement || window.document.body || w
 export const _scroller = _p()
                     .createWires('scrollData', 'scrollTarget', 'scrolling')
                     .createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget')
-                    .define(
+                    .define({
 
-                      function scrollTo(el, duration, threshold) {
+                      scrollTo(el, duration, threshold) {
+                        this._selfScrolling = true
                         _e(el).scrollIntoView({
                           block: 'center',
                           behavior: 'smooth',
@@ -108,6 +108,7 @@ export const _scroller = _p()
                         return new Promise((r, re) => {
                           this.onNext('scrollEnd', () => {
                             setTimeout(() => {
+                              this._selfScrolling = false
                               r()
                             }, 10)
                           })
@@ -147,7 +148,7 @@ export const _scroller = _p()
                         //   })
                         // })
                       }
-                    )
+                    })
                     .run(function() {
                       let last = 0
                       let ticking = false
@@ -160,7 +161,7 @@ export const _scroller = _p()
                         if (!ticking) {
                           window.requestAnimationFrame(() => {
                             this.setScrollData([last, e])
-                            this.triggerEvent('scroll', last, e)
+                            // this.triggerEvent('scroll', last, e)
                             // setTimeout(() => {
                               ticking = false;
                             // }, throttle)
@@ -202,11 +203,12 @@ export const _scroller = _p()
                           this.triggerEvent('scrollEnd', s, ds, event)
                         }, 50)
 
-                    }).on('scrollEnd', () => {
-                      // console.log('SCROLL JAS ENDED')
-                    }).on('scrollStart', () => {
-                      // console.log('STATRT SCROLl')
                     })
+                    // .on('scrollEnd', () => {
+                    //   // console.log('SCROLL JAS ENDED')
+                    // }).on('scrollStart', () => {
+                    //   // console.log('STATRT SCROLl')
+                    // })
 
                     
 

@@ -1,5 +1,7 @@
 export { isOnScreen, isMostlyInScreen, scrollTo, onScroll, _scroller } from "./autoScroll.js"
 export { crush, generateDifficultyIndex, wordValue, charsMsAt } from "./pragmaWordHelper"
+export { _shadow, ShadowPragma } from "./shadowPragma"
+
 import { _e } from "pragmajs"
 
 import PinkyPromise from "./pinkyPromise"
@@ -83,7 +85,7 @@ export function fadeTo(el, value, ms = 500) {
     })
 }
 
-export function visibleY(el) {
+export function visibleY(el, threshold=0) {
     if (!el) return false
     var rect = el.getBoundingClientRect(),
     top = rect.top,
@@ -95,12 +97,12 @@ export function visibleY(el) {
     // Check its within the document viewport
     if (top > document.documentElement.clientHeight) return false
     do {
-    if (!el.getBoundingClientRect) return
-    rect = el.getBoundingClientRect()
-    if (top <= rect.bottom === false) return false
-    // Check if the element is out of view due to a container scrolling
-    if ((top + height) <= rect.top) return false
-    el = el.parentNode
+        if (!el.getBoundingClientRect) return
+        rect = el.getBoundingClientRect()
+        if (top <= rect.bottom === false) return false
+        // Check if the element is out of view due to a container scrolling
+        if ((top + height) <= rect.top) return false
+        el = el.parentNode
     } while (el != document.body)
     return true
 }
@@ -109,6 +111,7 @@ export function firstVisibleParent(e) {
     if (!e || !e.parent || visibleY(e.element)) return e
     return firstVisibleParent(e.parent)
 }
+
 
 // export function setClassIf(e, className, condition) {
     // e[condition ? `addClass` : `removeClass`](className)

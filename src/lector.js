@@ -1,21 +1,21 @@
 import { _e, _p, Pragma, util, _thread, runAsync } from "pragmajs"
 import { range, wfy, isOnScreen, scrollTo, visibleY, onScroll, firstVisibleParent } from "./helpers/index"
 import { PragmaWord, PragmaLector, PragmaMark } from "./pragmas/index"
-import { addSettingsToLector } from "./ui/lectorSettings2"
+import { addSettingsToLector } from "./ui/lectorSettings"
 import anime from "animejs"
 import { popUpOb } from "./onboarding/popUpOb"
 
 import * as _ext from "./extensions/index"
 
 import css from "./styles/styles.json"
-import { onScrollEnd } from "./helpers/autoScroll"
-
+import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
+import * as config from "./config/lector.config"
+import icons from '../src/ui/icons.json'
 
 
 function addOnboardingToLector(lector){
   lector._popUp = new popUpOb()
 }
-
 
 function connectToLectorSettings(lector, wire){
   return new Promise((resolve, reject) => {
@@ -38,16 +38,42 @@ function connectToLectorSettings(lector, wire){
 const default_options = {
   onboarding: false,
   wfy: true,
-  pragmatizeOnCreate: true,
+  pragmatizeOnCreate: false,
   experimental: false,
   settings: false,
-  defaultsStyles: true
+  defaultsStyles: true,
 }
 
 const Mark = (lec) => {
+  let autoScroller = _p()
+                    .define({
+                      scrollIfNeeded() {
+                        return new Promise(resolve => {
+                          console.log('checking if should auto scroll...')
+                          console.log(this.isAutoScrolling, isOnScreen(lec.currentWord?.element, config.scrollingThresholdToScroll))
+                          if (this.isAutoScrolling || isOnScreen(lec.currentWord?.element,
+                                            config.scrollingThresholdToScroll)) return resolve(false)
+
+                          // perform auto scroll
+                          this.isAutoScrolling = true
+                          this.autoScroll().then(() => {
+                            this.isAutoScrolling = false
+                            resolve(true)
+                          })
+                        })
+                      }, 
+                      autoScroll() {
+                        console.log('auto scrolling')
+                        return scrollTo(lec.currentWord) 
+                      }
+                    })
+
   let mark = new PragmaMark(lec)
-                  .define(
-                    function correctBlueprint(current, last) {
+                  .run(function() {
+                    this.autoScroller = autoScroller
+                  })
+                  .define({
+                    correctBlueprint(current, last) {
                       if (!last) return current
 
                       let currentCenter = current.top + current.height/2
@@ -62,54 +88,26 @@ const Mark = (lec) => {
 
                       return current
                     }
-                  )
-
-  function logger(w){
-    // console.log('mark:', w)
-  }
-
-  // auto scroll feature
-  // TODO put somewhere else
-  let scrollingIntoView = false
-  let usersLastScroll = 0
-
-  function userIsScrolling(threshold=50){
-    return usersLastScroll - Date.now() > -threshold
-  }
-
-  function autoScroll(){
-    // convert to a pragma
-    //return
-    if (visibleY(lec.currentWord.element) || scrollingIntoView) return false
-    // else we're out of view
-
-    scrollingIntoView = true
-
-    let cbs = [] // these will be the callbacks that are gonna run when the scroll is done
-    // TODO  make a class Chain that does this.
-    // Chain.add(cb), Chain.do() to execute and shit
-    if (lec.isReading){
-      lec.pause()
-      cbs.push(() => {
-        lec.read()
-      })
-    }
-
-    cbs.push(()=>{
-      //console.warn("suck my diiiiiiiiiick")
-    })
-
-    console.warn("mark is out of screen")
-    console.log('lec reading:', lec.isReading)
-
-    scrollTo(lec.currentWord).then(() => {
-      // setTimeout(() => {
-      cbs.forEach(cb => cb())
-      scrollingIntoView = false
-      // }, 1000)
-    })
-  }
-
+                  })
+                  .run(function() {
+                    lec.appendToRoot(this.element)
+                    lec.async.define({
+                      beforeRead() {
+                        return new Promise(async resolve => {
+                          console.log('before read.... scrolling if needed')
+                          await autoScroller.scrollIfNeeded()
+                          console.log('before read.... wait 300 ms')
+                          resolve()
+                        })
+                      }
+                    })
+                    // lec.on('beforeRead', () => {
+                      // autoScroller.scrollIfNeeded()
+                    // })
+                  })
+                  .on('changeLine', () => {
+                    autoScroller.scrollIfNeeded()
+                  })
 
 
   let markedWords = new Set
@@ -118,47 +116,48 @@ const Mark = (lec) => {
                     .listenTo('click', () => {
                       lec.currentWord.summon()
                     })
+                    .html(`${icons['arrow-down']}`)
 
   let indicatorAppended = false
 
   let markDetective = _p()
-        .define(
-          function unminimizeMark() {
-              // reset marked words
-              for (let w of markedWords) {
-                if (!w) continue
-                console.log(w)
-                // w.css(`background transparent`)
-                w.removeClass('mark-is-here')
-                markedWords.delete(w)
-              }
+        .define({
+          unminimizeMark() {
+            // reset marked words
+            for (let w of markedWords) {
+              if (!w) continue
+              console.log(w)
+              // w.css(`background transparent`)
+              w.removeClass('mark-is-here')
+              markedWords.delete(w)
+            }
 
-              lec.resetMark().then(() => {
-                lec.mark.show()
-                this.minimized = false
-              })
+            lec.resetMark().then(() => {
+              lec.mark.show()
+              this.minimized = false
+            })
           },
 
-          function minimizeMark() {
+          minimizeMark() {
             lec.mark.hide()
             lec.currentWord?.addClass('mark-is-here')
             markedWords.add(lec.currentWord)
             this.minimized = true
           }
 
-        ).run(function() {
+        }).run(function() {
 
           this.minimized = true
           lec.on('load', () => {
             lec.mark.on('mark', () => {
-            if (!this.minimized) return
-            this.unminimizeMark()
+              if (!this.minimized) return
+              this.unminimizeMark()
             })
           })
 
         })
 
-  onScrollEnd(() => {
+  onGlobalScrollEnd(() => {
     indicateMarkIfHidden()
   }, 150)
 
@@ -185,7 +184,8 @@ const Mark = (lec) => {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
           if (!indicatorAppended){
-            indicator.appendTo('html')
+            // indicator.appendTo('html')
+            indicator.appendTo(lec)
             indicatorAppended = true
           }
 
@@ -199,37 +199,44 @@ const Mark = (lec) => {
       } else {
         indicator.destroy()
         indicatorAppended = false
-        _e('body').findAll('.mark-obscurer')
+        lec.element.findAll('.mark-obscurer')
           .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
       console.timeEnd('indicating mark')
     } 
   }
-  
-  const threshold = 40 // how fast should you scroll to pause the pointer
-  let lastScroll = 0
-  
-  onScroll((s, ds, event) => {
-    usersLastScroll = !scrollingIntoView ? Date.now() : usersLastScroll
-    // console.log('user is scrolling', userIsScrolling())
 
-    if (userIsScrolling() && lec.isReading){
-      let dscroll = Math.abs(ds)
-      lastScroll = s
-      if (dscroll>threshold){
+  // markKeeper will pause and minimize mark if for some reason it goes out of screen
+  // it also minimizes mark and highlights the current word via the markDetective
+  let markKeeper = _p()
+    .define({
+      saveMark() {
+        // pauses lector, and will disables mark-saving until next user scroll
+        if (this._savedMark) return
+
+        this._savedMark = true
+        _scroller.onNext('scrollEnd', () => {
+          this._savedMark = false
+        })
+
         lec.pause()
       }
-    } else {
-      markDetective.minimizeMark()
-    }
+    })
+    .run(function() {
+      onScroll((s, ds, event) => {
+        // console.log('user is scrolling', userIsScrolling())
+        console.log(Math.abs(ds), config)
+        if (lec.isReading){
+          if (Math.abs(ds)>config.scrollingThresholdToPauseMark 
+              || !visibleY(lec.mark.element)){
 
-  }, 0)
-
-  //mark.listenTo('mouseover', function(){
-    //console.log(this, 'hover')
-  //})
-
-  mark.do(logger, autoScroll)
+            this.saveMark()
+          }
+        } else {
+          markDetective.minimizeMark()
+        }
+      })
+  })
   return mark
 }
 
@@ -303,7 +310,9 @@ export const Reader = async (l, options=default_options) => {
               .as(l)
               .setValue(0)
               .connectTo(w)
-  
+
+
+  console.log('lector root is', lec.root)
   // console.log(`created lector ${lec}`)
   // console.log(`created word ${w}`)
   // console.log(w)
@@ -356,15 +365,35 @@ function _streamer(sf){
 
 }
 
+
+
 export const Lector = async (l, options=default_options) => {
+  // if (options.defaultStyles) styles += [css.main, css.slider, css.settings]
+  // if (options.fullStyles) styles += [css.full]
+
+  // if (l.isShadowPragma === true) {
+  //   if (l.injectStyles) l.injectStyles(...styles)
+  //   l = l.shadow
+  // } else {
+  //   for (let style of styles) util.addStyles(style)
+  // }
+
+  const injectStyles = options.styleInjector ? (...styles) => {
+    for (let style of styles) options.styleInjector(style, css[style])
+  } : (...styles) => {
+    for (let style of styles) util.addStyles(css[style], style)
+  }
+
   if (options.defaultStyles){
-    util.addStyles(css.main)
-    util.addStyles(css.slider)
-    util.addStyles(css.settings)
+    injectStyles('main', 'slider', 'settings')
+    // util.addStyles(css.main)
+    // util.addStyles(css.slider)
+    // util.addStyles(css.settings)
   }
 
   if (options.fullStyles){
-    util.addStyles(css.full)
+    injectStyles('full')
+    // util.addStyles(css.full)
   }
 
   if (!_needWrapper(options)){
@@ -399,6 +428,7 @@ export const Lector = async (l, options=default_options) => {
     // console.log(_e(l).parentElement)
     // let options = util.objDiff({ skip: true })
     console.log('crating reader...')
+    
     lector = (await Reader(_e(l).parentElement, options))
                   .adopt(paginator, streamer)
 

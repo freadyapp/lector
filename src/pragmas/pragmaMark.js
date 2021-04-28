@@ -1,5 +1,5 @@
 // mark is responsible for marking words in the screen
-// import $ from "jquery"
+
 import { Pragma, _e, util } from "pragmajs"
 import PragmaWord from "./pragmaWord"
 import anime from "animejs"
@@ -24,7 +24,7 @@ export default class PragmaMark extends Pragma {
     super('marker')
 
     this.element = _e("marker")
-    this.appendTo('html')
+
     this.hide()
     this.css(defaultStyles)
 
@@ -42,7 +42,7 @@ export default class PragmaMark extends Pragma {
     this.setFovea(defaultVals.fovea)
 
 
-    this.createEvents('changeLine', 'mark')
+    this.createEvents('changeLine', 'changeLine:down', 'changeLine:up', 'mark')
     this.createWire('lastMark')
     //this.idle = new Idle(8000)
       //.onAfk(()=> {
@@ -129,6 +129,16 @@ export default class PragmaMark extends Pragma {
     })
   }
 
+  _compareBlueprintsAndTriggerEvents(a, b) {
+    if (!a || !b) return
+    if (a.top + a.height < b.top) {
+      this.triggerEvent('changeLine') 
+      this.triggerEvent('changeLine:down')
+    } else if (a.top > b.top + b.height) {
+      this.triggerEvent('changeLine')
+      this.triggerEvent('changeLine:up')
+    }
+  }
   _correctBlueprint(current, last) {
     console.time('correcting blueprint')
     let corrected = this.correctBlueprint(current, last)
@@ -136,20 +146,20 @@ export default class PragmaMark extends Pragma {
     return corrected
   }
 
-  correctBlueprint(current, last) {
-    return current
-  }
-
-  moveTo(blueprint, duration, complete = (() => {})) {
+  moveTo(blueprint, duration, complete = (() => {}), correctBlueprint=true) {
     // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
 
     if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
     return new Promise((resolve, reject) => {
-      blueprint = this._correctBlueprint(blueprint, this.lastMark)
+      if (correctBlueprint) blueprint = this._correctBlueprint(blueprint, this.lastMark)
+      
+          // trigger line change if there is one
+      
+
       this.currentlyMarking = blueprint
-      this.triggerEvent('mark', blueprint)
+      this.triggerEvent('beforeMark', blueprint)
       
       this.current_anime = anime({
         targets: this.element,
@@ -160,6 +170,8 @@ export default class PragmaMark extends Pragma {
         easing: blueprint.ease || 'easeInOutExpo',
         duration: duration,
         complete: (anim) => {
+          this.triggerEvent('mark', blueprint)
+          this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
           this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
           complete()
@@ -172,7 +184,7 @@ export default class PragmaMark extends Pragma {
   }
 
 
-  mark(word, time = 200, fit = false, ease = "easeInOutExpo") {
+  mark(word, time = 200, fit = false, ease = "easeInOutExpo", correctBlueprint=false) {
     //console.log("marking", word)
     if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error") })
     let w = fit ? word.width + 5 : this.cw
@@ -187,7 +199,7 @@ export default class PragmaMark extends Pragma {
         //console.log(`FROM MARK -> marked ${word.text}`)
         this.last_marked = word
         // word.parent.value = word.index
-      })
+      }, correctBlueprint)
   }
 
   guide(word, time) {
@@ -204,7 +216,7 @@ export default class PragmaMark extends Pragma {
         .then(() => {
           this.last_marked = word
           this.runningFor += 1
-          this.mark(word, this.calcDuration(word, 2), false, "linear").then(() => {
+          this.mark(word, this.calcDuration(word, 2), false, "linear", true).then(() => {
             resolve()
           })
         })

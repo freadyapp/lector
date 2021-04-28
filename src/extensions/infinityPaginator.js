@@ -55,27 +55,28 @@ export function infinityPaginator(streamer, pageTemplate, config={}){
               //  console.log(">> ADD BEFORE", pagesToRenderBefore)
 
               // pararellize?
-              runAsync(
-                _ => {
+              // runAsync(
+                // _ => {
                   for (let pageIndex of pagesToRenderAfter){
                     this.create(pageIndex, 'append')
                   }  
-                },
-                _ => {
+                // },
+                // _ => {
                   // pararellize?
                   for (let pageIndex of pagesToRenderBefore.reverse()){
                     this.create(pageIndex, 'prepend')
                   }
-                },
-                _ => {
+                // },
+                // _ => {
                   // pararellize?
                   for (let pageIndex of pagesToDelete){
                     //this.inactivate(pageIndex)
                     //this.pages.get(pageIndex).css("background:red")
                     this.destroy(pageIndex)
                   }
-                }
-              )
+                // }
+              // )
+
               setTimeout(a => {
                 this.fetching = false
                 // console.log(this.pages)
