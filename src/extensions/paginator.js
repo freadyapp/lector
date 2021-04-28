@@ -1,5 +1,4 @@
 import { Pragma, _e, util } from "pragmajs"
-import { scrollTo } from "../helpers/autoScroll"
 
 export function paginator(pageTemplate, conf={}){
   return new Pragma()
@@ -9,7 +8,7 @@ export function paginator(pageTemplate, conf={}){
           pageTemplate: pageTemplate,
           firstPage: conf.first,
           lastPage: conf.last,
-          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=>{ util.throwSoft('no fetch source specified') },
+          fetch: typeof conf.fetch === 'function' ? conf.fetch : _=> { util.throwSoft('no fetch source specified') },
           onCreate: typeof conf.onCreate === 'function' ? conf.onCreate : p => console.log('created', p),
           onFetch: conf.onFetch,
 

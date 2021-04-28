@@ -24,12 +24,6 @@ let inlineSettingTemplate = (pragma, key) =>
 
 
 export class SettingInline extends Pragma {
-    constructor() {
-        super()
-        this.init(...arguments)
-    }
-
-   
     init(parent, key, {
         displayName,
         displayTemplate= (el, val) => el.html(val),

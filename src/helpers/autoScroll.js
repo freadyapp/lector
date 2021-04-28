@@ -26,13 +26,13 @@ export function isElementWithin(el, r={}){
 }
 
 export function isMostlyInScreen(el, percent=.5){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) return console.error(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el)
   return isOnScreen(el, percent*el.rect().height) // is 70% on screen
 }
 
 export function isOnScreen(el, threshold=100){
-  if (!el) throw util.throwSoft(`couldnt not evaluate if [${el}] is on screen`)
+  if (!el) return console.error(`couldnt not evaluate if [${el}] is on screen`)
   el = elementify(el)
   let winTop = window.scrollY
   let winBot = winTop + window.innerHeight

@@ -1,7 +1,13 @@
 import { _e, html } from "pragmajs"
 import { popUp } from './popUp'
 import icons from '../ui/icons.json'
-import { Lottie } from "../ui/elements/lottie"
+import { _lottie } from "../ui/elements/lottie"
+
+const LOTTIES = {
+    click: "https://assets9.lottiefiles.com/private_files/lf30_thomociq.json",
+    space: 'https://assets4.lottiefiles.com/private_files/lf30_mohfpxha.json',
+    speed: 'https://assets8.lottiefiles.com/private_files/lf30_7sexuvbq.json'
+}
 
 export class popUpOb extends popUp{
     constructor(){
@@ -16,9 +22,12 @@ export class popUpOb extends popUp{
 
         function newBoat(name, title){
             let boat = _e(`div.boat.`).html(`
-                        <h1 class="boat-title">${title}</h1>
-                    `).append(Lottie.name(name).addClass(`${name}-lottie`))
-                        .hide()
+                            <h1 class="boat-title">${title}</h1>
+                        `).append(
+                            _lottie(LOTTIES[name], name)
+                                .addClass(`${name}-lottie`)
+                            // Lottie.name(name).addClass(`${name}-lottie`)
+                        ).hide()
 
             slides.push(boat)
             return boat

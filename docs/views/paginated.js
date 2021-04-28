@@ -18,7 +18,6 @@ function getG(key){
 // setG({'lector.onboarding.show?': false})
 
 // pragmaSpace.dev = true
-lector.dev()
 lector.globalify()
 
 function fetchContent(index){
@@ -57,7 +56,8 @@ function fetchContent(index){
 // alert('a')
 
 let lectorSettings = {
-   onboarding: !getG('lector.onboarding.show?'),
+  //  debug: true,
+   onboarding: true || !getG('lector.onboarding.show?'),
    wfy: false,
    loop: false,
    autostart: false,
