@@ -60,7 +60,7 @@
         "animejs": "^3.2.1",
         "compromise": "^13.7.0",
         "mousetrap": "^1.6.5",
-        "pragmajs": "^0.8.3"
+        "pragmajs": "^0.8.6"
     },
     "jest": {
         "setupFiles": [
