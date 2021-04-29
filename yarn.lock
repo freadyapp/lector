@@ -4907,7 +4907,7 @@ postcss@^8.2.8:
 
 pragmajs@^0.8.8:
   version "0.8.8"
-  resolved "https://registry.yarnpkg.com/pragmajs/-/pragmajs-0.8.8.tgz#cf9e6dfb153b20af7d3438bcd340e876b5daca15"
+  resolved "https://registry.npmjs.org/pragmajs/-/pragmajs-0.8.8.tgz"
   integrity sha512-omhgokKylDXioUUR+xqyiJ4bko1bG3HE+zESh2IvP8HHFyeyFdZfT4ii2DZrZiD/8+8FWNtNj0OERKj3+fX1DQ==
 
 prelude-ls@^1.2.1:
