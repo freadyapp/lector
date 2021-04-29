@@ -225,8 +225,8 @@ export function addSettingsToLector(lector){
                         // increment: (lastValue, step) => lastValue + step,
                         // decrement: (lastValue, step) => lastValue + step,
                         // step: 1,
-                        plusElement: icons['zoom-in'],
-                        minusElement: icons['zoom-out'],
+                        plusElement: icons['zoomin-white-af'],
+                        minusElement: icons['zoomout-white-af'],
                         step: 5
                      })
                      .setScaleRange(20, 200)

@@ -122,9 +122,19 @@ $animation: 0.15s;
 
         padding: 8px 5px;
         .setting {
-            .arrows {
-                height: 80px;
+            .arrows {     //yes, this is not wrong, in fact he was right. This is used in many places. exuse this, even tho it looks like it was done while one Super Silver Haze
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
                 justify-content: space-between;
+                align-items: center;
+                align-content: stretch;
+                height: 70px;
+
+                >svg {
+                    height: auto;
+                    width: 24px;
+                }
             }
 
             height: fit-content;
