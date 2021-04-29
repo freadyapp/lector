@@ -499,20 +499,27 @@
 
 #mark-indicator {
   @extend .fade-onload;
-  
   position: fixed;
   bottom: 20px;
   left: 50%;
-  padding: 10px;
+  padding: 7px;
   margin-left: -20px;
   border-radius: 5px;
   background-color: #262626;
-  height: fit-content;
+  /* height: fit-content; */
   cursor: pointer;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 
   >svg {
     height: auto;
-    width: 20px;
+    width: 15px;
   }
 
   &.upwards {
