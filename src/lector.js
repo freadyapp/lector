@@ -94,7 +94,7 @@ const Mark = (lec) => {
                   .run(function() {
                     lec.appendToRoot(this.element)
                     lec.async.define({
-                      beforeRead() {
+                      beforeSummon() {
                         return new Promise(async resolve => {
                           console.log('before read.... scrolling if needed')
                           await autoScroller.scrollIfNeeded()
@@ -116,7 +116,13 @@ const Mark = (lec) => {
 
   let indicator = _e(`div#mark-indicator`)
                     .listenTo('click', () => {
-                      lec.currentWord.summon()
+                      console.log('current word', lec.currentWord)
+                      lec.summonToCurrentWord()
+                      // lec.read().then(() => {
+                        // lec.pause()
+                      // })
+                      // lec.currentWord.summon()
+                      // lec.summonToCurrentWord()
                     })
                     .html(`${icons['arrow-down']}`)
 
@@ -173,6 +179,8 @@ const Mark = (lec) => {
     let _top = 1
     let _bottom = -1
     function findObscurer(p) {
+      // if (visibleY(_e(p))) return false
+      if (isOnScreen(p)) return false
       let surface = firstVisibleParent(p)
       if (surface === p) return null
 
@@ -184,9 +192,10 @@ const Mark = (lec) => {
       }
     }
 
-    // if (!lec.isReading) {
+    if (!lec.isReading) {
       let currentWord = lec.currentWord
       let obscured = currentWord ? findObscurer(currentWord) : false
+      console.log('obscured by', obscured)
       if (obscured) {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
@@ -202,13 +211,14 @@ const Mark = (lec) => {
           obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom')
         }
       } else {
+        console.log('DESTROYING INDICATOR', indicator)
         indicator.destroy()
         indicatorAppended = false
         lec.element.findAll('.mark-obscurer')
           .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
       console.timeEnd('indicating mark')
-    // } 
+    } 
   }
 
   // markKeeper will pause and minimize mark if for some reason it goes out of screen

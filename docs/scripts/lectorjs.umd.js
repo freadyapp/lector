@@ -18178,7 +18178,9 @@
       this.createEvents('load', 'beforeRead', 'read', 'pause');
       this.on('load', () => this._loaded = true);
       this.async = J().define({
-        async beforeRead() {}
+        async beforeRead() {},
+
+        async beforeSummon() {}
 
       });
     }
@@ -18297,8 +18299,9 @@
       return this.currentWord ? this.currentWord.summon() : new Promise(r => r());
     }
 
-    resetMark() {
+    async resetMark() {
       // TODO CAUSES BUG
+      await this.async.beforeSummon();
       return new Promise(resolve => {
         if (this._resettingMark) return resolve();
         this._resettingMark = true;
@@ -18537,8 +18540,15 @@
     }
 
     summon(silent = false) {
-      if (this.hasKids) return false; // console.log("SUMMONING", this)
-
+      // if (this.hasKids) return false
+      // if (this.hasKid)
+      // if (this.hasKids){
+      // console.log('thissummoning ', this)
+      // recursive reading 
+      // if (this.currentWord) return this.currentWord.summon()
+      // console.error('couldnt summon word on', this)
+      // } 
+      // console.log("SUMMONING", this)
       return new PinkyPromise(resolve => {
         this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
           this.mark.mark(this, 50, false).then(() => {
@@ -21475,7 +21485,7 @@
     }).run(function () {
       lec.appendToRoot(this.element);
       lec.async.define({
-        beforeRead() {
+        beforeSummon() {
           return new Promise(async resolve => {
             console.log('before read.... scrolling if needed');
             await autoScroller.scrollIfNeeded();
@@ -21493,7 +21503,12 @@
     let markedWords = new Set();
 
     let indicator = j(`div#mark-indicator`).listenTo('click', () => {
-      lec.currentWord.summon();
+      console.log('current word', lec.currentWord);
+      lec.summonToCurrentWord(); // lec.read().then(() => {
+      // lec.pause()
+      // })
+      // lec.currentWord.summon()
+      // lec.summonToCurrentWord()
     }).html(`${icons['arrow-down']}`);
 
     let indicatorAppended = false;
@@ -21547,6 +21562,8 @@
       let _bottom = -1;
 
       function findObscurer(p) {
+        // if (visibleY(_e(p))) return false
+        if (isOnScreen(p)) return false;
         let surface = firstVisibleParent(p);
         if (surface === p) return null;
 
@@ -21556,33 +21573,36 @@
           surface,
           from: topOf(p) <= (surface.isPragmaWord ? topOf(surface) : window.scrollY) ? _top : _bottom
         };
-      } // if (!lec.isReading) {
-
-
-      let currentWord = lec.currentWord;
-      let obscured = currentWord ? findObscurer(currentWord) : false;
-
-      if (obscured) {
-        let fromTop = obscured.from === _top;
-
-        if (obscured.surface.isPragmaLector) {
-          if (!indicatorAppended) {
-            // indicator.appendTo('html')
-            indicator.appendTo(lec);
-            indicatorAppended = true;
-          }
-
-          indicator[fromTop ? `addClass` : `removeClass`]('upwards');
-        } else {
-          obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
-        }
-      } else {
-        indicator.destroy();
-        indicatorAppended = false;
-        lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
       }
 
-      console.timeEnd('indicating mark'); // } 
+      if (!lec.isReading) {
+        let currentWord = lec.currentWord;
+        let obscured = currentWord ? findObscurer(currentWord) : false;
+        console.log('obscured by', obscured);
+
+        if (obscured) {
+          let fromTop = obscured.from === _top;
+
+          if (obscured.surface.isPragmaLector) {
+            if (!indicatorAppended) {
+              // indicator.appendTo('html')
+              indicator.appendTo(lec);
+              indicatorAppended = true;
+            }
+
+            indicator[fromTop ? `addClass` : `removeClass`]('upwards');
+          } else {
+            obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
+          }
+        } else {
+          console.log('DESTROYING INDICATOR', indicator);
+          indicator.destroy();
+          indicatorAppended = false;
+          lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
+        }
+
+        console.timeEnd('indicating mark');
+      }
     } // markKeeper will pause and minimize mark if for some reason it goes out of screen
     // it also minimizes mark and highlights the current word via the markDetective
 

@@ -11,8 +11,8 @@ export default class PragmaLector extends Pragma {
     
 
     this.async = _p().define({
-      async beforeRead() {
-      },
+      async beforeRead() {},
+      async beforeSummon() {}
     })
   }
 
@@ -132,8 +132,9 @@ export default class PragmaLector extends Pragma {
     return this.currentWord ? this.currentWord.summon() : new Promise(r => r())
   }
   
-  resetMark(){
+  async resetMark(){
     // TODO CAUSES BUG
+    await this.async.beforeSummon()
     return new Promise((resolve => {
       if (this._resettingMark) return resolve()
       this._resettingMark = true

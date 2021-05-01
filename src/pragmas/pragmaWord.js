@@ -210,7 +210,14 @@ export default class PragmaWord extends Pragma {
   }
 
   summon(silent=false) {
-    if (this.hasKids) return false
+    // if (this.hasKids) return false
+    // if (this.hasKid)
+    // if (this.hasKids){
+      // console.log('thissummoning ', this)
+      // recursive reading 
+      // if (this.currentWord) return this.currentWord.summon()
+      // console.error('couldnt summon word on', this)
+    // } 
     // console.log("SUMMONING", this)
     return new PinkyPromise(resolve => {
       this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
