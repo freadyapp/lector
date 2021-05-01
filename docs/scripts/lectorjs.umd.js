@@ -21858,8 +21858,7 @@
   });
 
   function prod() {
-    console.log('production mode');
-
+    // console.log('production mode')
     console.log = console.time = console.timeEnd = console.warn = console.error = () => {}; // PragmaConsole.intercept()
     // PragmaConsole.skip()
 
