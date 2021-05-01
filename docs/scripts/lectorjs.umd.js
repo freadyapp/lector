@@ -21249,6 +21249,8 @@
 
         pageSetting.element.find('#meta').html(`/${p.lastPage}`); // pageSetting._edible._monitorTemplate = (v) => 
         // `${v}/${p.lastPage}`
+      } else {
+        pageBar.hide();
       }
 
       lector.settings.update(defaultVals);
@@ -21492,7 +21494,10 @@
             console.log('before read.... wait 300 ms');
             resolve();
           });
-        }
+        } // beforeRead() {
+        // return this.beforeSummon()
+        // }
+
 
       }); // lec.on('beforeRead', () => {
       // autoScroller.scrollIfNeeded()
@@ -21594,15 +21599,16 @@
           } else {
             obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
           }
-        } else {
-          console.log('DESTROYING INDICATOR', indicator);
-          indicator.destroy();
-          indicatorAppended = false;
-          lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
-        }
 
-        console.timeEnd('indicating mark');
+          return console.timeEnd('indicating mark');
+        }
       }
+
+      console.log('DESTROYING INDICATOR', indicator);
+      indicator.destroy();
+      indicatorAppended = false;
+      lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
+      console.timeEnd('indicating mark');
     } // markKeeper will pause and minimize mark if for some reason it goes out of screen
     // it also minimizes mark and highlights the current word via the markDetective
 

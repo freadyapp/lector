@@ -327,8 +327,7 @@ export function addSettingsToLector(lector){
       pageSetting.element.find('#meta').html(`/${p.lastPage}`)
       // pageSetting._edible._monitorTemplate = (v) => 
                     // `${v}/${p.lastPage}`
-
-    }
+    } else { pageBar.hide() }
 
     lector.settings.update(defaultVals)
   })
