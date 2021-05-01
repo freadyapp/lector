@@ -281,7 +281,7 @@ export const Word = (element, i, options={ shallow: false }) => {
       // console.log(w.parentNode, w)
       // console.log(w.parentNode == w)
     // })
-    if (i && thisw.length === 0) {
+    if (i != undefined && thisw.length === 0) {
       w.setData({ wordAtom: true })
       w.addClass('word-element')
       

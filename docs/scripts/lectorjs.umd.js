@@ -17084,7 +17084,7 @@
           if (!sib){
             if (typeof this.parent.sibling !== 'function') return null
 
-            if (n < 0) return this.parent.sibling(-1).getFromBottom(n)
+            if (n < 0) return this.parent.sibling(-1)?.getFromBottom(n)
             return this.parent.sibling(1)?.get(n)
             // this.parent.sibling(-1).get(this.parent.sibling(-1).)
             // this.parent.sibling(n > 0 ? 1 : -1).get(n)
@@ -20543,7 +20543,7 @@
             // console.log(w.parentNode, w)
             // console.log(w.parentNode == w)
           // })
-          if (i && thisw.length === 0) {
+          if (i != undefined && thisw.length === 0) {
             w.setData({ wordAtom: true });
             w.addClass('word-element');
             
