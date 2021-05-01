@@ -59,29 +59,30 @@ function fetchContent(index){
 let shadow = _shadow().as(".article")
 
 let lectorSettings = {
-   onboarding: !getG('lector.onboarding.show?'),
-   wfy: true,
-   loop: false,
-   autostart: false,
+  debug: true,
+  onboarding: !getG('lector.onboarding.show?'),
+  wfy: true,
+  loop: false,
+  autostart: false,
 
-   fullStyles: true,
-   defaultStyles: true,
+  fullStyles: true,
+  defaultStyles: true,
 
-   styleInjector: (style, name) => {
-      shadow.injectStyle(name, style)
-   },
+  styleInjector: (style, name) => {
+    shadow.injectStyle(name, style)
+  },
 
-   scaler: true,
+  scaler: true,
   //  pragmatizeOnCreate: true,
-   experimental: true,
-  
+  experimental: true,
+
   //  legacySettings: true,
-   settings: true
+  settings: true
   //  shadow: 
   //  stream: fetchContent,
-    // function with index as param that
-    // returns the content for the page
-    // can return a promise
+  // function with index as param that
+  // returns the content for the page
+  // can return a promise
 }
 
 
