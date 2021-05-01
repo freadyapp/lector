@@ -10,9 +10,9 @@ import * as _ext from "./extensions/index"
 import css from "./styles/styles.json"
 import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
 import * as config from "./config/lector.config"
-import { prod, dev } from "./index"
 import icons from '../src/ui/icons.json'
 
+import { dev, prod } from "./index"
 
 function addOnboardingToLector(lector){
   lector._popUp = new popUpOb()
@@ -194,9 +194,7 @@ const Mark = (lec) => {
           indicator[fromTop ? `addClass` : `removeClass`]('upwards')
 
         } else {
-            obscured.surface.addClass('mark-obscurer')
-                [fromTop ? `addClass` : `removeClass`]('from-top')
-                [!fromTop ? `addClass` : `removeClass`]('from-bottom')
+          obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom')
         }
       } else {
         indicator.destroy()
@@ -371,7 +369,8 @@ function _streamer(sf){
 
 
 export const Lector = async (l, options=default_options) => {
-  options.debug ? dev() : prod()
+  // options.debug ? dev() : prod()
+  if (options.debug) dev(); else prod()
   
   // if (options.debug) { dev()
   // } else {
