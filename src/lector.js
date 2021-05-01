@@ -159,8 +159,13 @@ const Mark = (lec) => {
 
         })
 
+  let t;
   onGlobalScrollEnd(() => {
-    indicateMarkIfHidden()
+    if (t) clearTimeout(t)
+    t = setTimeout(() => {
+      indicateMarkIfHidden()
+    }, 750)
+
   }, 150)
 
   function indicateMarkIfHidden() {
@@ -179,7 +184,7 @@ const Mark = (lec) => {
       }
     }
 
-    if (!lec.isReading) {
+    // if (!lec.isReading) {
       let currentWord = lec.currentWord
       let obscured = currentWord ? findObscurer(currentWord) : false
       if (obscured) {
@@ -203,7 +208,7 @@ const Mark = (lec) => {
           .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
       }
       console.timeEnd('indicating mark')
-    } 
+    // } 
   }
 
   // markKeeper will pause and minimize mark if for some reason it goes out of screen

@@ -18797,7 +18797,7 @@
         reject("error");
       });
       return new PinkyPromise((resolve, reject) => {
-        let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear";
+        let first_ease = word.isFirstInLine ? "easeInOutCubic" : "linear";
         return this.moveTo({
           top: word.top,
           left: word.x(this.width) - word.width / 2,
@@ -18827,7 +18827,7 @@
         * */
       if (!(word instanceof q)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`);
       if (dw != 1 && dw != 2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`);
-      if (word.isFirstInLine) return 500; // mark has to change line
+      if (word.isFirstInLine) return Math.max(80, 650 - this.wpm); // mark has to change line
 
       if (!this.last_marked) return 0; // failsafe
 
@@ -21532,8 +21532,12 @@
       });
     });
 
+    let t;
     onGlobalScrollEnd(() => {
-      indicateMarkIfHidden();
+      if (t) clearTimeout(t);
+      t = setTimeout(() => {
+        indicateMarkIfHidden();
+      }, 750);
     }, 150);
 
     function indicateMarkIfHidden() {
@@ -21552,34 +21556,33 @@
           surface,
           from: topOf(p) <= (surface.isPragmaWord ? topOf(surface) : window.scrollY) ? _top : _bottom
         };
-      }
+      } // if (!lec.isReading) {
 
-      if (!lec.isReading) {
-        let currentWord = lec.currentWord;
-        let obscured = currentWord ? findObscurer(currentWord) : false;
 
-        if (obscured) {
-          let fromTop = obscured.from === _top;
+      let currentWord = lec.currentWord;
+      let obscured = currentWord ? findObscurer(currentWord) : false;
 
-          if (obscured.surface.isPragmaLector) {
-            if (!indicatorAppended) {
-              // indicator.appendTo('html')
-              indicator.appendTo(lec);
-              indicatorAppended = true;
-            }
+      if (obscured) {
+        let fromTop = obscured.from === _top;
 
-            indicator[fromTop ? `addClass` : `removeClass`]('upwards');
-          } else {
-            obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
+        if (obscured.surface.isPragmaLector) {
+          if (!indicatorAppended) {
+            // indicator.appendTo('html')
+            indicator.appendTo(lec);
+            indicatorAppended = true;
           }
-        } else {
-          indicator.destroy();
-          indicatorAppended = false;
-          lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
-        }
 
-        console.timeEnd('indicating mark');
+          indicator[fromTop ? `addClass` : `removeClass`]('upwards');
+        } else {
+          obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
+        }
+      } else {
+        indicator.destroy();
+        indicatorAppended = false;
+        lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
       }
+
+      console.timeEnd('indicating mark'); // } 
     } // markKeeper will pause and minimize mark if for some reason it goes out of screen
     // it also minimizes mark and highlights the current word via the markDetective
 
