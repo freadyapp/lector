@@ -205,7 +205,7 @@ export default class PragmaMark extends Pragma {
   guide(word, time) {
     if (!(word instanceof Pragma)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error") })
     return new PinkyPromise((resolve, reject) => {
-      let first_ease = word.isFirstInLine ? "easeInOutExpo" : "linear"
+      let first_ease = word.isFirstInLine ? "easeInOutCubic" : "linear"
       return this.moveTo({
         top: word.top,
         left: word.x(this.width) - word.width / 2,
@@ -238,7 +238,7 @@ export default class PragmaMark extends Pragma {
 
     if (!(word instanceof Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
     if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
-    if (word.isFirstInLine) return 500 // mark has to change line
+    if (word.isFirstInLine) return Math.max(80, 650-this.wpm) // mark has to change line
     if (!this.last_marked) return 0 // failsafe
 
     const before_weight = .4

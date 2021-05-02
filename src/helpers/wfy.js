@@ -12,6 +12,10 @@ function walkDOM(node, callback) {
   }
 }
 
+function isEmptyOrSpaces(str){
+  return !str || str.trim() === '';
+}
+
 export function wfy(element) {
   element.addClass('wfying')
   return new Promise(resolve => {
@@ -33,7 +37,7 @@ export function wfy(element) {
       element.parentNode.removeChild(element);
     }
     function makeW(txt) {
-      if (txt.length === 0) return null
+      if (isEmptyOrSpaces(txt)) return null
       var s = document.createElement('w');
       s.appendChild(makeText(txt));
       return s;

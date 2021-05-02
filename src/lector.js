@@ -10,9 +10,9 @@ import * as _ext from "./extensions/index"
 import css from "./styles/styles.json"
 import { onScrollEnd, onGlobalScrollEnd, _scroller } from "./helpers/autoScroll"
 import * as config from "./config/lector.config"
-import { prod, dev } from "./index"
 import icons from '../src/ui/icons.json'
 
+import { dev, prod } from "./index"
 
 function addOnboardingToLector(lector){
   lector._popUp = new popUpOb()
@@ -94,14 +94,17 @@ const Mark = (lec) => {
                   .run(function() {
                     lec.appendToRoot(this.element)
                     lec.async.define({
-                      beforeRead() {
+                      beforeSummon() {
                         return new Promise(async resolve => {
                           console.log('before read.... scrolling if needed')
                           await autoScroller.scrollIfNeeded()
                           console.log('before read.... wait 300 ms')
                           resolve()
                         })
-                      }
+                      },
+                      // beforeRead() {
+                        // return this.beforeSummon()
+                      // }
                     })
                     // lec.on('beforeRead', () => {
                       // autoScroller.scrollIfNeeded()
@@ -116,7 +119,13 @@ const Mark = (lec) => {
 
   let indicator = _e(`div#mark-indicator`)
                     .listenTo('click', () => {
-                      lec.currentWord.summon()
+                      console.log('current word', lec.currentWord)
+                      lec.summonToCurrentWord()
+                      // lec.read().then(() => {
+                        // lec.pause()
+                      // })
+                      // lec.currentWord.summon()
+                      // lec.summonToCurrentWord()
                     })
                     .html(`${icons['arrow-down']}`)
 
@@ -159,8 +168,13 @@ const Mark = (lec) => {
 
         })
 
+  let t;
   onGlobalScrollEnd(() => {
-    indicateMarkIfHidden()
+    if (t) clearTimeout(t)
+    t = setTimeout(() => {
+      indicateMarkIfHidden()
+    }, 750)
+
   }, 150)
 
   function indicateMarkIfHidden() {
@@ -168,6 +182,8 @@ const Mark = (lec) => {
     let _top = 1
     let _bottom = -1
     function findObscurer(p) {
+      // if (visibleY(_e(p))) return false
+      if (isOnScreen(p)) return false
       let surface = firstVisibleParent(p)
       if (surface === p) return null
 
@@ -182,6 +198,7 @@ const Mark = (lec) => {
     if (!lec.isReading) {
       let currentWord = lec.currentWord
       let obscured = currentWord ? findObscurer(currentWord) : false
+      console.log('obscured by', obscured)
       if (obscured) {
         let fromTop = obscured.from === _top
         if (obscured.surface.isPragmaLector) {
@@ -194,18 +211,20 @@ const Mark = (lec) => {
           indicator[fromTop ? `addClass` : `removeClass`]('upwards')
 
         } else {
-            obscured.surface.addClass('mark-obscurer')
-                [fromTop ? `addClass` : `removeClass`]('from-top')
-                [!fromTop ? `addClass` : `removeClass`]('from-bottom')
+          obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom')
         }
-      } else {
-        indicator.destroy()
-        indicatorAppended = false
-        lec.element.findAll('.mark-obscurer')
-          .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
+
+        return console.timeEnd('indicating mark');
       }
-      console.timeEnd('indicating mark')
-    } 
+    }
+
+    console.log('DESTROYING INDICATOR', indicator)
+    indicator.destroy()
+    indicatorAppended = false
+    lec.element.findAll('.mark-obscurer')
+      .forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'))
+
+    console.timeEnd('indicating mark')
   }
 
   // markKeeper will pause and minimize mark if for some reason it goes out of screen
@@ -281,7 +300,7 @@ export const Word = (element, i, options={ shallow: false }) => {
       // console.log(w.parentNode, w)
       // console.log(w.parentNode == w)
     // })
-    if (i && thisw.length === 0) {
+    if (i != undefined && thisw.length === 0) {
       w.setData({ wordAtom: true })
       w.addClass('word-element')
       
@@ -371,7 +390,8 @@ function _streamer(sf){
 
 
 export const Lector = async (l, options=default_options) => {
-  options.debug ? dev() : prod()
+  // options.debug ? dev() : prod()
+  if (options.debug) dev(); else prod()
   
   // if (options.debug) { dev()
   // } else {

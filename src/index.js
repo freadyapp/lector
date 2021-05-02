@@ -1,15 +1,18 @@
 import { Lector, Word } from "./lector.js"
-import { PragmaConsole } from "./extensions/pragmaConsole"
 
 // PragmaConsole.skip()
 export function prod() {
-  PragmaConsole.intercept()
-  PragmaConsole.skip()
+  // console.log('production mode')
+  console.log = console.time = console.timeEnd = console.warn = console.error = (() => {});
+  // PragmaConsole.intercept()
+  // PragmaConsole.skip()
 }
 
 export function dev() {
-  PragmaConsole.intercept()
-  PragmaConsole.unskip()
+  // return prod()
+  console.log('dev mode')
+  // PragmaConsole.intercept()
+  // PragmaConsole.unskip()
 }
 
 

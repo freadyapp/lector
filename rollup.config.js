@@ -7,6 +7,7 @@ import sizes from 'rollup-plugin-sizes';
 import json from '@rollup/plugin-json';
 import visualizer from 'rollup-plugin-visualizer'
 import pkg from './package.json';
+import { babel } from '@rollup/plugin-babel';
 
 console.log("[ BUNDLING ] @ ", process.env["LECTOR_ENV"])
 
@@ -21,6 +22,7 @@ const plugs = [
   ifProd(terser), // mini
   ifProd(sizes),
   json(),
+  babel({ babelHelpers: 'bundled' }),
   ifProd(visualizer,{
     filename: "docs/stats.html",
     title: "LectorJS Visualised",
