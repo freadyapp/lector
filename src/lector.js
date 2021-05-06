@@ -467,6 +467,7 @@ export const Lector = async (l, options=default_options) => {
 
     connectToLectorSettings(lector, 'page').then(settingPragma => {
       lector.paginator.do(function() {
+        // console.log('changed page for paginator')
         settingPragma.triggerEvent('update', this.value)
         // settingPragma.updateDisplay(this.value)
       })

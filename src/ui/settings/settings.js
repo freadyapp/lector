@@ -38,7 +38,9 @@ export class Settings extends Pragma {
     }
 
     this.adopt(pragma)
-    pragma.on(`${wireName}Change`, value => {
+    pragma.on(`${wireName}Change`, (value, lastValue) => {
+      // console.log("pragma change", wireName, value, pragma, pragma)
+      console.log(`[${wireName} pragma]`, value, lastValue)
       this.update(settingName, value, pragma)
     })
   }

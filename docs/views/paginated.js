@@ -56,8 +56,8 @@ function fetchContent(index){
 // alert('a')
 
 let lectorSettings = {
-  //  debug: true,
-   onboarding: true || !getG('lector.onboarding.show?'),
+   debug: true,
+   onboarding: !getG('lector.onboarding.show?'),
    wfy: false,
    loop: false,
    autostart: false,
