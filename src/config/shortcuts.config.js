@@ -1,10 +1,13 @@
 export default {
-  wpmPlus: ['+', '='],
-  wpmMinus: ['-'],
+    wpmPlus: ['+', '='],
+    wpmMinus: ['-'],
 
-  pageNext: ']',
-  pagePre: '[',
+    pageNext: 'shift+down',
+    pagePre: 'shift+up',
 
-  scaleUp: 'mod+=',
-  scaleDown: 'mod+-'
+    foveaPlus: ']',
+    foveaMinus: '[',
+
+    scaleUp: 'ctrl+=',
+    scaleDown: 'ctrl+-',
 }

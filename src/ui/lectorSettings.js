@@ -15,7 +15,7 @@ import {
     defaultVals,
 } from '../config/marker.config'
 import { mode_ify } from '../config/modes.js'
-import shc from '../config/shortcuts.config'
+import shortcuts from '../config/shortcuts.config'
 
 import icons from './icons.json'
 
@@ -166,10 +166,10 @@ export function addSettingsToLector(lector) {
         .on('input', value => {
             actions.changeWpm(value)
         })
-        .bind('+', function () {
+        .bind(shortcuts.wpmPlus, function () {
             this.wpm += 5
         })
-        .bind('-', function () {
+        .bind(shortcuts.wpmMinus, function () {
             this.wpm -= 5
         })
 
@@ -185,11 +185,11 @@ export function addSettingsToLector(lector) {
         .on('input', value => {
             actions.changeFovea(value)
         })
-        .bind(']', function () {
-            this.fovea += 5
+        .bind(shortcuts.foveaPlus, function () {
+            this.fovea += 1
         })
-        .bind('[', function () {
-            this.fovea -= 5
+        .bind(shortcuts.foveaMinus, function () {
+            this.fovea -= 1
         })
 
     let pageSetting = new SettingInt(lector.settings, 'page', {
@@ -215,14 +215,14 @@ export function addSettingsToLector(lector) {
             this.setPage(value)
         })
         .bind(
-            'shift+down',
+            shortcuts.pageNext,
             function () {
                 this.triggerEvent('input', this.page + 1)
             },
             'keyup'
         )
         .bind(
-            'shift+up',
+            shortcuts.pagePre,
             function () {
                 this.triggerEvent('input', this.page - 1)
             },
@@ -247,10 +247,10 @@ export function addSettingsToLector(lector) {
         .on('input', value => {
             actions.changeScale(value)
         })
-        .bind('ctrl+=', function () {
+        .bind(shortcuts.scaleUp, function () {
             this.setScale(this.scale + 5)
         })
-        .bind('ctrl+-', function () {
+        .bind(shortcuts.scaleDown, function () {
             this.setScale(this.scale - 5)
         })
 

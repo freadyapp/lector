@@ -19818,16 +19818,15 @@
         this[setting] = this.slider.value;
       });
 
-      this.editor._setContent(defaultContent()); // this.editor._setContent(conf.contentTemplate)
-
+      this.editor._setContent(defaultContent());
 
       this.editor.element.findAll("[data-setting-target='slider']").forEach(slider => {
-        slider.html(" ");
+        slider.html('');
         this.slider.appendTo(slider);
       });
       this.on('input', value => {
         this.setData({
-          'value': value
+          value: value
         });
         this.parent.update(this.getData('setting'), value, this);
         this.slider.updateTo(value);
@@ -19835,6 +19834,17 @@
     }
 
   }
+
+  var shortcuts = {
+    wpmPlus: ['+', '='],
+    wpmMinus: ['-'],
+    pageNext: 'shift+down',
+    pagePre: 'shift+up',
+    foveaPlus: ']',
+    foveaMinus: '[',
+    scaleUp: 'ctrl+=',
+    scaleDown: 'ctrl+-'
+  };
 
   //.createWire("yoing")
   //.on('yoingChange', function(v){
@@ -21132,9 +21142,9 @@
       this.element.find('#title').html(icons['speed-icon']).addClass('inline-icon-2');
     }).setWpmRange(20, 2000).on('input', value => {
       actions.changeWpm(value);
-    }).bind('+', function () {
+    }).bind(shortcuts.wpmPlus, function () {
       this.wpm += 5;
-    }).bind('-', function () {
+    }).bind(shortcuts.wpmMinus, function () {
       this.wpm -= 5;
     }); // fovea comp
 
@@ -21147,10 +21157,10 @@
       max: 10
     }).on('input', value => {
       actions.changeFovea(value);
-    }).bind(']', function () {
-      this.fovea += 5;
-    }).bind('[', function () {
-      this.fovea -= 5;
+    }).bind(shortcuts.foveaPlus, function () {
+      this.fovea += 1;
+    }).bind(shortcuts.foveaMinus, function () {
+      this.fovea -= 1;
     });
     let pageSetting = new SettingInt(lector.settings, 'page', {
       displayName: 'Page'
@@ -21169,9 +21179,9 @@
 
 
       this.setPage(value);
-    }).bind('shift+down', function () {
+    }).bind(shortcuts.pageNext, function () {
       this.triggerEvent('input', this.page + 1);
-    }, 'keyup').bind('shift+up', function () {
+    }, 'keyup').bind(shortcuts.pagePre, function () {
       this.triggerEvent('input', this.page - 1);
     }, 'keyup');
 
@@ -21189,9 +21199,9 @@
       this.element.find('#scale-section').destroy();
     }).on('input', value => {
       actions.changeScale(value);
-    }).bind('ctrl+=', function () {
+    }).bind(shortcuts.scaleUp, function () {
       this.setScale(this.scale + 5);
-    }).bind('ctrl+-', function () {
+    }).bind(shortcuts.scaleDown, function () {
       this.setScale(this.scale - 5);
     });
 
