@@ -1,8 +1,15 @@
-import { greek_prefixes } from "./greek"
+import { greek_prefixes } from './greek'
 import nlp from 'compromise'
 
 function crush(n) {
-  const xa = 1; const ya = 4; const xb = 7; const yb = 6; const xc = 8; const yc = 7; const xd = 16; const yd = 10;
+  const xa = 1
+  const ya = 4
+  const xb = 7
+  const yb = 6
+  const xc = 8
+  const yc = 7
+  const xd = 16
+  const yd = 10
   if (n <= xa) return ya
   if (n <= xb) return ((yb - ya) / (xb - xa)) * (n - xa) + ya
   if (n <= xc) return ((yc - yb) / (xc - xb)) * (n - xb) + yb
@@ -14,16 +21,16 @@ function generateDifficultyIndex(word) {
   let d = 0
   let w = nlp(word.text)
   if (w.has('#Verb')) {
-    d += .5
+    d += 0.5
   }
   if (w.has('#Acronym')) {
-    d += .8
+    d += 0.8
   }
   let greekF = howGreek(word.text)
   if (greekF > 1) {
     d += greekF / 10
   }
-  return Math.min(1, Math.min(d, 1));
+  return Math.min(1, Math.min(d, 1))
 }
 
 function wordValue(word, d) {

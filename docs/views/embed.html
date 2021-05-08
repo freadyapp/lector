@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>The Lector Experience</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../makeitlit.css" />
+  </head>
+
+  <body>
+    <style>
+      p,
+      h1 {
+        color: whitesmoke;
+      }
+
+      .og-gradient {
+        background-color: #fbab7e;
+        background-image: linear-gradient(62deg, #fbab7e 0%, #f7ce68 100%);
+      }
+
+      .big {
+        width: 400px;
+        height: 300px;
+      }
+
+      .rounded {
+        border-radius: 4px;
+      }
+
+      .flex {
+        display: flex;
+        align-items: center;
+      }
+
+      .space-around {
+        justify-content: space-around;
+      }
+
+      .row-dir {
+        flex-direction: row;
+      }
+
+      .hero {
+        height: 100vh;
+        margin: 20px 0;
+      }
+
+      header {
+        top: 0;
+        position: sticky;
+        padding: 0px 20px;
+        background: rgba(22, 22, 22, 0.65);
+        backdrop-filter: blur(13px);
+        -webkit-backdrop-filter: blur(13px);
+      }
+
+      header > a {
+        all: unset;
+        color: whitesmoke;
+        padding: 5px 10px;
+        margin: 20px 0;
+        opacity: 0.7;
+        cursor: pointer;
+      }
+
+      header > a:hover {
+        opacity: 1;
+      }
+
+      #main {
+        width: 70vw;
+        min-width: 500px;
+        max-width: 100vw;
+        margin: auto;
+      }
+
+      .char-40 {
+        line-height: 2em;
+        width: 40ch;
+      }
+
+      .title {
+        margin: 25px 0;
+      }
+
+      .lectorini-container {
+        background-color: whitesmoke;
+        border-radius: 2px;
+        color: black;
+        padding: 20px 40px;
+        width: fit-content;
+        margin: auto;
+      }
+
+      .lectorini-container * {
+        color: black;
+      }
+    </style>
+
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
+
+    <div id="main">
+      <header class="flex space-around">
+        <a href="../" id="back"> Home </a>
+        <a>Read</a>
+        <a>Reload</a>
+        <a>Fready</a>
+        <a>About</a>
+        <a>Github</a>
+      </header>
+
+      <div class="flex space-around hero">
+        <div>
+          <h1 class="title">The Lector Experience</h1>
+          <p class="char-40" lectorini>
+            John Lennon, Paul McCartney, Ringo Starr, George Harrison, Jimi Hendrix, David Gilmour,
+            Roger Waters, Richard Wright, Nick Mason, Nikola Tesla, Elon Musk, Steve Jobs, Bill
+            Gates, Albert Hoffman, Albert Einstein, Steven Hawking, Marie Curie, Taylor Swift,
+            Billie Eilish,
+          </p>
+        </div>
+        <div class="big og-gradient rounded"></div>
+      </div>
+
+      <div class="lectorini-container">
+        <p lectorini class="char-40">
+          Demo on how you would embed multiple isolated lectors in your page Your breath is sweet
+          Your eyes are like two jewels in the sky Your back is straight, your hair is smooth On the
+          pillow where you lie I don't sense affection Nor no gratitude or love Your loyalty is not
+          to me but to the stars above One more cup of coffee for the road One more cup of coffee
+          before I go To the valley below Your daddy, he's an outlaw And a wanderer by trade He'll
+          teach you how to pick an' choose And how to throw the blade He oversees his kingdom Where
+          no stranger does intrude His voice it trembles as he calls out For another plate of food
+          One more cup of coffee for the road One more cup of coffee before I go To the valley below
+          Your sister sees the future Like your momma and yourself She never learned to read or
+          write There's no books upon her shelf And her pleasure knows no limits Her voice is like a
+          meadow lark But her heart is like an ocean So mysterious and dark One more cup of coffee
+          for the road One more cup of coffee before I go To the valley below
+        </p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mousetrap" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="../scripts/lectorjs.umd.js"></script>
+
+    <script src="./embed.js"></script>
+  </body>
+</html>

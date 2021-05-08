@@ -2,42 +2,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,700&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap');
 
 body {
-	font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	font-family: "Merriweather";
-}
-
-
-header {
-	display: none;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Merriweather';
 }
 
 body {
-	background: #161616;
+  background: #161616;
 }
 
-.article { 
-	padding: 120px 100px;
-	background: #fff;
-	border-radius: 5px;
-	max-width: 600px;
-	margin: auto;
-	margin-top: 5vh;
-	font-size: 1.1em;
-	line-height: 1.7em;
+.article {
+  padding: 120px 100px;
+  background: #fff;
+  border-radius: 5px;
+  max-width: 600px;
+  margin: auto;
+  margin-top: 5vh;
+  font-size: 1.1em;
+  line-height: 1.7em;
   /* overflow-y: scroll; */
 }
 
-
-
-.pragma-composer{
+.pragma-composer {
   display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	justify-content: center;
-	align-items: center;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
   align-content: space-around;
 
   width: fit-content;
@@ -45,19 +43,19 @@ body {
   background-color: gray;
   padding: 10px;
   border-radius: 5px;
-  background-color: #0e0e0e; 
+  background-color: #0e0e0e;
   color: whitesmoke;
-
 }
 
-.pragma-choice{
+.pragma-choice {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: center;
 }
 
-.pragma-option, .pragma-value{
+.pragma-option,
+.pragma-value {
   display: flex;
   width: 25px;
   height: 25px;
@@ -66,21 +64,21 @@ body {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  opacity: .7;
+  opacity: 0.7;
   cursor: pointer;
 }
-.pragma-option:hover{
-  opacity: .9;
+.pragma-option:hover {
+  opacity: 0.9;
 }
 
-.pragma-active{
+.pragma-active {
   opacity: 1;
 }
 
-.pragma-button{
+.pragma-button {
   padding: 5px;
   width: fit-content;
   height: fit-content;
-  background-color: #0e0e0e; 
+  background-color: #0e0e0e;
   color: whitesmoke;
 }
