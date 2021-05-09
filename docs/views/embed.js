@@ -28,8 +28,6 @@ let lectorSettings = {
   shortcuts: true,
   global: true,
 
-  lectorini: true,
-
   fullStyles: false,
   defaultStyles: true,
 }
@@ -40,6 +38,7 @@ let lectorSettings = {
 _e('body')
   .findAll('[lectorini]')
   .forEach(e => {
+    // if (e.getData('settigns'))
     let lec = Lector(e, lectorSettings)
   })
 // lec.settings.on('update', (setting, value) => {
