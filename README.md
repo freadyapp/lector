@@ -102,6 +102,10 @@ settings = {
   defaultStyles: true,
 
   scaler: true,
+  // set scaler: 'font-size' to scale the font instead of the parent element
+  // use 'em' units for line-height, in order for it to scale proportionaly to the
+  // scaled font
+
   pragmatizeOnCreate: true,
   experimental: true,
 

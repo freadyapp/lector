@@ -483,7 +483,7 @@ export const Reader = async (l, options = default_options) => {
 }
 
 function _needWrapper(op) {
-  return op.stream || op.paginate
+  return op.stream || op.paginate || op.scaler
 }
 
 function _streamer(sf) {
@@ -497,24 +497,8 @@ function _streamer(sf) {
     })
 }
 
-export const Lector = async (l, options = default_options) => {
-  // options.debug ? dev() : prod()
-  if (options.debug) dev()
-  else prod()
-
-  // if (options.debug) { dev()
-  // } else {
-  // prod()
-  // }
-  // if (options.defaultStyles) styles += [css.main, css.slider, css.settings]
-  // if (options.fullStyles) styles += [css.full]
-
-  // if (l.isShadowPragma === true) {
-  //   if (l.injectStyles) l.injectStyles(...styles)
-  //   l = l.shadow
-  // } else {
-  //   for (let style of styles) util.addStyles(style)
-  // }
+export const Lector = async (target, options = default_options) => {
+  ;(options.debug ? dev : prod)()
 
   const injectStyles = options.styleInjector
     ? (...styles) => {
@@ -524,27 +508,16 @@ export const Lector = async (l, options = default_options) => {
         for (let style of styles) util.addStyles(css[style], style)
       }
 
-  if (options.defaultStyles) {
-    injectStyles('main', 'slider', 'settings')
-    // util.addStyles(css.main)
-    // util.addStyles(css.slider)
-    // util.addStyles(css.settings)
-  }
-
-  if (options.fullStyles) {
-    injectStyles('full')
-    // util.addStyles(css.full)
-  }
+  if (options.defaultStyles) injectStyles('main', 'slider', 'settings')
+  if (options.fullStyles) injectStyles('full')
 
   if (!_needWrapper(options)) {
-    let r = await Reader(l, options)
+    let r = await Reader(target, options)
     pragmaSpace.onDocLoad(() => {
       r.triggerEvent('load')
     })
     return r
   }
-
-  console.log('configuration appears to be a bit more complicated')
 
   if (!options.experimental) return console.warn('EXPERIMENTAL FEATURES TURNED OFF')
 
@@ -559,7 +532,7 @@ export const Lector = async (l, options = default_options) => {
     console.log('setting up streamer service')
 
     let streamer = _streamer(options.stream)
-    let paginator = _ext.infinityPaginator(streamer, l, options.paginate.config || {})
+    let paginator = _ext.infinityPaginator(streamer, target, options.paginate.config || {})
 
     // let reader = _p()
     //               .as(_e(l).parentElement)
@@ -570,7 +543,7 @@ export const Lector = async (l, options = default_options) => {
     // let options = util.objDiff({ skip: true })
     console.log('crating reader...')
 
-    lector = (await Reader(_e(l).parentElement, options)).adopt(paginator, streamer)
+    lector = (await Reader(_e(target).parentElement, options)).adopt(paginator, streamer)
 
     console.log('lector is', lector)
     lector.paginator = paginator
@@ -602,14 +575,18 @@ export const Lector = async (l, options = default_options) => {
   }
 
   if (options.scaler) {
-    // let _scaler = _p().run(_ext.scaler)
+    lector ||= await Reader(target, options)
+
     let _scaler = new _ext.Scaler(lector.element)
 
-    // _scaler.setTarget(lector.element)
-
-    // _scaler.scaleUp()
-    // _scaler.bind("mod+=", function() { _scaler.scaleUp();  return false;})
-    // _scaler.bind("mod+-", function() { _scaler.scaleDown();  return false;})
+    if (options.scaler === 'font-size') {
+      _scaler.define({
+        _buildScaleCSS(value) {
+          let em = value / 100
+          return `font-size ${em}em`
+        },
+      })
+    }
 
     lector.adopt(_scaler)
     lector.scaler = _scaler
