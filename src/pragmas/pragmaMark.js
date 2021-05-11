@@ -1,11 +1,11 @@
 // mark is responsible for marking words in the screen
 
-import { Pragma, _e, util } from "pragmajs"
-import PragmaWord from "./pragmaWord"
-import anime from "animejs"
-import { PinkyPromise, Idle, airway } from "../helpers/index"
+import { Pragma, _e, util } from 'pragmajs'
+import PragmaWord from './pragmaWord'
+import anime from 'animejs'
+import { PinkyPromise, Idle, airway } from '../helpers/index'
 import { mode_ify } from '../config/modes.js'
-import { modes, defaultVals } from "../config/marker.config" 
+import { modes, defaultVals } from '../config/marker.config'
 
 const defaultStyles = `
   position absolute
@@ -23,7 +23,7 @@ export default class PragmaMark extends Pragma {
   constructor() {
     super('marker')
 
-    this.element = _e("marker")
+    this.element = _e('marker.')
 
     this.hide()
     this.css(defaultStyles)
@@ -35,41 +35,40 @@ export default class PragmaMark extends Pragma {
 
     this.runningFor = 0
     this.pausing = false
-    
+
     this.setColor(defaultVals.color)
     this.setMode(defaultVals.mode)
     this.setWpm(defaultVals.wpm)
     this.setFovea(defaultVals.fovea)
 
-
     this.createEvents('changeLine', 'changeLine:down', 'changeLine:up', 'mark')
     this.createWire('lastMark')
     //this.idle = new Idle(8000)
-      //.onAfk(()=> {
-        //util.log('user is afk')
-        //this.shout()
-      //})
-      //.onActive(() => {
-        //util.log('user is back')
-        //this.shutUp()
-      //})
+    //.onAfk(()=> {
+    //util.log('user is afk')
+    //this.shout()
+    //})
+    //.onActive(() => {
+    //util.log('user is back')
+    //this.shutUp()
+    //})
   }
-  hide(){
+  hide() {
     if (this._hidden) return
     this._hidden = true
     this.element.hide()
   }
-  show(){
+  show() {
     if (!this._hidden) return
     this._hidden = false
     this.element.show()
   }
 
-  set last_marked(n){
+  set last_marked(n) {
     this.value = n
   }
 
-  get last_marked(){
+  get last_marked() {
     return this.value
   }
 
@@ -80,32 +79,34 @@ export default class PragmaMark extends Pragma {
   get cw() {
     return this._fovea * 30
   }
-  
-  get wpm() { return this._wpm || 260 }
-  
-  setMode(mode){
+
+  get wpm() {
+    return this._wpm || 260
+  }
+
+  setMode(mode) {
     this._mode = mode
     mode_ify(this)
   }
 
-  setWpm(wpm){
+  setWpm(wpm) {
     this._wpm = wpm
   }
 
-  setColor(hex){
+  setColor(hex) {
     this._color = hex
     //this.css(`background-color ${hex}`)
     mode_ify(this)
   }
 
-  setFovea(val){
+  setFovea(val) {
     this._fovea = val
     this.css(`width ${this.cw}px`)
   }
 
   pause() {
     return new Promise((resolve, reject) => {
-      if (this.pausing) return reject("already pausing")
+      if (this.pausing) return reject('already pausing')
 
       this.pausing = true
 
@@ -118,13 +119,16 @@ export default class PragmaMark extends Pragma {
         this.current_anime.complete()
         this.current_anime.remove('marker')
         //this.current_anime = null
-        this.mark(temp, 80, false).then(() => {
-          resolve("paused")
-        }).catch(e => {
-          reject("could not mark")
-        }).then(c => {
-          this.pausing = false
-        })
+        this.mark(temp, 80, false)
+          .then(() => {
+            resolve('paused')
+          })
+          .catch(e => {
+            reject('could not mark')
+          })
+          .then(c => {
+            this.pausing = false
+          })
       }
     })
   }
@@ -132,7 +136,7 @@ export default class PragmaMark extends Pragma {
   _compareBlueprintsAndTriggerEvents(a, b) {
     if (!a || !b) return
     if (a.top + a.height < b.top) {
-      this.triggerEvent('changeLine') 
+      this.triggerEvent('changeLine')
       this.triggerEvent('changeLine:down')
     } else if (a.top > b.top + b.height) {
       this.triggerEvent('changeLine')
@@ -146,21 +150,20 @@ export default class PragmaMark extends Pragma {
     return corrected
   }
 
-  moveTo(blueprint, duration, complete = (() => {}), correctBlueprint=true) {
+  moveTo(blueprint, duration, complete = () => {}, correctBlueprint = true) {
     // console.log('moving to', blueprint)
     this.show()
     //this.shutUp() // clear any ui elements that direct attention to mark
 
-    if (this.currentlyMarking) return new Promise((resolve, reject) => resolve());
+    if (this.currentlyMarking) return new Promise((resolve, reject) => resolve())
     return new Promise((resolve, reject) => {
       if (correctBlueprint) blueprint = this._correctBlueprint(blueprint, this.lastMark)
-      
-          // trigger line change if there is one
-      
+
+      // trigger line change if there is one
 
       this.currentlyMarking = blueprint
       this.triggerEvent('beforeMark', blueprint)
-      
+
       this.current_anime = anime({
         targets: this.element,
         left: blueprint.left,
@@ -169,92 +172,113 @@ export default class PragmaMark extends Pragma {
         width: blueprint.width,
         easing: blueprint.ease || 'easeInOutExpo',
         duration: duration,
-        complete: (anim) => {
+        complete: anim => {
           this.triggerEvent('mark', blueprint)
           this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
           this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
           complete()
           resolve()
-        }
+        },
       })
       // console.log(blueprint)
       // console.log(this.current_anime)
     })
   }
 
-
-  mark(word, time = 200, fit = false, ease = "easeInOutExpo", correctBlueprint=false) {
+  mark(word, time = 200, fit = false, ease = 'easeInOutExpo', correctBlueprint = false) {
     //console.log("marking", word)
-    if (!(word instanceof Pragma)) return new Promise((r) => { console.warn("cannot mark"); r("error") })
+    if (!(word instanceof Pragma))
+      return new Promise(r => {
+        console.warn('cannot mark')
+        r('error')
+      })
     let w = fit ? word.width + 5 : this.cw
     //this.setWidth(w)
-    return this.moveTo({
+    return this.moveTo(
+      {
         top: word.top,
         left: word.x(w),
         height: word.height,
         width: w,
-        ease: ease
-      }, time, () => {
+        ease: ease,
+      },
+      time,
+      () => {
         //console.log(`FROM MARK -> marked ${word.text}`)
         this.last_marked = word
         // word.parent.value = word.index
-      }, correctBlueprint)
+      },
+      correctBlueprint
+    )
   }
 
   guide(word, time) {
-    if (!(word instanceof Pragma)) return new Promise((resolve, reject) => { console.warn("cannot guide thru"); reject("error") })
+    if (!(word instanceof Pragma))
+      return new Promise((resolve, reject) => {
+        console.warn('cannot guide thru')
+        reject('error')
+      })
     return new PinkyPromise((resolve, reject) => {
-      let first_ease = word.isFirstInLine ? "easeInOutCubic" : "linear"
-      return this.moveTo({
-        top: word.top,
-        left: word.x(this.width) - word.width / 2,
-        height: word.height,
-        width: this.cw,
-        ease: first_ease
-      }, time || this.calcDuration(word, 1))
-        .then(() => {
-          this.last_marked = word
-          this.runningFor += 1
-          this.mark(word, this.calcDuration(word, 2), false, "linear", true).then(() => {
-            resolve()
-          })
+      let first_ease = word.isFirstInLine ? 'easeInOutCubic' : 'linear'
+      return this.moveTo(
+        {
+          top: word.top,
+          left: word.x(this.width) - word.width / 2,
+          height: word.height,
+          width: this.cw,
+          ease: first_ease,
+        },
+        time || this.calcDuration(word, 1)
+      ).then(() => {
+        this.last_marked = word
+        this.runningFor += 1
+        this.mark(word, this.calcDuration(word, 2), false, 'linear', true).then(() => {
+          resolve()
         })
+      })
     })
   }
 
-  calcDuration(word, dw=1){
-
+  calcDuration(word, dw = 1) {
     /*  @dw - either 1 or 2
-      * 1. yee|t th|e green fox
-      * 2. yeet |the| green fox
-      * 1. yeet th|e gr|een fox
-      *
-      * The marking of "the"(and every word) happens in 2 instances. First mark
-      * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
-      * it will transition from "the" to "green" (1) etc...
-      *
-      * */
+     * 1. yee|t th|e green fox
+     * 2. yeet |the| green fox
+     * 1. yeet th|e gr|een fox
+     *
+     * The marking of "the"(and every word) happens in 2 instances. First mark
+     * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
+     * it will transition from "the" to "green" (1) etc...
+     *
+     * */
 
-    if (!(word instanceof Pragma)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`)
-    if (dw!=1 && dw!=2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
-    if (word.isFirstInLine) return Math.max(80, 650-this.wpm) // mark has to change line
+    if (!(word instanceof Pragma))
+      return this.throw(
+        `Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`
+      )
+    if (dw != 1 && dw != 2)
+      return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`)
+    if (word.isFirstInLine) return Math.max(80, 650 - this.wpm) // mark has to change line
     if (!this.last_marked) return 0 // failsafe
 
-    const before_weight = .4
-    const weight = dw==1 ? before_weight : 1 - before_weight
+    const before_weight = 0.4
+    const weight = dw == 1 ? before_weight : 1 - before_weight
 
-    let w = dw==1 ? this.last_marked : word
+    let w = dw == 1 ? this.last_marked : word
     //const filters = [(d) => { return d*weight }]
 
     let duration = w.time(this.wpm)
-    const filters = [(d) => { return d*weight }, airway]
-
+    const filters = [
+      d => {
+        return d * weight
+      },
+      airway,
+    ]
 
     filters.forEach(f => {
       //console.log(f, duration, this.runningFor)
       //console.log(duration, f(duration, this.runningFor))
-       duration = f(duration, this.runningFor)
+      duration = f(duration, this.runningFor)
     })
 
     return duration

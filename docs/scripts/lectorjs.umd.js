@@ -18628,7 +18628,7 @@
   class PragmaMark extends q {
     constructor() {
       super('marker');
-      this.element = j("marker");
+      this.element = j('marker.');
       this.hide();
       this.css(defaultStyles);
       this.currentlyMarking = null;
@@ -18707,7 +18707,7 @@
 
     pause() {
       return new Promise((resolve, reject) => {
-        if (this.pausing) return reject("already pausing");
+        if (this.pausing) return reject('already pausing');
         this.pausing = true;
 
         if (this.currentlyMarking && this.current_anime && this.last_marked) {
@@ -18720,9 +18720,9 @@
           this.current_anime.remove('marker'); //this.current_anime = null
 
           this.mark(temp, 80, false).then(() => {
-            resolve("paused");
+            resolve('paused');
           }).catch(e => {
-            reject("could not mark");
+            reject('could not mark');
           }).then(c => {
             this.pausing = false;
           });
@@ -18782,11 +18782,11 @@
       });
     }
 
-    mark(word, time = 200, fit = false, ease = "easeInOutExpo", correctBlueprint = false) {
+    mark(word, time = 200, fit = false, ease = 'easeInOutExpo', correctBlueprint = false) {
       //console.log("marking", word)
       if (!(word instanceof q)) return new Promise(r => {
-        console.warn("cannot mark");
-        r("error");
+        console.warn('cannot mark');
+        r('error');
       });
       let w = fit ? word.width + 5 : this.cw; //this.setWidth(w)
 
@@ -18804,11 +18804,11 @@
 
     guide(word, time) {
       if (!(word instanceof q)) return new Promise((resolve, reject) => {
-        console.warn("cannot guide thru");
-        reject("error");
+        console.warn('cannot guide thru');
+        reject('error');
       });
       return new PinkyPromise((resolve, reject) => {
-        let first_ease = word.isFirstInLine ? "easeInOutCubic" : "linear";
+        let first_ease = word.isFirstInLine ? 'easeInOutCubic' : 'linear';
         return this.moveTo({
           top: word.top,
           left: word.x(this.width) - word.width / 2,
@@ -18818,7 +18818,7 @@
         }, time || this.calcDuration(word, 1)).then(() => {
           this.last_marked = word;
           this.runningFor += 1;
-          this.mark(word, this.calcDuration(word, 2), false, "linear", true).then(() => {
+          this.mark(word, this.calcDuration(word, 2), false, 'linear', true).then(() => {
             resolve();
           });
         });
@@ -18827,22 +18827,22 @@
 
     calcDuration(word, dw = 1) {
       /*  @dw - either 1 or 2
-        * 1. yee|t th|e green fox
-        * 2. yeet |the| green fox
-        * 1. yeet th|e gr|een fox
-        *
-        * The marking of "the"(and every word) happens in 2 instances. First mark
-        * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
-        * it will transition from "the" to "green" (1) etc...
-        *
-        * */
+       * 1. yee|t th|e green fox
+       * 2. yeet |the| green fox
+       * 1. yeet th|e gr|een fox
+       *
+       * The marking of "the"(and every word) happens in 2 instances. First mark
+       * will transition from "yeet" (1) and then in will mark "the", and immedietly afterwards
+       * it will transition from "the" to "green" (1) etc...
+       *
+       * */
       if (!(word instanceof q)) return this.throw(`Could not calculate marking duration for [${word}] since it does not appear to be a Pragma Object`);
       if (dw != 1 && dw != 2) return this.throw(`Could not calculate duration for ${word.text} since dw was not 1 or 2`);
       if (word.isFirstInLine) return Math.max(80, 650 - this.wpm); // mark has to change line
 
       if (!this.last_marked) return 0; // failsafe
 
-      const before_weight = .4;
+      const before_weight = 0.4;
       const weight = dw == 1 ? before_weight : 1 - before_weight;
       let w = dw == 1 ? this.last_marked : word; //const filters = [(d) => { return d*weight }]
 
