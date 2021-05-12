@@ -20,6 +20,32 @@ import { onScrollEnd, onGlobalScrollEnd, _scroller } from './helpers/autoScroll'
 import * as config from './config/lector.config'
 import icons from '../src/ui/icons.json'
 
+const defaultOptions = {
+  onboarding: false,
+  wfy: true, // false if every word is already wrapped in <w> tags on initializaiton
+  settings: false, // display a settings bar controlling the pointer's color, width, speed and more...
+  defaultsStyles: true, // inject basic styles
+  fullStyles: false, // will decoreate the background of the page, buttons & fonts
+  debug: false, // true if you want to see the lector logs #! When false, it hides all the console.log of the page - this will be refactored in new versions
+  hintPointer: true, // when the pointer is out of screen, display arrows on top/bottom of the window that hint its position
+  autoscroll: true, // sroll the view intelligently
+  disableWhenNotInView: false, // offload when not in view
+  global: false, // true if you want multiple lectors in the same page
+  experimental: false, // if true experimental features are enabled. Unstable.
+
+  // EXPERIMENTAL (set experimental: true to enable these options)
+  scaler: false, // if true, scales the view, if set to 'font-size' will scale the font size using em
+  stream: false, // this options only makes sense if you have paginated pages
+  paginate: false,
+  /* 
+    paginate: {
+      from: 'stream',
+      as: 'infiniteScroll',
+      config: { ... }
+    }
+  */
+}
+
 export function prod() {
   console.log = console.time = console.timeEnd = console.warn = console.error = () => {}
 }
@@ -45,20 +71,6 @@ function connectToLectorSettings(lector, wire) {
       reject('could not find setting')
     })
   })
-}
-
-// TODO add more default options
-const default_options = {
-  onboarding: false,
-  wfy: true,
-  pragmatizeOnCreate: false,
-  experimental: false,
-  settings: false,
-  defaultsStyles: true,
-  debug: false,
-  hintPointer: true,
-  autoScroll: true,
-  disableWhenNotInView: true,
 }
 
 const Mark = (lec, options) => {
@@ -114,7 +126,7 @@ const Mark = (lec, options) => {
     })
     .run(function () {
       lec.appendToRoot(this.element)
-      if (options.autoScroll) {
+      if (options.autoscroll) {
         lec.async.define({
           beforeSummon() {
             return new Promise(async resolve => {
@@ -347,7 +359,7 @@ export const Word = (element, i, options = { shallow: false }) => {
   return w
 }
 
-export const Reader = async (l, options = default_options) => {
+export const Reader = async (l, options = {}) => {
   l = _e(l)
 
   if (options.wfy) await wfy(l)
@@ -476,7 +488,7 @@ export const Reader = async (l, options = default_options) => {
     }
   }
 
-  if (options.pragmatizeOnCreate) lec.pragmatize()
+  // if (options.pragmatizeOnCreate) lec.pragmatize()
   if (options.experimental) experiment()
 
   return lec
@@ -497,7 +509,8 @@ function _streamer(sf) {
     })
 }
 
-export const Lector = async (target, options = default_options) => {
+export const Lector = async (target, options = {}) => {
+  options = util.objDiff(defaultOptions, options)
   ;(options.debug ? dev : prod)()
 
   const injectStyles = options.styleInjector

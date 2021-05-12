@@ -92,11 +92,12 @@ You can declare Lector with many settings:
 
 ```javascript
 settings = {
-  debug: true,
+  debug: false,
   onboarding: false,
-  wfy: false,
+  wfy: true,
   loop: false,
   autostart: false,
+  autoscroll: false,
 
   fullStyles: true,
   defaultStyles: true,
@@ -135,4 +136,31 @@ settings = {
 }
 
 lec = Lector('#article', settings)
+
+// default options
+const defaultOptions = {
+  onboarding: false,
+  wfy: true, // false if every word is already wrapped in <w> tags on initializaiton
+  settings: false, // display a settings bar controlling the pointer's color, width, speed and more...
+  defaultsStyles: true, // inject basic styles
+  fullStyles: false, // will decoreate the background of the page, buttons & fonts
+  debug: false, // true if you want to see the lector logs #! When false, it hides all the console.log of the page - this will be refactored in new versions
+  hintPointer: true, // when the pointer is out of screen, display arrows on top/bottom of the window that hint its position
+  autoscroll: true, // sroll the view intelligently
+  disableWhenNotInView: false, // offload when not in view
+  global: false, // true if you want multiple lectors in the same page
+  experimental: false, // if true experimental features are enabled. Unstable.
+
+  // EXPERIMENTAL (set experimental: true to enable these options)
+  scaler: false, // if true, scales the view, if set to 'font-size' will scale the font size using em
+  stream: false, // this options only makes sense if you have paginated pages
+  paginate: false,
+  /* 
+    paginate: {
+      from: 'stream',
+      as: 'infiniteScroll',
+      config: { ... }
+    }
+  */
+}
 ```

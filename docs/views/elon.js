@@ -67,6 +67,7 @@ let lectorSettings = {
 
   fullStyles: true,
   defaultStyles: true,
+  autoscroll: true,
 
   styleInjector: (style, name) => {
     shadow.injectStyle(name, style)
