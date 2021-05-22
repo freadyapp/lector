@@ -113,48 +113,12 @@ export const _scroller = _p()
                 behavior,
                 inline,
             })
-            return new Promise((r, re) => {
+            return new Promise(resolve => {
                 this.onNext('scrollEnd', () => {
-                    setTimeout(() => {
-                        this._selfScrolling = false
-                        r()
-                    }, 10)
+                    this._selfScrolling = false
+                    resolve()
                 })
             })
-            // if (!el) return new Promise(r => r())
-            // if (!el) return new Promise(r => r())
-            // this._selfScrolling = true
-            // // console.log('scrolling to', el)
-            // // console.log('scroll parent', getScrollParent(el))
-            // // console.log('scroll parent parent', getScrollParent(getScrollParent(el).parentNode))
-            // // let node = el
-            // // while (node && node !== document) {
-            //   // node = getScrollParent(node)
-            //   // console.log(node)
-
-            //   // node = node.parentNode
-            // // }
-
-            // // if (el !== document)
-            // let parent = el === document.body ? bodyScroll : getScrollParent(el)
-            // if (!parent) return new Promise(r => r())
-            // return new Promise((resolve, reject) => {
-            //   const top = _e(el).offset().top - threshold
-            //   anime({
-            //     targets: parent,
-            //     scrollTop: top,
-            //     duration: duration,
-            //     easing: 'easeInOutSine',
-            //   }).finished.then(async () => {
-            //     await this.scrollTo(parent.parentNode, duration, threshold)
-
-            //     setTimeout(() => {
-            //       this._selfScrolling = false
-            //       resolve()
-            //     }, 20)
-
-            //   })
-            // })
         },
     })
     .run(function () {

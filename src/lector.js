@@ -77,20 +77,26 @@ const Mark = (lec, options) => {
   let autoScroller = _p().define({
     scrollIfNeeded() {
       return new Promise(resolve => {
-        console.log('checking if should auto scroll...')
-        console.log(
-          this.isAutoScrolling,
-          isOnScreen(lec.currentWord?.element, config.scrollingThresholdToScroll)
+        console.log('[|] checking if should auto scroll...')
+
+        console.log( 
+          'is this auto scrolling', this.isAutoScrolling,
+          'current word', lec.currentWord,
+          'current word is on Screen?',
+          isOnScreen(lec.currentWord, config.scrollingThresholdToScroll)
         )
+
         if (
           this.isAutoScrolling ||
           isOnScreen(lec.currentWord?.element, config.scrollingThresholdToScroll)
         )
           return resolve(false)
 
+        console.log('[|] performing auto scroll')
         // perform auto scroll
         this.isAutoScrolling = true
         this.autoScroll().then(() => {
+          console.log('[|] done auto scrolling')
           this.isAutoScrolling = false
           resolve(true)
         })
@@ -291,6 +297,7 @@ const Mark = (lec, options) => {
           }
         } else {
           markDetective.minimizeMark()
+          autoScroller.isAutoScrolling = false
         }
       })
     })

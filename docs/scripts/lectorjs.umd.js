@@ -302,7 +302,9 @@
       j(`style#${e}-${s()}`, t).appendTo("head");
     },
     redirectTo: function (t, e = !1) {
-      history?.pushState({}, document.title), Y`<a href="${t}" ${e ? 'target="_blank"' : ""}</a>`.click();
+      var _history;
+
+      (_history = history) !== null && _history !== void 0 && _history.pushState({}, document.title), Y`<a href="${t}" ${e ? 'target="_blank"' : ""}</a>`.click();
     },
     rk: a,
     rk5: s,
@@ -2854,43 +2856,12 @@
         inline
       });
 
-      return new Promise((r, re) => {
+      return new Promise(resolve => {
         this.onNext('scrollEnd', () => {
-          setTimeout(() => {
-            this._selfScrolling = false;
-            r();
-          }, 10);
+          this._selfScrolling = false;
+          resolve();
         });
-      }); // if (!el) return new Promise(r => r())
-      // if (!el) return new Promise(r => r())
-      // this._selfScrolling = true
-      // // console.log('scrolling to', el)
-      // // console.log('scroll parent', getScrollParent(el))
-      // // console.log('scroll parent parent', getScrollParent(getScrollParent(el).parentNode))
-      // // let node = el
-      // // while (node && node !== document) {
-      //   // node = getScrollParent(node)
-      //   // console.log(node)
-      //   // node = node.parentNode
-      // // }
-      // // if (el !== document)
-      // let parent = el === document.body ? bodyScroll : getScrollParent(el)
-      // if (!parent) return new Promise(r => r())
-      // return new Promise((resolve, reject) => {
-      //   const top = _e(el).offset().top - threshold
-      //   anime({
-      //     targets: parent,
-      //     scrollTop: top,
-      //     duration: duration,
-      //     easing: 'easeInOutSine',
-      //   }).finished.then(async () => {
-      //     await this.scrollTo(parent.parentNode, duration, threshold)
-      //     setTimeout(() => {
-      //       this._selfScrolling = false
-      //       resolve()
-      //     }, 20)
-      //   })
-      // })
+      });
     }
 
   }).run(function () {
@@ -18251,13 +18222,15 @@
       let word = this.w.get(key);
       console.log('removing', key, word); // console.log(word, this)
 
-      if (word?.currentWord === this.currentWord) ;
+      if ((word === null || word === void 0 ? void 0 : word.currentWord) === this.currentWord) ;
 
       this.w.remove(key);
     }
 
     addWord(w, setIndex = false) {
-      w.value = w.value ?? 0;
+      var _w$value;
+
+      w.value = (_w$value = w.value) !== null && _w$value !== void 0 ? _w$value : 0;
       this.w.add(w); //w.currentWord.summon()
       // w.do(_ => {
       //   if (!w.dv) return 
@@ -18343,24 +18316,13 @@
       this.isPragmaWord = true;
       this.do(function () {
         if (this.hasKids && this.parent) {
-          // if (this.childMap.has(this.value)){
-          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
-          this.parent.value = this.key; // + excess
-          // if (excess){
-          //   console.log("EXCESSSS", excess)
-          //   console.log(this.next)
-          //   if (this.isReading){
-          //     this.pause().then(_ => {
-          //       this.parent.read()
-          //     })
-          //   }
-          // }
+          this.parent.value = this.key;
         }
       });
     }
 
     destroy() {
-      // this.childMap = null
+      //this.childMap = null
       return null;
     }
 
@@ -18392,11 +18354,11 @@
     }
 
     get currentWord() {
-      if (!this.hasKids) return this; // console.log(this.value)
-      // console.log(this.childMap)
-      // console.log(this.element, this.value, this.childMap, this.get(this.value))
+      var _this$value;
 
-      let subW = this.get(this.value);
+      if (!this.hasKids) return this;
+      let subW = this.get((_this$value = this.value) !== null && _this$value !== void 0 ? _this$value : 0); // get current value or first child
+
       if (!subW) return M.throwSoft(`Could not find current Word of ${this.key}`);
       return subW.currentWord;
     }
@@ -18412,13 +18374,14 @@
       // [1, 2, 3, 4, 5]
 
       if (!sib) {
+        var _this$parent$sibling, _this$parent$sibling2;
+
         if (typeof this.parent.sibling !== 'function') return null;
-        if (n < 0) return this.parent.sibling(-1)?.getFromBottom(n);
-        return this.parent.sibling(1)?.get(n); // this.parent.sibling(-1).get(this.parent.sibling(-1).)
-        // this.parent.sibling(n > 0 ? 1 : -1).get(n)
+        if (n < 0) return (_this$parent$sibling = this.parent.sibling(-1)) === null || _this$parent$sibling === void 0 ? void 0 : _this$parent$sibling.getFromBottom(n);
+        return (_this$parent$sibling2 = this.parent.sibling(1)) === null || _this$parent$sibling2 === void 0 ? void 0 : _this$parent$sibling2.get(n);
       }
 
-      return sib; // return this.parent ? this.parent.get(this.index + n) : null
+      return sib;
     }
 
     get next() {
@@ -21506,12 +21469,16 @@
     let autoScroller = J().define({
       scrollIfNeeded() {
         return new Promise(resolve => {
-          console.log('checking if should auto scroll...');
-          console.log(this.isAutoScrolling, isOnScreen(lec.currentWord?.element, scrollingThresholdToScroll));
-          if (this.isAutoScrolling || isOnScreen(lec.currentWord?.element, scrollingThresholdToScroll)) return resolve(false); // perform auto scroll
+          var _lec$currentWord;
+
+          console.log('[|] checking if should auto scroll...');
+          console.log('is this auto scrolling', this.isAutoScrolling, 'current word', lec.currentWord, 'current word is on Screen?', isOnScreen(lec.currentWord, scrollingThresholdToScroll));
+          if (this.isAutoScrolling || isOnScreen((_lec$currentWord = lec.currentWord) === null || _lec$currentWord === void 0 ? void 0 : _lec$currentWord.element, scrollingThresholdToScroll)) return resolve(false);
+          console.log('[|] performing auto scroll'); // perform auto scroll
 
           this.isAutoScrolling = true;
           this.autoScroll().then(() => {
+            console.log('[|] done auto scrolling');
             this.isAutoScrolling = false;
             resolve(true);
           });
@@ -21598,8 +21565,10 @@
       },
 
       minimizeMark() {
+        var _lec$currentWord2;
+
         lec.mark.hide();
-        lec.currentWord?.addClass('mark-is-here');
+        (_lec$currentWord2 = lec.currentWord) === null || _lec$currentWord2 === void 0 ? void 0 : _lec$currentWord2.addClass('mark-is-here');
         markedWords.add(lec.currentWord);
         this.minimized = true;
       }
@@ -21699,6 +21668,7 @@
           }
         } else {
           markDetective.minimizeMark();
+          autoScroller.isAutoScrolling = false;
         }
       });
     });
