@@ -48,7 +48,8 @@ export default class PragmaWord extends Pragma {
 
   get currentWord(){
     if (!this.hasKids) return this
-    let subW = this.get(this.value ?? 0) // get current value or first child
+    let subW = this.get(this.value ?? this.childMap.keys().next().value) // get current value or first child
+    //console.log('subw is', subW, 'map', this.childMap)
     if (!subW) return util.throwSoft(`Could not find current Word of ${this.key}`)
     return subW.currentWord
   }

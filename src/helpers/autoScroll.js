@@ -1,6 +1,7 @@
 import { elementify } from './pragmafy.js'
 import { _e, util, _p, Pragma } from 'pragmajs'
 import anime from 'animejs'
+import _ from './smoothScroll';
 
 // function getViewportHeight(){
 //   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
@@ -17,6 +18,8 @@ import anime from 'animejs'
 // }
 
 globalThis.lectorSpace = globalThis.lectorSpace || {}
+
+const boundValueInRange = (val, min, max) => Math.min(Math.max(val, min), max)
 
 export function isElementWithin(el, r = {}) {
   let off = el.offset()
@@ -106,19 +109,39 @@ export const _scroller = _p()
     'newScrollTarget'
   )
   .define({
-    scrollTo(el, behavior = 'smooth', inline = 'center') {
+    async scrollTo(el, behavior='smooth', inline='center') {
+      if (!el) return new Promise((resolve, reject) => {
+        reject(null)
+      })
+
+      el = _e(el)
       this._selfScrolling = true
-      _e(el).scrollIntoView({
+
+     //return new Promise((resolve, reject) => {
+       //// todo make this recursive by having a root
+       //const scrollElement = window.document.scrollingElement || window.document.body || window.document.documentElement;
+       //const top = boundValueInRange(el.offset().top-threshold, scrollElement.top, scrollElement.top+scrollElement.height)
+       ////const top = Math.min(Math.max(1, el.offset().top - threshold), scrollElement.height-1);
+
+       //console.log('[!] scrolling to', el, 'top:', top, 'via:', scrollElement)
+       //anime({
+         //targets: scrollElement,
+         //scrollTop: top,
+         //duration: duration,
+         //easing: 'easeInOutSine',
+       //}).finished.then(() => {
+         //console.log('[!] done scrolling to', el)
+         //setTimeout(resolve, 20)
+       //})
+     //})
+      await el.scrollIntoView({
         block: 'center',
-        behavior,
+        behavior: 'smooth',
         inline,
       })
-      return new Promise(resolve => {
-        this.onNext('scrollEnd', () => {
-          this._selfScrolling = false
-          resolve()
-        })
-      })
+
+      this._selfScrolling = false
+      return; 
     },
   })
   .run(function () {

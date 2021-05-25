@@ -76,35 +76,44 @@ function connectToLectorSettings(lector, wire) {
 const Mark = (lec, options) => {
   let autoScroller = _p().define({
     scrollIfNeeded() {
-      return new Promise(resolve => {
+      return new Promise(async resolve => {
         console.log('[|] checking if should auto scroll...')
 
-        console.log( 
-          'is this auto scrolling', this.isAutoScrolling,
-          'current word', lec.currentWord,
+        let currentWord = lec.currentWord
+        console.log(
+          'is this auto scrolling',
+          this.isAutoScrolling,
+          'current word',
+          currentWord,
           'current word is on Screen?',
-          isOnScreen(lec.currentWord, config.scrollingThresholdToScroll)
+          isOnScreen(currentWord, config.scrollingThresholdToScroll)
         )
 
         if (
           this.isAutoScrolling ||
-          isOnScreen(lec.currentWord?.element, config.scrollingThresholdToScroll)
-        )
+          !currentWord ||
+          isOnScreen(currentWord.element, config.scrollingThresholdToScroll)
+        ) {
           return resolve(false)
+        }
 
         console.log('[|] performing auto scroll')
+
         // perform auto scroll
         this.isAutoScrolling = true
-        this.autoScroll().then(() => {
-          console.log('[|] done auto scrolling')
+        await this.autoScroll()
+        //setTimeout(() => {
+          console.log('[$] done auto scrolling')
+            //.catch(() => console.warn('[X] failed to auto scroll'))
+            //.finally(() => {
           this.isAutoScrolling = false
           resolve(true)
-        })
+        //}, 150)
+          //})
       })
     },
-    autoScroll() {
-      console.log('auto scrolling')
-      return scrollTo(lec.currentWord)
+    async autoScroll() {
+      return await scrollTo(lec.currentWord)
     },
   })
 
