@@ -2780,8 +2780,8 @@
   };
 
   (function polyfill() {
-    console.log('POLYFILLING THE AUTO scroll'); // aliases
-
+    //console.log('POLYFILLING THE AUTO scroll')
+    // aliases
     var w = window;
     var d = document; // globals
     //var Element = w.HTMLElement || w.Element;
@@ -3079,8 +3079,8 @@
 
 
     Element.prototype.scrollIntoView = function (threshold = 250) {
-      console.log('scrolling into view'); // avoid smooth behavior if not required
-
+      //console.log('scrolling into view')
+      // avoid smooth behavior if not required
       if (shouldBailOut(arguments[0]) === true) {
         original.scrollIntoView.call(this, arguments[0] === undefined ? true : arguments[0]);
         return;
@@ -3104,19 +3104,6 @@
       }
     };
   })();
-
-  //   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-  // }
-  //
-  // export function getRelativeScreen(el){
-  //   el = elementify(el)
-  //   let eee = _e(el)
-  //   let rect = el.getBoundingClientRect()
-  //   return  {
-  //             top: rect.top, // has to be bigger than 0
-  //             bottom: rect.bottom-getViewportHeight()// has to be smaller than
-  //           }
-  // }
 
   globalThis.lectorSpace = globalThis.lectorSpace || {};
 
@@ -3143,26 +3130,7 @@
     return eee;
   }
   function scrollTo() {
-    // console.log('scrolling to ', el, 'for', duration, 'seconds', 'w/ threscold', 200)
-    return _scroller.scrollTo(...arguments); // behavior
-    // closer, will scroll little bit downwards or upwards
-    // until the element is in view for more than the threshold
-    //return new Promise(r => r())
-    //el = jqueryfy(el)
-    //
-    // el = elementify(el)
-    // return new Promise((resolve, reject) => {
-    //   const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    //   const top = el.offset().top - threshold
-    //   anime({
-    //     targets: body,
-    //     scrollTop: top,
-    //     duration: duration,
-    //     easing: 'easeInOutSine',
-    //   }).finished.then(() => {
-    //     setTimeout(resolve, 20)
-    //   })
-    // })
+    return _scroller.scrollTo(...arguments);
   }
   function onScroll(cb) {
     return _scroller.on('userScroll', throttle(cb));
@@ -3179,23 +3147,7 @@
         reject(null);
       });
       el = j(el);
-      this._selfScrolling = true; //return new Promise((resolve, reject) => {
-      //// todo make this recursive by having a root
-      //const scrollElement = window.document.scrollingElement || window.document.body || window.document.documentElement;
-      //const top = boundValueInRange(el.offset().top-threshold, scrollElement.top, scrollElement.top+scrollElement.height)
-      ////const top = Math.min(Math.max(1, el.offset().top - threshold), scrollElement.height-1);
-      //console.log('[!] scrolling to', el, 'top:', top, 'via:', scrollElement)
-      //anime({
-      //targets: scrollElement,
-      //scrollTop: top,
-      //duration: duration,
-      //easing: 'easeInOutSine',
-      //}).finished.then(() => {
-      //console.log('[!] done scrolling to', el)
-      //setTimeout(resolve, 20)
-      //})
-      //})
-
+      this._selfScrolling = true;
       await el.scrollIntoView({
         block: 'center',
         behavior: 'smooth',
@@ -18665,7 +18617,10 @@
 
     async resetMark() {
       // TODO CAUSES BUG
-      await this.async.beforeSummon();
+      //console.log('[#] resetting mark...')
+      //console.log('[#] before summoning...')
+      await this.async.beforeSummon(); //console.log('[#] after summoning...')
+
       return new Promise(resolve => {
         if (this._resettingMark) return resolve();
         this._resettingMark = true;
@@ -19125,11 +19080,11 @@
           duration: duration,
           complete: anim => {
             this.triggerEvent('mark', blueprint);
-            this.lastMark = this.currentlyMarking;
-            this.currentlyMarking = null;
 
             this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint);
 
+            this.lastMark = this.currentlyMarking;
+            this.currentlyMarking = null;
             complete();
             resolve();
           }
@@ -21861,12 +21816,20 @@
   const Mark = (lec, options) => {
     let autoScroller = J().define({
       scrollIfNeeded() {
-        return new Promise(async resolve => {
+        return new Promise(async (resolve, reject) => {
           console.log('[|] checking if should auto scroll...');
-          let currentWord = lec.currentWord;
-          console.log('is this auto scrolling', this.isAutoScrolling, 'current word', currentWord, 'current word is on Screen?', isOnScreen(currentWord, scrollingThresholdToScroll));
+          let currentWord = lec.currentWord; //console.log(
+          //'is this auto scrolling',
+          //this.isAutoScrolling,
+          //'current word',
+          //currentWord,
+          //'current word is on Screen?',
+          //isOnScreen(currentWord, config.scrollingThresholdToScroll)
+          //)
 
-          if (this.isAutoScrolling || !currentWord || isOnScreen(currentWord.element, scrollingThresholdToScroll)) {
+          if (this.isAutoScrolling) return reject();
+
+          if (!currentWord || isOnScreen(currentWord.element, scrollingThresholdToScroll)) {
             return resolve(false);
           }
 
@@ -21913,9 +21876,15 @@
           beforeSummon() {
             return new Promise(async resolve => {
               console.log('before read.... scrolling if needed');
-              await autoScroller.scrollIfNeeded();
-              console.log('before read.... wait 300 ms');
-              resolve();
+              autoScroller.scrollIfNeeded().then(() => {
+                console.log('before read.... wait 100 ms');
+                setTimeout(() => {
+                  console.log('continuing');
+                  resolve();
+                }, 100);
+              }).catch(() => {
+                console.warn('tried to scroll, but already scrolling');
+              });
             });
           } // beforeRead() {
           // return this.beforeSummon()
@@ -21924,6 +21893,7 @@
 
         });
         this.on('changeLine', () => {
+          console.log('change line, scrolling if needed');
           autoScroller.scrollIfNeeded();
         });
       } // lec.on('beforeRead', () => {
@@ -21954,12 +21924,11 @@
 
           w.removeClass('mark-is-here');
           markedWords.delete(w);
-        }
+        } //lec.resetMark().then(() => {
 
-        lec.resetMark().then(() => {
-          lec.mark.show();
-          this.minimized = false;
-        });
+
+        lec.mark.show();
+        this.minimized = false; //})
       },
 
       minimizeMark() {
@@ -22239,7 +22208,7 @@
       }, 'keydown'); // dont trigger the dumb fucken scroll thing
 
       target.bind('space', function () {
-        console.log('calbback triggered', this);
+        console.log('[space]', this);
         this.toggle();
         return false;
       }, 'keyup');

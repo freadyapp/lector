@@ -145,6 +145,7 @@ export default class PragmaMark extends Pragma {
       }
     })
   }
+
   _correctBlueprint(current, last) {
     console.time('correcting blueprint')
     let corrected = this.correctBlueprint(current, last)
@@ -177,9 +178,10 @@ export default class PragmaMark extends Pragma {
         duration: duration,
         complete: anim => {
           this.triggerEvent('mark', blueprint)
+          this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
+
           this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
-          this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
           complete()
           resolve()
         },

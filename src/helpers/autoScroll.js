@@ -1,21 +1,7 @@
 import { elementify } from './pragmafy.js'
 import { _e, util, _p, Pragma } from 'pragmajs'
 import anime from 'animejs'
-import _ from './smoothScroll';
-
-// function getViewportHeight(){
-//   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-// }
-//
-// export function getRelativeScreen(el){
-//   el = elementify(el)
-//   let eee = _e(el)
-//   let rect = el.getBoundingClientRect()
-//   return  {
-//             top: rect.top, // has to be bigger than 0
-//             bottom: rect.bottom-getViewportHeight()// has to be smaller than
-//           }
-// }
+import _ from './smoothScroll'  // polyfill scrollIntoView
 
 globalThis.lectorSpace = globalThis.lectorSpace || {}
 
@@ -44,29 +30,7 @@ export function isOnScreen(el, threshold = 100) {
 }
 
 export function scrollTo() {
-  // console.log('scrolling to ', el, 'for', duration, 'seconds', 'w/ threscold', 200)
   return _scroller.scrollTo(...arguments)
-  // behavior
-  // closer, will scroll little bit downwards or upwards
-  // until the element is in view for more than the threshold
-
-  //return new Promise(r => r())
-  //el = jqueryfy(el)
-  //
-
-  // el = elementify(el)
-  // return new Promise((resolve, reject) => {
-  //   const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-  //   const top = el.offset().top - threshold
-  //   anime({
-  //     targets: body,
-  //     scrollTop: top,
-  //     duration: duration,
-  //     easing: 'easeInOutSine',
-  //   }).finished.then(() => {
-  //     setTimeout(resolve, 20)
-  //   })
-  // })
 }
 
 export function onGlobalScroll(cb) {
@@ -117,23 +81,6 @@ export const _scroller = _p()
       el = _e(el)
       this._selfScrolling = true
 
-     //return new Promise((resolve, reject) => {
-       //// todo make this recursive by having a root
-       //const scrollElement = window.document.scrollingElement || window.document.body || window.document.documentElement;
-       //const top = boundValueInRange(el.offset().top-threshold, scrollElement.top, scrollElement.top+scrollElement.height)
-       ////const top = Math.min(Math.max(1, el.offset().top - threshold), scrollElement.height-1);
-
-       //console.log('[!] scrolling to', el, 'top:', top, 'via:', scrollElement)
-       //anime({
-         //targets: scrollElement,
-         //scrollTop: top,
-         //duration: duration,
-         //easing: 'easeInOutSine',
-       //}).finished.then(() => {
-         //console.log('[!] done scrolling to', el)
-         //setTimeout(resolve, 20)
-       //})
-     //})
       await el.scrollIntoView({
         block: 'center',
         behavior: 'smooth',

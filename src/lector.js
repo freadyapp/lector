@@ -76,24 +76,22 @@ function connectToLectorSettings(lector, wire) {
 const Mark = (lec, options) => {
   let autoScroller = _p().define({
     scrollIfNeeded() {
-      return new Promise(async resolve => {
+      return new Promise(async (resolve, reject) => {
         console.log('[|] checking if should auto scroll...')
 
         let currentWord = lec.currentWord
-        console.log(
-          'is this auto scrolling',
-          this.isAutoScrolling,
-          'current word',
-          currentWord,
-          'current word is on Screen?',
-          isOnScreen(currentWord, config.scrollingThresholdToScroll)
-        )
+        //console.log(
+          //'is this auto scrolling',
+          //this.isAutoScrolling,
+          //'current word',
+          //currentWord,
+          //'current word is on Screen?',
+          //isOnScreen(currentWord, config.scrollingThresholdToScroll)
+        //)
 
-        if (
-          this.isAutoScrolling ||
-          !currentWord ||
-          isOnScreen(currentWord.element, config.scrollingThresholdToScroll)
-        ) {
+        if (this.isAutoScrolling) return reject()
+
+        if (!currentWord || isOnScreen(currentWord.element, config.scrollingThresholdToScroll)) {
           return resolve(false)
         }
 
@@ -146,9 +144,17 @@ const Mark = (lec, options) => {
           beforeSummon() {
             return new Promise(async resolve => {
               console.log('before read.... scrolling if needed')
-              await autoScroller.scrollIfNeeded()
-              console.log('before read.... wait 300 ms')
-              resolve()
+              autoScroller.scrollIfNeeded()
+                          .then(() => {
+                            console.log('before read.... wait 100 ms')
+                            setTimeout(() => {
+                              console.log('continuing')
+                              resolve()
+                            }, 100)
+                          })
+                          .catch(() => {
+                            console.warn('tried to scroll, but already scrolling') 
+                          })
             })
           },
           // beforeRead() {
@@ -157,6 +163,7 @@ const Mark = (lec, options) => {
         })
 
         this.on('changeLine', () => {
+          console.log('change line, scrolling if needed')
           autoScroller.scrollIfNeeded()
         })
       }
@@ -194,10 +201,10 @@ const Mark = (lec, options) => {
           markedWords.delete(w)
         }
 
-        lec.resetMark().then(() => {
+        //lec.resetMark().then(() => {
           lec.mark.show()
           this.minimized = false
-        })
+        //})
       },
 
       minimizeMark() {
@@ -490,7 +497,7 @@ export const Reader = async (l, options = {}) => {
     target.bind(
       'space',
       function () {
-        console.log('calbback triggered', this)
+        console.log('[space]', this)
         this.toggle()
         return false
       },

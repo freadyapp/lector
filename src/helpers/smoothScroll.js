@@ -1,5 +1,5 @@
 (function polyfill() {
-  console.log('POLYFILLING THE AUTO scroll')
+  //console.log('POLYFILLING THE AUTO scroll')
   // aliases
   var w = window;
   var d = document;
@@ -372,7 +372,7 @@
 
   // Element.prototype.scrollIntoView
   Element.prototype.scrollIntoView = function(threshold=250) {
-    console.log('scrolling into view')
+    //console.log('scrolling into view')
     // avoid smooth behavior if not required
     if (shouldBailOut(arguments[0]) === true) {
       original.scrollIntoView.call(
