@@ -9,26 +9,13 @@ export default class PragmaWord extends Pragma {
       this.isPragmaWord = true
       this.do(function(){
         if (this.hasKids && this.parent){
-          // if (this.childMap.has(this.value)){
-          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
-         
           this.parent.value = this.key 
-          // + excess
-          // if (excess){
-          //   console.log("EXCESSSS", excess)
-          //   console.log(this.next)
-          //   if (this.isReading){
-          //     this.pause().then(_ => {
-          //       this.parent.read()
-          //     })
-          //   }
-          // }
-         
         }
       })
   }
+
   destroy(){
-    // this.childMap = null
+    //this.childMap = null
     return null
   }
 
@@ -61,10 +48,8 @@ export default class PragmaWord extends Pragma {
 
   get currentWord(){
     if (!this.hasKids) return this
-    // console.log(this.value)
-    // console.log(this.childMap)
-    // console.log(this.element, this.value, this.childMap, this.get(this.value))
-    let subW = this.get(this.value)
+    let subW = this.get(this.value ?? this.childMap.keys().next().value) // get current value or first child
+    //console.log('subw is', subW, 'map', this.childMap)
     if (!subW) return util.throwSoft(`Could not find current Word of ${this.key}`)
     return subW.currentWord
   }
@@ -85,13 +70,9 @@ export default class PragmaWord extends Pragma {
 
       if (n < 0) return this.parent.sibling(-1)?.getFromBottom(n)
       return this.parent.sibling(1)?.get(n)
-      // this.parent.sibling(-1).get(this.parent.sibling(-1).)
-      // this.parent.sibling(n > 0 ? 1 : -1).get(n)
     }
 
     return sib
-
-    // return this.parent ? this.parent.get(this.index + n) : null
   }
 
   get next() {

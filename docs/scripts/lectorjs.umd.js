@@ -302,7 +302,9 @@
       j(`style#${e}-${s()}`, t).appendTo("head");
     },
     redirectTo: function (t, e = !1) {
-      history?.pushState({}, document.title), Y`<a href="${t}" ${e ? 'target="_blank"' : ""}</a>`.click();
+      var _history;
+
+      (_history = history) !== null && _history !== void 0 && _history.pushState({}, document.title), Y`<a href="${t}" ${e ? 'target="_blank"' : ""}</a>`.click();
     },
     rk: a,
     rk5: s,
@@ -2777,20 +2779,334 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  //   return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-  // }
-  //
-  // export function getRelativeScreen(el){
-  //   el = elementify(el)
-  //   let eee = _e(el)
-  //   let rect = el.getBoundingClientRect()
-  //   return  {
-  //             top: rect.top, // has to be bigger than 0
-  //             bottom: rect.bottom-getViewportHeight()// has to be smaller than
-  //           }
-  // }
+  (function polyfill() {
+    //console.log('POLYFILLING THE AUTO scroll')
+    // aliases
+    var w = window;
+    var d = document; // globals
+    //var Element = w.HTMLElement || w.Element;
+
+    var SCROLL_TIME = 468; // object gathering original scroll methods
+
+    var original = {
+      scroll: w.scroll || w.scrollTo,
+      scrollBy: w.scrollBy,
+      elementScroll: Element.prototype.scroll || scrollElement,
+      scrollIntoView: Element.prototype.scrollIntoView
+    }; // define timing method
+
+    var now = w.performance && w.performance.now ? w.performance.now.bind(w.performance) : Date.now;
+    /**
+     * indicates if a the current browser is made by Microsoft
+     * @method isMicrosoftBrowser
+     * @param {String} userAgent
+     * @returns {Boolean}
+     */
+
+    function isMicrosoftBrowser(userAgent) {
+      var userAgentPatterns = ['MSIE ', 'Trident/', 'Edge/'];
+      return new RegExp(userAgentPatterns.join('|')).test(userAgent);
+    }
+    /*
+     * IE has rounding bug rounding down clientHeight and clientWidth and
+     * rounding up scrollHeight and scrollWidth causing false positives
+     * on hasScrollableSpace
+     */
+
+
+    var ROUNDING_TOLERANCE = isMicrosoftBrowser(w.navigator.userAgent) ? 1 : 0;
+    /**
+     * changes scroll position inside an element
+     * @method scrollElement
+     * @param {Number} x
+     * @param {Number} y
+     * @returns {undefined}
+     */
+
+    function scrollElement(x, y) {
+      this.scrollLeft = x;
+      this.scrollTop = y;
+    }
+    /**
+     * returns result of applying ease math function to a number
+     * @method ease
+     * @param {Number} k
+     * @returns {Number}
+     */
+
+
+    function ease(k) {
+      return 0.5 * (1 - Math.cos(Math.PI * k));
+    }
+    /**
+     * indicates if a smooth behavior should be applied
+     * @method shouldBailOut
+     * @param {Number|Object} firstArg
+     * @returns {Boolean}
+     */
+
+
+    function shouldBailOut(firstArg) {
+      if (firstArg === null || typeof firstArg !== 'object' || firstArg.behavior === undefined || firstArg.behavior === 'auto' || firstArg.behavior === 'instant') {
+        // first argument is not an object/null
+        // or behavior is auto, instant or undefined
+        return true;
+      }
+
+      if (typeof firstArg === 'object' && firstArg.behavior === 'smooth') {
+        // first argument is an object and behavior is smooth
+        return false;
+      } // throw error when behavior is not supported
+
+
+      throw new TypeError('behavior member of ScrollOptions ' + firstArg.behavior + ' is not a valid value for enumeration ScrollBehavior.');
+    }
+    /**
+     * indicates if an element has scrollable space in the provided axis
+     * @method hasScrollableSpace
+     * @param {Node} el
+     * @param {String} axis
+     * @returns {Boolean}
+     */
+
+
+    function hasScrollableSpace(el, axis) {
+      if (axis === 'Y') {
+        return el.clientHeight + ROUNDING_TOLERANCE < el.scrollHeight;
+      }
+
+      if (axis === 'X') {
+        return el.clientWidth + ROUNDING_TOLERANCE < el.scrollWidth;
+      }
+    }
+    /**
+     * indicates if an element has a scrollable overflow property in the axis
+     * @method canOverflow
+     * @param {Node} el
+     * @param {String} axis
+     * @returns {Boolean}
+     */
+
+
+    function canOverflow(el, axis) {
+      var overflowValue = w.getComputedStyle(el, null)['overflow' + axis];
+      return overflowValue === 'auto' || overflowValue === 'scroll';
+    }
+    /**
+     * indicates if an element can be scrolled in either axis
+     * @method isScrollable
+     * @param {Node} el
+     * @param {String} axis
+     * @returns {Boolean}
+     */
+
+
+    function isScrollable(el) {
+      var isScrollableY = hasScrollableSpace(el, 'Y') && canOverflow(el, 'Y');
+      var isScrollableX = hasScrollableSpace(el, 'X') && canOverflow(el, 'X');
+      return isScrollableY || isScrollableX;
+    }
+    /**
+     * finds scrollable parent of an element
+     * @method findScrollableParent
+     * @param {Node} el
+     * @returns {Node} el
+     */
+
+
+    function findScrollableParent(el) {
+      while (el !== d.body && isScrollable(el) === false) {
+        el = el.parentNode || el.host;
+      }
+
+      return el;
+    }
+    /**
+     * self invoked function that, given a context, steps through scrolling
+     * @method step
+     * @param {Object} context
+     * @returns {undefined}
+     */
+
+
+    function step(context, done = () => {
+      /* callback when done */
+    }) {
+      var time = now();
+      var value;
+      var currentX;
+      var currentY;
+      var elapsed = (time - context.startTime) / SCROLL_TIME; // avoid elapsed times higher than one
+
+      elapsed = elapsed > 1 ? 1 : elapsed; // apply easing to elapsed time
+
+      value = ease(elapsed);
+      currentX = context.startX + (context.x - context.startX) * value;
+      currentY = context.startY + (context.y - context.startY) * value;
+      context.method.call(context.scrollable, currentX, currentY); // scroll more if we have not reached our destination
+
+      if (currentX !== context.x || currentY !== context.y) {
+        w.requestAnimationFrame(() => step.bind(w)(context, done));
+      } else {
+        // we're done
+        w.requestAnimationFrame(done);
+      }
+    }
+    /**
+     * scrolls window or element with a smooth behavior
+     * @method smoothScroll
+     * @param {Object|Node} el
+     * @param {Number} x
+     * @param {Number} y
+     * @returns {undefined}
+     */
+
+
+    async function smoothScroll(el, x, y) {
+      var scrollable;
+      var startX;
+      var startY;
+      var method;
+      var startTime = now(); // define scroll context
+
+      if (el === d.body) {
+        scrollable = w;
+        startX = w.scrollX || w.pageXOffset;
+        startY = w.scrollY || w.pageYOffset;
+        method = original.scroll;
+      } else {
+        scrollable = el;
+        startX = el.scrollLeft;
+        startY = el.scrollTop;
+        method = scrollElement;
+      } // scroll looping over a frame
+
+
+      return new Promise(resolve => {
+        step({
+          scrollable: scrollable,
+          method: method,
+          startTime: startTime,
+          startX: startX,
+          startY: startY,
+          x: x,
+          y: y
+        }, resolve);
+      });
+    } // ORIGINAL METHODS OVERRIDES
+    // w.scroll and w.scrollTo
+
+
+    w.scroll = w.scrollTo = function () {
+      // avoid action when no arguments are passed
+      if (arguments[0] === undefined) {
+        return;
+      } // avoid smooth behavior if not required
+
+
+      if (shouldBailOut(arguments[0]) === true) {
+        original.scroll.call(w, arguments[0].left !== undefined ? arguments[0].left : typeof arguments[0] !== 'object' ? arguments[0] : w.scrollX || w.pageXOffset, // use top prop, second argument if present or fallback to scrollY
+        arguments[0].top !== undefined ? arguments[0].top : arguments[1] !== undefined ? arguments[1] : w.scrollY || w.pageYOffset);
+        return;
+      } // LET THE SMOOTHNESS BEGIN!
+
+
+      smoothScroll.call(w, d.body, arguments[0].left !== undefined ? ~~arguments[0].left : w.scrollX || w.pageXOffset, arguments[0].top !== undefined ? ~~arguments[0].top : w.scrollY || w.pageYOffset);
+    }; // w.scrollBy
+
+
+    w.scrollBy = function () {
+      // avoid action when no arguments are passed
+      if (arguments[0] === undefined) {
+        return;
+      } // avoid smooth behavior if not required
+
+
+      if (shouldBailOut(arguments[0])) {
+        original.scrollBy.call(w, arguments[0].left !== undefined ? arguments[0].left : typeof arguments[0] !== 'object' ? arguments[0] : 0, arguments[0].top !== undefined ? arguments[0].top : arguments[1] !== undefined ? arguments[1] : 0);
+        return;
+      } // LET THE SMOOTHNESS BEGIN!
+
+
+      return smoothScroll.call(w, d.body, ~~arguments[0].left + (w.scrollX || w.pageXOffset), ~~arguments[0].top + (w.scrollY || w.pageYOffset));
+    }; // Element.prototype.scroll and Element.prototype.scrollTo
+
+
+    Element.prototype.scroll = Element.prototype.scrollTo = function () {
+      // avoid action when no arguments are passed
+      if (arguments[0] === undefined) {
+        return;
+      } // avoid smooth behavior if not required
+
+
+      if (shouldBailOut(arguments[0]) === true) {
+        // if one number is passed, throw error to match Firefox implementation
+        if (typeof arguments[0] === 'number' && arguments[1] === undefined) {
+          throw new SyntaxError('Value could not be converted');
+        }
+
+        original.elementScroll.call(this, // use left prop, first number argument or fallback to scrollLeft
+        arguments[0].left !== undefined ? ~~arguments[0].left : typeof arguments[0] !== 'object' ? ~~arguments[0] : this.scrollLeft, // use top prop, second argument or fallback to scrollTop
+        arguments[0].top !== undefined ? ~~arguments[0].top : arguments[1] !== undefined ? ~~arguments[1] : this.scrollTop);
+        return;
+      }
+
+      var left = arguments[0].left;
+      var top = arguments[0].top; // LET THE SMOOTHNESS BEGIN!
+
+      return smoothScroll.call(this, this, typeof left === 'undefined' ? this.scrollLeft : ~~left, typeof top === 'undefined' ? this.scrollTop : ~~top);
+    }; // Element.prototype.scrollBy
+
+
+    Element.prototype.scrollBy = function () {
+      // avoid action when no arguments are passed
+      if (arguments[0] === undefined) {
+        return;
+      } // avoid smooth behavior if not required
+
+
+      if (shouldBailOut(arguments[0]) === true) {
+        original.elementScroll.call(this, arguments[0].left !== undefined ? ~~arguments[0].left + this.scrollLeft : ~~arguments[0] + this.scrollLeft, arguments[0].top !== undefined ? ~~arguments[0].top + this.scrollTop : ~~arguments[1] + this.scrollTop);
+        return;
+      }
+
+      this.scroll({
+        left: ~~arguments[0].left + this.scrollLeft,
+        top: ~~arguments[0].top + this.scrollTop,
+        behavior: arguments[0].behavior
+      });
+    }; // Element.prototype.scrollIntoView
+
+
+    Element.prototype.scrollIntoView = function (threshold = 250) {
+      //console.log('scrolling into view')
+      // avoid smooth behavior if not required
+      if (shouldBailOut(arguments[0]) === true) {
+        original.scrollIntoView.call(this, arguments[0] === undefined ? true : arguments[0]);
+        return;
+      } // LET THE SMOOTHNESS BEGIN!
+
+
+      var scrollableParent = findScrollableParent(this);
+      var parentRects = scrollableParent.getBoundingClientRect();
+      var clientRects = this.getBoundingClientRect();
+
+      if (scrollableParent !== d.body) {
+        // reveal element inside parent
+        return smoothScroll.call(this, scrollableParent, scrollableParent.scrollLeft + clientRects.left - parentRects.left, scrollableParent.scrollTop + clientRects.top - parentRects.top); // reveal parent in viewport unless is fixed
+      } else {
+        // reveal element in viewport
+        return w.scrollBy({
+          left: clientRects.left,
+          top: clientRects.top - 200,
+          behavior: 'smooth'
+        });
+      }
+    };
+  })();
 
   globalThis.lectorSpace = globalThis.lectorSpace || {};
+
   function isElementWithin(el, r = {}) {
     let off = el.offset();
     let elTop = off.top;
@@ -2814,83 +3130,31 @@
     return eee;
   }
   function scrollTo() {
-    // console.log('scrolling to ', el, 'for', duration, 'seconds', 'w/ threscold', 200)
-    return _scroller.scrollTo(...arguments); // behavior
-    // closer, will scroll little bit downwards or upwards
-    // until the element is in view for more than the threshold
-    //return new Promise(r => r())
-    //el = jqueryfy(el)
-    //
-    // el = elementify(el)
-    // return new Promise((resolve, reject) => {
-    //   const body = window.document.scrollingElement || window.document.body || window.document.documentElement;
-    //   const top = el.offset().top - threshold
-    //   anime({
-    //     targets: body,
-    //     scrollTop: top,
-    //     duration: duration,
-    //     easing: 'easeInOutSine',
-    //   }).finished.then(() => {
-    //     setTimeout(resolve, 20)
-    //   })
-    // })
+    return _scroller.scrollTo(...arguments);
   }
   function onScroll(cb) {
-    return _scroller.on('userScroll', cb);
+    return _scroller.on('userScroll', throttle(cb));
   }
   function onGlobalScrollEnd(cb, delta = 50) {
-    return _scroller.on('scrollEnd', cb);
+    return _scroller.on('scrollEnd', throttle(cb));
   }
   function onScrollEnd(cb, delta = 50) {
-    return _scroller.on('userScrollEnd', cb);
+    return _scroller.on('userScrollEnd', throttle(cb));
   }
   const _scroller = J().createWires('scrollData', 'scrollTarget', 'scrolling').createEvents('scrollStart', 'userScroll', 'scroll', 'scrollEnd', 'userScrollEnd', 'newScrollTarget').define({
-    scrollTo(el, behavior = 'smooth', inline = 'center') {
+    async scrollTo(el, behavior = 'smooth', inline = 'center') {
+      if (!el) return new Promise((resolve, reject) => {
+        reject(null);
+      });
+      el = j(el);
       this._selfScrolling = true;
-
-      j(el).scrollIntoView({
+      await el.scrollIntoView({
         block: 'center',
-        behavior,
+        behavior: 'smooth',
         inline
       });
-
-      return new Promise((r, re) => {
-        this.onNext('scrollEnd', () => {
-          setTimeout(() => {
-            this._selfScrolling = false;
-            r();
-          }, 10);
-        });
-      }); // if (!el) return new Promise(r => r())
-      // if (!el) return new Promise(r => r())
-      // this._selfScrolling = true
-      // // console.log('scrolling to', el)
-      // // console.log('scroll parent', getScrollParent(el))
-      // // console.log('scroll parent parent', getScrollParent(getScrollParent(el).parentNode))
-      // // let node = el
-      // // while (node && node !== document) {
-      //   // node = getScrollParent(node)
-      //   // console.log(node)
-      //   // node = node.parentNode
-      // // }
-      // // if (el !== document)
-      // let parent = el === document.body ? bodyScroll : getScrollParent(el)
-      // if (!parent) return new Promise(r => r())
-      // return new Promise((resolve, reject) => {
-      //   const top = _e(el).offset().top - threshold
-      //   anime({
-      //     targets: parent,
-      //     scrollTop: top,
-      //     duration: duration,
-      //     easing: 'easeInOutSine',
-      //   }).finished.then(async () => {
-      //     await this.scrollTo(parent.parentNode, duration, threshold)
-      //     setTimeout(() => {
-      //       this._selfScrolling = false
-      //       resolve()
-      //     }, 20)
-      //   })
-      // })
+      this._selfScrolling = false;
+      return;
     }
 
   }).run(function () {
@@ -2944,6 +3208,54 @@
   // }).on('scrollStart', () => {
   //   // console.log('STATRT SCROLl')
   // })
+
+  class Throttler extends q {
+    init(fn, throttleValue = 50, animationFrame = true) {
+      this.action = fn;
+      this.ticking = false;
+      this.animationFrame = true;
+      this.throttleValue = throttleValue;
+    }
+
+    call(...params) {
+      if (!this.ticking) {
+        const _call = () => {
+          this.action && this.action(...params);
+          this.ticking = false;
+        };
+
+        if (this.timeout) clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          if (this.animationFrame) return window.requestAnimationFrame(_call);
+
+          _call();
+        }, this.throttleValue);
+        this.ticking = true;
+      }
+    }
+
+  }
+
+  const _throttler = (...params) => new Throttler(...params); //fn, value=50, animationFrame=true
+
+  function throttle() {
+    let throttle = _throttler(...arguments);
+
+    return (...params) => {
+      throttle.call(...params);
+    };
+  }
+  J() // .createWires('scrollData', 'scrollTarget', 'scrolling')
+  .createEvents('move').run(function () {
+    let onMouseMove = throttle(e => {
+      this.triggerEvent('move');
+    }, 250);
+    document.addEventListener('mousemove', e => {
+      onMouseMove(e);
+    }, true);
+  }); //.on('move', e => {
+  //console.log('i moved')
+  //})
 
   const greek_prefixes = ['an', 'an', 'ap', 'di', 'dy', 'ec', 'eg', 'en', 'em', 'eo', 'ep', 'eu', 'id', 'is', 'my', 'ne', 'od', 'oo', 'ot', 'sy', 'ur', 'ur', 'zo', 'pto', 'pyl', 'acr', 'aer', 'agr', 'ana', 'ant', 'apo', 'aut', 'bar', 'bio', 'cac', 'cat', 'cen', 'cen', 'con', 'cub', 'cyn', 'dec', 'dek', 'dem', 'dia', 'dox', 'eco', 'ego', 'eme', 'eos', 'epi', 'erg', 'eso', 'eth', 'eur', 'exo', 'geo', 'gen', 'hem', 'hal', 'hen', 'hex', 'hod', 'hol', 'hor', 'hor', 'hyo', 'hyp', 'ide', 'idi', 'iso', 'kil', 'lei', 'lep', 'lip', 'log', 'meg', 'mei', 'men', 'mer', 'mes', 'mim', 'mis', 'mit', 'mne', 'mon', 'myx', 'nes', 'nom', 'oct', 'oed', 'oen', 'omm', 'ont', 'opt', 'pan', 'pam', 'par', 'ped', 'pin', 'pis', 'pol', 'por', 'pro', 'rhe', 'sei', 'sit', 'syn', 'syl', 'sym', 'tax', 'the', 'the', 'tom', 'ton', 'top', 'tox', 'tri', 'ulo', 'uro', 'uro', 'xen', 'xer', 'zon', 'zyg', 'psil', 'prot', 'pros', 'amph', 'anem', 'anti', 'anth', 'arct', 'astr', 'athl', 'auto', 'basi', 'bibl', 'briz', 'brom', 'brom', 'call', 'carp', 'carp', 'cata', 'chir', 'cine', 'cirr', 'clad', 'clav', 'coel', 'copr', 'cosm', 'crep', 'cris', 'crit', 'cten', 'cyan', 'cycl', 'cyst', 'deca', 'deka', 'delt', 'derm', 'dexi', 'dino', 'dipl', 'ecto', 'endo', 'engy', 'eoso', 'etho', 'ethi', 'ethm', 'ethn', 'etym', 'fant', 'glia', 'gram', 'gymn', 'haem', 'hapl', 'heli', 'hemi', 'hept', 'herp', 'heur', 'hipp', 'home', 'horm', 'hyal', 'hydr', 'hygr', 'hypn', 'icos', 'kine', 'lamp', 'leps', 'leuc', 'leuk', 'lith', 'metr', 'meta', 'micr', 'myri', 'myth', 'narc', 'naut', 'necr', 'nect', 'nema', 'neur', 'noth', 'noto', 'oeco', 'ogdo', 'olig', 'onom', 'ophi', 'orch', 'orth', 'pach', 'paed', 'pale', 'path', 'patr', 'pect', 'pent', 'pept', 'peri', 'petr', 'phae', 'phag', 'pher', 'phil', 'phob', 'phon', 'phor', 'phos', 'phot', 'phyl', 'phys', 'plac', 'plas', 'plec', 'plut', 'pneu', 'poie', 'pole', 'poli', 'poli', 'poly', 'raph', 'rhag', 'rhig', 'rhin', 'rhiz', 'rhod', 'sarc', 'scel', 'scop', 'sema', 'siph', 'soma', 'soph', 'stea', 'steg', 'sten', 'stig', 'stom', 'styl', 'tach', 'tars', 'taur', 'tele', 'tele', 'temn', 'tetr', 'than', 'thus', 'ther', 'thym', 'thyr', 'trag', 'trit', 'trop', 'xiph', 'proct', 'ptych', 'amphi', 'arche', 'archi', 'arche', 'arist', 'arthr', 'bathy', 'batho', 'blenn', 'blast', 'botan', 'brady', 'bront', 'calli', 'calyp', 'cardi', 'centr', 'ceram', 'cerat', 'chlor', 'chore', 'chrom', 'chron', 'chrys', 'clast', 'clist', 'cochl', 'corac', 'cotyl', 'crani', 'cross', 'crypt', 'dendr', 'dodec', 'dynam', 'ennea', 'gastr', 'graph', 'heter', 'homal', 'hyper', 'klept', 'lekan', 'macro', 'melan', 'meter', 'morph', 'nephr', 'nomad', 'odont', 'organ', 'osteo', 'palae', 'palin', 'peran', 'phleg', 'phloe', 'phren', 'phryn', 'phyll', 'plagi', 'platy', 'plesi', 'pleth', 'pleur', 'pogon', 'polem', 'potam', 'rhabd', 'rhomb', 'scaph', 'schem', 'schis', 'scler', 'scoli', 'scept', 'scyph', 'selen', 'solen', 'sperm', 'sphen', 'spher', 'stern', 'stich', 'stoch', 'taeni', 'techn', 'therm', 'thyre', 'traum', 'trema', 'trich', 'troch', 'troph', 'xanth', 'psych', 'archae', 'brachi', 'brachy', 'bronch', 'cathar', 'cephal', 'chelon', 'cleist', 'cosmet', 'cylind', 'dactyl', 'deuter', 'dogmat', 'erythr', 'galact', 'hendec', 'ichthy', 'mening', 'myrmec', 'omphal', 'opisth', 'opoter', 'ornith', 'ostrac', 'persic', 'phalar', 'phaner', 'phragm', 'plinth', 'prasin', 'presby', 'rhynch', 'scalen', 'strept', 'stroph', 'thalam', 'theori', 'trachy', 'trapez', 'tympan', 'aesthet', 'anthrop', 'branchi', 'cleithr', 'epistem', 'parthen', 'phalang', 'pharmac', 'porphyr', 'sacchar', 'sphinct', 'stalact', 'stalagm', 'thalass', 'oesophag', 'ophthalm', 'physalid', 'pentecost', 'treiskaidek'];
 
@@ -17916,7 +18228,7 @@
       this.isIdle = false;
       const events = ['load', 'mousemove'];
       events.forEach(event => {
-        window.addEventListener(event, _ => this.reset());
+        window.addEventListener(event, throttle(() => this.reset(), 1000));
       });
     }
 
@@ -17936,6 +18248,7 @@
     }
 
     reset() {
+      console.log('this reseting timer');
       clearTimeout(this.t);
       this.t = setTimeout(() => this.idle(), this.idleTime); // time is in milliseconds
 
@@ -18251,13 +18564,15 @@
       let word = this.w.get(key);
       console.log('removing', key, word); // console.log(word, this)
 
-      if (word?.currentWord === this.currentWord) ;
+      if ((word === null || word === void 0 ? void 0 : word.currentWord) === this.currentWord) ;
 
       this.w.remove(key);
     }
 
     addWord(w, setIndex = false) {
-      w.value = w.value ?? 0;
+      var _w$value;
+
+      w.value = (_w$value = w.value) !== null && _w$value !== void 0 ? _w$value : 0;
       this.w.add(w); //w.currentWord.summon()
       // w.do(_ => {
       //   if (!w.dv) return 
@@ -18302,7 +18617,10 @@
 
     async resetMark() {
       // TODO CAUSES BUG
-      await this.async.beforeSummon();
+      //console.log('[#] resetting mark...')
+      //console.log('[#] before summoning...')
+      await this.async.beforeSummon(); //console.log('[#] after summoning...')
+
       return new Promise(resolve => {
         if (this._resettingMark) return resolve();
         this._resettingMark = true;
@@ -18343,24 +18661,13 @@
       this.isPragmaWord = true;
       this.do(function () {
         if (this.hasKids && this.parent) {
-          // if (this.childMap.has(this.value)){
-          // let excess = this.childMap.has(this.value) ? 0 : (this.value>0 ? 1 : -1)
-          this.parent.value = this.key; // + excess
-          // if (excess){
-          //   console.log("EXCESSSS", excess)
-          //   console.log(this.next)
-          //   if (this.isReading){
-          //     this.pause().then(_ => {
-          //       this.parent.read()
-          //     })
-          //   }
-          // }
+          this.parent.value = this.key;
         }
       });
     }
 
     destroy() {
-      // this.childMap = null
+      //this.childMap = null
       return null;
     }
 
@@ -18392,11 +18699,12 @@
     }
 
     get currentWord() {
-      if (!this.hasKids) return this; // console.log(this.value)
-      // console.log(this.childMap)
-      // console.log(this.element, this.value, this.childMap, this.get(this.value))
+      var _this$value;
 
-      let subW = this.get(this.value);
+      if (!this.hasKids) return this;
+      let subW = this.get((_this$value = this.value) !== null && _this$value !== void 0 ? _this$value : this.childMap.keys().next().value); // get current value or first child
+      //console.log('subw is', subW, 'map', this.childMap)
+
       if (!subW) return M.throwSoft(`Could not find current Word of ${this.key}`);
       return subW.currentWord;
     }
@@ -18412,13 +18720,14 @@
       // [1, 2, 3, 4, 5]
 
       if (!sib) {
+        var _this$parent$sibling, _this$parent$sibling2;
+
         if (typeof this.parent.sibling !== 'function') return null;
-        if (n < 0) return this.parent.sibling(-1)?.getFromBottom(n);
-        return this.parent.sibling(1)?.get(n); // this.parent.sibling(-1).get(this.parent.sibling(-1).)
-        // this.parent.sibling(n > 0 ? 1 : -1).get(n)
+        if (n < 0) return (_this$parent$sibling = this.parent.sibling(-1)) === null || _this$parent$sibling === void 0 ? void 0 : _this$parent$sibling.getFromBottom(n);
+        return (_this$parent$sibling2 = this.parent.sibling(1)) === null || _this$parent$sibling2 === void 0 ? void 0 : _this$parent$sibling2.get(n);
       }
 
-      return sib; // return this.parent ? this.parent.get(this.index + n) : null
+      return sib;
     }
 
     get next() {
@@ -18732,19 +19041,21 @@
 
     _compareBlueprintsAndTriggerEvents(a, b) {
       if (!a || !b) return;
-
-      if (a.top + a.height < b.top) {
-        this.triggerEvent('changeLine');
-        this.triggerEvent('changeLine:down');
-      } else if (a.top > b.top + b.height) {
-        this.triggerEvent('changeLine');
-        this.triggerEvent('changeLine:up');
-      }
+      window.requestAnimationFrame(() => {
+        if (a.top + a.height < b.top) {
+          this.triggerEvent('changeLine');
+          this.triggerEvent('changeLine:down');
+        } else if (a.top > b.top + b.height) {
+          this.triggerEvent('changeLine');
+          this.triggerEvent('changeLine:up');
+        }
+      });
     }
 
     _correctBlueprint(current, last) {
       console.time('correcting blueprint');
-      let corrected = this.correctBlueprint(current, last);
+      let corrected = this.correctBlueprint(current, last); //let corrected = current
+
       console.timeEnd('correcting blueprint');
       return corrected;
     }
@@ -21505,22 +21816,39 @@
   const Mark = (lec, options) => {
     let autoScroller = J().define({
       scrollIfNeeded() {
-        return new Promise(resolve => {
-          console.log('checking if should auto scroll...');
-          console.log(this.isAutoScrolling, isOnScreen(lec.currentWord?.element, scrollingThresholdToScroll));
-          if (this.isAutoScrolling || isOnScreen(lec.currentWord?.element, scrollingThresholdToScroll)) return resolve(false); // perform auto scroll
+        return new Promise(async (resolve, reject) => {
+          console.log('[|] checking if should auto scroll...');
+          let currentWord = lec.currentWord; //console.log(
+          //'is this auto scrolling',
+          //this.isAutoScrolling,
+          //'current word',
+          //currentWord,
+          //'current word is on Screen?',
+          //isOnScreen(currentWord, config.scrollingThresholdToScroll)
+          //)
+
+          if (this.isAutoScrolling) return reject();
+
+          if (!currentWord || isOnScreen(currentWord.element, scrollingThresholdToScroll)) {
+            return resolve(false);
+          }
+
+          console.log('[|] performing auto scroll'); // perform auto scroll
 
           this.isAutoScrolling = true;
-          this.autoScroll().then(() => {
-            this.isAutoScrolling = false;
-            resolve(true);
-          });
+          await this.autoScroll(); //setTimeout(() => {
+
+          console.log('[$] done auto scrolling'); //.catch(() => console.warn('[X] failed to auto scroll'))
+          //.finally(() => {
+
+          this.isAutoScrolling = false;
+          resolve(true); //}, 150)
+          //})
         });
       },
 
-      autoScroll() {
-        console.log('auto scrolling');
-        return scrollTo(lec.currentWord);
+      async autoScroll() {
+        return await scrollTo(lec.currentWord);
       }
 
     });
@@ -21548,9 +21876,15 @@
           beforeSummon() {
             return new Promise(async resolve => {
               console.log('before read.... scrolling if needed');
-              await autoScroller.scrollIfNeeded();
-              console.log('before read.... wait 300 ms');
-              resolve();
+              autoScroller.scrollIfNeeded().then(() => {
+                console.log('before read.... wait 100 ms');
+                setTimeout(() => {
+                  console.log('continuing');
+                  resolve();
+                }, 100);
+              }).catch(() => {
+                console.warn('tried to scroll, but already scrolling');
+              });
             });
           } // beforeRead() {
           // return this.beforeSummon()
@@ -21559,6 +21893,7 @@
 
         });
         this.on('changeLine', () => {
+          console.log('change line, scrolling if needed');
           autoScroller.scrollIfNeeded();
         });
       } // lec.on('beforeRead', () => {
@@ -21589,17 +21924,18 @@
 
           w.removeClass('mark-is-here');
           markedWords.delete(w);
-        }
+        } //lec.resetMark().then(() => {
 
-        lec.resetMark().then(() => {
-          lec.mark.show();
-          this.minimized = false;
-        });
+
+        lec.mark.show();
+        this.minimized = false; //})
       },
 
       minimizeMark() {
+        var _lec$currentWord;
+
         lec.mark.hide();
-        lec.currentWord?.addClass('mark-is-here');
+        (_lec$currentWord = lec.currentWord) === null || _lec$currentWord === void 0 ? void 0 : _lec$currentWord.addClass('mark-is-here');
         markedWords.add(lec.currentWord);
         this.minimized = true;
       }
@@ -21699,6 +22035,7 @@
           }
         } else {
           markDetective.minimizeMark();
+          autoScroller.isAutoScrolling = false;
         }
       });
     });
@@ -21871,7 +22208,7 @@
       }, 'keydown'); // dont trigger the dumb fucken scroll thing
 
       target.bind('space', function () {
-        console.log('calbback triggered', this);
+        console.log('[space]', this);
         this.toggle();
         return false;
       }, 'keyup');

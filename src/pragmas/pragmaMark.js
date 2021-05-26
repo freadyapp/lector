@@ -135,17 +135,21 @@ export default class PragmaMark extends Pragma {
 
   _compareBlueprintsAndTriggerEvents(a, b) {
     if (!a || !b) return
-    if (a.top + a.height < b.top) {
-      this.triggerEvent('changeLine')
-      this.triggerEvent('changeLine:down')
-    } else if (a.top > b.top + b.height) {
-      this.triggerEvent('changeLine')
-      this.triggerEvent('changeLine:up')
-    }
+    window.requestAnimationFrame(() => {
+      if (a.top + a.height < b.top) {
+        this.triggerEvent('changeLine')
+        this.triggerEvent('changeLine:down')
+      } else if (a.top > b.top + b.height) {
+        this.triggerEvent('changeLine')
+        this.triggerEvent('changeLine:up')
+      }
+    })
   }
+
   _correctBlueprint(current, last) {
     console.time('correcting blueprint')
     let corrected = this.correctBlueprint(current, last)
+    //let corrected = current
     console.timeEnd('correcting blueprint')
     return corrected
   }
@@ -175,6 +179,7 @@ export default class PragmaMark extends Pragma {
         complete: anim => {
           this.triggerEvent('mark', blueprint)
           this._compareBlueprintsAndTriggerEvents(this.lastMark, blueprint)
+
           this.lastMark = this.currentlyMarking
           this.currentlyMarking = null
           complete()

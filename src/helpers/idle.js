@@ -1,3 +1,5 @@
+import { throttle } from "../helpers/autoScroll"
+
 export default class Idle {
   constructor(idleTime){
     this.afkChain = new Map
@@ -8,7 +10,7 @@ export default class Idle {
     const events = [ 'load', 'mousemove']
 
     events.forEach( event => {
-      window.addEventListener(event, _ => this.reset())
+      window.addEventListener(event, throttle(() => this.reset(), 1000))
     })
   }
 
@@ -28,6 +30,7 @@ export default class Idle {
   }
 
   reset(){
+    console.log('this reseting timer')
     clearTimeout(this.t)
     this.t = setTimeout(() => this.idle(), this.idleTime)  // time is in milliseconds
     this.active()

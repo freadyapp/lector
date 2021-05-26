@@ -134,7 +134,10 @@ export default class PragmaLector extends Pragma {
   
   async resetMark(){
     // TODO CAUSES BUG
+    //console.log('[#] resetting mark...')
+    //console.log('[#] before summoning...')
     await this.async.beforeSummon()
+    //console.log('[#] after summoning...')
     return new Promise((resolve => {
       if (this._resettingMark) return resolve()
       this._resettingMark = true
