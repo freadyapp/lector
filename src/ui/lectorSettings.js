@@ -292,6 +292,7 @@ export function addSettingsToLector(lector) {
     // update to the default settings, and
     // trigger the settings load event
     //
+    console.log()
 
     lector.on('load', function () {
         let fader = _p('fader')
@@ -312,6 +313,11 @@ export function addSettingsToLector(lector) {
                     this.elements = this.elements.concat(newElements)
                     return this
                 }
+                lector.settings.on('update', () => {
+                    this.triggerEvent('active')
+                })
+
+
             })
             .setIdleTime(3000)
             .include(lector.settings)
@@ -320,8 +326,11 @@ export function addSettingsToLector(lector) {
                     if (!element._hovered) element.css('opacity 0')
                 })
             })
-            .onActive(function () {
+            .on('active', function() {
                 this.elements.forEach(element => element.css('opacity 1'))
+            })
+            .onActive(function () {
+                this.triggerEvent('active')
             })
 
         lector.settings.fader = fader

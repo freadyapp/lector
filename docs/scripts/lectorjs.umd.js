@@ -21561,6 +21561,7 @@
     // trigger the settings load event
     //
 
+    console.log();
     lector.on('load', function () {
       let fader = J('fader').run(idler, function () {
         this.elements = [];
@@ -21575,12 +21576,18 @@
           this.elements = this.elements.concat(newElements);
           return this;
         };
+
+        lector.settings.on('update', () => {
+          this.triggerEvent('active');
+        });
       }).setIdleTime(3000).include(lector.settings).onIdle(function () {
         this.elements.forEach(element => {
           if (!element._hovered) element.css('opacity 0');
         });
-      }).onActive(function () {
+      }).on('active', function () {
         this.elements.forEach(element => element.css('opacity 1'));
+      }).onActive(function () {
+        this.triggerEvent('active');
       });
 
       lector.settings.fader = fader; // set range of paginator
