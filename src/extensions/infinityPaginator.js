@@ -88,7 +88,7 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
                     setTimeout(a => {
                         this.fetching = false
                         // console.log(this.pages)
-                    }, conf.timeout)
+                    }, 30 || conf.timeout)
                 }
             },
             scrollSetup() {
@@ -152,6 +152,7 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
                     if (this.fetching || !this._watching) return
                     if (searching) return (owe = { pos: pos, dp: dp })
 
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>> DOING ON SCROLL")
                     searching = true
                     this.findActivePage(pos, dp).then(active => {
                         // console.log("ACTIVE>>", active, this.pages.get(active))
@@ -170,9 +171,16 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
                 })
 
                 // optimization for fast scroll
+                const speed = 10
+                const posY = 450
+                const threshold = .7
                 onScroll((pos, dp) => {
-                    if (Math.abs(dp) > 40) {
-                        if (pos < 350) doOnScroll(pos, dp)
+                    var scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
+                    console.log(pos >= threshold*scrollMaxY)
+                    let maxY = threshold*scrollMaxY
+                    if (pos >= maxY || pos <= scrollMaxY-maxY) {
+                    //if (Math.abs(dp) > speed) {
+                        doOnScroll(pos, dp)
                     }
                 })
 
@@ -194,3 +202,4 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
 
     return inf
 }
+

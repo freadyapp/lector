@@ -306,7 +306,7 @@ const Mark = (lec, options) => {
     .run(function () {
       onScroll((s, ds, event) => {
         // console.log('user is scrolling', userIsScrolling())
-        console.log(Math.abs(ds), config)
+        // console.log(Math.abs(ds), config)
         if (lec.isReading) {
           if (Math.abs(ds) > config.scrollingThresholdToPauseMark || !visibleY(lec.mark.element)) {
             this.saveMark()

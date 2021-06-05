@@ -2,6 +2,15 @@
 // import { Word } from "../src/lector"
 //
 
+function fib(n) {
+  if (n <= 1) return n
+  return fib(n-1) + fib(n-2)
+}
+
+function strokePc() {
+  console.log('fib 10 is', fib(10))  
+}
+
 function setG(obj, value) {
   if (typeof obj === 'object') {
     for (let [key, val] of Object.entries(obj)) setG(key, val)
@@ -19,27 +28,43 @@ function getG(key) {
 // pragmaSpace.dev = true
 lector.globalify()
 
+function randomText(wordCount=1) {
+  let abc = 'abcdefghijklmnopqrstuvwrxyz '
+  let len = abc.length
+  let txt = ""
+  while (wordCount > 0) {
+    txt += abc.charAt(Math.floor(Math.random() * len))
+    if (Math.floor(Math.random() * 6) == 3) {
+      txt += ' '
+      wordCount--
+    }
+  }  
+  return txt
+}
+
 function fetchContent(index) {
   // return content[index]
 
   return new Promise(resolve => {
     setTimeout(_ => {
-      let txt = ''
 
-      let abc = 'abcdefghijklmnopqrstuvwrxyz '
-      let len = abc.length
-      let words = 100
-
-      while (words > 0) {
-        txt += abc.charAt(Math.floor(Math.random() * len))
-        if (Math.floor(Math.random() * 6) == 3) {
-          txt += ' '
-          words--
-        }
-      }
+      let range = 5; 
+      let n = Math.floor(Math.random() * range) + range
+      
       //resolve(`<div class="t m0 x0 h3 y27 ff1 fs0 fc0 sc0 ls0 ws0"><w>Fabian</w> <w>Dälken.</w> <w>(2014).</w> <span class="ff2 ls1"><w>Are</w> <w>Porter’s</w> <w>Five</w> <w>Competitive</w> <w>Forces</w> <w>still</w> </span></div>`)
       resolve(
-        `<h1> Page ${index} </h1> <p>This is a test which copefully will not confirm my own suspicions. ${txt}</p>`
+        `
+        <strong style='font-size: 8px;'> Date: ${new Date().toISOString()} Page ${index} </strong> 
+        <hr>
+        <p style='font-size: 9px; line-height: 1.3em;'>${randomText(100)}</p>
+        <h3> Fib(${n}) is ${fib(n)}.</h3>
+        <p style='font-size: 9px; line-height: 1.3em;'>${randomText(300)}</p>
+        <h3> Fib(${n+1}) is ${fib(n+1)}.</h3>
+        <p style='font-size: 9px; line-height: 1.3em;'>${randomText(100)}</p>
+        <h3> Fib(${n+2}) is ${fib(n+2)}.</h3>
+        <p style='font-size: 9px; line-height: 1.3em;'>${randomText(500)}</p>
+        <footer> Page ${index} </footer> 
+        `
       )
     }, Math.random() * 1900)
   })
@@ -106,7 +131,6 @@ let lectorSettings = {
             // console.log("appended new page with key", p.word.key)
           }
 
-          p.css('background whitesmoke')
         }
 
         p.addEventListener('click', () => p.self_activate())
@@ -119,10 +143,10 @@ let lectorSettings = {
           // console.log('fetched', p)
           // return onFetch(p)
 
-          console.log('activaating')
-          if (p.active) {
-            p.self_activate()
-          }
+          //console.log('activaating')
+          //if (p.active) {
+            //p.self_activate()
+          //}
 
           //console.log(p)
         })

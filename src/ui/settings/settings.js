@@ -46,6 +46,7 @@ export class Settings extends Pragma {
   }
 
   update(hash, value, pragma){
+    if (!hash) return
 
     if (value) {
       hash = { [hash]: value }
@@ -55,6 +56,7 @@ export class Settings extends Pragma {
       if (!pragma){
         this.pragmaMap.get(setting)[`set${setting.capitalize()}`](value)
       }
+
       if (this._set(setting, value)){
         this.triggerEvent("update", setting, value, pragma)
       } 
