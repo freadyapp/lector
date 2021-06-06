@@ -148,14 +148,19 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
 
                 let searching = false
                 let owe = false
+                let lastPos = null 
                 const doOnScroll = (pos, dp) => {
                     if (this.fetching || !this._watching) return
+                    console.log('ABSSSS', Math.abs(lastPos - pos) < 30)
+                    if (lastPos != null && Math.abs(lastPos - pos) < 30) return
                     if (searching) return (owe = { pos: pos, dp: dp })
 
-                    console.log(">>>>>>>>>>>>>>>>>>>>>>> DOING ON SCROLL")
+                    //console.log(">>>>>>>>>>>>>>>>>>>>>>> DOING ON SCROLL", pos)
                     searching = true
+                    lastPos = pos
                     this.findActivePage(pos, dp).then(active => {
-                        // console.log("ACTIVE>>", active, this.pages.get(active))
+
+                        //console.log("ACTIVE>>", active, this.pages.get(active))
                         this.value = active
                         searching = false
                         if (owe) {
@@ -172,13 +177,14 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
 
                 // optimization for fast scroll
                 const speed = 10
-                const posY = 450
-                const threshold = .7
+                const posY = 850
+                const threshold = .8
                 onScroll((pos, dp) => {
                     var scrollMaxY = window.scrollMaxY || (document.documentElement.scrollHeight - document.documentElement.clientHeight)
-                    console.log(pos >= threshold*scrollMaxY)
+                    //console.log(pos >= threshold*scrollMaxY)
                     let maxY = threshold*scrollMaxY
-                    if (pos >= maxY || pos <= scrollMaxY-maxY) {
+                    console.log(pos, posY, pos <= posY)
+                    if (pos >= maxY || pos <= posY) {
                     //if (Math.abs(dp) > speed) {
                         doOnScroll(pos, dp)
                     }
@@ -196,8 +202,10 @@ export function infinityPaginator(streamer, pageTemplate, config = {}) {
             this.activate(this.value)
             let preVal = this.value - (this.dv || 1)
             this.inactivate(preVal)
+            console.log('ACTIVATED', this.value)
 
             this.fill()
+            console.log('FIllEd', this.value)
         })
 
     return inf
