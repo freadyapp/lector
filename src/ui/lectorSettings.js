@@ -31,6 +31,13 @@ export function addSettingsToLector(lector) {
         changeColor(hex = this.value) {
             // modeComp.update(hex)
             // foveaComp.update(hex)
+            _e('style.mark').html(`
+                :root {
+                    --mark-color: ${hex};
+                    --mark-color-dim: ${hex}7f;
+                }
+            `).appendTo('body')
+
             _e('body')
                 .findAll('[data-lector-marker-color]')
                 .forEach(e => {

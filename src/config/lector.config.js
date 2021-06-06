@@ -1,4 +1,4 @@
-export const scrollingThresholdToPauseMark = 50
+export const scrollingThresholdToPauseMark = 25
     // threshold indicating how quickly the user should scroll
 
 export const scrollingThresholdToScroll = 250

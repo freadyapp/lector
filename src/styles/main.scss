@@ -412,8 +412,8 @@
   margin-bottom: -1px;
 
   &.hover-0{
-    background-color: #2b6cce37;
-    outline: 2px solid #2b6cce37;
+    background-color: var(--mark-color-dim);
+    // outline: 2px solid var(--mark-color);
     border-radius: 0px;
   }
   &.hover-1 {
@@ -427,6 +427,7 @@
     background-color: rgba(184, 184, 184, 0.043);
   }
 
+  transition: background .1s ease;
   &.mark-is-here {
     // &::before {
     //   content: " ";
@@ -440,10 +441,19 @@
     //   border-radius: 50%;
     // }
     // background: pink;
-    border-bottom: 1px solid #2b6cce;
-    background-color: #2b6cce19;
+    border-bottom: 1px solid var(--mark-color);
+    background-color: var(--mark-color-dim);
+
+
+    padding: 0 3px;
+    margin: 0 -3px;
   }
 
+}
+
+:root {
+  --mark-color: #2b6cce;
+  --mark-color-dim: #2b6cce87;
 }
 
 .fade-onload {
