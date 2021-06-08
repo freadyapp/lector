@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 
 import { terser } from 'rollup-plugin-terser'
+import strip from "@rollup/plugin-strip"
 
 import sizes from 'rollup-plugin-sizes'
 import json from '@rollup/plugin-json'
@@ -26,6 +27,7 @@ const plugs = [
     title: 'LectorJS Visualised',
     sourcemap: false,
   }),
+  ifProd(strip),
   ifProd(terser), // mini
   ifProd(sizes),
 ]
