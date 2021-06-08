@@ -18673,7 +18673,7 @@
 
     get lector() {
       if (this.parent) return this.parent.lector;
-      M.throwSoft('could not find lector for');
+      M.throwSoft("could not find lector for");
     }
 
     get txt() {
@@ -18722,7 +18722,7 @@
       if (!sib) {
         var _this$parent$sibling, _this$parent$sibling2;
 
-        if (typeof this.parent.sibling !== 'function') return null;
+        if (typeof this.parent.sibling !== "function") return null;
         if (n < 0) return (_this$parent$sibling = this.parent.sibling(-1)) === null || _this$parent$sibling === void 0 ? void 0 : _this$parent$sibling.getFromBottom(n);
         return (_this$parent$sibling2 = this.parent.sibling(1)) === null || _this$parent$sibling2 === void 0 ? void 0 : _this$parent$sibling2.get(n);
       }
@@ -18750,8 +18750,14 @@
       return !this.isInTheSameLine(1);
     }
 
+    get difficultyIndex() {
+      if (!this.lector._useDifficultyIndex) return 0;
+      if (!this._difficultyIndex) this._difficultyIndex = generateDifficultyIndex(this);
+      return this._difficultyIndex;
+    }
+
     time(wpm = 250) {
-      return charsMsAt(wpm) * wordValue(this, generateDifficultyIndex(this));
+      return charsMsAt(wpm) * wordValue(this, this.difficultyIndex);
     }
 
     pause() {
@@ -18805,7 +18811,7 @@
             this.parent.value = this.index + 1;
             resolve(` read [ ${this.text} ] `);
           }).catch(e => {
-            console.warn('rejected promise read', e);
+            console.warn("rejected promise read", e);
             reject(e);
           });
         }
@@ -18828,11 +18834,11 @@
 
     read(source = false) {
       if (this.currentPromise) return new Promise((resolve, reject) => {
-        resolve('already reading');
+        resolve("already reading");
       });
 
       if (this.hasKids) {
-        // recursive reading 
+        // recursive reading
         if (this.currentWord) return this.currentWord.read(source);
         this.next.value = 0;
         return this.next.read();
@@ -18845,7 +18851,7 @@
           resolve();
           this.currentPromise = null;
           return this.parent.read();
-        }).catch(e => resolve('pause'));
+        }).catch(e => resolve("pause"));
       });
     }
 
@@ -18854,13 +18860,13 @@
       // if (this.hasKid)
       // if (this.hasKids){
       // console.log('thissummoning ', this)
-      // recursive reading 
+      // recursive reading
       // if (this.currentWord) return this.currentWord.summon()
       // console.error('couldnt summon word on', this)
-      // } 
+      // }
       // console.log("SUMMONING", this)
       return new PinkyPromise(resolve => {
-        this.parent.pause().catch(() => console.log('no need to pause')).then(() => {
+        this.parent.pause().catch(() => console.log("no need to pause")).then(() => {
           this.mark.mark(this, 50, false).then(() => {
             resolve();
           });
@@ -19940,7 +19946,7 @@
 
   var full = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);body{background-color:#161616}.flex,.inline-icon,.inline-icon-2{display:flex;justify-content:center;align-items:center}.inline-icon,.inline-icon-2{width:22px}.inline-icon svg,.inline-icon-2 svg{width:22px}.inline-icon-2{width:25px}.inline-icon-2 svg{width:25px}.clickable{cursor:pointer}.meta{opacity:.5}.blurred-bg{width:100vw;height:100vh;position:fixed;top:0;left:0;z-index:9999999999999999999;background:rgba(255,255,255,0.15);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}.popUp{width:400px;height:390px;background:#161616;border-radius:4px;position:absolute;top:30%;left:50%;margin-left:-200px;padding:30px 30px;box-sizing:border-box;transition:all ease .5s;font-family:'IBM Plex Mono',monospace !important}.popUp .next-btn,.popUp .back-btn{position:absolute;right:-50px;width:40px;height:40px;background:#161616;border-radius:50px;top:50%;margin-top:-25px;cursor:pointer}.popUp .next-btn .next-icon,.popUp .back-btn .next-icon,.popUp .back-btn .back-icon,.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{text-align:center;position:absolute;top:46%;left:52%;transform:translate(-50%,-50%) rotate(180deg)}.popUp .next-btn .next-icon>svg,.popUp .back-btn .next-btn .back-icon>svg,.popUp .back-btn .next-icon>svg,.popUp .back-btn .back-icon>svg,.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:10px;height:auto}.popUp .next-btn .exit-icon,.popUp .back-btn .exit-icon{transform:translate(-50%,-50%);top:55%;left:50%}.popUp .next-btn .exit-icon>svg,.popUp .back-btn .exit-icon>svg{width:15px;height:auto}.popUp .back-btn{left:-50px}.popUp .back-btn .back-icon{transform:translate(-50%,-50%);top:56%;left:47%}.popUp .popUpContent{width:100%;display:flex;height:100%;box-sizing:border-box;transition:all ease .5s;justify-content:center;align-items:center}.popUp .popUpContent .boat{width:100%;height:fit-content;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:space-around;align-items:center;align-content:stretch;text-align:center;transition:all ease .5s}.popUp .popUpContent .boat-title{font-family:'IBM Plex Mono',monospace !important;font-size:27px !important;color:whitesmoke;margin:0;font-weight:400;margin-top:30px;-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.popUp .popUpContent .boat .spacebar-icon>svg{width:230px}.popUp .popUpContent .boat .speed-icon>svg{width:315px}.popUp .popUpContent .boat .click-icon>svg{width:315px}.displayN{display:none !important}.fadein-onload,.popUp .popUpContent .boat{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fadein-onload from,.popUp .popUpContent .boat from{opacity:0}.fadein-onload to,.popUp .popUpContent .boat to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}";
   var slider$1 = "@charset \"utf-8\";.pragma-slider{user-select:none;cursor:grab}.pragma-slider:active{cursor:grabbing}.pragma-slider-bg{width:100%;height:5px;background:#6F6F6F;border-radius:15px}.pragma-slider-bar{height:100%;width:100%;background:#2B6CCE;position:relative;transition:all .05s ease;border-radius:15px}.pragma-slider-thumb{width:5px;height:18px;background:#2b6cce;transition:all .05s ease;position:absolute;right:0;top:50%;bottom:50%;margin:auto}.slider-display{text-align:center;padding-bottom:20px}";
-  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings{position:fixed;bottom:20px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px;border-bottom:1px solid transparent;margin-bottom:-1px;transition:background .1s ease}.word-element.hover-0{background-color:var(--mark-color-dim);border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}.word-element.mark-is-here{border-bottom:1px solid var(--mark-color);background-color:var(--mark-color-dim);padding:0 3px;margin:0 -3px}:root{--mark-color:#2b6cce;--mark-color-dim:#2b6cce87}.fade-onload,#mark-indicator{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fade-onload from,#mark-indicator from{opacity:0}.fade-onload to,#mark-indicator to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.mark-obscurer{background-color:#262626}#mark-indicator{position:fixed;bottom:20px;left:50%;padding:7px;margin-left:-20px;border-radius:5px;background-color:#262626;cursor:pointer;width:15px;height:15px;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center}#mark-indicator>svg{height:auto;width:15px}#mark-indicator.upwards{top:20px;transform:rotate(180deg)}";
+  var main = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap);@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&display=swap);html{max-width:100vw;overflow-x:clip}.glass-block,.lector-mini-settings,.glass-block-border{background:rgba(35,35,35,0.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:5px;padding:20px 40px;color:whitesmoke}.glass-block-border{border:1px solid rgba(255,255,255,0.18)}.fixed-bottom-box,.lector-mini-settings{position:fixed;bottom:20px}.lector-mini-settings{right:-10px;padding-right:40px}.lector-mini-settings .section{margin-top:25px;margin-bottom:25px}.settings-input{display:flex;flex-direction:column;align-items:center}.pragma-input-text{font-family:'IBM Plex Mono',monospace;font-size:22px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;background-color:transparent;text-align:center}.pragma-input-text:hover{background:#393939}.active-select-template{display:flex;flex-direction:row;flex-wrap:no wrap;justify-content:space-around;align-items:center;width:100%}.active-select-template .option{user-select:none;cursor:pointer}.active-select-template .active{opacity:1 !important;background-color:gray;position:relative;transform-style:preserve-3d}.active-select-template .active::after{height:32px;top:-6px;left:-10px}.active-select-template .active::before{width:30px;height:30px;top:-4px;border-radius:2px;left:-4px;background-color:#6F6F6F;position:absolute;border-radius:50%;content:\"\";z-index:-1;transform:translateZ(-1px);transition:ease all .2s;-webkit-transition:all 1s;-moz-transition:all 1s;animation:sheen 1s forwards}.active-select-template .inactive{background-color:#1a1a1a}.word-element{cursor:pointer;transition:all .05s ease;border-radius:1px;border-bottom:1px solid transparent;margin-bottom:-1px;transition:background .1s ease}.word-element.hover-0{background-color:var(--mark-color-dim);border-radius:0}.word-element.hover-1{background-color:rgba(184,184,184,0.249)}.word-element.hover-2{background-color:rgba(184,184,184,0.119)}.word-element.hover-3{background-color:rgba(184,184,184,0.043)}.word-element.mark-is-here{border-bottom:1px solid var(--mark-color);background-color:var(--mark-color-dim);padding:0 3px;margin:0 -3px}:root{--mark-color:#2b6cce;--mark-color-dim:#2b6cce87}.fade-onload,#mark-indicator{-webkit-animation:fadein .5s;-moz-animation:fadein .5s;-ms-animation:fadein .5s;-o-animation:fadein .5s;animation:fadein .5s}@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{.fade-onload from,#mark-indicator from{opacity:0}.fade-onload to,#mark-indicator to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.mark-obscurer{background-color:#262626}#mark-indicator{position:fixed;bottom:20px;left:50%;padding:7px;margin-left:-20px;border-radius:5px;background-color:#262626;cursor:pointer;width:15px;height:15px;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:center;align-content:center}#mark-indicator>svg{height:auto;width:15px}#mark-indicator.upwards{top:20px;transform:rotate(180deg)}";
   var settings = "@charset \"utf-8\";@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;700&display=swap);.collapsable,.settings #popup{overflow:hidden;transition:all .15s ease;height:auto;flex:1}.collapsable.collapsed,.settings #popup.collapsed{flex:0}.box-container,.settings #popup,.bar{background-color:#262626;border-radius:4px;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;align-content:stretch;height:auto;padding:10px 15px;width:166px}.bar{width:fit-content;flex-direction:row;justify-content:space-between;align-items:center}.settings{z-index:999999999999999;font-family:'IBM Plex Sans',sans-serif;font-size:18px;bottom:10px;left:10px;color:whitesmoke;position:fixed}.settings #popup{display:block;position:absolute;bottom:55px}.settings #wpm{width:120px;padding-left:8px;margin-left:15px;border-left:1px solid gray}.settings [data-setting-target=back]{cursor:pointer;height:24px;display:flex;align-items:center;margin-bottom:27px}.settings [data-setting-target=back]::after{content:'';height:2px;width:120%;background-color:#6f6f66;position:absolute;top:40px;left:0}.settings [data-setting-target=back] .back-icon{margin-right:10px;margin-right:18px;margin-left:7px}.settings [data-setting-target=back] .back-copy{margin-bottom:3px}.settings #page-bar{position:fixed;right:10px;bottom:10px}.settings #zoom-bar{position:fixed;right:10px;top:20px;padding:8px 5px}.settings #zoom-bar .setting{height:fit-content}.settings #zoom-bar .setting .arrows{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;height:70px}.settings #zoom-bar .setting .arrows>svg{height:auto;width:24px}.edible-display{background:#39393950;padding:1px 5px !important;font-family:'IBM Plex Mono',monospace;font-size:18px;border-style:none;outline:none;color:whitesmoke;border-radius:2px;text-align:center}.edible-display:hover{background:#7b7b7b35}.setting{display:flex;flex-wrap:nowrap;justify-content:flex-start;height:30px;user-select:none;-webkit-user-select:none}.setting.collapsable,.settings #popup.setting{height:40px}.setting.inline{height:30px;width:100%}.setting.expanded{height:200px}.setting.collapsed{height:0;flex:0}.setting .section,.setting .collapsed-section{width:100%;display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;align-items:center;align-content:stretch;cursor:pointer}.setting .editor-content .option{display:flex;margin:15px 0;cursor:pointer;opacity:70%}.setting .editor-content .option.selected{opacity:100%}.setting .color-blob{width:22px;height:22px;border-radius:30px;margin-right:10px}.setting .color-blob.selected{border:10px solid red}.setting .mode-icon{margin-right:20px}.setting .arrows{display:flex;flex-direction:column;padding:5px;justify-content:center;align-items:center}.setting .arrows svg,.setting .arrows div{opacity:.7;cursor:pointer;padding:2px 0}.setting .arrows svg:hover,.setting .arrows div:hover{opacity:1}[data-setting='mode'] [data-option='Underneath']{margin:0 0 20px 0 !important;display:flex;align-items:center}.-selector *,.-settings-section-list .option.selected *,.settings>#popup #color .option.selected *,.settings>#popup #mode .option.selected *,.-color-selector *{z-index:99}.-selector::before,.-settings-section-list .option.selected::before,.settings>#popup #color .option.selected::before,.settings>#popup #mode .option.selected::before,.-color-selector::before{content:'';height:50px;width:120%;background-color:#515151;position:absolute;z-index:0 !important;left:0;margin-top:-11px}.-selector::after,.-settings-section-list .option.selected::after,.settings>#popup #color .option.selected::after,.settings>#popup #mode .option.selected::after,.-color-selector::after{content:'';width:5px;height:50px;background-color:#2b6cce;position:absolute;left:0;margin-top:-11px}.-color-selector::before,.settings>#popup #color .option.selected::before{height:40px}.-color-selector::after,.settings>#popup #color .option.selected::after{height:40px}.-settings-section-list .option,.settings>#popup #color .option,.settings>#popup #mode .option{transition:all ease .2s;align-items:stretch !important}.lottie{position:relative;transition:all ease 0,5s}.lottie[data-loading=true]::before{content:\"\";position:absolute;margin:auto;width:25px;left:50%;height:25px}.lottie.click-lottie{margin-top:-10px;height:200px}";
   var css = {
   	full: full,
@@ -21796,6 +21802,7 @@
     // true if you want multiple lectors in the same page
     experimental: false,
     // if true experimental features are enabled. Unstable.
+    useDifficultyIndex: true,
     // EXPERIMENTAL (set experimental: true to enable these options)
     scaler: false,
     // if true, scales the view, if set to 'font-size' will scale the font size using em
@@ -21815,7 +21822,7 @@
     console.log = console.time = console.timeEnd = console.warn = console.error = () => {};
   }
   function dev() {
-    console.log('dev mode');
+    console.log("dev mode");
   }
 
   function addOnboardingToLector(lector) {
@@ -21825,7 +21832,7 @@
   function connectToLectorSettings(lector, wire) {
     return new Promise((resolve, reject) => {
       lector.element.onRender(() => {
-        if (!lector.settings) return reject('no settings present');
+        if (!lector.settings) return reject("no settings present");
         let setting = lector.settings.pragmaMap.get(wire);
 
         if (setting) {
@@ -21833,7 +21840,7 @@
           return resolve(setting);
         }
 
-        reject('could not find setting');
+        reject("could not find setting");
       });
     });
   }
@@ -21842,7 +21849,7 @@
     let autoScroller = J().define({
       scrollIfNeeded() {
         return new Promise(async (resolve, reject) => {
-          console.log('[|] checking if should auto scroll...');
+          console.log("[|] checking if should auto scroll...");
           let currentWord = lec.currentWord; //console.log(
           //'is this auto scrolling',
           //this.isAutoScrolling,
@@ -21858,12 +21865,12 @@
             return resolve(false);
           }
 
-          console.log('[|] performing auto scroll'); // perform auto scroll
+          console.log("[|] performing auto scroll"); // perform auto scroll
 
           this.isAutoScrolling = true;
           await this.autoScroll(); //setTimeout(() => {
 
-          console.log('[$] done auto scrolling'); //.catch(() => console.warn('[X] failed to auto scroll'))
+          console.log("[$] done auto scrolling"); //.catch(() => console.warn('[X] failed to auto scroll'))
           //.finally(() => {
 
           this.isAutoScrolling = false;
@@ -21900,15 +21907,15 @@
         lec.async.define({
           beforeSummon() {
             return new Promise(async resolve => {
-              console.log('before read.... scrolling if needed');
+              console.log("before read.... scrolling if needed");
               autoScroller.scrollIfNeeded().then(() => {
-                console.log('before read.... wait 100 ms');
+                console.log("before read.... wait 100 ms");
                 setTimeout(() => {
-                  console.log('continuing');
+                  console.log("continuing");
                   resolve();
                 }, 100);
               }).catch(() => {
-                console.warn('tried to scroll, but already scrolling');
+                console.warn("tried to scroll, but already scrolling");
               });
             });
           } // beforeRead() {
@@ -21917,8 +21924,8 @@
 
 
         });
-        this.on('changeLine', () => {
-          console.log('change line, scrolling if needed');
+        this.on("changeLine", () => {
+          console.log("change line, scrolling if needed");
           autoScroller.scrollIfNeeded();
         });
       } // lec.on('beforeRead', () => {
@@ -21929,14 +21936,14 @@
     if (!options.hintPointer) return mark;
     let markedWords = new Set();
 
-    let indicator = j(`div#mark-indicator`).listenTo('click', () => {
-      console.log('current word', lec.currentWord);
+    let indicator = j(`div#mark-indicator`).listenTo("click", () => {
+      console.log("current word", lec.currentWord);
       lec.summonToCurrentWord(); // lec.read().then(() => {
       // lec.pause()
       // })
       // lec.currentWord.summon()
       // lec.summonToCurrentWord()
-    }).html(`${icons['arrow-down']}`);
+    }).html(`${icons["arrow-down"]}`);
 
     let indicatorAppended = false;
 
@@ -21947,7 +21954,7 @@
           if (!w) continue;
           console.log(w); // w.css(`background transparent`)
 
-          w.removeClass('mark-is-here');
+          w.removeClass("mark-is-here");
           markedWords.delete(w);
         } //lec.resetMark().then(() => {
 
@@ -21960,15 +21967,15 @@
         var _lec$currentWord;
 
         lec.mark.hide();
-        (_lec$currentWord = lec.currentWord) === null || _lec$currentWord === void 0 ? void 0 : _lec$currentWord.addClass('mark-is-here');
+        (_lec$currentWord = lec.currentWord) === null || _lec$currentWord === void 0 ? void 0 : _lec$currentWord.addClass("mark-is-here");
         markedWords.add(lec.currentWord);
         this.minimized = true;
       }
 
     }).run(function () {
       this.minimized = true;
-      lec.on('load', () => {
-        lec.mark.on('mark', () => {
+      lec.on("load", () => {
+        lec.mark.on("mark", () => {
           if (!this.minimized) return;
           this.unminimizeMark();
         });
@@ -21984,7 +21991,7 @@
     }, 150);
 
     function indicateMarkIfHidden() {
-      console.time('indicating mark');
+      console.time("indicating mark");
       let _top = 1;
 
       let _bottom = -1;
@@ -22006,7 +22013,7 @@
       if (!lec.isReading) {
         let currentWord = lec.currentWord;
         let obscured = currentWord ? findObscurer(currentWord) : false;
-        console.log('obscured by', obscured);
+        console.log("obscured by", obscured);
 
         if (obscured) {
           let fromTop = obscured.from === _top;
@@ -22018,20 +22025,20 @@
               indicatorAppended = true;
             }
 
-            indicator[fromTop ? `addClass` : `removeClass`]('upwards');
+            indicator[fromTop ? `addClass` : `removeClass`]("upwards");
           } else {
-            obscured.surface.addClass('mark-obscurer')[fromTop ? `addClass` : `removeClass`]('from-top')[!fromTop ? `addClass` : `removeClass`]('from-bottom');
+            obscured.surface.addClass("mark-obscurer")[fromTop ? `addClass` : `removeClass`]("from-top")[!fromTop ? `addClass` : `removeClass`]("from-bottom");
           }
 
-          return console.timeEnd('indicating mark');
+          return console.timeEnd("indicating mark");
         }
       }
 
-      console.log('DESTROYING INDICATOR', indicator);
+      console.log("DESTROYING INDICATOR", indicator);
       indicator.destroy();
       indicatorAppended = false;
-      lec.element.findAll('.mark-obscurer').forEach(e => e.removeClass('mark-obscurer', 'obscures-mark-from-top', 'obscures-mark-from-bottom'));
-      console.timeEnd('indicating mark');
+      lec.element.findAll(".mark-obscurer").forEach(e => e.removeClass("mark-obscurer", "obscures-mark-from-top", "obscures-mark-from-bottom"));
+      console.timeEnd("indicating mark");
     } // markKeeper will pause and minimize mark if for some reason it goes out of screen
     // it also minimizes mark and highlights the current word via the markDetective
 
@@ -22042,7 +22049,7 @@
         if (this._savedMark) return;
         this._savedMark = true;
 
-        _scroller.onNext('scrollEnd', () => {
+        _scroller.onNext("scrollEnd", () => {
           this._savedMark = false;
         });
 
@@ -22054,7 +22061,7 @@
         // console.log('user is scrolling', userIsScrolling())
         // console.log(Math.abs(ds), config)
         if (lec.isReading) {
-          console.log('ds', ds);
+          console.log("ds", ds);
 
           if (Math.abs(ds) > scrollingThresholdToPauseMark) {
             this.saveMark();
@@ -22076,10 +22083,10 @@
     let w = new PragmaWord(i).as(element).setValue(0);
 
     function unhoverCluster(epicenter) {
-      hoverCluster(epicenter, 'remove');
+      hoverCluster(epicenter, "remove");
     }
 
-    function hoverCluster(epicenter, action = 'add') {
+    function hoverCluster(epicenter, action = "add") {
       function spreadRight(element, cap = 1, iter = 0) {
         hover(element, iter);
 
@@ -22106,7 +22113,7 @@
       }
     }
 
-    let thisw = w.element.findAll('w'); // thisw.forEach(w => {
+    let thisw = w.element.findAll("w"); // thisw.forEach(w => {
     // console.log(w.parentNode, w)
     // console.log(w.parentNode == w)
     // })
@@ -22115,12 +22122,12 @@
       w.setData({
         wordAtom: true
       });
-      w.addClass('word-element');
-      w.listenTo('click', function () {
+      w.addClass("word-element");
+      w.listenTo("click", function () {
         this.summon();
-      }).listenTo('mouseover', function () {
+      }).listenTo("mouseover", function () {
         hoverCluster(this);
-      }).listenTo('mouseout', function () {
+      }).listenTo("mouseout", function () {
         unhoverCluster(this);
       });
     }
@@ -22140,9 +22147,9 @@
     l = j(l);
     if (options.wfy) await wfy(l);
     let w = Word(l);
-    let lec = new PragmaLector('lector') // .createEvents('load')
+    let lec = new PragmaLector("lector") // .createEvents('load')
     .as(l).setValue(0).connectTo(w);
-    console.log('lector root is', lec.root); // console.log(`created lector ${lec}`)
+    console.log("lector root is", lec.root); // console.log(`created lector ${lec}`)
     // console.log(`created word ${w}`)
     // console.log(w)
 
@@ -22150,6 +22157,7 @@
     if (options.settings) addSettingsToLector(lec); // if (options.legacySettings) lec.settings = LectorSettings(lec)
 
     if (options.onboarding) addOnboardingToLector(lec);
+    if (options.useDifficultyIndex) lec._useDifficultyIndex = true;
 
     if (options.global) {
       if (!window.globalLectorController) {
@@ -22170,7 +22178,7 @@
 
           addLector(lec) {
             if (!this.lectors) this.lectors = new Set();
-            lec.listenTo('click', () => {
+            lec.listenTo("click", () => {
               if (this._activeLector && this._activeLector !== lec) this._activeLector.pause();
               this._activeLector = lec;
               lec.resetMark();
@@ -22189,7 +22197,7 @@
       let target;
 
       if (globalScope) {
-        if (!window.globalLectorController) return console.error('could not listen on global scope');
+        if (!window.globalLectorController) return console.error("could not listen on global scope");
 
         if (!window.globalLectorController.binded) {
           window.globalLectorController.define({
@@ -22200,13 +22208,13 @@
                 this.bindMap.set(combEvent, cb);
 
                 this._binder.bind(event, () => {
-                  console.log('triggerting', event, 'as', this.getActiveLector(), cb); // if (this.getActiveLector()) return this.getActiveLector().run(cb)
+                  console.log("triggerting", event, "as", this.getActiveLector(), cb); // if (this.getActiveLector()) return this.getActiveLector().run(cb)
 
                   return cb.bind(this.getActiveLector())(); // cb.bind(this.getActiveLector())()
                 }, action);
               }
 
-              console.log('global bind......', event);
+              console.log("global bind......", event);
               console.log(this.bindMap);
             }
 
@@ -22222,22 +22230,22 @@
         target = lec;
       }
 
-      console.log('binding.........................', target.bind.toString());
-      target.bind('right', function () {
+      console.log("binding.........................", target.bind.toString());
+      target.bind("right", function () {
         this.goToNext();
       });
-      target.bind('left', function () {
+      target.bind("left", function () {
         this.goToPre();
       });
-      target.bind('space', function () {
+      target.bind("space", function () {
         return false;
-      }, 'keydown'); // dont trigger the dumb fucken scroll thing
+      }, "keydown"); // dont trigger the dumb fucken scroll thing
 
-      target.bind('space', function () {
-        console.log('[space]', this);
+      target.bind("space", function () {
+        console.log("[space]", this);
         this.toggle();
         return false;
-      }, 'keyup');
+      }, "keyup");
     }
 
     function experiment() {
@@ -22256,7 +22264,7 @@
   }
 
   function _streamer(sf) {
-    return J('streamer').setValue(0).run(function () {
+    return J("streamer").setValue(0).run(function () {
       this.fetch = sf;
 
       this.getContent = function () {
@@ -22273,22 +22281,22 @@
     } : (...styles) => {
       for (let style of styles) M.addStyles(css[style], style);
     };
-    if (options.defaultStyles) injectStyles('main', 'slider', 'settings');
-    if (options.fullStyles) injectStyles('full');
+    if (options.defaultStyles) injectStyles("main", "slider", "settings");
+    if (options.fullStyles) injectStyles("full");
 
     if (!_needWrapper(options)) {
       let r = await Reader(target, options);
       pragmaSpace.onDocLoad(() => {
-        r.triggerEvent('load');
+        r.triggerEvent("load");
       });
       return r;
     }
 
-    if (!options.experimental) return console.warn('EXPERIMENTAL FEATURES TURNED OFF');
+    if (!options.experimental) return console.warn("EXPERIMENTAL FEATURES TURNED OFF");
     let lector;
 
-    if (options.stream && options.paginate && options.paginate.from === 'stream' && options.paginate.as === 'infiniteScroll') {
-      console.log('setting up streamer service');
+    if (options.stream && options.paginate && options.paginate.from === "stream" && options.paginate.as === "infiniteScroll") {
+      console.log("setting up streamer service");
 
       let streamer = _streamer(options.stream);
 
@@ -22300,14 +22308,14 @@
       // let options = util.objDiff({ skip: true })
 
 
-      console.log('crating reader...');
+      console.log("crating reader...");
       lector = (await Reader(j(target).parentElement, options)).adopt(paginator, streamer);
-      console.log('lector is', lector);
+      console.log("lector is", lector);
       lector.paginator = paginator;
-      connectToLectorSettings(lector, 'page').then(settingPragma => {
+      connectToLectorSettings(lector, "page").then(settingPragma => {
         lector.paginator.do(function () {
           // console.log('changed page for paginator')
-          settingPragma.triggerEvent('update', this.value); // settingPragma.updateDisplay(this.value)
+          settingPragma.triggerEvent("update", this.value); // settingPragma.updateDisplay(this.value)
         });
       }).catch(); //if (lector.settings){
       //console.log("lector has settings! connecting paginator's value to pagecomp")
@@ -22328,7 +22336,7 @@
 
       let _scaler = new Scaler(lector.element);
 
-      if (options.scaler === 'font-size') {
+      if (options.scaler === "font-size") {
         _scaler.define({
           _buildScaleCSS(value) {
             let em = value / 100;
@@ -22340,8 +22348,8 @@
 
       lector.adopt(_scaler);
       lector.scaler = _scaler;
-      connectToLectorSettings(lector, 'scale').then(settingPragma => {
-        lector.scaler.on('scaleChange', v => {
+      connectToLectorSettings(lector, "scale").then(settingPragma => {
+        lector.scaler.on("scaleChange", v => {
           if (lector.scaler.currentPromise) {
             anime({
               targets: lector.mark.element,
@@ -22353,7 +22361,7 @@
                 targets: lector.mark.element,
                 opacity: 1,
                 duration: 150,
-                easing: 'easeInOutSine'
+                easing: "easeInOutSine"
               });
               lector.resetMark();
             });
@@ -22365,7 +22373,7 @@
     }
 
     pragmaSpace.onDocLoad(() => {
-      lector.triggerEvent('load');
+      lector.triggerEvent("load");
     });
     return lector;
   };
