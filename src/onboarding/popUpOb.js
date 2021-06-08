@@ -14,6 +14,7 @@ export class popUpOb extends popUp{
         super()
         this.render()
         this.addContent()
+        console.log('creating new boat')
     }
 
 
